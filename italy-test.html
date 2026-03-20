@@ -33,11 +33,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tab-content.active{display:flex}
 
 /* ── BOTTOM NAV ── */
-.bottom-nav{display:flex;background:rgba(10,10,15,.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding-bottom:var(--safe-b);flex-shrink:0;z-index:100}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 2px 7px;gap:3px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.2px;min-height:var(--nav-h);background:none;border:none;transition:color .2s}
+.bottom-nav{display:flex;background:rgba(10,10,15,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding-bottom:var(--safe-b);flex-shrink:0;z-index:100;overflow-x:auto;scrollbar-width:none}
+.bottom-nav::-webkit-scrollbar{display:none}
+.nav-btn{flex:0 0 auto;min-width:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px 6px;gap:2px;cursor:pointer;color:var(--muted);font-size:9px;font-weight:600;letter-spacing:.1px;min-height:var(--nav-h);background:none;border:none;transition:color .2s;white-space:nowrap}
 .nav-btn.active{color:var(--accent2)}
-.nav-btn .ni{font-size:22px;transition:transform .2s}
-.nav-btn.active .ni{transform:scale(1.12)}
+.nav-btn .ni{font-size:20px;transition:transform .2s;line-height:1}
+.nav-btn.active .ni{transform:scale(1.15)}
 .nav-badge{position:absolute;top:6px;right:18px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center}
 .nav-btn{position:relative}
 
@@ -162,7 +163,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 #tab-days{background:var(--bg)}
 .days-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
 .day-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;margin-bottom:10px;overflow:hidden}
-.day-card-hero{height:110px;background-size:cover;background-position:center;position:relative}
+.day-card-hero{height:95px;background-size:cover;background-position:center;position:relative}
 .day-card-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,15,.9),transparent)}
 .day-card-hero-info{position:absolute;bottom:10px;left:14px;right:14px;display:flex;align-items:flex-end;justify-content:space-between}
 .day-card-badge{background:var(--accent);color:#fff;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700}
@@ -189,7 +190,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 #tab-hotels{background:var(--bg)}
 .hotels-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
 .hotel-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px}
-.hotel-card-img{height:120px;background-size:cover;background-position:center;position:relative}
+.hotel-card-img{height:100px;background-size:cover;background-position:center;position:relative}
 .hotel-card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,15,.85),transparent)}
 .hotel-card-city{position:absolute;bottom:10px;left:12px;font-size:12px;font-weight:700;background:var(--surface);padding:3px 9px;border-radius:10px}
 .hotel-card-body{padding:13px}
@@ -231,29 +232,51 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 /* ── TICKETS TAB ── */
 #tab-tickets{background:var(--bg)}
 .tickets-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
-.ticket-group{margin-bottom:18px}
-.ticket-group-hdr{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
-.boarding-pass{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px}
-.bp-header{background:linear-gradient(135deg,rgba(124,106,247,.25),rgba(167,139,250,.1));padding:12px 15px;display:flex;align-items:center;justify-content:space-between}
+.boarding-pass{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.bp-header{background:linear-gradient(135deg,rgba(124,106,247,.25),rgba(167,139,250,.1));padding:13px 15px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .bp-route{font-size:15px;font-weight:800}
+.bp-header-right{display:flex;align-items:center;gap:8px}
 .bp-date{font-size:11px;color:var(--accent2);font-weight:700}
+.bp-chevron{color:var(--muted);font-size:18px;transition:transform .3s;flex-shrink:0}
+.boarding-pass.open .bp-chevron{transform:rotate(180deg)}
+.bp-body{display:none}
+.boarding-pass.open .bp-body{display:block}
 .bp-legs{padding:10px 15px;border-bottom:1px solid var(--border)}
-.bp-leg{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px}
+.bp-leg{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:12px}
 .bp-leg:not(:last-child){border-bottom:1px solid rgba(255,255,255,.04)}
-.bp-leg-train{background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;flex-shrink:0}
-.bp-leg-times{display:flex;align-items:center;gap:6px;flex:1}
-.bp-leg-from,.bp-leg-to{font-weight:700}
+.bp-leg-train{background:var(--accent);color:#fff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.bp-leg-info{flex:1}
+.bp-leg-route{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bp-leg-from,.bp-leg-to{font-weight:700;font-size:12px}
 .bp-leg-arr{color:var(--muted);font-size:11px}
-.bp-leg-time{color:var(--accent2);font-weight:700;font-size:12px}
-.bp-leg-pnr{background:rgba(52,211,153,.1);color:var(--green);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
-.bp-pax{padding:10px 15px}
-.bp-pax-hdr{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:8px}
-.bp-pax-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.04)}
-.bp-pax-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
-.bp-pax-name{font-size:13px;font-weight:800;margin-bottom:8px;color:var(--accent2)}
-.ticket-imgs{display:flex;flex-direction:column;gap:6px}
+.bp-leg-times{font-size:11px;color:var(--accent2);font-weight:700;margin-top:2px}
+.bp-leg-pnr{display:inline-flex;align-items:center;gap:3px;margin-top:3px;background:rgba(52,211,153,.1);color:var(--green);padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700}
+/* Passenger dropdowns inside each boarding pass */
+.bp-pax-list{padding:10px 15px;display:flex;flex-direction:column;gap:6px}
+.bp-pax-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.bp-pax-trigger{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;cursor:pointer;background:var(--surface2);-webkit-tap-highlight-color:transparent}
+.bp-pax-name{font-size:13px;font-weight:700;color:var(--accent2)}
+.bp-pax-hint{font-size:10px;color:var(--muted);margin-top:1px}
+.bp-pax-chevron{color:var(--muted);font-size:16px;transition:transform .3s;flex-shrink:0}
+.bp-pax-item.open .bp-pax-chevron{transform:rotate(180deg)}
+.bp-pax-body{display:none;padding:10px 12px 12px}
+.bp-pax-item.open .bp-pax-body{display:block}
+.ticket-imgs{display:flex;flex-direction:column;gap:7px}
 .ticket-img{width:100%;border-radius:8px;border:1px solid var(--border);display:block}
-.ticket-pdf-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none}
+.ticket-pdf-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:var(--accent);color:#fff;padding:9px 16px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none}
+/* Tips collapsible */
+.tip-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;overflow:hidden}
+.tip-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tip-section-hdr-left{display:flex;align-items:center;gap:10px}
+.tip-section-icon{font-size:18px;flex-shrink:0}
+.tip-section-title{font-size:14px;font-weight:800}
+.tip-section-chevron{color:var(--muted);font-size:16px;transition:transform .3s;flex-shrink:0}
+.tip-section.open .tip-section-chevron{transform:rotate(180deg)}
+.tip-section-body{display:none;padding:0 15px 12px}
+.tip-section.open .tip-section-body{display:block}
+.tip-item{display:flex;gap:9px;padding:5px 0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.82);border-bottom:1px solid rgba(255,255,255,.04)}
+.tip-item:last-child{border-bottom:none}
+.tip-dot{color:var(--accent2);flex-shrink:0;margin-top:2px;font-size:14px}
 
 /* ── MODALS ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -419,26 +442,41 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <!-- ── 6. TIPS TAB ── -->
   <div id="tab-tips" class="tab-content">
     <div class="tips-scroll" id="tipsScroll">
-      <div class="tip-section">
-        <div class="tip-section-hdr"><span class="tip-section-icon">✈️</span><span class="tip-section-title">Before You Fly</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Passport valid 6+ months beyond return date</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Check visa requirements for your destination</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Download Google Maps offline before departure</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Notify your bank of travel dates</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Travel insurance — get it, always</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Photo your passport, email it to yourself</span></div>
+      <div class="tip-section open" id="st-0">
+        <div class="tip-section-hdr" onclick="this.closest('.tip-section').classList.toggle('open')">
+          <div class="tip-section-hdr-left"><span class="tip-section-icon">✈️</span><span class="tip-section-title">Before You Fly</span></div>
+          <span class="tip-section-chevron">▾</span>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-item"><span class="tip-dot">›</span><span>Passport valid 6+ months beyond return date</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Check visa requirements for your destination</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Download Google Maps offline before departure</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Notify your bank of travel dates</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Travel insurance — get it, always</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Photo your passport, email it to yourself</span></div>
+        </div>
       </div>
-      <div class="tip-section">
-        <div class="tip-section-hdr"><span class="tip-section-icon">💰</span><span class="tip-section-title">Money</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Carry some local cash — cards fail at small spots</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Use Wise or Revolut for best exchange rates</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Airport ATMs have worst rates — use city ATMs</span></div>
+      <div class="tip-section" id="st-1">
+        <div class="tip-section-hdr" onclick="this.closest('.tip-section').classList.toggle('open')">
+          <div class="tip-section-hdr-left"><span class="tip-section-icon">💰</span><span class="tip-section-title">Money</span></div>
+          <span class="tip-section-chevron">▾</span>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-item"><span class="tip-dot">›</span><span>Carry some local cash — cards fail at small spots</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Use Wise or Revolut for best exchange rates</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Airport ATMs have worst rates — use city ATMs</span></div>
+        </div>
       </div>
-      <div class="tip-section">
-        <div class="tip-section-hdr"><span class="tip-section-icon">📱</span><span class="tip-section-title">Tech & Connectivity</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Pocket WiFi or local SIM — decide before landing</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Power bank minimum 10,000mAh for full days out</span></div>
-        <div class="tip-item"><span class="tip-dot">•</span><span>Download Grab/Uber/local taxi app before arriving</span></div>
+      <div class="tip-section" id="st-2">
+        <div class="tip-section-hdr" onclick="this.closest('.tip-section').classList.toggle('open')">
+          <div class="tip-section-hdr-left"><span class="tip-section-icon">📱</span><span class="tip-section-title">Tech & Connectivity</span></div>
+          <span class="tip-section-chevron">▾</span>
+        </div>
+        <div class="tip-section-body">
+          <div class="tip-item"><span class="tip-dot">›</span><span>Pocket WiFi or local SIM — decide before landing</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Power bank minimum 10,000mAh for full days out</span></div>
+          <div class="tip-item"><span class="tip-dot">›</span><span>Download Grab/Uber/local taxi app before arriving</span></div>
+        </div>
       </div>
       <div id="destTips"></div>
     </div>
@@ -972,11 +1010,22 @@ function populateDashboard(p) {
   // ── TIPS ──
   if (p.tips && p.tips.length > 0) {
     const destTips = document.getElementById('destTips');
-    destTips.innerHTML = p.tips.map(t => `
-      <div class="tip-section">
-        <div class="tip-section-hdr"><span class="tip-section-icon">${t.icon||'💡'}</span><span class="tip-section-title">${esc(t.category||'Tips')}</span></div>
-        ${(t.items||[]).map(item=>`<div class="tip-item"><span class="tip-dot">•</span><span>${esc(item)}</span></div>`).join('')}
+    destTips.innerHTML = p.tips.map((t,i) => `
+      <div class="tip-section" id="ts-${i}">
+        <div class="tip-section-hdr" onclick="toggleTip(${i})">
+          <div class="tip-section-hdr-left">
+            <span class="tip-section-icon">${t.icon||'💡'}</span>
+            <span class="tip-section-title">${esc(t.category||'Tips')}</span>
+          </div>
+          <span class="tip-section-chevron">▾</span>
+        </div>
+        <div class="tip-section-body">
+          ${(t.items||[]).map(item=>`<div class="tip-item"><span class="tip-dot">›</span><span>${esc(item)}</span></div>`).join('')}
+        </div>
       </div>`).join('');
+    // Auto-open first tip section
+    const first = document.getElementById('ts-0');
+    if (first) first.classList.add('open');
   }
 
   // ── URGENT ──
@@ -995,39 +1044,56 @@ function populateDashboard(p) {
     const scroll = document.getElementById('ticketsScroll');
     document.getElementById('ticketsEmpty')?.remove();
     scroll.innerHTML = '';
-    p.tickets.forEach(tkt => {
-      const grp = document.createElement('div');
-      grp.className = 'ticket-group';
+    p.tickets.forEach((tkt, ti) => {
+      const bpId = 'bp-'+ti;
       const legsHtml = (tkt.legs||[]).map(l => `
         <div class="bp-leg">
           <span class="bp-leg-train">${esc(l.train||'')}</span>
-          <div class="bp-leg-times">
-            <span class="bp-leg-time">${esc(l.fromTime||'')}</span>
-            <span class="bp-leg-from">${esc(l.from||'')}</span>
-            <span class="bp-leg-arr">→</span>
-            <span class="bp-leg-to">${esc(l.to||'')}</span>
-            <span class="bp-leg-time">${esc(l.toTime||'')}</span>
-            ${l.pnr?`<span class="bp-leg-pnr">PNR: ${esc(l.pnr)}</span>`:''}
+          <div class="bp-leg-info">
+            <div class="bp-leg-route">
+              <span class="bp-leg-from">${esc(l.from||'')}</span>
+              <span class="bp-leg-arr">→</span>
+              <span class="bp-leg-to">${esc(l.to||'')}</span>
+              ${l.pnr?`<span class="bp-leg-pnr">✦ PNR: ${esc(l.pnr)}</span>`:''}
+            </div>
+            <div class="bp-leg-times">${esc(l.fromTime||'')} → ${esc(l.toTime||'')}</div>
           </div>
         </div>`).join('');
-      const paxHtml = (tkt.passengers||[]).map(pax => `
-        <div class="bp-pax-item">
-          <div class="bp-pax-name">👤 ${esc(pax.name||'')}</div>
-          <div class="ticket-imgs">
-            ${(pax.images||[]).map(img=>`<img class="ticket-img" src="${img}" loading="lazy" alt="ticket">`).join('')}
+      const paxHtml = (tkt.passengers||[]).map((pax, pi) => {
+        const paxId = `pax-${ti}-${pi}`;
+        return `
+        <div class="bp-pax-item" id="${paxId}">
+          <div class="bp-pax-trigger" onclick="togglePax('${paxId}')">
+            <div>
+              <div class="bp-pax-name">👤 ${esc(pax.name||'')}</div>
+              <div class="bp-pax-hint">Tap to view tickets</div>
+            </div>
+            <span class="bp-pax-chevron">▾</span>
           </div>
-          ${pax.pdfUrl?`<a class="ticket-pdf-btn" href="${pax.pdfUrl}" target="_blank">📄 ${esc(pax.pdfLabel||'Download PDF')}</a>`:''}
-        </div>`).join('');
-      grp.innerHTML = `
-        <div class="boarding-pass">
-          <div class="bp-header">
-            <div class="bp-route">🚂 ${esc(tkt.name||'')}</div>
-            <div class="bp-date">${esc(tkt.date||'')}</div>
+          <div class="bp-pax-body">
+            <div class="ticket-imgs">
+              ${(pax.images||[]).map(img=>`<img class="ticket-img" src="${img}" loading="lazy" alt="ticket">`).join('')}
+            </div>
+            ${pax.pdfUrl?`<a class="ticket-pdf-btn" href="${pax.pdfUrl}" target="_blank">📄 ${esc(pax.pdfLabel||'Download PDF')}</a>`:''}
           </div>
-          <div class="bp-legs">${legsHtml}</div>
-          <div class="bp-pax"><div class="bp-pax-hdr">PASSENGERS</div>${paxHtml}</div>
         </div>`;
-      scroll.appendChild(grp);
+      }).join('');
+      const bp = document.createElement('div');
+      bp.className = 'boarding-pass';
+      bp.id = bpId;
+      bp.innerHTML = `
+        <div class="bp-header" onclick="toggleBP('${bpId}')">
+          <div class="bp-route">🚂 ${esc(tkt.name||'')}</div>
+          <div class="bp-header-right">
+            <span class="bp-date">${esc(tkt.date||'')}</span>
+            <span class="bp-chevron">▾</span>
+          </div>
+        </div>
+        <div class="bp-body">
+          <div class="bp-legs">${legsHtml}</div>
+          <div class="bp-pax-list">${paxHtml}</div>
+        </div>`;
+      scroll.appendChild(bp);
     });
   }
 
@@ -1046,6 +1112,18 @@ function toggleDay(i) {
     switchTab('days');
     setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
   }
+}
+function toggleBP(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+function togglePax(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+function toggleTip(i) {
+  const el = document.getElementById('ts-'+i);
+  if (el) el.classList.toggle('open');
 }
 
 // ══════════════════════════════════════════════════════
