@@ -443,7 +443,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 <script>
 // ── STATE ──
-let apiKey = localStorage.getItem('ft_apikey') || '';
+localStorage.setItem('ft_apikey','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'); let apiKey = localStorage.getItem('ft_apikey') || '';
 let model = localStorage.getItem('ft_model') || 'claude-sonnet-4-6';
 let messages = []; // OpenAI message history
 let isLoading = false;
