@@ -940,9 +940,8 @@ function populateDashboard(p) {
     if(t.days) document.getElementById('statDays').textContent=t.days;
     if(t.people) document.getElementById('statPeople').textContent=t.people;
     if(t.budget) document.getElementById('statBudget').textContent=t.budget.replace(/per person.*/i,'').trim().substring(0,8);
-    if(t.heroSeed) {
-      document.getElementById('tripHeroImg').style.backgroundImage=`url('https://picsum.photos/seed/${t.heroSeed}/900/500')`;
-    }
+    const heroImg=t.imageUrl||( t.heroSeed?`https://picsum.photos/seed/${t.heroSeed}/900/500`:null);
+    if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
   }
 
   // ── DAYS + STRIP ──
@@ -966,7 +965,7 @@ function populateDashboard(p) {
     const list=document.getElementById('daysList');
     list.innerHTML='';
     p.days.forEach((d,i) => {
-      const imgUrl=`https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')||i}/900/500`;
+      const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||i}/900/500`;
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
@@ -1152,7 +1151,7 @@ function openDaySheet(idx) {
 }
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
-  const imgUrl=`https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')||idx}/900/400`;
+  const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||idx}/900/400`;
   document.getElementById('sheetHero').style.backgroundImage=`url('${imgUrl}')`;
   document.getElementById('sheetBadge').textContent=`Day ${d.day}`;
   document.getElementById('sheetTitle').textContent=(d.emoji||'📅')+' '+(d.title||'');
