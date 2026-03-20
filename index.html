@@ -211,9 +211,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-dot.food{background:var(--yellow)}.tl-dot.transport{background:var(--green)}.tl-dot.hotel{background:var(--accent2)}.tl-dot.tip{background:var(--muted)}
 .tl-line{width:2px;flex:1;background:rgba(255,255,255,.06);margin-top:4px;min-height:20px}
 .tl-main{flex:1;padding-bottom:4px}
-.tl-title{font-size:13px;font-weight:700;line-height:1.35}
-.tl-detail{font-size:12px;color:rgba(255,255,255,.58);margin-top:4px;line-height:1.55}
-.tl-tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.tl-title{font-size:14px;font-weight:800;line-height:1.35;color:var(--text)}
+.tl-detail{font-size:13px;color:rgba(255,255,255,.78);margin-top:5px;line-height:1.65}
+.tl-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .tl-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px}
 .tl-tag.activity{background:rgba(124,106,247,.12);color:var(--accent2)}
 .tl-tag.food{background:rgba(251,191,36,.1);color:var(--yellow)}
@@ -221,6 +221,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-tag.hotel{background:rgba(167,139,250,.1);color:var(--accent2)}
 .tl-tag.tip{background:rgba(255,255,255,.06);color:var(--muted)}
 .tl-map-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--accent2);text-decoration:none;background:rgba(124,106,247,.08);padding:3px 9px;border-radius:8px;font-weight:600;margin-top:5px}
+/* Highlights strip */
+.day-highlights{display:flex;flex-direction:column;gap:6px;padding:14px 16px 8px;background:rgba(124,106,247,.05);border-bottom:1px solid var(--border);flex-shrink:0}
+.day-hl-title{font-size:10px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.day-hl-item{font-size:13px;font-weight:600;color:var(--text);line-height:1.45}
+/* Local tips section */
+.local-tips-section{margin:18px 0 8px}
+.local-tips-hdr{font-size:10px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.local-tip-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;margin-bottom:7px}
+.local-tip-dot{font-size:13px;flex-shrink:0;margin-top:1px}
+.local-tip-text{font-size:13px;color:rgba(255,255,255,.85);line-height:1.55;flex:1}
+/* Timeline section header */
+.tl-section-hdr{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:14px 0 8px}
 /* Sheet nav */
 .sheet-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 14px;flex-shrink:0;border-top:1px solid var(--border);gap:12px}
 .sheet-nav-btn{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px;border-radius:13px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
@@ -1140,16 +1152,28 @@ function openDaySheet(idx) {
 }
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
-  const imgUrl=`https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')||idx}/900/300`;
+  const imgUrl=`https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')||idx}/900/400`;
   document.getElementById('sheetHero').style.backgroundImage=`url('${imgUrl}')`;
   document.getElementById('sheetBadge').textContent=`Day ${d.day}`;
   document.getElementById('sheetTitle').textContent=(d.emoji||'📅')+' '+(d.title||'');
   document.getElementById('sheetSub').textContent=d.subtitle||'';
-  // Timeline
+
   const body=document.getElementById('sheetBody');
   const TYPE_ICONS={activity:'🎯',food:'🍴',transport:'🚆',hotel:'🏨',tip:'💡'};
-  body.innerHTML=(d.timeline||[]).map((tl,i)=>{
-    const isLast=i===d.timeline.length-1;
+
+  // ── HIGHLIGHTS strip ──
+  let html='';
+  if (d.highlights && d.highlights.length) {
+    html+=`<div class="day-highlights">
+      <div class="day-hl-title">⭐ Today's highlights</div>
+      ${d.highlights.map(h=>`<div class="day-hl-item">${esc(h)}</div>`).join('')}
+    </div>`;
+  }
+
+  // ── TIMELINE ──
+  html+=`<div class="tl-section-hdr">📍 Hour-by-hour plan</div>`;
+  html+=(d.timeline||[]).map((tl,i)=>{
+    const isLast=i===(d.timeline||[]).length-1;
     const typeClass=tl.type||'activity';
     const mapLink=tl.mapQuery?`<a class="tl-map-btn" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank">📍 Map</a>`:'';
     return `<div class="tl-item">
@@ -1168,7 +1192,23 @@ function renderDaySheet(idx) {
       </div>
     </div>`;
   }).join('');
-  // Prev/Next buttons
+
+  // ── LOCAL TIPS ──
+  if (d.localTips && d.localTips.length) {
+    const TIP_ICONS=['💡','🎯','⚠️','🚶','💰','📍','🕐','🍴','🚂','📸'];
+    html+=`<div class="local-tips-section">
+      <div class="local-tips-hdr">💡 Local intel — don't miss this</div>
+      ${d.localTips.map((tip,i)=>`
+        <div class="local-tip-item">
+          <span class="local-tip-dot">${TIP_ICONS[i%TIP_ICONS.length]}</span>
+          <span class="local-tip-text">${esc(tip)}</span>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  body.innerHTML=html;
+
+  // Prev/Next
   document.getElementById('sheetPrev').disabled=idx===0;
   document.getElementById('sheetNext').disabled=idx===plan.days.length-1;
   document.getElementById('sheetPrev').textContent=idx>0?`‹ Day ${plan.days[idx-1].day}`:'‹ Prev';
