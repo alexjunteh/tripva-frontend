@@ -162,12 +162,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 /* Day selector strip */
 .day-strip{padding:10px 12px 8px;border-bottom:1px solid var(--border);overflow-x:auto;display:flex;gap:7px;scrollbar-width:none;flex-shrink:0;background:rgba(10,10,15,.95)}
 .day-strip::-webkit-scrollbar{display:none}
-.day-pill{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:700;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:1px}
+.day-pill{flex-shrink:0;padding:6px 12px;border-radius:16px;font-size:12px;font-weight:700;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px}
 .day-pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
 .day-pill.today-pill{border-color:var(--green);color:var(--green)}
 .day-pill.today-pill.active{background:var(--green);border-color:var(--green);color:#000}
-.day-pill-num{font-size:13px;font-weight:800}
-.day-pill-date{font-size:9px;font-weight:600;opacity:.7}
+.day-pill-num{font-size:18px;line-height:1.2}
+.day-pill-date{font-size:10px;font-weight:700;opacity:.9;white-space:nowrap}
 
 /* Day list (compact summaries) */
 .days-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 20px;display:flex;flex-direction:column;gap:8px}
@@ -957,11 +957,7 @@ function populateDashboard(p) {
       pill.id='dp-'+i;
       const isToday=false; // Could match dates if available
       if(isToday) pill.classList.add('today-pill');
-      pill.innerHTML=`<span class="day-pill-num">Day ${d.day}</span>`;
-      if(d.subtitle) {
-        const short = d.subtitle.split('·')[0].replace(/→.*/,'').trim().substring(0,10);
-        pill.innerHTML+=`<span class="day-pill-date">${esc(short)}</span>`;
-      }
+      pill.innerHTML=`<span class="day-pill-num">${d.emoji||'📅'}</span><span class="day-pill-date">Day ${d.day}</span>`;
       pill.onclick=()=>{ document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); curDayIdx=i; const card=document.getElementById('dc-'+i); if(card) card.scrollIntoView({behavior:'smooth',block:'nearest'}); };
       strip.appendChild(pill);
     });
