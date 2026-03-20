@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TripAI">
+<title>TripAI — Plan Your Trip</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);
+  --accent:#7c6af7;--accent2:#a78bfa;--green:#34d399;--yellow:#fbbf24;--red:#f87171;
+  --muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92);
+  --nav-h:60px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:12px;transition:opacity .6s}
+#splash.gone{opacity:0;pointer-events:none}
+.sp-logo{font-size:56px;animation:float 3s ease-in-out infinite}
+.sp-name{font-size:24px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,#fff,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sp-sub{font-size:13px;color:var(--muted)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* ── APP SHELL ── */
+#app{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.tab-content{display:none;flex:1;overflow:hidden;flex-direction:column}
+.tab-content.active{display:flex}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{display:flex;background:rgba(10,10,15,.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding-bottom:var(--safe-b);flex-shrink:0;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 2px 7px;gap:3px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.2px;min-height:var(--nav-h);background:none;border:none;transition:color .2s}
+.nav-btn.active{color:var(--accent2)}
+.nav-btn .ni{font-size:22px;transition:transform .2s}
+.nav-btn.active .ni{transform:scale(1.12)}
+.nav-badge{position:absolute;top:6px;right:18px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center}
+.nav-btn{position:relative}
+
+/* ── CHAT TAB ── */
+#tab-plan{background:var(--bg)}
+.chat-top{padding:14px 16px 10px;background:rgba(10,10,15,.98);border-bottom:1px solid var(--border);flex-shrink:0}
+.chat-top-row{display:flex;align-items:center;justify-content:space-between}
+.chat-title{font-size:17px;font-weight:800}
+.chat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.api-pill{background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.3);color:var(--accent2);padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:600}
+.api-pill.ok{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--green)}
+.chat-meta{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.model-pill{background:none;border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:12px;font-size:11px;cursor:pointer}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:4px;animation:pulse 2s ease-in-out infinite;vertical-align:middle}
+.status-dot.off{background:var(--muted);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.clear-btn{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:8px}
+
+/* Quick start chips */
+.qs-row{padding:8px 14px 4px;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.qs-row::-webkit-scrollbar{display:none}
+.qs-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:7px 13px;font-size:12px;white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .2s}
+.qs-chip:active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Messages */
+.chat-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;flex-direction:column;max-width:88%;animation:fadeUp .3s ease}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.ai{align-self:flex-start;align-items:flex-start}
+.bubble{padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.65;word-break:break-word}
+.msg.user .bubble{background:var(--accent);border-bottom-right-radius:4px}
+.msg.ai .bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg.ai .bubble p{margin-bottom:7px}.msg.ai .bubble p:last-child{margin:0}
+.msg.ai .bubble strong{color:var(--accent2)}
+.msg.ai .bubble h3{font-size:13px;color:var(--accent2);margin:9px 0 3px}
+.msg.ai .bubble ul,.msg.ai .bubble ol{padding-left:16px;margin:4px 0 8px}
+.msg.ai .bubble li{margin-bottom:3px}
+.msg.ai .bubble a{color:var(--accent2);text-decoration:none}
+.msg.ai .bubble table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.msg.ai .bubble th{padding:5px 8px;text-align:left;color:var(--muted);border-bottom:1px solid var(--border)}
+.msg.ai .bubble td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
+.msg-time{font-size:10px;color:var(--muted);margin-top:3px;padding:0 4px}
+.ai-ava{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-bottom:3px}
+.typing-ind{display:flex;align-items:center;gap:4px;padding:13px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px}
+.td{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:tdB 1.2s ease-in-out infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes tdB{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* Building banner */
+.building-banner{background:linear-gradient(90deg,rgba(124,106,247,.2),rgba(167,139,250,.1));border:1px solid rgba(124,106,247,.3);border-radius:12px;padding:10px 14px;font-size:12px;display:flex;align-items:center;gap:8px;animation:shimmer 2s ease-in-out infinite}
+@keyframes shimmer{0%,100%{opacity:.8}50%{opacity:1}}
+.building-spinner{width:14px;height:14px;border:2px solid rgba(124,106,247,.3);border-top-color:var(--accent2);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Input */
+.chat-input-area{padding:10px 14px;padding-bottom:calc(10px + var(--safe-b));background:rgba(10,10,15,.98);border-top:1px solid var(--border);flex-shrink:0}
+.input-row{display:flex;align-items:flex-end;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:24px;padding:7px 7px 7px 15px;transition:border-color .2s}
+.input-row:focus-within{border-color:var(--accent)}
+.msg-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:15px;line-height:1.5;resize:none;max-height:110px;font-family:inherit}
+.msg-input::placeholder{color:var(--muted)}
+.send-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .2s}
+.send-btn:disabled{background:var(--surface);opacity:.4;cursor:not-allowed}
+.send-btn:not(:disabled):active{transform:scale(.9)}
+
+/* Intro card */
+.intro-card{background:linear-gradient(135deg,rgba(124,106,247,.12),rgba(167,139,250,.05));border:1px solid rgba(124,106,247,.2);border-radius:18px;padding:22px;text-align:center;margin-bottom:6px}
+.intro-emoji{font-size:40px;margin-bottom:10px}
+.intro-title{font-size:17px;font-weight:800;margin-bottom:6px}
+.intro-text{font-size:13px;color:var(--muted);line-height:1.65}
+
+/* ── OVERVIEW TAB ── */
+#tab-trip{background:var(--bg)}
+.trip-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.trip-hero{background:linear-gradient(160deg,#1a1040,#0d0d1a);padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden;flex-shrink:0}
+.trip-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 20%,rgba(124,106,247,.25),transparent 70%)}
+.trip-hero-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25}
+.trip-emoji{font-size:52px;position:relative;margin-bottom:8px}
+.trip-name{font-size:24px;font-weight:800;position:relative;margin-bottom:4px}
+.trip-dates{font-size:13px;color:var(--muted);position:relative}
+.hero-edit{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:var(--text);padding:6px 12px;border-radius:16px;font-size:12px;cursor:pointer}
+.ov-body{padding:16px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+.stat-num{font-size:24px;font-weight:800;color:var(--accent2)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Urgent bookings */
+.urgent-section{margin-bottom:16px}
+.section-hdr{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.urgent-card{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;text-decoration:none}
+.urgent-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.5s ease-in-out infinite}
+.urgent-info{flex:1}
+.urgent-label{font-size:13px;font-weight:600}
+.urgent-note{font-size:11px;color:var(--muted);margin-top:2px}
+.urgent-arrow{color:var(--muted);font-size:16px}
+
+/* Itin list */
+.itin-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.itin-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .2s}
+.itin-item:active{background:var(--surface2)}
+.day-badge{background:var(--accent);color:#fff;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.itin-info{flex:1}
+.itin-title{font-size:14px;font-weight:600}
+.itin-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.itin-arr{color:var(--muted);font-size:16px}
+
+/* Save bar */
+.save-bar{display:flex;gap:8px;margin-bottom:16px}
+.save-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.save-btn:active{transform:scale(.97)}
+.save-btn.primary{background:var(--accent);color:#fff}
+.save-btn.sec{background:var(--surface2);border:1px solid var(--border);color:var(--text)}
+
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px 24px;text-align:center;flex:1}
+.es-icon{font-size:44px}
+.es-title{font-size:15px;font-weight:700}
+.es-text{font-size:13px;color:var(--muted);line-height:1.6}
+.es-btn{background:var(--accent);color:#fff;border:none;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;margin-top:6px}
+
+/* ── DAYS TAB ── */
+#tab-days{background:var(--bg)}
+.days-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;margin-bottom:10px;overflow:hidden}
+.day-card-hero{height:110px;background-size:cover;background-position:center;position:relative}
+.day-card-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,15,.9),transparent)}
+.day-card-hero-info{position:absolute;bottom:10px;left:14px;right:14px;display:flex;align-items:flex-end;justify-content:space-between}
+.day-card-badge{background:var(--accent);color:#fff;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700}
+.day-card-title{font-size:15px;font-weight:800;margin-bottom:2px}
+.day-card-sub{font-size:11px;color:rgba(255,255,255,.6)}
+.day-card-toggle{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s}
+.day-card.open .day-card-toggle{transform:rotate(180deg)}
+.day-card-body{display:none;padding:0 14px 14px}
+.day-card.open .day-card-body{display:block}
+.tl-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none}
+.tl-time{font-size:12px;color:var(--accent2);font-weight:700;width:46px;flex-shrink:0;padding-top:2px}
+.tl-main{flex:1}
+.tl-title{font-size:13px;font-weight:700}
+.tl-detail{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.tl-type{display:inline-flex;align-items:center;gap:4px;font-size:10px;margin-top:5px;padding:2px 8px;border-radius:10px;font-weight:600}
+.tl-type.food{background:rgba(251,191,36,.12);color:var(--yellow)}
+.tl-type.transport{background:rgba(52,211,153,.1);color:var(--green)}
+.tl-type.activity{background:rgba(124,106,247,.12);color:var(--accent2)}
+.tl-type.hotel{background:rgba(167,139,250,.1);color:var(--accent2)}
+.tl-link{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:11px;color:var(--accent2);text-decoration:none;background:rgba(124,106,247,.1);padding:3px 8px;border-radius:8px}
+
+/* ── HOTELS TAB ── */
+#tab-hotels{background:var(--bg)}
+.hotels-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
+.hotel-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px}
+.hotel-card-img{height:120px;background-size:cover;background-position:center;position:relative}
+.hotel-card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,15,.85),transparent)}
+.hotel-card-city{position:absolute;bottom:10px;left:12px;font-size:12px;font-weight:700;background:var(--surface);padding:3px 9px;border-radius:10px}
+.hotel-card-body{padding:13px}
+.hotel-name{font-size:15px;font-weight:800;margin-bottom:4px}
+.hotel-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.hotel-tag{font-size:11px;color:var(--muted);background:var(--surface2);padding:3px 9px;border-radius:8px}
+.hotel-tag.tier-budget{background:rgba(52,211,153,.1);color:var(--green)}
+.hotel-tag.tier-mid{background:rgba(251,191,36,.1);color:var(--yellow)}
+.hotel-tag.tier-splurge{background:rgba(124,106,247,.12);color:var(--accent2)}
+.hotel-price{font-size:18px;font-weight:800;color:var(--accent2);margin-bottom:8px}
+.hotel-book-btn{display:block;width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none}
+
+/* ── BUDGET TAB ── */
+#tab-budget{background:var(--bg)}
+.budget-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
+.budget-total-card{background:linear-gradient(135deg,rgba(124,106,247,.2),rgba(167,139,250,.1));border:1px solid rgba(124,106,247,.3);border-radius:18px;padding:22px;text-align:center;margin-bottom:14px}
+.budget-total-lbl{font-size:13px;color:var(--muted);margin-bottom:4px}
+.budget-total-num{font-size:36px;font-weight:800;color:var(--accent2)}
+.budget-total-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.budget-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.budget-item-icon{font-size:22px;width:36px;text-align:center}
+.budget-item-info{flex:1}
+.budget-item-label{font-size:13px;font-weight:700}
+.budget-item-note{font-size:11px;color:var(--muted);margin-top:2px}
+.budget-item-amount{font-size:15px;font-weight:800;color:var(--text);text-align:right}
+.budget-bar-wrap{height:3px;background:var(--surface2);border-radius:2px;margin-top:8px}
+.budget-bar{height:3px;border-radius:2px;background:var(--accent)}
+
+/* ── TIPS TAB ── */
+#tab-tips{background:var(--bg)}
+.tips-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
+.tip-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px}
+.tip-section-hdr{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.tip-section-icon{font-size:20px}
+.tip-section-title{font-size:14px;font-weight:800}
+.tip-item{display:flex;gap:9px;padding:5px 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.8)}
+.tip-dot{color:var(--accent2);font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--surface);border-radius:22px 22px 0 0;padding:22px;width:100%;max-width:520px;padding-bottom:calc(22px + var(--safe-b));transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+.modal-overlay.open .modal-sheet{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:5px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.modal-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:13px;padding:13px 15px;color:var(--text);font-size:15px;outline:none;font-family:inherit;margin-bottom:10px;transition:border-color .2s}
+.modal-input:focus{border-color:var(--accent)}
+.modal-note{font-size:12px;color:var(--muted);line-height:1.6;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:10px;padding:10px 12px;margin-bottom:18px}
+.modal-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:15px;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.modal-btn-sec{width:100%;background:none;border:1px solid var(--border);color:var(--muted);padding:12px;border-radius:13px;font-size:14px;cursor:pointer}
+.edit-field{margin-bottom:14px}
+.edit-label{font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600;display:block}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--nav-h) + 20px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(12px);background:rgba(28,28,40,.98);border:1px solid var(--border);border-radius:14px;padding:12px 20px;font-size:13px;font-weight:600;z-index:700;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;backdrop-filter:blur(10px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── RESTORED BANNER ── */
+.restored-banner{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:12px;padding:10px 14px;font-size:13px;margin:0 0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="sp-logo">✈️</div>
+  <div class="sp-name">TripAI</div>
+  <div class="sp-sub">Plan your perfect trip</div>
+</div>
+
+<div id="app">
+
+  <!-- ── 1. PLAN (CHAT) TAB ── -->
+  <div id="tab-plan" class="tab-content active">
+    <div class="chat-top">
+      <div class="chat-top-row">
+        <div>
+          <div class="chat-title">✈️ TripAI</div>
+          <div class="chat-sub">Tell me where you want to go</div>
+        </div>
+        <button class="api-pill" id="apiPill" onclick="openApiModal()">🔑 Setup</button>
+      </div>
+      <div class="chat-meta">
+        <button class="model-pill" id="modelPill" onclick="cycleModel()">
+          <span class="status-dot off" id="statusDot"></span><span id="modelLbl">No API key</span>
+        </button>
+        <button class="clear-btn" onclick="clearChat()">Clear ✕</button>
+      </div>
+    </div>
+    <div class="qs-row">
+      <div class="qs-chip" onclick="qs(this)">🗾 Tokyo 7 days</div>
+      <div class="qs-chip" onclick="qs(this)">🇮🇹 Italy 10 days</div>
+      <div class="qs-chip" onclick="qs(this)">🇯🇵 Japan budget 2 weeks</div>
+      <div class="qs-chip" onclick="qs(this)">🇫🇷 Paris romantic 5 days</div>
+      <div class="qs-chip" onclick="qs(this)">🇨🇭 Switzerland by train</div>
+      <div class="qs-chip" onclick="qs(this)">🌏 SEA 2 weeks</div>
+      <div class="qs-chip" onclick="qs(this)">🇰🇷 Seoul 5 days</div>
+      <div class="qs-chip" onclick="qs(this)">🇬🇧 London + Edinburgh</div>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="intro-card">
+        <div class="intro-emoji">🌍</div>
+        <div class="intro-title">Your personal travel agent</div>
+        <div class="intro-text">Tell me your destination, dates, budget and travel style — I'll build you a complete itinerary with hour-by-hour plans, hotels, transport and restaurants. Everything auto-populates into your dashboard.</div>
+      </div>
+      <div class="msg ai">
+        <div class="ai-ava">✈️</div>
+        <div class="bubble"><p>Hey! I'm your AI travel agent. 🌍</p><p>Describe your dream trip — destination, dates, budget per person, how many people, and what you're into. The more detail, the better the plan.</p><p><strong>Example:</strong> "Plan 7 days in Tokyo for 2 people in April. Budget RM4,000/person. We love street food, unique experiences and photography. No tourist traps."</p></div>
+        <div class="msg-time" id="firstMsgTime"></div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <div class="input-row">
+        <textarea class="msg-input" id="msgInput" placeholder="Where do you want to go?" rows="1"
+          onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="send()" disabled>➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. TRIP OVERVIEW TAB ── -->
+  <div id="tab-trip" class="tab-content">
+    <div class="trip-scroll" id="tripScroll">
+      <div class="trip-hero" id="tripHero">
+        <button class="hero-edit" onclick="openEditModal()">Edit ✏️</button>
+        <div class="trip-emoji" id="tripEmoji">🌍</div>
+        <div class="trip-name" id="tripName">My Trip</div>
+        <div class="trip-dates" id="tripDates">Plan your trip to get started</div>
+      </div>
+      <div class="ov-body">
+        <div id="restoredBanner" class="restored-banner" style="display:none">✅ Trip plan restored from shared link</div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" id="statDays">—</div><div class="stat-lbl">Days</div></div>
+          <div class="stat-card"><div class="stat-num" id="statPeople">—</div><div class="stat-lbl">People</div></div>
+          <div class="stat-card"><div class="stat-num" id="statBudget">—</div><div class="stat-lbl">Budget</div></div>
+        </div>
+        <div id="urgentSection" class="urgent-section" style="display:none">
+          <div class="section-hdr">⚠️ Book Immediately</div>
+          <div id="urgentList"></div>
+        </div>
+        <div class="section-hdr">Itinerary</div>
+        <div id="itinList" class="itin-list">
+          <div class="empty-state">
+            <div class="es-icon">🗺️</div>
+            <div class="es-title">No plan yet</div>
+            <div class="es-text">Chat with the AI to generate your trip. Everything populates automatically.</div>
+            <button class="es-btn" onclick="switchTab('plan')">Start planning →</button>
+          </div>
+        </div>
+        <div id="saveBar" class="save-bar" style="display:none">
+          <button class="save-btn primary" onclick="saveLink()">🔗 Share Link</button>
+          <button class="save-btn sec" onclick="exportHtml()">💾 Export HTML</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. DAYS TAB ── -->
+  <div id="tab-days" class="tab-content">
+    <div class="days-scroll" id="daysScroll">
+      <div class="empty-state" id="daysEmpty">
+        <div class="es-icon">📅</div>
+        <div class="es-title">No days yet</div>
+        <div class="es-text">After the AI plans your trip, each day appears here with a full hour-by-hour breakdown.</div>
+        <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. HOTELS TAB ── -->
+  <div id="tab-hotels" class="tab-content">
+    <div class="hotels-scroll" id="hotelsScroll">
+      <div class="empty-state" id="hotelsEmpty">
+        <div class="es-icon">🏨</div>
+        <div class="es-title">No hotels yet</div>
+        <div class="es-text">Hotel recommendations for each city will appear here after planning.</div>
+        <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. BUDGET TAB ── -->
+  <div id="tab-budget" class="tab-content">
+    <div class="budget-scroll" id="budgetScroll">
+      <div class="empty-state" id="budgetEmpty">
+        <div class="es-icon">💰</div>
+        <div class="es-title">No budget yet</div>
+        <div class="es-text">A complete cost breakdown will appear here after planning.</div>
+        <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 6. TIPS TAB ── -->
+  <div id="tab-tips" class="tab-content">
+    <div class="tips-scroll" id="tipsScroll">
+      <div class="tip-section">
+        <div class="tip-section-hdr"><span class="tip-section-icon">✈️</span><span class="tip-section-title">Before You Fly</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Passport valid 6+ months beyond return date</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Check visa requirements for your destination</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Download Google Maps offline before departure</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Notify your bank of travel dates</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Travel insurance — get it, always</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Photo your passport, email it to yourself</span></div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-section-hdr"><span class="tip-section-icon">💰</span><span class="tip-section-title">Money</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Carry some local cash — cards fail at small spots</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Use Wise or Revolut for best exchange rates</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Airport ATMs have worst rates — use city ATMs</span></div>
+      </div>
+      <div class="tip-section">
+        <div class="tip-section-hdr"><span class="tip-section-icon">📱</span><span class="tip-section-title">Tech & Connectivity</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Pocket WiFi or local SIM — decide before landing</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Power bank minimum 10,000mAh for full days out</span></div>
+        <div class="tip-item"><span class="tip-dot">•</span><span>Download Grab/Uber/local taxi app before arriving</span></div>
+      </div>
+      <div id="destTips"></div>
+    </div>
+  </div>
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-plan" onclick="switchTab('plan')"><span class="ni">💬</span>Plan</button>
+    <button class="nav-btn" id="nav-trip" onclick="switchTab('trip')"><span class="ni">🗺️</span>Trip</button>
+    <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="ni">📅</span>Days</button>
+    <button class="nav-btn" id="nav-hotels" onclick="switchTab('hotels')"><span class="ni">🏨</span>Hotels</button>
+    <button class="nav-btn" id="nav-budget" onclick="switchTab('budget')"><span class="ni">💰</span>Budget</button>
+    <button class="nav-btn" id="nav-tips" onclick="switchTab('tips')"><span class="ni">💡</span>Tips</button>
+  </nav>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Connect OpenAI 🔑</div>
+    <div class="modal-sub">Your key is saved only on this device — never sent anywhere except directly to OpenAI.</div>
+    <input type="password" class="modal-input" id="apiKeyInput" placeholder="sk-..." autocomplete="off">
+    <div class="modal-note">💡 Get your key at <strong>platform.openai.com/api-keys</strong><br>GPT-4o costs ~$0.02–0.05 per trip plan.</div>
+    <button class="modal-btn" onclick="saveKey()">Save & Connect</button>
+    <button class="modal-btn-sec" onclick="closeApiModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- EDIT TRIP MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit Trip ✏️</div>
+    <div class="edit-field"><label class="edit-label">Trip Name</label><input class="modal-input" id="editName" placeholder="e.g. Tokyo April 2026"></div>
+    <div class="edit-field"><label class="edit-label">Destination Emoji</label><input class="modal-input" id="editEmoji" placeholder="🗾" maxlength="2"></div>
+    <div class="edit-field"><label class="edit-label">Dates</label><input class="modal-input" id="editDates" placeholder="e.g. Apr 4–10, 2026"></div>
+    <div class="edit-field"><label class="edit-label">People</label><input class="modal-input" id="editPeople" type="number" placeholder="2" min="1"></div>
+    <div class="edit-field"><label class="edit-label">Budget / person</label><input class="modal-input" id="editBudget" placeholder="e.g. RM4,500"></div>
+    <button class="modal-btn" onclick="saveTrip()">Save</button>
+    <button class="modal-btn-sec" onclick="closeModal('editModal')">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let apiKey  = localStorage.getItem('tripai_key') || '';
+let model   = localStorage.getItem('tripai_model') || 'gpt-4o';
+let msgs    = [];      // OpenAI message history
+let plan    = null;    // Structured plan JSON
+let tripMeta = JSON.parse(localStorage.getItem('tripai_meta') || '{}');
+let busy    = false;
+let typN    = 0;
+
+const MODELS = ['gpt-4o','gpt-4o-mini','gpt-3.5-turbo'];
+const MLBLS  = {'gpt-4o':'GPT-4o','gpt-4o-mini':'4o mini','gpt-3.5-turbo':'GPT-3.5'};
+
+// Bake in key
+// Key loaded from localStorage (enter via Setup modal)
+
+// ── PRE-LOADED: Italy + Switzerland Trip ──
+(function() {
+  const ITALY_PLAN = {"trip": {"name": "Italy + Switzerland Mar 2026", "emoji": "\ud83c\uddee\ud83c\uddf9", "destination": "Italy & Switzerland", "dates": "Mar 18\u201330, 2026", "people": 2, "budget": "RM 3,660 spent + remaining", "days": 13, "heroSeed": "cinque-terre-coast-italy"}, "days": [{"day": 1, "title": "Arrive Riomaggiore", "subtitle": "Nice \u2192 Cinque Terre \u00b7 Check in Le Giare", "emoji": "\ud83d\ude82", "heroSeed": "riomaggiore-cinque-terre-village", "timeline": [{"time": "Morning", "title": "Train from Nice \u2192 Ventimiglia \u2192 Levanto \u2192 Riomaggiore", "detail": "Scenic coastal route. Arrive Riomaggiore afternoon. 2 large bags \u2014 take the main road up, NOT the stairs.", "type": "transport", "mapQuery": "Riomaggiore Train Station"}, {"time": "15:00", "title": "Check in: Affittacamere Le Giare", "detail": "Via Colombo 71. \u2705 PAID RM819. Key collection from host. Drop bags \u2014 you won't need them until Mar 20 checkout.", "type": "hotel", "mapQuery": "Affittacamere Le Giare Riomaggiore"}, {"time": "16:30", "title": "Walk Via dell'Amore (Love Path)", "detail": "15min coastal path to Manarola \u2014 partially open. Sea views. Best photos at golden hour. Walk back before dark.", "type": "activity", "mapQuery": "Via dell'Amore Riomaggiore"}, {"time": "19:00", "title": "\ud83c\udf77 Dinner: Il Pescato Cucinato", "detail": "Fish & chips Cinque Terre style. Fried anchovies, mixed fish \u20ac10\u201314pp. Queue outside, eat standing. Best value in Riomaggiore.", "type": "food", "mapQuery": "Il Pescato Cucinato Riomaggiore"}, {"time": "21:00", "title": "\ud83c\udf77 Wine at Cantina Riomaggiore", "detail": "Local Sciacchetr\u00e0 wine cooperative. Glass from \u20ac4. Terrace with sea view. Low key, local crowd.", "type": "food", "mapQuery": "Cantina Sociale Riomaggiore"}]}, {"day": 2, "title": "Cinque Terre Explorer", "subtitle": "Monterosso \u00b7 Vernazza \u00b7 Manarola \u00b7 Blue Trail", "emoji": "\ud83c\udf0a", "heroSeed": "vernazza-cinque-terre-harbor", "timeline": [{"time": "08:00", "title": "Cinque Terre Card \u2014 buy at station", "detail": "\u20ac18.50/person for trails + train. Worth it if doing the full day. Train runs every 15\u201320min between villages.", "type": "transport", "mapQuery": "Riomaggiore Train Station"}, {"time": "08:30", "title": "Train to Monterosso al Mare (northernmost)", "detail": "10min train. Start north and work south so wind is behind you. Monterosso has the only actual beach.", "type": "transport", "mapQuery": "Monterosso al Mare"}, {"time": "09:00", "title": "\ud83c\udfd6\ufe0f Monterosso Beach + Old Town", "detail": "Walk old town, grab focaccia from any bakery \u20ac2. Pesto here is the real deal. Limoncino liqueur tasting (free).", "type": "activity", "mapQuery": "Monterosso al Mare old town"}, {"time": "10:30", "title": "\ud83e\udd7e Hike Monterosso \u2192 Vernazza (Blue Trail)", "detail": "90min, moderate difficulty. Most scenic stretch. Rocky but well-marked. Breathtaking views. Bring water.", "type": "activity", "mapQuery": "Sentiero Azzurro Monterosso Vernazza"}, {"time": "12:00", "title": "\ud83c\udf7d\ufe0f Lunch: Vernazza harbour", "detail": "Gambero Rosso restaurant \u2014 seafood pasta \u20ac16\u201322. Or grab focaccia and eat on harbour steps. Best photo: yellow building at harbour mouth.", "type": "food", "mapQuery": "Vernazza harbour Cinque Terre"}, {"time": "14:00", "title": "Train hop: Corniglia \u2192 Manarola", "detail": "Corniglia requires 382-step climb from station \u2014 skip if tired. Manarola is the most photogenic village.", "type": "transport", "mapQuery": "Manarola Cinque Terre"}, {"time": "14:30", "title": "\ud83d\udcf8 Manarola sunset viewpoint", "detail": "The postcard shot of Cinque Terre. Walk 10min above village to the rock promontory. Best light 16:00\u201318:00.", "type": "activity", "mapQuery": "Manarola viewpoint Cinque Terre"}, {"time": "19:30", "title": "\ud83c\udf5d Dinner back in Riomaggiore: Trattoria La Grotta", "detail": "Pasta al pesto genovese \u20ac13, branzino al forno \u20ac18. Book ahead or arrive before 19:30. Local wine \u20ac5/glass.", "type": "food", "mapQuery": "Trattoria La Grotta Riomaggiore"}]}, {"day": 3, "title": "Cinque Terre \u2192 Varenna", "subtitle": "Morning swim \u00b7 IC 666 LGLXHN \u00b7 Lake Como arrival", "emoji": "\ud83d\ude9e", "heroSeed": "varenna-lake-como-village", "timeline": [{"time": "07:00", "title": "Last morning swim in Riomaggiore", "detail": "Small rocky beach below the harbour. Earlybird \u2014 no crowds. Last swim before Alps.", "type": "activity", "mapQuery": "Riomaggiore beach"}, {"time": "09:15", "title": "\u26a0\ufe0f Check out Le Giare + walk to station", "detail": "Bags packed night before. Station is 5min walk on flat road. DO NOT take the stairs with large bags.", "type": "transport", "mapQuery": "Riomaggiore Train Station"}, {"time": "09:55", "title": "\ud83d\ude82 REG 22910: Riomaggiore \u2192 Levanto (25min)", "detail": "Alex: Seat booked. KY: Seat booked. Change at Levanto platform.", "type": "transport", "mapQuery": "Levanto Train Station"}, {"time": "10:40", "title": "\ud83d\ude82 IC 666 (PNR: LGLXHN): Levanto \u2192 Milan Centrale", "detail": "\u2705 BOOKED \u20ac76.80 both pax. Coach 7: Alex 10A, KY 10B. Arrive Milan 13:59. Air-conditioned, reserved seats.", "type": "transport", "mapQuery": "Milano Centrale"}, {"time": "14:20", "title": "\ud83d\ude82 REG 2828 (Trenord): Milan \u2192 Varenna-Esino", "detail": "Trenord ticket 2778108890. Arrive Varenna 15:24. Stand-by seats (regional train, no reservation).", "type": "transport", "mapQuery": "Varenna-Esino Train Station"}, {"time": "15:30", "title": "Check in: Hotel Olivedo Varenna", "detail": "\u2705 PAID RM671. Right on the lakefront, 2min from ferry pier. Drop bags. Walk out and breathe \u2014 Como is spectacular.", "type": "hotel", "mapQuery": "Hotel Olivedo Varenna"}, {"time": "16:30", "title": "\ud83d\udea2 Ferry to Bellagio (30min)", "detail": "\u20ac5.80/person each way. Last ferry back ~20:30. Bellagio: Villa Melzi gardens (\u20ac8), lakefront promenade, gelato.", "type": "activity", "mapQuery": "Varenna Ferry Pier"}, {"time": "19:30", "title": "\ud83c\udf77 Dinner: Varenna lakefront", "detail": "Ristorante Il Caminetto \u2014 risotto al pesce persico (lake perch risotto) \u20ac18, local wine \u20ac6/glass. Book ahead.", "type": "food", "mapQuery": "Ristorante Il Caminetto Varenna"}]}, {"day": 4, "title": "Lake Como \u00b7 Balbianello", "subtitle": "Villa del Balbianello \u00b7 Varenna afternoon \u00b7 Depart Lucerne", "emoji": "\ud83c\udff0", "heroSeed": "villa-balbianello-lake-como", "timeline": [{"time": "08:00", "title": "\u26f4\ufe0f Ferry Varenna \u2192 Menaggio", "detail": "\u20ac5.80pp. Arrive Menaggio. Walk or taxi to Lenno (\u20ac10\u201312). Villa del Balbianello opens 09:00 walk-in (FAI membership required for online booking).", "type": "transport", "mapQuery": "Menaggio ferry pier Lake Como"}, {"time": "09:00", "title": "\ud83c\udfdb\ufe0f Villa del Balbianello", "detail": "\u20ac16 entry. Legendary Star Wars + James Bond filming location. Gardens on a wooded headland. Views are extraordinary. Allow 90min. No bags larger than A4 \u2014 leave large bags at hotel.", "type": "activity", "mapQuery": "Villa del Balbianello Lenno"}, {"time": "10:30", "title": "\u2693 Water taxi back to Varenna", "detail": "~\u20ac10pp direct. Or ferry from Lenno pier. Must be back in Varenna by 12:00 for bags.", "type": "transport", "mapQuery": "Varenna ferry pier"}, {"time": "11:00", "title": "\ud83d\udeb6 Villa Monastero + final Como views", "detail": "\u20ac5 entry, walk-in. Botanical garden on the lake. 30min. Last Como moment.", "type": "activity", "mapQuery": "Villa Monastero Varenna"}, {"time": "12:00", "title": "Collect bags from Hotel Olivedo", "detail": "Checkout, collect bags, walk to station. 5min walk.", "type": "hotel", "mapQuery": "Hotel Olivedo Varenna"}, {"time": "13:35", "title": "\ud83d\ude82 REG 2827: Varenna \u2192 Monza", "detail": "\u2705 BOOKED CHF 144. Alex: 2778119379, KY: 2778119378. Arrive Monza 14:26.", "type": "transport", "mapQuery": "Varenna-Esino Train Station"}, {"time": "14:53", "title": "\ud83d\ude82 RE 25522: Monza \u2192 Chiasso (Platform 4)", "detail": "Cross Swiss border. Arrive Chiasso 15:29.", "type": "transport", "mapQuery": "Monza Train Station"}, {"time": "16:02", "title": "\ud83d\ude82 IC 684: Lugano \u2192 Luzern (Platform 3)", "detail": "Scenic Swiss route through mountains. Arrive Luzern Platform 7 at 17:41.", "type": "transport", "mapQuery": "Lugano Train Station"}, {"time": "17:45", "title": "Check in: ibis Styles Luzern City", "detail": "\u2705 BOOKED RM1,117 (3 nights). Central location. Drop bags. Walk to Chapel Bridge \u2014 10min.", "type": "hotel", "mapQuery": "ibis Styles Luzern City"}, {"time": "19:00", "title": "\ud83c\udf09 Chapel Bridge (Kapellbr\u00fccke) evening walk", "detail": "Free. Europe's oldest wooden covered bridge. Beautiful lit up at night. Rosengart Collection nearby if open.", "type": "activity", "mapQuery": "Kapellbrucke Lucerne"}, {"time": "20:00", "title": "\ud83e\uddc0 Dinner: Rathaus Brauerei Luzern", "detail": "Fondue moiti\u00e9-moiti\u00e9 CHF 28pp, local beer CHF 6. Classic Swiss first-night dinner.", "type": "food", "mapQuery": "Rathaus Brauerei Luzern"}]}, {"day": 5, "title": "Lucerne \u00b7 Mt Titlis", "subtitle": "Engelberg day trip \u00b7 3,000m altitude \u00b7 Ice caves", "emoji": "\ud83c\udfd4\ufe0f", "heroSeed": "mount-titlis-snow-switzerland", "timeline": [{"time": "07:30", "title": "Train Luzern \u2192 Engelberg (45min)", "detail": "CHF 23 each way. Hourly departures. Take 07:30 or 08:00. Buy return at Luzern station.", "type": "transport", "mapQuery": "Luzern Train Station"}, {"time": "08:30", "title": "\ud83c\udfbf Titlis Rotair gondola", "detail": "CHF 97/person return (book online to save 10%). First rotating cable car in the world. Views of endless Alps. Buy at Engelberg cable car station.", "type": "activity", "mapQuery": "Engelberg Titlis Cable Car"}, {"time": "09:30", "title": "\ud83e\uddca Ice cave + Cliff Walk", "detail": "3,041m. Included with gondola. Walk through blue ice cave (eerie and beautiful). Cliff Walk suspension bridge at summit \u2014 500m drop below.", "type": "activity", "mapQuery": "Titlis Cliff Walk Switzerland"}, {"time": "12:00", "title": "\ud83c\udf72 Lunch at summit restaurant", "detail": "Overpriced but you're at 3,000m \u2014 budget CHF 20\u201325pp. R\u00f6sti (Swiss hash brown) is the pick.", "type": "food", "mapQuery": "Titlis Summit Restaurant"}, {"time": "14:00", "title": "Return to Engelberg + village walk", "detail": "Benedictine monastery in the village (free, beautiful). Swiss cheese shop for souvenirs.", "type": "activity", "mapQuery": "Engelberg village Switzerland"}, {"time": "16:00", "title": "Train back to Luzern", "detail": "1hr. Back by 17:00.", "type": "transport", "mapQuery": "Engelberg Train Station"}, {"time": "18:00", "title": "\ud83e\udd81 Lion Monument (L\u00f6wendenkmal)", "detail": "Free. Carved into rock \u2014 most moving piece of stone in the world (Mark Twain). 10min walk from station.", "type": "activity", "mapQuery": "Lion Monument Lucerne"}, {"time": "19:30", "title": "\ud83c\udf7a Dinner: Wirtshaus Taube", "detail": "Z\u00fcrcher Geschnetzeltes (veal in cream sauce) CHF 32, Z\u00fcri-Gschn\u00e4tzlets CHF 28. Quintessential Swiss dinner.", "type": "food", "mapQuery": "Wirtshaus Taube Luzern"}]}, {"day": 6, "title": "Lucerne \u00b7 Interlaken", "subtitle": "Schilthorn \u00b7 M\u00fcrren \u00b7 Grindelwald", "emoji": "\ud83c\udf04", "heroSeed": "interlaken-jungfrau-alps", "timeline": [{"time": "07:06", "title": "\ud83d\ude82 Train Luzern \u2192 Interlaken Ost", "detail": "CHF 30 each way on Swiss Travel Pass or individual tickets. 2hr journey through incredible scenery.", "type": "transport", "mapQuery": "Luzern Train Station"}, {"time": "09:00", "title": "\ud83d\udea1 Schilthorn cable car (Piz Gloria)", "detail": "CHF 104/person return from Stechelberg. James Bond filming location (On Her Majesty's Secret Service). 360\u00b0 Eiger-M\u00f6nch-Jungfrau panorama. Book ahead online.", "type": "activity", "mapQuery": "Schilthorn Piz Gloria Switzerland"}, {"time": "11:00", "title": "\ud83d\udeb6 M\u00fcrren village walk", "detail": "Car-free cliff village. Most beautiful village in Switzerland. Just walk and stare. Lunch at St\u00e4gerst\u00fcbli \u2014 R\u00f6sti CHF 18.", "type": "food", "mapQuery": "Murren village Switzerland"}, {"time": "14:00", "title": "\ud83c\udf32 Grindelwald valley (optional)", "detail": "30min cable car down, train to Grindelwald. Famous Eiger north face views. Grindelwald Terminal for coffee CHF 6.", "type": "activity", "mapQuery": "Grindelwald Switzerland"}, {"time": "17:00", "title": "\ud83d\ude82 Train back to Luzern", "detail": "Via Interlaken Ost. Arrive Luzern ~19:00.", "type": "transport", "mapQuery": "Interlaken Ost Train Station"}, {"time": "20:00", "title": "\ud83e\uddc0 Final Swiss dinner: Old Swiss House", "detail": "Wienerschnitzel CHF 55 (famous, worth it once), Fondue CHF 30. Established 1931. Reserve ahead.", "type": "food", "mapQuery": "Old Swiss House Luzern"}]}, {"day": 7, "title": "Lucerne \u2192 Venice", "subtitle": "Train through Alps \u00b7 Arrive Santa Lucia \u00b7 Canal evening", "emoji": "\ud83d\ude82", "heroSeed": "venice-grand-canal-gondola", "timeline": [{"time": "06:30", "title": "Pack + check out ibis Luzern", "detail": "Checkout by 11:00 but early departure. Store bags at station if needed. Last Swiss breakfast at ibis.", "type": "hotel", "mapQuery": "ibis Styles Luzern City"}, {"time": "08:18", "title": "\ud83d\ude82 Train Luzern \u2192 Venice Santa Lucia", "detail": "\u23f3 BOOK ON SBB.CH. Via Z\u00fcrich or Lugano/Milan. ~7hr journey. Spectacular Gotthard Pass scenery. Reserve seats.", "type": "transport", "mapQuery": "Luzern Train Station"}, {"time": "15:00", "title": "\ud83d\udef6 Arrive Venice Santa Lucia", "detail": "Do NOT take a taxi boat (\u20ac80+). Walk out, turn left, walk along Grand Canal. Vaporetto Line 1 takes you down Canal Grande (\u20ac9.50 single, get 24hr pass \u20ac25).", "type": "transport", "mapQuery": "Venice Santa Lucia Train Station"}, {"time": "15:30", "title": "Check in: Hotel Antiche Figure", "detail": "\u23f3 BOOK NOW on booking.com. Near Santa Lucia station. 5min walk. Perfect base.", "type": "hotel", "mapQuery": "Hotel Antiche Figure Venice"}, {"time": "16:30", "title": "\ud83c\udf0a First Venice walk: Rialto Bridge", "detail": "Free. Walk from station east along canal. Rialto Bridge: best photo at golden hour from Fondamenta del Vin.", "type": "activity", "mapQuery": "Rialto Bridge Venice"}, {"time": "18:00", "title": "\ud83d\udcf8 Golden hour at San Marco Basilica", "detail": "Arrive before 18:00. Free to walk the Piazza. Basilica entry \u20ac3 (book online to skip queue). Campanile tower \u20ac10 for views.", "type": "activity", "mapQuery": "Piazza San Marco Venice"}, {"time": "20:00", "title": "\ud83e\udd9e Dinner: Trattoria alla Madonna", "detail": "Spaghetti alle vongole \u20ac16, fritto misto \u20ac22, house white \u20ac7/glass. Best seafood near Rialto. Book ahead.", "type": "food", "mapQuery": "Trattoria alla Madonna Venice"}]}, {"day": 8, "title": "Venice Full Day", "subtitle": "Murano \u00b7 Burano \u00b7 Doge's Palace \u00b7 Cicchetti evening", "emoji": "\ud83c\uddee\ud83c\uddf9", "heroSeed": "burano-colorful-houses-venice", "timeline": [{"time": "08:00", "title": "\ud83c\udfdd\ufe0f Vaporetto to Murano + Burano", "detail": "Line 12 from Fondamente Nove. Murano: glass blowing factory tour (free). Burano: colourful houses, 45min from Murano. Leave by 13:00 to be back for afternoon.", "type": "activity", "mapQuery": "Murano Venice"}, {"time": "13:30", "title": "\ud83c\udf7d\ufe0f Lunch: cicchetti bar crawl", "detail": "Venice's tapas. Al Marca near Rialto: mozzarella toast \u20ac1.50, baccal\u00e0 mantecato \u20ac2, spritz \u20ac2.50. Eat standing, move between bars.", "type": "food", "mapQuery": "Al Marca Rialto Venice"}, {"time": "15:00", "title": "\ud83c\udfdb\ufe0f Doge's Palace (Palazzo Ducale)", "detail": "\u20ac25pp \u2014 book online. Former centre of Venetian power. Bridge of Sighs. Secret itineraries tour +\u20ac7pp highly recommended (small group, prison and torture chambers).", "type": "activity", "mapQuery": "Palazzo Ducale Venice"}, {"time": "17:30", "title": "\ud83c\udfad Masks + Carnival shop browse", "detail": "Laboratorio Artigiano Maschere \u2014 handmade carnival masks \u20ac25\u2013500. Don't buy cheap tourist ones.", "type": "activity", "mapQuery": "Laboratorio Artigiano Maschere Venice"}, {"time": "19:00", "title": "\ud83d\udea4 Gondola ride at sunset", "detail": "\u20ac80 for 30min (official rate). Non-negotiable. Do it \u2014 it's Venice. Best entry point: near Rialto, avoid San Marco (crowded). Bring \u20ac80 cash exactly.", "type": "activity", "mapQuery": "Gondola Rialto Venice"}, {"time": "20:30", "title": "\ud83c\udf77 Dinner: Osteria Alle Testiere", "detail": "Only 9 tables \u2014 BOOK WEEKS AHEAD. Best seafood restaurant in Venice. Tasting menu \u20ac55pp. If can't get in: Osteria L'Orto dei Mori, Cannaregio.", "type": "food", "mapQuery": "Osteria Alle Testiere Venice"}]}, {"day": 9, "title": "Venice \u2192 Florence", "subtitle": "Frecciarossa 10:26 \u00b7 Uffizi prep \u00b7 Oltrarno evening", "emoji": "\ud83d\ude84", "heroSeed": "florence-duomo-aerial-view", "timeline": [{"time": "09:00", "title": "Last Venice morning: San Polo sestiere", "detail": "Wander away from tourist areas. Scuola Grande di San Rocco (Tintoretto paintings, \u20ac10). Morning market at Campo Santa Margherita.", "type": "activity", "mapQuery": "Campo Santa Margherita Venice"}, {"time": "09:45", "title": "Walk to Santa Lucia station", "detail": "Allow 20min with bags. Check out hotel before leaving.", "type": "transport", "mapQuery": "Venice Santa Lucia Train Station"}, {"time": "10:26", "title": "\ud83d\ude84 Frecciarossa: Venice \u2192 Florence Santa Maria Novella", "detail": "\u23f3 BOOK ON TRENITALIA. 2hr journey. \u20ac40\u201355pp. Reserve seats. Arrive Florence ~12:30.", "type": "transport", "mapQuery": "Venice Santa Lucia Train Station"}, {"time": "12:30", "title": "Check in: Hotel Davanzati Florence", "detail": "\u23f3 BOOK NOW. Near Piazza della Repubblica. Walk to everything. RM~450/night.", "type": "hotel", "mapQuery": "Hotel Davanzati Florence"}, {"time": "14:00", "title": "\ud83c\udfdb\ufe0f Piazza della Signoria + Palazzo Vecchio", "detail": "Free to walk. Replica of David. Neptune Fountain. Heart of Renaissance Florence. Palazzo Vecchio entry \u20ac10.", "type": "activity", "mapQuery": "Piazza della Signoria Florence"}, {"time": "15:00", "title": "\ud83c\udf09 Ponte Vecchio", "detail": "Free. Ancient bridge of jewellery shops. Walk across, cross back via Lungarno for best photo.", "type": "activity", "mapQuery": "Ponte Vecchio Florence"}, {"time": "16:00", "title": "\ud83c\udf66 Gelato: Gelateria dei Neri", "detail": "Best gelato in Florence (locals' pick). Pistachio + Crema di Grana. \u20ac2.50 for one scoop. Avoid tourist shops near Duomo.", "type": "food", "mapQuery": "Gelateria dei Neri Florence"}, {"time": "17:00", "title": "\ud83c\udf06 Piazzale Michelangelo for sunset", "detail": "Walk 20min uphill OR take bus 13. THE view of Florence. Arrive 30min before sunset. Bring wine (buy at any Enoteca).", "type": "activity", "mapQuery": "Piazzale Michelangelo Florence"}, {"time": "20:00", "title": "\ud83c\udf77 Dinner: Oltrarno neighbourhood", "detail": "Buca Mario (oldest restaurant in Florence) \u2014 bistecca Fiorentina \u20ac45/person (1.2kg T-bone for 2), wine \u20ac20. Reserve ahead.", "type": "food", "mapQuery": "Buca Mario Florence"}]}, {"day": 10, "title": "Florence Full Day", "subtitle": "Uffizi Gallery \u00b7 Duomo \u00b7 Accademia \u00b7 Pitti Palace", "emoji": "\ud83c\udfa8", "heroSeed": "uffizi-gallery-florence-art", "timeline": [{"time": "08:00", "title": "\u2615 Breakfast: Caff\u00e8 Rivoire", "detail": "Piazza della Signoria. Best hot chocolate in Florence \u20ac5. Cornetto \u20ac1.50. Touristy but worth it once.", "type": "food", "mapQuery": "Caffe Rivoire Florence"}, {"time": "09:00", "title": "\ud83d\uddbc\ufe0f Uffizi Gallery", "detail": "\u26a0\ufe0f BOOK ON UFFIZI.IT \u2014 sells out weeks ahead! \u20ac20pp + \u20ac4 booking fee. Allow 3hrs. Must-see: Botticelli's Birth of Venus, Primavera. Room 10\u201314: Renaissance masterworks. Get audio guide \u20ac6.", "type": "activity", "mapQuery": "Uffizi Gallery Florence"}, {"time": "12:30", "title": "\ud83e\udd69 Lunch: Lampredotto sandwich at Nerbone", "detail": "Inside Mercato Centrale. \u20ac5 tripe sandwich (lampredotto) \u2014 iconic Florence street food. Don't overthink it, just eat it.", "type": "food", "mapQuery": "Nerbone Mercato Centrale Florence"}, {"time": "14:00", "title": "\u26ea Florence Duomo + Baptistry", "detail": "Duomo exterior free. Cupola climb \u20ac18 (446 steps, BOOK AHEAD). Baptistry doors \u20ac10. The gold doors (Gates of Paradise) are extraordinary up close.", "type": "activity", "mapQuery": "Florence Cathedral Duomo"}, {"time": "16:00", "title": "\ud83d\udc68\u200d\ud83c\udfa8 Accademia Gallery \u2014 Michelangelo's David", "detail": "\u26a0\ufe0f BOOK AHEAD at galleriaaccademiafirenze.it \u20ac16pp. The original David is 5.17m tall. Room is purpose-built \u2014 the scale hits you.", "type": "activity", "mapQuery": "Accademia Gallery Florence"}, {"time": "18:00", "title": "\ud83d\udecd\ufe0f Leather + gifts shopping", "detail": "San Lorenzo Market: leather belts \u20ac25\u201340, wallets \u20ac30\u201350. Scuola del Cuoio (leather school inside convent) for quality. Procacci for truffle paste \u20ac8.", "type": "activity", "mapQuery": "Mercato San Lorenzo Florence"}, {"time": "20:00", "title": "\ud83e\udd69 Dinner: Trattoria Mario", "detail": "No-reservation, communal tables since 1953. Ribollita \u20ac8, pappardelle al cinghiale \u20ac11, house wine carafe \u20ac6. Cash only. Queue by 19:45.", "type": "food", "mapQuery": "Trattoria Mario Florence"}]}, {"day": 11, "title": "Florence \u2192 Rome", "subtitle": "Train south \u00b7 Trastevere arrive \u00b7 Colosseum prep", "emoji": "\ud83c\udfdb\ufe0f", "heroSeed": "rome-colosseum-sunset", "timeline": [{"time": "09:00", "title": "\u2615 Last Florence breakfast", "detail": "Bar Caffe in Piazza Santa Croce. One last cornetto. Walk past Santa Croce basilica (Michelangelo's tomb inside, free).", "type": "food", "mapQuery": "Piazza Santa Croce Florence"}, {"time": "10:30", "title": "\ud83d\ude84 Frecciarossa: Florence \u2192 Roma Termini", "detail": "\u23f3 BOOK TRENITALIA. 1hr 30min. \u20ac30\u201345pp. Fastest train in Italy.", "type": "transport", "mapQuery": "Florence Santa Maria Novella Train Station"}, {"time": "12:30", "title": "Check in: Hotel Artemide Rome", "detail": "\u23f3 BOOK NOW. Via Nazionale \u2014 central location, 10min walk to Colosseum, 15min to Trevi. RM~480/night.", "type": "hotel", "mapQuery": "Hotel Artemide Rome Via Nazionale"}, {"time": "14:00", "title": "\ud83d\udd4d Trastevere neighbourhood walk", "detail": "Most authentic neighbourhood in Rome. Cobblestones, laundry lines, cats on steps. Piazza di Santa Maria in Trastevere. Just wander.", "type": "activity", "mapQuery": "Trastevere Rome"}, {"time": "16:00", "title": "\u26f2 Trevi Fountain + Spanish Steps", "detail": "Trevi: go at 14:00 or 20:00+ to avoid worst crowds. Throw coin with right hand over left shoulder. Spanish Steps: free, sunset views.", "type": "activity", "mapQuery": "Trevi Fountain Rome"}, {"time": "18:30", "title": "\ud83c\udf55 Pizza at Tonnarello Trastevere", "detail": "Pizza al taglio (by the slice) \u20ac2\u20133. Cacio e pepe \u20ac12, amatriciana \u20ac13. Roman classics done right.", "type": "food", "mapQuery": "Tonnarello Trastevere Rome"}, {"time": "20:30", "title": "\ud83c\udf19 Piazza Navona evening walk", "detail": "Free. Bernini's Fountain of the Four Rivers. Lit up at night. Street artists. Ice cream from one of the bars.", "type": "activity", "mapQuery": "Piazza Navona Rome"}]}, {"day": 12, "title": "Rome Full Day", "subtitle": "Colosseum \u00b7 Roman Forum \u00b7 Vatican \u00b7 Pantheon", "emoji": "\ud83c\udfdf\ufe0f", "heroSeed": "rome-roman-forum-ruins", "timeline": [{"time": "08:00", "title": "\ud83c\udfdf\ufe0f Colosseum \u2014 first entry slot", "detail": "\u26a0\ufe0f BOOK COOPCULTURE.IT \u2014 sells out! \u20ac18pp + combo with Forum. Book 8:00 slot to beat crowds. Allow 1.5hrs inside. Hypogeum tour +\u20ac9 (underground passages) \u2014 worth it.", "type": "activity", "mapQuery": "Colosseum Rome"}, {"time": "10:00", "title": "\ud83c\udfdb\ufe0f Roman Forum + Palatine Hill", "detail": "Included in Colosseum combo ticket. Walk the Via Sacra \u2014 Caesar was assassinated here. Palatine Hill has best views over the Forum.", "type": "activity", "mapQuery": "Roman Forum Rome"}, {"time": "12:30", "title": "\ud83c\udf5d Lunch: Da Enzo al 29 Trastevere", "detail": "Cacio e pepe \u20ac12 (the best in Rome), coda alla vaccinara \u20ac14. Book ahead \u2014 tiny, always full. 20min walk or taxi \u20ac8.", "type": "food", "mapQuery": "Da Enzo al 29 Trastevere Rome"}, {"time": "14:30", "title": "\u26ea Vatican Museums + Sistine Chapel", "detail": "\u26a0\ufe0f BOOK AHEAD on museivaticani.va \u20ac20pp. Allow 3hrs minimum. Skip the line is essential \u2014 2hr wait otherwise. Sistine Chapel: Michelangelo ceiling. St Peter's Basilica free after.", "type": "activity", "mapQuery": "Vatican Museums Rome"}, {"time": "18:00", "title": "\ud83c\udf05 St Peter's Square + Castel Sant'Angelo", "detail": "St Peter's: free, extraordinary. Castel Sant'Angelo: \u20ac15, river views at sunset. Bridge of Angels is beautiful.", "type": "activity", "mapQuery": "St Peter's Square Vatican"}, {"time": "20:30", "title": "\ud83e\udd69 Final Italian dinner: La Campana", "detail": "Rome's oldest restaurant (1518). Carciofi alla Romana \u20ac10, saltimbocca \u20ac18, tiramisu \u20ac7. Romantic setting. Book ahead.", "type": "food", "mapQuery": "La Campana Rome"}]}, {"day": 13, "title": "Rome \u2192 Fly Home", "subtitle": "FCO 12:00+ \u00b7 PEN via Istanbul/KUL", "emoji": "\u2708\ufe0f", "heroSeed": "rome-fiumicino-airport", "timeline": [{"time": "08:00", "title": "\u2615 Last espresso in Rome", "detail": "Bar San Calisto in Trastevere. Standing at the counter \u2014 the only way to drink espresso in Rome. \u20ac1. Do it right.", "type": "food", "mapQuery": "Bar San Calisto Trastevere Rome"}, {"time": "09:00", "title": "\ud83d\uded2 Last shopping: Campo de' Fiori market", "detail": "Open until 14:00. Buy: dried pasta \u20ac2\u20135, Amatriciana sauce jar \u20ac4, limoncello \u20ac8, truffle pasta \u20ac6. Best food souvenirs.", "type": "activity", "mapQuery": "Campo de Fiori Rome"}, {"time": "10:00", "title": "Leonardo Express: Roma Termini \u2192 FCO", "detail": "\u20ac14pp, 30min, departs every 15min from Termini Platform 23/24. DO NOT take any other train \u2014 takes 1.5hrs.", "type": "transport", "mapQuery": "Roma Termini Station"}, {"time": "11:00", "title": "\u2708\ufe0f Check in FCO \u2014 Terminal 3", "detail": "\u23f3 BOOK FCO \u2192 PEN flight. Turkish Airlines (est RM1,600\u20132,200pp) or Qatar. Allow 2.5hr before departure.", "type": "transport", "mapQuery": "Fiumicino Airport Rome FCO"}, {"time": "12:00+", "title": "Fly FCO \u2192 Penang (via Istanbul or KUL)", "detail": "~16\u201320hr journey home. Turkish Airlines: FCO \u2192 IST \u2192 KUL \u2192 PEN. Qatar: FCO \u2192 DOH \u2192 KUL \u2192 PEN. \u26a0\ufe0f NO Gulf airports if possible.", "type": "transport", "mapQuery": "Fiumicino Airport FCO"}]}], "hotels": [{"city": "Riomaggiore", "name": "Affittacamere Le Giare", "nights": 2, "price": "RM 819 \u2705 PAID", "tier": "mid", "note": "Via Colombo 71 \u00b7 Steps from station", "bookUrl": "https://www.booking.com", "heroSeed": "riomaggiore-cinque-terre"}, {"city": "Varenna (Lake Como)", "name": "Hotel Olivedo", "nights": 1, "price": "RM 671 \u2705 PAID", "tier": "mid", "note": "Lakefront \u00b7 2min to ferry", "bookUrl": "https://www.booking.com", "heroSeed": "varenna-lake-como"}, {"city": "Lucerne", "name": "ibis Styles Luzern City", "nights": 3, "price": "RM 1,117 \u2705 PAID", "tier": "budget", "note": "Central \u00b7 10min to Chapel Bridge", "bookUrl": "https://www.booking.com", "heroSeed": "lucerne-chapel-bridge"}, {"city": "Venice", "name": "Hotel Antiche Figure", "nights": 2, "price": "~RM 900 \u23f3 BOOK NOW", "tier": "mid", "note": "Near Santa Lucia station \u00b7 Canal views", "bookUrl": "https://www.booking.com/hotel/it/antiche-figure.html", "heroSeed": "venice-canal-hotel"}, {"city": "Florence", "name": "Hotel Davanzati", "nights": 2, "price": "~RM 900 \u23f3 BOOK NOW", "tier": "mid", "note": "Near Duomo \u00b7 Via Porta Rossa", "bookUrl": "https://www.booking.com/hotel/it/davanzati.html", "heroSeed": "florence-hotel-historic"}, {"city": "Rome", "name": "Hotel Artemide", "nights": 2, "price": "~RM 960 \u23f3 BOOK NOW", "tier": "mid", "note": "Via Nazionale \u00b7 Central location", "bookUrl": "https://www.booking.com/hotel/it/artemide.html", "heroSeed": "rome-hotel-via-nazionale"}], "budget": [{"label": "Riomaggiore hotel (2 nights)", "amount": "RM 819", "icon": "\ud83c\udfe0", "note": "Le Giare \u2705 Paid", "pct": 22}, {"label": "Varenna hotel (1 night)", "amount": "RM 671", "icon": "\ud83c\udfe8", "note": "Hotel Olivedo \u2705 Paid", "pct": 18}, {"label": "Lucerne hotel (3 nights)", "amount": "RM 1,117", "icon": "\ud83c\udfe8", "note": "ibis Luzern \u2705 Paid", "pct": 30}, {"label": "Riomaggiore\u2192Varenna trains", "amount": "\u20ac76.80 (~RM 376)", "icon": "\ud83d\ude82", "note": "IC 666 PNR LGLXHN \u2705 Paid", "pct": 10}, {"label": "Varenna\u2192Luzern trains", "amount": "CHF 144 (~RM 677)", "icon": "\ud83d\ude82", "note": "IC 684 \u2705 Paid", "pct": 18}, {"label": "Venice hotel (2 nights)", "amount": "~RM 900", "icon": "\ud83c\udfe8", "note": "\u23f3 Book on booking.com", "pct": 24}, {"label": "Florence hotel (2 nights)", "amount": "~RM 900", "icon": "\ud83c\udfe8", "note": "\u23f3 Book on booking.com", "pct": 24}, {"label": "Rome hotel (2 nights)", "amount": "~RM 960", "icon": "\ud83c\udfe8", "note": "\u23f3 Book on booking.com", "pct": 26}, {"label": "Venice\u2192Florence + Rome trains", "amount": "~RM 500", "icon": "\ud83d\ude84", "note": "\u23f3 Book on Trenitalia", "pct": 14}, {"label": "FCO \u2192 Penang flight", "amount": "~RM 1,800", "icon": "\u2708\ufe0f", "note": "\u23f3 Turkish Airlines", "pct": 48}], "tips": [{"category": "Italian Trains", "icon": "\ud83d\ude82", "items": ["Trenitalia app for Frecciarossa \u2014 book at least 3 days ahead", "Regional trains (REG): no reservation needed, just buy and board", "Validate regional tickets BEFORE boarding or \u20ac50 fine", "First class often only \u20ac10 more on Frecce \u2014 worth it for long journeys"]}, {"category": "Swiss Tips", "icon": "\ud83c\udde8\ud83c\udded", "items": ["Everything costs 2x Italy \u2014 budget CHF 80-100/day on top of transport", "Swiss Travel Pass only worth it for 4+ days of travel", "Supermarkets (Migros/Coop) for cheap lunches \u2014 \u20ac8 sandwich vs CHF 25 restaurant", "Tap water is safe and delicious everywhere in Switzerland"]}, {"category": "Venice Survival", "icon": "\ud83d\udea4", "items": ["Vaporetto (water bus) is your metro \u2014 buy 24hr pass \u20ac25", "Never take a water taxi without agreeing price FIRST (official rate \u20ac80+)", "Avoid eating anywhere with photos on the menu \u2014 tourist trap", "Book Doge's Palace and gondola online to avoid queues", "Get lost on purpose \u2014 best Venice moments are away from San Marco"]}, {"category": "Florence Must-Know", "icon": "\ud83c\udfa8", "items": ["Uffizi and Accademia MUST be booked weeks ahead \u2014 no walk-in in season", "Duomo cupola: 446 steps, no lift \u2014 worth every step for the view", "Bistecca Fiorentina: minimum 800g T-bone, always rare (al sangue) \u2014 don't ask for well-done", "Gelato test: real gelato is stored in metal containers with lids, not piled high"]}, {"category": "Rome Rules", "icon": "\ud83c\udfdb\ufe0f", "items": ["Colosseum: book first slot (8am) and buy Hypogeum add-on", "Vatican: book 2-3 weeks ahead in March \u2014 very busy", "Dress code enforced at Vatican and major churches \u2014 cover shoulders/knees", "Espresso standing at the bar: \u20ac1. Sitting at a table: \u20ac3-5. Always stand.", "Avoid eating within 100m of any major monument \u2014 60% price markup"]}], "urgent": [{"label": "Lucerne \u2192 Venice train (Mar 24)", "note": "Book on sbb.ch \u2014 sells out", "url": "https://www.sbb.ch"}, {"label": "Hotel Antiche Figure Venice", "note": "Mar 24-26 \u2014 limited availability", "url": "https://www.booking.com/hotel/it/antiche-figure.html"}, {"label": "Venice \u2192 Florence Frecciarossa", "note": "Book on trenitalia.com", "url": "https://www.trenitalia.com"}, {"label": "Hotel Davanzati Florence", "note": "Mar 26-28 \u2014 book now", "url": "https://www.booking.com"}, {"label": "Hotel Artemide Rome", "note": "Mar 28-30 \u2014 book now", "url": "https://www.booking.com"}, {"label": "Uffizi Gallery tickets (Mar 27)", "note": "Sells out weeks ahead!", "url": "https://www.uffizi.it/en/tickets"}, {"label": "Colosseum tickets (Mar 29)", "note": "Book on coopculture.it", "url": "https://www.coopculture.it"}, {"label": "FCO \u2192 Penang flight (Mar 30)", "note": "Turkish Airlines ~RM1,800pp", "url": "https://www.turkishairlines.com"}]};
+  // Pre-fill localStorage so it loads on start
+  localStorage.setItem('tripai_meta', JSON.stringify(ITALY_PLAN.trip));
+  localStorage.setItem('tripai_plan', JSON.stringify(ITALY_PLAN));
+  // Trigger population after DOM ready
+  window._preloadPlan = ITALY_PLAN;
+})();
+
+
+const SYSTEM = `You are an expert AI travel planner. Build complete, highly detailed itineraries.
+
+FORMAT RULES (follow exactly):
+- Start with a brief overview paragraph
+- Use ## Day N — Title format for each day
+- Each day: hour-by-hour timeline with HH:MM times
+- Include: specific restaurant names + dishes + prices, transport details + journey times + costs, attraction names + entry prices + tips, hotel area recommendation
+- Use **bold** for key info (prices, times, names)
+- End with a ## Budget Breakdown table
+- Be specific — no vague suggestions, no "you could visit..."
+- Include local phrases where relevant
+- Flag things to book in advance with ⚠️
+
+Write like a friend who's been there 5 times, not a guidebook.`;
+
+const EXTRACT_PROMPT = `Based on the travel plan above, extract ALL information into this EXACT JSON structure. Output ONLY valid JSON, no markdown, no explanation:
+
+{
+  "trip": {
+    "name": "trip name e.g. Tokyo 7 Days",
+    "emoji": "single destination emoji",
+    "destination": "city/country name",
+    "dates": "date range string",
+    "people": number_of_people,
+    "budget": "budget per person with currency",
+    "days": total_number_of_days,
+    "heroSeed": "destination name for image e.g. tokyo-skyline"
+  },
+  "days": [
+    {
+      "day": 1,
+      "title": "Day title",
+      "subtitle": "brief subtitle e.g. Arrive → Shinjuku · First Night",
+      "emoji": "relevant emoji",
+      "heroSeed": "e.g. tokyo-shibuya-crossing",
+      "timeline": [
+        {
+          "time": "HH:MM or descriptor like 'Morning'",
+          "title": "Activity/meal/transport title",
+          "detail": "Full detail including prices, tips, specific names",
+          "type": "activity|food|transport|hotel|tip",
+          "mapQuery": "Google Maps search query for this place",
+          "link": ""
+        }
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "city": "city name",
+      "name": "hotel/airbnb name",
+      "nights": number,
+      "price": "price with currency",
+      "tier": "budget|mid|splurge",
+      "note": "why this hotel",
+      "bookUrl": "booking.com or airbnb search URL",
+      "heroSeed": "hotel-city-name"
+    }
+  ],
+  "budget": [
+    {
+      "label": "item label",
+      "amount": "amount with currency",
+      "icon": "emoji",
+      "note": "optional note",
+      "pct": percentage_of_total_0_to_100
+    }
+  ],
+  "tips": [
+    {
+      "category": "category name",
+      "icon": "emoji",
+      "items": ["tip 1", "tip 2", "tip 3"]
+    }
+  ],
+  "urgent": [
+    {
+      "label": "what to book",
+      "note": "why urgent / deadline",
+      "url": "booking URL"
+    }
+  ]
+}`;
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+window.onload = () => {
+  setTimeout(() => document.getElementById('splash').classList.add('gone'), 1400);
+  document.getElementById('firstMsgTime').textContent = fmtTime(new Date());
+  updateStatus();
+  restoreMeta();
+  loadFromHash();
+  if (window._preloadPlan) { plan = window._preloadPlan; tripMeta = window._preloadPlan.trip; populateDashboard(plan); restoreMeta(); }
+
+  const inp = document.getElementById('msgInput');
+  inp.addEventListener('input', () => {
+    document.getElementById('sendBtn').disabled = !inp.value.trim() || !apiKey;
+  });
+
+  // Swipe between tabs
+  const TABS = ['plan','trip','days','hotels','budget','tips'];
+  let tx = 0;
+  document.getElementById('app').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+  document.getElementById('app').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) < 55) return;
+    const cur = document.querySelector('.nav-btn.active')?.id?.replace('nav-','');
+    const i = TABS.indexOf(cur);
+    if (dx < 0 && i < TABS.length-1) switchTab(TABS[i+1]);
+    if (dx > 0 && i > 0) switchTab(TABS[i-1]);
+  }, {passive:true});
+};
+
+// ══════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+//  API KEY
+// ══════════════════════════════════════════════════════
+function openApiModal() {
+  document.getElementById('apiKeyInput').value = apiKey;
+  document.getElementById('apiModal').classList.add('open');
+  setTimeout(() => document.getElementById('apiKeyInput').focus(), 350);
+}
+function closeApiModal() { closeModal('apiModal'); }
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k.startsWith('sk-')) { alert('Enter a valid OpenAI API key (starts with sk-)'); return; }
+  apiKey = k; localStorage.setItem('tripai_key', k);
+  updateStatus(); closeModal('apiModal');
+  document.getElementById('sendBtn').disabled = !document.getElementById('msgInput').value.trim();
+}
+function updateStatus() {
+  const pill = document.getElementById('apiPill');
+  const dot  = document.getElementById('statusDot');
+  const lbl  = document.getElementById('modelLbl');
+  if (apiKey) {
+    pill.textContent = '✅ Connected'; pill.className = 'api-pill ok';
+    dot.classList.remove('off');
+    lbl.textContent = MLBLS[model] || model;
+  } else {
+    pill.textContent = '🔑 Setup'; pill.className = 'api-pill';
+    dot.classList.add('off');
+    lbl.textContent = 'No API key';
+  }
+}
+function cycleModel() {
+  if (!apiKey) { openApiModal(); return; }
+  model = MODELS[(MODELS.indexOf(model)+1) % MODELS.length];
+  localStorage.setItem('tripai_model', model);
+  document.getElementById('modelLbl').textContent = MLBLS[model] || model;
+}
+
+// ══════════════════════════════════════════════════════
+//  CHAT
+// ══════════════════════════════════════════════════════
+function fmtTime(d) { return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}); }
+function handleKey(e) { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); send(); } }
+function autoGrow(el) {
+  el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px';
+  document.getElementById('sendBtn').disabled = !el.value.trim() || !apiKey;
+}
+function scrollBot() { const c=document.getElementById('chatMsgs'); c.scrollTop=c.scrollHeight; }
+
+function qs(el) {
+  const prompts = {
+    '🗾 Tokyo 7 days':'Plan me 7 days in Tokyo for 2 people in April. Budget RM4,000/person all-in. We love street food, unique local experiences, photography, and efficient travel. No tourist traps.',
+    '🇮🇹 Italy 10 days':'Plan 10 days in Italy for 2 people covering the best highlights. Budget RM5,000/person. Mix of history, great food, and scenery. We prefer trains between cities.',
+    '🇯🇵 Japan budget 2 weeks':'Plan 2 weeks in Japan on a budget for 2 people — under RM3,500/person total. Cover Tokyo, Kyoto, Osaka. How to see the most for least.',
+    '🇫🇷 Paris romantic 5 days':'Plan 5 romantic days in Paris for a couple. Budget RM7,000/person. Mix iconic spots with hidden gems. Best areas to stay, top restaurants.',
+    '🇨🇭 Switzerland by train':'Plan a 7-day Switzerland rail trip for 2. Budget CHF 300/day total. Best scenic routes, which rail passes to buy, best bases.',
+    '🌏 SEA 2 weeks':'Plan 2 weeks across Southeast Asia for 2 people. Budget RM3,000/person all-in. 2-3 countries max. Beach, food, low-key culture.',
+    '🇰🇷 Seoul 5 days':'Plan 5 days in Seoul for 2 people. Budget RM3,500/person. K-food deep dive, culture, shopping, day trips. What not to miss.',
+    '🇬🇧 London + Edinburgh':'Plan 8 days covering London and Edinburgh for 2 people. Budget GBP 150/day. Best areas to stay, must-do experiences, how to travel between cities.'
+  };
+  const txt = prompts[el.textContent] || el.textContent;
+  document.getElementById('msgInput').value = txt;
+  autoGrow(document.getElementById('msgInput'));
+  if (apiKey) send(); else openApiModal();
+}
+
+function clearChat() {
+  msgs = [];
+  document.getElementById('chatMsgs').innerHTML = `
+    <div class="intro-card"><div class="intro-emoji">🌍</div><div class="intro-title">Ready for a new trip</div><div class="intro-text">Tell me your destination, dates, budget and travel style.</div></div>
+    <div class="msg ai"><div class="ai-ava">✈️</div><div class="bubble"><p>Chat cleared. Where are we going? 🌍</p></div><div class="msg-time">${fmtTime(new Date())}</div></div>`;
+}
+
+function addMsg(role, text, streaming=false) {
+  const box = document.getElementById('chatMsgs');
+  const el  = document.createElement('div');
+  el.className = 'msg '+role;
+  if (role === 'ai') {
+    el.innerHTML = `<div class="ai-ava">✈️</div><div class="bubble">${streaming?'':md(text)}</div><div class="msg-time">${streaming?'':fmtTime(new Date())}</div>`;
+  } else {
+    el.innerHTML = `<div class="bubble">${esc(text)}</div><div class="msg-time">${fmtTime(new Date())}</div>`;
+  }
+  box.appendChild(el); scrollBot(); return el;
+}
+
+function showTyping() {
+  const id = 'ty'+typN++;
+  const box = document.getElementById('chatMsgs');
+  const el  = document.createElement('div');
+  el.className='msg ai'; el.id=id;
+  el.innerHTML=`<div class="ai-ava">✈️</div><div class="typing-ind"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  box.appendChild(el); scrollBot(); return id;
+}
+function removeTyping(id) { document.getElementById(id)?.remove(); }
+
+async function send() {
+  if (busy || !apiKey) return;
+  const inp = document.getElementById('msgInput');
+  const txt = inp.value.trim(); if (!txt) return;
+  inp.value=''; inp.style.height='auto';
+  document.getElementById('sendBtn').disabled=true;
+
+  addMsg('user', txt);
+  msgs.push({role:'user',content:txt});
+  const tid = showTyping();
+  busy = true;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+      body:JSON.stringify({model,messages:[{role:'system',content:SYSTEM},...msgs],stream:true,temperature:.7,max_tokens:3000})
+    });
+    if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||'API error '+res.status); }
+
+    removeTyping(tid);
+    const aiEl = addMsg('ai','',true);
+    const bub  = aiEl.querySelector('.bubble');
+    let full   = '';
+
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    while(true) {
+      const {done,value} = await reader.read(); if (done) break;
+      for (const line of dec.decode(value).split('\n').filter(l=>l.startsWith('data: '))) {
+        const d = line.slice(6); if (d==='[DONE]') continue;
+        try { const p=JSON.parse(d); full+=p.choices?.[0]?.delta?.content||''; bub.innerHTML=md(full)+'<span style="animation:tdB 1s infinite;display:inline-block;margin-left:2px">▌</span>'; scrollBot(); } catch{}
+      }
+    }
+    bub.innerHTML = md(full);
+    aiEl.querySelector('.msg-time').textContent = fmtTime(new Date());
+    msgs.push({role:'assistant',content:full});
+    scrollBot();
+
+    // Auto-extract and populate dashboard
+    await extractAndBuild(txt, full);
+
+  } catch(err) {
+    removeTyping(tid);
+    const m = err.message.includes('401')?'Invalid API key — tap Setup to fix':
+              err.message.includes('429')?'Rate limit — wait a moment and try again':
+              err.message.includes('quota')?'OpenAI quota exceeded — check billing':'Error: '+err.message;
+    addMsg('ai','⚠️ '+m);
+  } finally {
+    busy = false;
+    document.getElementById('sendBtn').disabled=!document.getElementById('msgInput').value.trim();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  EXTRACTION + DASHBOARD BUILD
+// ══════════════════════════════════════════════════════
+async function extractAndBuild(userMsg, aiPlan) {
+  // Show building banner in chat
+  const box    = document.getElementById('chatMsgs');
+  const banner = document.createElement('div');
+  banner.className = 'msg ai';
+  banner.innerHTML = `<div class="ai-ava">✈️</div><div class="building-banner"><div class="building-spinner"></div><span>Building your dashboard…</span></div>`;
+  box.appendChild(banner); scrollBot();
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+      body:JSON.stringify({
+        model:'gpt-4o-mini', // fast + cheap for extraction
+        messages:[
+          {role:'user',content:`Here is a travel plan:\n\n${aiPlan}\n\nOriginal request: ${userMsg}\n\n${EXTRACT_PROMPT}`}
+        ],
+        temperature:0,max_tokens:4000
+      })
+    });
+
+    if (!res.ok) throw new Error('Extraction failed');
+    const data  = await res.json();
+    let jsonStr = data.choices?.[0]?.message?.content || '';
+    // Strip markdown code fences if present
+    jsonStr = jsonStr.replace(/^```(?:json)?\n?/,'').replace(/\n?```$/,'').trim();
+    plan = JSON.parse(jsonStr);
+
+    banner.remove();
+    populateDashboard(plan);
+
+    // Show success message
+    const successEl = addMsg('ai','');
+    successEl.querySelector('.bubble').innerHTML = `<p>✅ <strong>Dashboard ready!</strong> Your full trip has been built:</p><ul><li>📅 ${plan.days?.length || 0} day plans with hour-by-hour timelines</li><li>🏨 ${plan.hotels?.length || 0} hotel recommendations</li><li>💰 Complete budget breakdown</li><li>💡 Destination-specific tips</li></ul><p>Swipe or tap the tabs to explore your trip →</p>`;
+    successEl.querySelector('.msg-time').textContent = fmtTime(new Date());
+
+    // Notify badge on trip tab
+    document.getElementById('nav-trip').querySelector('.ni').textContent = '🗺️';
+
+  } catch(e) {
+    banner.innerHTML = `<div class="ai-ava">✈️</div><div class="bubble"><p>⚠️ Couldn't auto-build dashboard — but your plan is in the chat above. Try asking a follow-up question.</p></div>`;
+    console.error('Extract failed:', e);
+  }
+}
+
+function populateDashboard(p) {
+  if (!p) return;
+
+  // ── META ──
+  if (p.trip) {
+    const t = p.trip;
+    tripMeta = {...tripMeta, ...t};
+    localStorage.setItem('tripai_meta', JSON.stringify(tripMeta));
+    document.getElementById('tripEmoji').textContent = t.emoji || '🌍';
+    document.getElementById('tripName').textContent  = t.name  || 'My Trip';
+    document.getElementById('tripDates').textContent = [t.dates, t.people && t.people+' people'].filter(Boolean).join(' · ');
+    if (t.days)    document.getElementById('statDays').textContent   = t.days;
+    if (t.people)  document.getElementById('statPeople').textContent = t.people;
+    if (t.budget)  document.getElementById('statBudget').textContent = t.budget.replace(/per person.*/i,'').trim();
+    // Hero image
+    if (t.heroSeed) {
+      document.getElementById('tripHero').style.backgroundImage = `url('https://picsum.photos/seed/${t.heroSeed}/900/500')`;
+      document.getElementById('tripHero').style.backgroundSize  = 'cover';
+      document.getElementById('tripHero').style.backgroundPosition='center';
+    }
+  }
+
+  // ── DAYS ──
+  if (p.days && p.days.length > 0) {
+    const scroll = document.getElementById('daysScroll');
+    document.getElementById('daysEmpty')?.remove();
+    scroll.innerHTML = '';
+
+    p.days.forEach((d,i) => {
+      const card = document.createElement('div');
+      card.className = 'day-card';
+      card.id = 'dc-'+i;
+      const imgUrl = `https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')}/900/220`;
+      const tls = (d.timeline||[]).map(tl => {
+        const mapLink = tl.mapQuery ? `<a class="tl-link" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank">📍 Map</a>` : '';
+        const typeClass = tl.type||'activity';
+        const typeLabel = {activity:'🎯 Activity',food:'🍴 Food',transport:'🚆 Transport',hotel:'🏨 Hotel',tip:'💡 Tip'}[typeClass]||'🎯 Activity';
+        return `<div class="tl-item">
+          <div class="tl-time">${esc(tl.time||'')}</div>
+          <div class="tl-main">
+            <div class="tl-title">${esc(tl.title||'')}</div>
+            ${tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:''}
+            <span class="tl-type ${typeClass}">${typeLabel}</span>
+            ${mapLink}
+          </div>
+        </div>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="day-card-hero" style="background-image:url('${imgUrl}')">
+          <div class="day-card-hero-overlay"></div>
+          <div class="day-card-hero-info">
+            <div><div class="day-card-title">${d.emoji||'📅'} ${esc(d.title||'Day '+d.day)}</div><div class="day-card-sub">${esc(d.subtitle||'')}</div></div>
+            <button class="day-card-toggle" onclick="toggleDay(${i})">▾</button>
+          </div>
+          <div class="day-card-badge">Day ${d.day}</div>
+        </div>
+        <div class="day-card-body">${tls||'<div style="padding:12px;color:var(--muted);font-size:13px">No timeline data</div>'}</div>`;
+      scroll.appendChild(card);
+    });
+
+    // Itin list in Overview
+    document.getElementById('itinList').innerHTML = p.days.map((d,i) => `
+      <div class="itin-item" onclick="switchTab('days');toggleDay(${i})">
+        <div class="day-badge">Day ${d.day}</div>
+        <div class="itin-info"><div class="itin-title">${d.emoji||'📅'} ${esc(d.title||'Day '+d.day)}</div><div class="itin-sub">${esc(d.subtitle||'')}</div></div>
+        <div class="itin-arr">›</div>
+      </div>`).join('');
+  }
+
+  // ── HOTELS ──
+  if (p.hotels && p.hotels.length > 0) {
+    const scroll = document.getElementById('hotelsScroll');
+    document.getElementById('hotelsEmpty')?.remove();
+    scroll.innerHTML = '';
+    p.hotels.forEach(h => {
+      const card = document.createElement('div');
+      card.className = 'hotel-card';
+      const imgUrl = `https://picsum.photos/seed/${h.heroSeed||h.city}/900/240`;
+      card.innerHTML = `
+        <div class="hotel-card-img" style="background-image:url('${imgUrl}')">
+          <div class="hotel-card-img-overlay"></div>
+          <div class="hotel-card-city">${esc(h.city||'')}</div>
+        </div>
+        <div class="hotel-card-body">
+          <div class="hotel-name">${esc(h.name||'')}</div>
+          <div class="hotel-meta">
+            ${h.nights?`<span class="hotel-tag">${h.nights} nights</span>`:''}
+            ${h.tier?`<span class="hotel-tag tier-${h.tier}">${h.tier.charAt(0).toUpperCase()+h.tier.slice(1)}</span>`:''}
+            ${h.note?`<span class="hotel-tag">${esc(h.note)}</span>`:''}
+          </div>
+          <div class="hotel-price">${esc(h.price||'')}</div>
+          ${h.bookUrl?`<a class="hotel-book-btn" href="${h.bookUrl}" target="_blank">Book Now →</a>`:''}
+        </div>`;
+      scroll.appendChild(card);
+    });
+  }
+
+  // ── BUDGET ──
+  if (p.budget && p.budget.length > 0) {
+    const scroll = document.getElementById('budgetScroll');
+    document.getElementById('budgetEmpty')?.remove();
+    const total  = (p.trip?.budget||'').replace(/per person.*/i,'').trim();
+    scroll.innerHTML = `
+      <div class="budget-total-card">
+        <div class="budget-total-lbl">Total per person</div>
+        <div class="budget-total-num">${esc(total||'—')}</div>
+        <div class="budget-total-sub">${p.trip?.days||''} days · ${p.trip?.destination||''}</div>
+      </div>`;
+    p.budget.forEach(b => {
+      const pct = Math.min(b.pct||30,100);
+      const item = document.createElement('div');
+      item.className='budget-item';
+      item.innerHTML=`
+        <div class="budget-item-icon">${b.icon||'💰'}</div>
+        <div class="budget-item-info">
+          <div class="budget-item-label">${esc(b.label||'')}</div>
+          ${b.note?`<div class="budget-item-note">${esc(b.note)}</div>`:''}
+          <div class="budget-bar-wrap"><div class="budget-bar" style="width:${pct}%"></div></div>
+        </div>
+        <div class="budget-item-amount">${esc(b.amount||'')}</div>`;
+      scroll.appendChild(item);
+    });
+  }
+
+  // ── TIPS ──
+  if (p.tips && p.tips.length > 0) {
+    const destTips = document.getElementById('destTips');
+    destTips.innerHTML = p.tips.map(t => `
+      <div class="tip-section">
+        <div class="tip-section-hdr"><span class="tip-section-icon">${t.icon||'💡'}</span><span class="tip-section-title">${esc(t.category||'Tips')}</span></div>
+        ${(t.items||[]).map(item=>`<div class="tip-item"><span class="tip-dot">•</span><span>${esc(item)}</span></div>`).join('')}
+      </div>`).join('');
+  }
+
+  // ── URGENT ──
+  if (p.urgent && p.urgent.length > 0) {
+    document.getElementById('urgentSection').style.display='block';
+    document.getElementById('urgentList').innerHTML = p.urgent.map(u => `
+      <a class="urgent-card" href="${u.url||'#'}" target="_blank">
+        <div class="urgent-dot"></div>
+        <div class="urgent-info"><div class="urgent-label">${esc(u.label||'')}</div><div class="urgent-note">${esc(u.note||'')}</div></div>
+        <div class="urgent-arrow">›</div>
+      </a>`).join('');
+  }
+
+  // Show save bar
+  document.getElementById('saveBar').style.display='flex';
+
+  // Cache plan
+  try { localStorage.setItem('tripai_plan', JSON.stringify(p)); } catch(e){}
+}
+
+function toggleDay(i) {
+  const card = document.getElementById('dc-'+i);
+  if (!card) return;
+  card.classList.toggle('open');
+  if (card.classList.contains('open')) {
+    switchTab('days');
+    setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  TRIP EDIT
+// ══════════════════════════════════════════════════════
+function openEditModal() {
+  document.getElementById('editName').value   = tripMeta.name||'';
+  document.getElementById('editEmoji').value  = tripMeta.emoji||'';
+  document.getElementById('editDates').value  = tripMeta.dates||'';
+  document.getElementById('editPeople').value = tripMeta.people||'';
+  document.getElementById('editBudget').value = tripMeta.budget||'';
+  document.getElementById('editModal').classList.add('open');
+}
+function saveTrip() {
+  tripMeta.name   = document.getElementById('editName').value.trim()||'My Trip';
+  tripMeta.emoji  = document.getElementById('editEmoji').value.trim()||'🌍';
+  tripMeta.dates  = document.getElementById('editDates').value.trim();
+  tripMeta.people = document.getElementById('editPeople').value.trim();
+  tripMeta.budget = document.getElementById('editBudget').value.trim();
+  localStorage.setItem('tripai_meta', JSON.stringify(tripMeta));
+  restoreMeta();
+  closeModal('editModal');
+}
+function restoreMeta() {
+  if (tripMeta.emoji) document.getElementById('tripEmoji').textContent = tripMeta.emoji;
+  if (tripMeta.name)  document.getElementById('tripName').textContent  = tripMeta.name;
+  if (tripMeta.dates) document.getElementById('tripDates').textContent = tripMeta.dates;
+  if (tripMeta.days)  document.getElementById('statDays').textContent  = tripMeta.days;
+  if (tripMeta.people)document.getElementById('statPeople').textContent= tripMeta.people;
+  if (tripMeta.budget)document.getElementById('statBudget').textContent= tripMeta.budget.replace(/per person.*/i,'').trim();
+  // Restore cached plan if available
+  const cached = localStorage.getItem('tripai_plan');
+  if (cached) { try { plan = JSON.parse(cached); populateDashboard(plan); } catch(e){} }
+}
+
+// ══════════════════════════════════════════════════════
+//  SAVE / SHARE / EXPORT
+// ══════════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function saveLink() {
+  try {
+    const data = { v:2, meta:tripMeta, plan:plan, msgs:msgs.slice(-10).map(m=>({role:m.role,content:m.content.slice(0,3000)})) };
+    const enc  = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const url  = location.origin+location.pathname+'#p='+enc;
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(()=>showToast('✅ Share link copied!'));
+    else prompt('Copy link:', url);
+  } catch(e) { showToast('⚠️ Plan too large — try Export HTML'); }
+}
+
+function exportHtml() {
+  const t = tripMeta; const lastAi = [...msgs].reverse().find(m=>m.role==='assistant');
+  const content = lastAi ? lastAi.content : 'No plan generated yet.';
+  const daysHtml = (plan?.days||[]).map(d=>`
+    <div class="day-section">
+      <h2>${d.emoji||'📅'} Day ${d.day} — ${d.title||''}</h2>
+      <p class="day-sub">${d.subtitle||''}</p>
+      <div class="tl">${(d.timeline||[]).map(tl=>`
+        <div class="tl-row">
+          <div class="tl-t">${tl.time||''}</div>
+          <div class="tl-c">
+            <div class="tl-n">${tl.title||''}</div>
+            ${tl.detail?`<div class="tl-d">${tl.detail}</div>`:''}
+            ${tl.mapQuery?`<a href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank">📍 View on map</a>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+  const exportDoc = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${t.emoji||'✈️'} ${t.name||'My Trip'}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0f;color:rgba(255,255,255,.92);font-family:-apple-system,sans-serif;max-width:700px;margin:0 auto}
+.hero{background:linear-gradient(160deg,#1a1040,#0d0d1a);padding:48px 24px 36px;text-align:center}.hero-emoji{font-size:56px;margin-bottom:12px}.hero-title{font-size:26px;font-weight:800;margin-bottom:6px}.hero-dates{font-size:14px;color:rgba(255,255,255,.5)}
+.body{padding:20px}.day-section{background:#13131a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;margin-bottom:14px}
+h2{font-size:17px;font-weight:800;margin-bottom:4px;color:#a78bfa}.day-sub{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px}
+.tl-row{display:flex;gap:14px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}.tl-row:last-child{border:none}
+.tl-t{font-size:12px;color:#a78bfa;font-weight:700;width:52px;flex-shrink:0;padding-top:2px}
+.tl-c{flex:1}.tl-n{font-size:14px;font-weight:700}.tl-d{font-size:12px;color:rgba(255,255,255,.55);margin-top:4px;line-height:1.5}
+a{color:#a78bfa;font-size:12px;display:inline-block;margin-top:5px}
+.footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,.3)}
+</style></head><body>
+<div class="hero"><div class="hero-emoji">${t.emoji||'✈️'}</div><div class="hero-title">${t.name||'My Trip'}</div><div class="hero-dates">${[t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · ')}</div></div>
+<div class="body">${daysHtml||`<div class="day-section">${content.replace(/\n/g,'<br>')}</div>`}</div>
+<div class="footer">Generated with TripAI · futuriztaos.github.io/trip-planner</div>
+</body></html>`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([exportDoc],{type:'text/html'}));
+  a.download = (t.name||'my-trip').replace(/[^a-zA-Z0-9]/g,'-')+'.html';
+  a.click(); showToast('💾 Exported!');
+}
+
+function loadFromHash() {
+  if (!location.hash.startsWith('#p=')) return;
+  try {
+    const data = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(3)))));
+    if (data.meta) { tripMeta=data.meta; localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); }
+    if (data.plan) { plan=data.plan; populateDashboard(plan); }
+    if (data.msgs) {
+      msgs = data.msgs;
+      const box = document.getElementById('chatMsgs');
+      data.msgs.forEach(m => {
+        const el=document.createElement('div'); el.className='msg '+m.role;
+        if(m.role==='assistant'||m.role==='ai') { el.innerHTML=`<div class="ai-ava">✈️</div><div class="bubble">${md(m.content)}</div><div class="msg-time">Restored</div>`; }
+        else { el.innerHTML=`<div class="bubble">${esc(m.content)}</div><div class="msg-time">Restored</div>`; }
+        box.appendChild(el);
+      });
+    }
+    document.getElementById('restoredBanner').style.display='flex';
+    document.getElementById('saveBar').style.display='flex';
+    setTimeout(()=>switchTab('trip'),400);
+    showToast('✅ Trip loaded!');
+  } catch(e) { console.warn('Hash load failed',e); }
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+function md(t) {
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h3>$1</h3>').replace(/^# (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^[-*] (.+)$/gm,'<li>$1</li>').replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,s=>`<ul>${s}</ul>`)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/\|(.+)\|/g,s=>`<tr>${s.split('|').filter(Boolean).map(c=>`<td>${c.trim()}</td>`).join('')}</tr>`)
+    .replace(/(<tr>.*<\/tr>\n?)+/g,s=>`<table>${s}</table>`)
+    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^(.)/,'<p>$1').replace(/(.)$/, '$1</p>');
+}
+function esc(t) { return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+</script>
+</body>
+</html>
