@@ -169,22 +169,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .day-pill-num{font-size:18px;line-height:1.2}
 .day-pill-date{font-size:10px;font-weight:700;opacity:.9;white-space:nowrap}
 
-/* Day list (compact summaries) */
-.days-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 20px;display:flex;flex-direction:column;gap:8px}
-.day-summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .15s;position:relative}
-.day-summary-card:active{transform:scale(.99);background:var(--surface2)}
-.day-summary-card.today-card{border-color:rgba(52,211,153,.35)}
-.day-hero{height:96px;background-size:cover;background-position:center;position:relative}
-.day-hero-grad{position:absolute;inset:0;background:linear-gradient(to right,rgba(6,6,12,.85) 0%,rgba(6,6,12,.4) 55%,transparent 100%)}
-.day-hero-left{position:absolute;left:13px;top:50%;transform:translateY(-50%);right:50px;overflow:hidden}
-.day-hero-badge{font-size:10px;font-weight:800;color:var(--accent2);letter-spacing:.6px;text-transform:uppercase;margin-bottom:3px}
-.day-hero-title{font-size:15px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 4px rgba(0,0,0,.5)}
-.day-card-tap{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
-.today-badge{position:absolute;top:6px;right:6px;background:var(--green);color:#000;font-size:9px;font-weight:800;padding:2px 7px;border-radius:8px;letter-spacing:.3px}
-.day-summary-footer{padding:8px 12px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border)}
-.day-emoji{font-size:14px}
-.day-footer-sub{flex:1;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.day-event-count{font-size:10px;color:var(--muted);background:var(--surface2);padding:2px 8px;border-radius:8px;white-space:nowrap;font-weight:600}
+/* Day list — big cards, 3 visible at a time */
+.days-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 20px;display:flex;flex-direction:column;gap:10px}
+.day-big-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s;position:relative;height:calc((100dvh - 168px) / 3);min-height:200px;max-height:280px;display:flex;flex-direction:column;flex-shrink:0}
+.day-big-card:active{transform:scale(.985)}
+.day-big-card.today-card{border-color:rgba(52,211,153,.4)}
+.day-big-hero{flex:1;background-size:cover;background-position:center;position:relative;overflow:hidden;min-height:0}
+.day-big-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,.96) 0%,rgba(4,4,10,.45) 40%,rgba(0,0,0,.15) 70%,transparent 100%)}
+.day-big-overlay{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px}
+.day-big-badge{font-size:10px;font-weight:800;color:var(--accent2);letter-spacing:.9px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.day-big-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--accent2)}
+.day-big-title{font-size:20px;font-weight:800;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.day-big-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.today-float{position:absolute;top:10px;right:10px;background:var(--green);color:#000;font-size:9px;font-weight:800;padding:3px 9px;border-radius:10px;letter-spacing:.4px}
+.day-big-footer{padding:10px 16px 11px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.day-big-events{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px}
+.day-big-view{background:rgba(124,106,247,.14);border:1px solid rgba(124,106,247,.28);color:var(--accent2);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px;white-space:nowrap}
 
 /* ─── DAY DETAIL BOTTOM SHEET ─── */
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -719,19 +719,7 @@ window.onload = () => {
   loadFromHash();
   const inp = document.getElementById('msgInput');
   inp.addEventListener('input', () => { document.getElementById('sendBtn').disabled = !inp.value.trim() || !apiKey; });
-  // Swipe gestures on main content (not sheets)
-  const MAIN_TABS = ['plan','trip','days','tickets'];
-  let tx0 = 0;
-  document.getElementById('app').addEventListener('touchstart', e => { tx0 = e.touches[0].clientX; }, {passive:true});
-  document.getElementById('app').addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - tx0;
-    if (Math.abs(dx) < 60) return;
-    const cur = document.querySelector('.nav-btn.active')?.id?.replace('nav-','');
-    const i = MAIN_TABS.indexOf(cur);
-    if (i < 0) return;
-    if (dx < 0 && i < MAIN_TABS.length-1) switchTab(MAIN_TABS[i+1]);
-    if (dx > 0 && i > 0) switchTab(MAIN_TABS[i-1]);
-  }, {passive:true});
+  // Tab switching: tap nav buttons only — swipe disabled intentionally
 
   if (window._preloadPlan && !location.hash.startsWith('#p=')) {
     plan = window._preloadPlan; tripMeta = window._preloadPlan.trip;
@@ -966,23 +954,22 @@ function populateDashboard(p) {
     const list=document.getElementById('daysList');
     list.innerHTML='';
     p.days.forEach((d,i) => {
-      const imgUrl=`https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')||i}/900/200`;
+      const imgUrl=`https://picsum.photos/seed/${d.heroSeed||d.title?.replace(/\s+/g,'-')||i}/900/500`;
       const card=document.createElement('div');
-      card.className='day-summary-card'; card.id='dc-'+i;
+      card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
       card.innerHTML=`
-        <div class="day-hero" style="background-image:url('${imgUrl}')">
-          <div class="day-hero-grad"></div>
-          <div class="day-hero-left">
-            <div class="day-hero-badge">Day ${d.day}</div>
-            <div class="day-hero-title">${d.emoji||'📅'} ${esc(d.title||'')}</div>
+        <div class="day-big-hero" style="background-image:url('${imgUrl}')">
+          <div class="day-big-grad"></div>
+          <div class="day-big-overlay">
+            <div class="day-big-badge"><span class="day-big-badge-dot"></span>DAY ${d.day}</div>
+            <div class="day-big-title">${d.emoji||'📅'} ${esc(d.title||'')}</div>
+            ${d.subtitle?`<div class="day-big-sub">${esc(d.subtitle)}</div>`:''}
           </div>
-          <div class="day-card-tap">›</div>
         </div>
-        <div class="day-summary-footer">
-          <span class="day-emoji">${d.emoji||'📅'}</span>
-          <span class="day-footer-sub">${esc(d.subtitle||'Tap to see full plan')}</span>
-          <span class="day-event-count">${eventCount} events</span>
+        <div class="day-big-footer">
+          <div class="day-big-events">📍 ${eventCount} events</div>
+          <div class="day-big-view">View plan →</div>
         </div>`;
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
