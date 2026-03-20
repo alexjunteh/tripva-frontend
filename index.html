@@ -228,6 +228,33 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tip-item{display:flex;gap:9px;padding:5px 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.8)}
 .tip-dot{color:var(--accent2);font-size:16px;flex-shrink:0;margin-top:1px}
 
+/* ── TICKETS TAB ── */
+#tab-tickets{background:var(--bg)}
+.tickets-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 20px}
+.ticket-group{margin-bottom:18px}
+.ticket-group-hdr{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.boarding-pass{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px}
+.bp-header{background:linear-gradient(135deg,rgba(124,106,247,.25),rgba(167,139,250,.1));padding:12px 15px;display:flex;align-items:center;justify-content:space-between}
+.bp-route{font-size:15px;font-weight:800}
+.bp-date{font-size:11px;color:var(--accent2);font-weight:700}
+.bp-legs{padding:10px 15px;border-bottom:1px solid var(--border)}
+.bp-leg{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px}
+.bp-leg:not(:last-child){border-bottom:1px solid rgba(255,255,255,.04)}
+.bp-leg-train{background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;flex-shrink:0}
+.bp-leg-times{display:flex;align-items:center;gap:6px;flex:1}
+.bp-leg-from,.bp-leg-to{font-weight:700}
+.bp-leg-arr{color:var(--muted);font-size:11px}
+.bp-leg-time{color:var(--accent2);font-weight:700;font-size:12px}
+.bp-leg-pnr{background:rgba(52,211,153,.1);color:var(--green);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.bp-pax{padding:10px 15px}
+.bp-pax-hdr{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.bp-pax-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.04)}
+.bp-pax-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.bp-pax-name{font-size:13px;font-weight:800;margin-bottom:8px;color:var(--accent2)}
+.ticket-imgs{display:flex;flex-direction:column;gap:6px}
+.ticket-img{width:100%;border-radius:8px;border:1px solid var(--border);display:block}
+.ticket-pdf-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none}
+
 /* ── MODALS ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:600;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
 .modal-overlay.open{opacity:1;pointer-events:all}
@@ -417,6 +444,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     </div>
   </div>
 
+  <!-- ── 7. TICKETS TAB ── -->
+  <div id="tab-tickets" class="tab-content">
+    <div class="tickets-scroll" id="ticketsScroll">
+      <div class="empty-state" id="ticketsEmpty">
+        <div class="es-icon">🎟️</div>
+        <div class="es-title">No tickets yet</div>
+        <div class="es-text">Train and flight tickets with boarding pass details appear here after planning.</div>
+        <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── BOTTOM NAV ── -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-plan" onclick="switchTab('plan')"><span class="ni">💬</span>Plan</button>
@@ -425,6 +464,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <button class="nav-btn" id="nav-hotels" onclick="switchTab('hotels')"><span class="ni">🏨</span>Hotels</button>
     <button class="nav-btn" id="nav-budget" onclick="switchTab('budget')"><span class="ni">💰</span>Budget</button>
     <button class="nav-btn" id="nav-tips" onclick="switchTab('tips')"><span class="ni">💡</span>Tips</button>
+    <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="ni">🎟️</span>Tickets</button>
   </nav>
 </div>
 
@@ -938,6 +978,47 @@ function populateDashboard(p) {
         <div class="urgent-info"><div class="urgent-label">${esc(u.label||'')}</div><div class="urgent-note">${esc(u.note||'')}</div></div>
         <div class="urgent-arrow">›</div>
       </a>`).join('');
+  }
+
+  // ── TICKETS ──
+  if (p.tickets && p.tickets.length > 0) {
+    const scroll = document.getElementById('ticketsScroll');
+    document.getElementById('ticketsEmpty')?.remove();
+    scroll.innerHTML = '';
+    p.tickets.forEach(tkt => {
+      const grp = document.createElement('div');
+      grp.className = 'ticket-group';
+      const legsHtml = (tkt.legs||[]).map(l => `
+        <div class="bp-leg">
+          <span class="bp-leg-train">${esc(l.train||'')}</span>
+          <div class="bp-leg-times">
+            <span class="bp-leg-time">${esc(l.fromTime||'')}</span>
+            <span class="bp-leg-from">${esc(l.from||'')}</span>
+            <span class="bp-leg-arr">→</span>
+            <span class="bp-leg-to">${esc(l.to||'')}</span>
+            <span class="bp-leg-time">${esc(l.toTime||'')}</span>
+            ${l.pnr?`<span class="bp-leg-pnr">PNR: ${esc(l.pnr)}</span>`:''}
+          </div>
+        </div>`).join('');
+      const paxHtml = (tkt.passengers||[]).map(pax => `
+        <div class="bp-pax-item">
+          <div class="bp-pax-name">👤 ${esc(pax.name||'')}</div>
+          <div class="ticket-imgs">
+            ${(pax.images||[]).map(img=>`<img class="ticket-img" src="${img}" loading="lazy" alt="ticket">`).join('')}
+          </div>
+          ${pax.pdfUrl?`<a class="ticket-pdf-btn" href="${pax.pdfUrl}" target="_blank">📄 ${esc(pax.pdfLabel||'Download PDF')}</a>`:''}
+        </div>`).join('');
+      grp.innerHTML = `
+        <div class="boarding-pass">
+          <div class="bp-header">
+            <div class="bp-route">🚂 ${esc(tkt.name||'')}</div>
+            <div class="bp-date">${esc(tkt.date||'')}</div>
+          </div>
+          <div class="bp-legs">${legsHtml}</div>
+          <div class="bp-pax"><div class="bp-pax-hdr">PASSENGERS</div>${paxHtml}</div>
+        </div>`;
+      scroll.appendChild(grp);
+    });
   }
 
   // Show save bar
