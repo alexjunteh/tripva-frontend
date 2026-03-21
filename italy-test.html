@@ -195,6 +195,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .day-big-title{font-size:20px;font-weight:800;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
 .day-big-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .today-float{position:absolute;top:10px;right:10px;background:var(--green);color:#000;font-size:9px;font-weight:800;padding:3px 9px;border-radius:10px;letter-spacing:.4px}
+.day-summary{margin:10px 14px 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 14px}
+.day-summary-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:800;margin-bottom:8px}
+.day-summary-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.day-summary-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 12px}
+.day-summary-lbl{font-size:11px;color:var(--muted);margin-bottom:3px}.day-summary-val{font-size:13px;font-weight:700;line-height:1.35}.history-callout{margin:12px 0 0;background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(124,106,247,.08));border:1px solid rgba(245,158,11,.22);border-radius:14px;padding:12px 13px}.history-callout .hc-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#f59e0b;margin-bottom:6px}.history-callout .hc-body{font-size:12px;line-height:1.55;color:var(--text)}.urg-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}.urgent-card.priority-high{border-color:rgba(239,68,68,.28)}.urgent-card.priority-med{border-color:rgba(245,158,11,.22)}
 .day-big-footer{padding:10px 16px 11px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .day-big-events{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px}
 .day-big-view{background:rgba(124,106,247,.14);border:1px solid rgba(124,106,247,.28);color:var(--accent2);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px;white-space:nowrap}
@@ -1117,12 +1122,12 @@ function populateDashboard(p) {
   // ── URGENT ──
   if (p.urgent && p.urgent.length > 0) {
     document.getElementById('urgentSection').style.display='block';
-    document.getElementById('urgentList').innerHTML=p.urgent.map(u=>`
-      <a class="urgent-card" href="${u.url||'#'}" target="_blank">
+    document.getElementById('urgentList').innerHTML=p.urgent.map((u,idx)=>{ const cls=idx<2?'priority-high':'priority-med'; return `
+      <a class="urgent-card ${cls}" href="${u.url||'#'}" target="_blank">
         <div class="urg-dot"></div>
         <div class="urg-info"><div class="urg-label">${esc(u.label||'')}</div><div class="urg-note">${esc(u.note||'')}</div></div>
         <div class="urg-arr">›</div>
-      </a>`).join('');
+      </a>`}).join('');
     // Badge on trip nav
     const nb=document.createElement('span'); nb.className='nav-badge'; nb.textContent=p.urgent.length;
     const ti=document.getElementById('nav-trip'); if(ti&&!ti.querySelector('.nav-badge')) ti.appendChild(nb);
@@ -1241,6 +1246,10 @@ function renderDaySheet(idx) {
       </div>
     </div>`;
   }).join('');
+
+  // ── HISTORY / FUN FACT ──
+  const hist=(d.highlights||[]).find(h=>/history|dates to|founded|oldest|fun fact|first|century|AD|BC|bridge|renaissance|medieval/i.test(h)) || (d.timeline||[]).map(x=>x.detail||'').find(t=>/dates to|oldest|founded|renaissance|medieval|ad |bc |century|world's first/i.test((t||'').toLowerCase()));
+  if (hist) { html+=`<div class="history-callout"><div class="hc-title">History / fun fact</div><div class="hc-body">${esc(hist)}</div></div>`; }
 
   // ── LOCAL TIPS ──
   if (d.localTips && d.localTips.length) {
