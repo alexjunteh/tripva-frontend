@@ -128,6 +128,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 10px;text-align:center}
 .stat-num{font-size:22px;font-weight:800;color:var(--accent2);letter-spacing:-.5px}
 .stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
+.focus-card{margin:8px 14px 12px;background:linear-gradient(135deg,rgba(124,106,247,.16),rgba(52,211,153,.08));border:1px solid rgba(124,106,247,.24);border-radius:18px;padding:14px}
+.focus-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.focus-kicker{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--accent2)}
+.focus-date{font-size:11px;color:var(--muted)}
+.focus-title{font-size:18px;font-weight:800;line-height:1.2;margin-bottom:5px}
+.focus-sub{font-size:12px;color:var(--muted);line-height:1.45}
+.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.focus-chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px}
+.focus-chip-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.focus-chip-val{font-size:12px;font-weight:700;line-height:1.35}
+.focus-actions{display:flex;gap:8px;margin-top:12px}
+.focus-btn{flex:1;text-align:center;text-decoration:none;background:#fff;color:#000;padding:10px 12px;border-radius:12px;font-size:12px;font-weight:800}
+.focus-btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
 
 /* Urgent section */
 .ov-section{padding:0 14px 6px}
@@ -456,6 +469,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="stat-card"><div class="stat-num" id="statBudget">—</div><div class="stat-lbl">Budget</div></div>
     </div>
     <div id="restoredBanner" class="restored-banner" style="display:none">✅ Trip plan loaded from shared link</div>
+    <div id="focusCard" class="focus-card" style="display:none"></div>
     <div id="urgentSection" class="ov-section" style="display:none">
       <div class="ov-section-hdr">⚠️ Book Immediately</div>
       <div id="urgentList"></div>
@@ -1008,6 +1022,27 @@ function populateDashboard(p) {
       </div>`).join('');
   }
 
+  // ── FOCUS / TODAY CARD ──
+  const focus=document.getElementById('focusCard');
+  if (p.days && p.days.length) {
+    const todayIdx=(p.days||[]).findIndex(d=>/slow day|fly home|late arrival|venice|lucerne/i.test((d.title||'')+' '+(d.subtitle||'')));
+    const d=p.days[Math.max(0,todayIdx>=0?todayIdx:0)];
+    const first=(d.timeline||[])[0]||{};
+    const hotel=((p.hotels||[]).find(h=>String(h.city||'').toLowerCase().includes(String(d.title||'').split(' ')[0].toLowerCase()))||(p.hotels||[])[0]||{});
+    focus.style.display='block';
+    focus.innerHTML=`<div class="focus-top"><div class="focus-kicker">Today / Next Up</div><div class="focus-date">Day ${esc(d.day||'')}</div></div>
+      <div class="focus-title">${esc(d.emoji||'📍')} ${esc(d.title||'')}</div>
+      <div class="focus-sub">${esc(d.subtitle||'')}</div>
+      <div class="focus-grid">
+        <div class="focus-chip"><div class="focus-chip-lbl">First thing</div><div class="focus-chip-val">${esc(first.time||'TBC')} · ${esc(first.title||'Open day plan')}</div></div>
+        <div class="focus-chip"><div class="focus-chip-lbl">Hotel status</div><div class="focus-chip-val">${esc(hotel.name||'Check Hotels tab')}<br>${esc(hotel.price||'')}</div></div>
+      </div>
+      <div class="focus-actions">
+        <a class="focus-btn" href="javascript:switchTab('days');openDaySheet(${Math.max(0,todayIdx>=0?todayIdx:0)})">Open day plan</a>
+        <a class="focus-btn secondary" href="javascript:switchTab('tickets')">Tickets</a>
+      </div>`;
+  }
+
   // ── HOTELS ──
   if (p.hotels && p.hotels.length > 0) {
     const scroll=document.getElementById('hotelsScroll');
@@ -1015,9 +1050,12 @@ function populateDashboard(p) {
     scroll.innerHTML='';
     p.hotels.forEach(h=>{
       const card=document.createElement('div'); card.className='hotel-card';
+      const isBooked=/✅|PAID|BOOKED/i.test(h.price||'');
+      const btnLabel=isBooked?'Open location →':(/maps\.google/.test(h.bookUrl||'')?'Open location →':'Book now →');
+      const img=(h.heroSeed||h.city||'travel').replace(/\s+/g,',');
       card.innerHTML=`
         <div class="hotel-gradient">
-          <div class="hotel-gradient-bg" style="background-image:url('https://picsum.photos/seed/${h.heroSeed||h.city}/900/200')"></div>
+          <div class="hotel-gradient-bg" style="background-image:url('https://loremflickr.com/900/200/${img}?lock=${encodeURIComponent(img)}')"></div>
           <div class="hotel-gradient-overlay" style="opacity:.6"></div>
           <div class="hotel-city-badge">${esc(h.city||'')}</div>
         </div>
@@ -1026,10 +1064,11 @@ function populateDashboard(p) {
           <div class="hotel-tags">
             ${h.nights?`<span class="hotel-tag">${h.nights} nights</span>`:''}
             ${h.tier?`<span class="hotel-tag tier-${h.tier}">${h.tier.charAt(0).toUpperCase()+h.tier.slice(1)}</span>`:''}
+            ${isBooked?`<span class="hotel-tag tier-budget">Booked</span>`:''}
             ${h.note?`<span class="hotel-tag">${esc(h.note)}</span>`:''}
           </div>
           <div class="hotel-price">${esc(h.price||'')}</div>
-          ${h.bookUrl?`<a class="hotel-book-btn" href="${h.bookUrl}" target="_blank">Book Now →</a>`:''}
+          ${h.bookUrl?`<a class="hotel-book-btn" href="${h.bookUrl}" target="_blank">${btnLabel}</a>`:''}
         </div>`;
       scroll.appendChild(card);
     });
@@ -1040,10 +1079,11 @@ function populateDashboard(p) {
     const scroll=document.getElementById('budgetScroll');
     document.getElementById('budgetEmpty')?.remove();
     const total=(p.trip?.budget||'').replace(/per person.*/i,'').trim();
+    const paidItems=(p.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')||/✅|PAID|BOOKED/i.test(b.amount||''));
     scroll.innerHTML=`<div class="budget-hero">
-      <div class="budget-hero-lbl">Total per person</div>
+      <div class="budget-hero-lbl">Confirmed spend</div>
       <div class="budget-hero-num">${esc(total||'—')}</div>
-      <div class="budget-hero-sub">${p.trip?.days||''} days · ${p.trip?.destination||''}</div>
+      <div class="budget-hero-sub">${paidItems.length} confirmed items · ${p.trip?.destination||''}</div>
     </div>`;
     p.budget.forEach(b=>{
       const pct=Math.min(b.pct||25,100);
