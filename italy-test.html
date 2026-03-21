@@ -748,7 +748,8 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 // ══════════════════════════════════════
 window.onload = () => {
   setTimeout(() => document.getElementById('splash').classList.add('gone'), 1300);
-  document.getElementById('firstMsgTime').textContent = fmtTime(new Date());
+  const firstMsgTimeEl = document.getElementById('firstMsgTime');
+  if (firstMsgTimeEl) firstMsgTimeEl.textContent = fmtTime(new Date());
   updateStatus();
   restoreMeta();
   loadFromHash();
@@ -769,7 +770,7 @@ window.onload = () => {
   if (window._preloadPlan && !location.hash.startsWith('#p=')) {
     plan = window._preloadPlan; tripMeta = window._preloadPlan.trip;
     populateDashboard(plan); restoreMeta();
-    setTimeout(()=>switchTab('trip'), 600);
+    setTimeout(()=>{ renderLiveOps(); switchTab('plan'); }, 600);
   }
 };
 
