@@ -1147,12 +1147,14 @@ function populateDashboard(p) {
   if (p.budget && p.budget.length > 0) {
     const scroll=document.getElementById('budgetScroll');
     document.getElementById('budgetEmpty')?.remove();
-    const total=(p.trip?.budget||'').replace(/per person.*/i,'').trim();
     const paidItems=(p.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')||/✅|PAID|BOOKED/i.test(b.amount||''));
+    const pendingItems=(p.budget||[]).filter(b=>!(/✅|Paid|BOOKED/i.test(b.note||'')||/✅|PAID|BOOKED/i.test(b.amount||'')));
+    const paidTotal=paidItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
+    const pendingTotal=pendingItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
     scroll.innerHTML=`<div class="budget-hero">
       <div class="budget-hero-lbl">Confirmed spend</div>
-      <div class="budget-hero-num">${esc(total||'—')}</div>
-      <div class="budget-hero-sub">${paidItems.length} confirmed items · ${p.trip?.destination||''}</div>
+      <div class="budget-hero-num">≈ RM ${Math.round(paidTotal).toLocaleString()}</div>
+      <div class="budget-hero-sub">Pending / estimate ≈ RM ${Math.round(pendingTotal).toLocaleString()} · ${paidItems.length} confirmed items</div>
     </div>`;
     p.budget.forEach(b=>{
       const pct=Math.min(b.pct||25,100);
@@ -1263,6 +1265,17 @@ function formatDayDate(dayNum){
   const [y,m,d] = ymd.split('-').map(Number);
   return new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Rome',weekday:'short',day:'numeric',month:'short'}).format(new Date(Date.UTC(y,m-1,d,12,0,0)));
 }
+function parseBudgetToRM(str){
+  const s=String(str||'');
+  const grab=(re)=>{ const m=s.match(re); return m?parseFloat(m[1].replace(/,/g,'')):0; };
+  const rm=grab(/RM\s*([\d,]+(?:\.\d+)?)/i);
+  if(rm) return rm;
+  const chf=grab(/CHF\s*([\d,]+(?:\.\d+)?)/i);
+  if(chf) return chf*5.17;
+  const eur=grab(/€\s*([\d,]+(?:\.\d+)?)/i) || grab(/EUR\s*([\d,]+(?:\.\d+)?)/i);
+  if(eur) return eur*4.7;
+  return 0;
+}
 function renderLiveOps(){
   if(!plan || !plan.days) return;
   const el=id=>document.getElementById(id);
@@ -1283,16 +1296,19 @@ function renderLiveOps(){
   const nextDay=plan.days[currentIdx+1];
   const hotelsByTitle = (plan.hotels||[]);
   const currentHotel = hotelsByTitle.find(h => (day.title||'').toLowerCase().includes((h.city||'').split(',')[0].toLowerCase()) || (h.city||'').toLowerCase().includes((day.title||'').split(' ')[0].toLowerCase()));
-  const firstItem=(day.timeline||[])[0]||{};
+  const firstItem=(info.now.getHours()>=18 && nextDay?.timeline?.[0]) ? { ...nextDay.timeline[0], title:`Tomorrow · ${nextDay.timeline[0].title}` } : ((day.timeline||[])[0]||{});
   const trainItem=(day.timeline||[]).find(t=>/train|frecciarossa|leonardo express|rotair|rail/i.test((t.title||'')+' '+(t.detail||'')));
   const hotelItem=(day.timeline||[]).find(t=>t.type==='hotel');
   el('opsCurrentStop').textContent = day.title || 'Trip in progress';
   el('opsNowLine').textContent = day.subtitle || day.title || 'Trip in progress';
-  if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Next</strong> ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
+  if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> · Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> · ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Next</strong> · ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
   el('opsNextTitle').textContent = firstItem.title || 'Open today’s plan';
   el('opsNextText').textContent = firstItem.detail || 'Use the day sheet for the full itinerary.';
-  el('opsTransportTitle').textContent = trainItem ? (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title) : 'No critical transport right now';
-  el('opsTransportText').textContent = trainItem ? ((String(trainItem.detail||'').split('. ')[0]||trainItem.detail||'') + (String(trainItem.detail||'').includes('. ')?'.':'')) : 'No critical transport right now.';
+  const transportTitle = trainItem ? (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title) : 'No critical transport right now';
+  let transportText = trainItem ? ((String(trainItem.detail||'').split('. ')[0]||trainItem.detail||'') + (String(trainItem.detail||'').includes('. ')?'.':'')) : '';
+  if(transportText.trim() === transportTitle.trim() || transportText.trim() === `${transportTitle}.`) transportText = '';
+  el('opsTransportTitle').textContent = transportTitle;
+  el('opsTransportText').textContent = transportText;
   el('opsStayTitle').textContent = currentHotel ? currentHotel.name : (hotelItem ? hotelItem.title : 'Hotel not matched');
   el('opsStayText').textContent = currentHotel ? `${currentHotel.price||''} · ${currentHotel.note||''}` : (hotelItem ? hotelItem.detail||'' : 'Check Book Now tab');
   if(el('opsStayActions')) el('opsStayActions').innerHTML = currentHotel?.bookUrl ? `<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">View hotel</a>` : '';
