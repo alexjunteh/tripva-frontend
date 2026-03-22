@@ -318,6 +318,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .sub-back{background:var(--surface2);border:none;color:var(--text);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .sub-title{font-size:16px;font-weight:800;flex:1}
 .hotels-scroll,.budget-scroll,.tips-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 20px}
+/* Book now cards */
+.book-group-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:6px 2px 8px}
+.book-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 13px;margin-bottom:9px}
+.book-card.priority{border-color:rgba(124,106,247,.38);box-shadow:0 0 0 1px rgba(124,106,247,.16) inset}
+.book-card-title{font-size:14px;font-weight:800;line-height:1.35}
+.book-card-note{font-size:12px;line-height:1.55;color:var(--muted);margin-top:4px}
+.book-actions{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.book-btn{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:11px;padding:11px 12px;background:linear-gradient(135deg,var(--accent),#6457e8);color:#fff;text-decoration:none;font-size:13px;font-weight:800;border:1px solid rgba(124,106,247,.45)}
+.book-btn.secondary{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.book-btn:active{opacity:.88}
 
 /* Hotel cards */
 .hotel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
@@ -645,7 +655,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="more-item" onclick="openMoreTab('hotels')">
         <div class="more-item-icon">🏨</div>
         <div class="more-item-label">Book Now</div>
-        <div class="more-item-sub">Recommendations</div>
+        <div class="more-item-sub">Trains + hotel links</div>
       </div>
       <div class="more-item" onclick="openMoreTab('budget')">
         <div class="more-item-icon">💰</div>
@@ -1059,16 +1069,28 @@ function populateDashboard(p) {
     const addGroup=(title)=>{ const g=document.createElement('div'); g.className='book-group-title'; g.textContent=title; scroll.appendChild(g); };
     const addCard=(title,note,url,btn,priority=false,secondaryUrl='')=>{ const c=document.createElement('div'); c.className='book-card'+(priority?' priority':''); c.innerHTML=`<div class="book-card-title">${esc(title||'')}</div><div class="book-card-note">${esc(note||'')}</div><div class="book-actions">${url?`<a class="book-btn" href="${url}" target="_blank">${btn||'Open →'}</a>`:''}${secondaryUrl?`<a class="book-btn secondary" href="${secondaryUrl}" target="_blank">Backup →</a>`:''}</div>`; scroll.appendChild(c); };
 
-    addGroup('Priority bookings');
-    (p.urgent||[]).forEach(u=>{
-      const label=(u.label||'').toLowerCase();
-      let btn='Open →';
-      if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →';
-      else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →';
-      else if(label.includes('ticket')||label.includes('colosseum')||label.includes('uffizi')||label.includes('vatican')) btn='Book tickets →';
-      else if(label.includes('flight')) btn='Book flight →';
-      addCard(u.label||'', u.note||'', u.url||'#', btn, true);
-    });
+    addGroup('Key actions');
+    addCard(
+      'Lucerne → Venice train',
+      'Mar 24, 2026 · 2 adults · Luzern to Venezia S. Lucia',
+      'https://www.sbb.ch/en/buying/pages/fahrplan/fahrplan.xhtml?von=Luzern&nach=Venezia+Santa+Lucia&datum=24.03.2026&zeit=08:00&an=0',
+      'Book train →',
+      true
+    );
+    addCard(
+      'Venice → Florence train',
+      'Mar 26, 2026 · 2 adults · Venezia S. Lucia to Firenze S.M. Novella',
+      'https://www.trenitalia.com/en.html',
+      'Book train →',
+      true
+    );
+    addCard(
+      'Rome hotel near Termini / Repubblica',
+      'Agoda search · Mar 28–31, 2026 · 2 adults',
+      'https://www.agoda.com/search?textToSearch=Rome%20Termini%20Repubblica&checkIn=2026-03-28&checkOut=2026-03-31&rooms=1&adults=2&children=0&currency=MYR',
+      'Search Agoda →',
+      true
+    );
 
     addGroup('Booked stays');
     (p.hotels||[]).filter(h=>/✅|PAID|BOOKED/i.test(h.price||'')).forEach(h=>{
@@ -1123,11 +1145,8 @@ function populateDashboard(p) {
   }
 
   // ── URGENT ──
-  const existing=document.getElementById('nav-trip')?.querySelector('.nav-badge'); if(existing) existing.remove();
-  if (p.urgent && p.urgent.length > 0) {
-    const nb=document.createElement('span'); nb.className='nav-badge'; nb.textContent=p.urgent.length;
-    const ti=document.getElementById('nav-plan'); if(ti&&!ti.querySelector('.nav-badge')) ti.appendChild(nb);
-  }
+  document.getElementById('nav-trip')?.querySelector('.nav-badge')?.remove();
+  document.getElementById('nav-plan')?.querySelector('.nav-badge')?.remove();
 
   // ── TICKETS ──
   if (p.tickets && p.tickets.length > 0) {
@@ -1214,7 +1233,6 @@ function renderLiveOps(){
   const nextDay=plan.days[currentIdx+1];
   const hotelsByTitle = (plan.hotels||[]);
   const currentHotel = hotelsByTitle.find(h => (day.title||'').toLowerCase().includes((h.city||'').split(',')[0].toLowerCase()) || (h.city||'').toLowerCase().includes((day.title||'').split(' ')[0].toLowerCase()));
-  const pendingUrgent = (plan.urgent||[]).slice(0,2);
   const firstItem=(day.timeline||[])[0]||{};
   const trainItem=(day.timeline||[]).find(t=>/train|frecciarossa|leonardo express|rotair|rail/i.test((t.title||'')+' '+(t.detail||'')));
   const hotelItem=(day.timeline||[]).find(t=>t.type==='hotel');
@@ -1232,7 +1250,7 @@ function renderLiveOps(){
   if(currentHotel?.bookUrl) acts.push(`<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">Hotel</a>`);
   el('opsActions').innerHTML = acts.join('');
   el('opsTodoList').innerHTML = [
-    ...(pendingUrgent.length?pendingUrgent.map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('colosseum')||label.includes('uffizi')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⚠️</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div>${u.url?`<div class="ops-todo-actions"><a class="ops-mini-btn" href="${u.url}" target="_blank">${btn}</a></div>`:''}</div></div>`;}):[]),
+    `<div class="ops-todo"><div class="ops-todo-icon">🛎️</div><div class="ops-todo-main"><div class="ops-todo-title">Booking actions moved to Book Now</div><div class="ops-todo-note">Use More → Book Now for train + hotel booking links.</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="javascript:switchTab('hotels')">Open Book Now →</a></div></div></div>`,
     (nextDay?`<div class="ops-todo"><div class="ops-todo-icon">➡️</div><div class="ops-todo-main"><div class="ops-todo-title">Next trip leg: Day ${nextDay.day} — ${esc(nextDay.title||'')}</div><div class="ops-todo-note">${esc(nextDay.subtitle||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx+1})">Open next day →</a></div></div></div>`:'')
   ].join('') || '<div class="ops-todo"><div class="ops-todo-icon">✅</div><div class="ops-todo-main"><div class="ops-todo-title">No urgent tasks right now</div><div class="ops-todo-note">You are caught up.</div></div></div>';
   el('opsTimeline').innerHTML = (day.timeline||[]).slice(0,6).map(t=>`<div class="ops-row"><div class="ops-row-time">${esc(t.time||'')}</div><div class="ops-row-main"><div class="ops-row-title">${esc(t.title||'')}</div><div class="ops-row-note">${esc(t.detail||'')}</div></div></div>`).join('');
