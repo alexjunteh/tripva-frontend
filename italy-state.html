@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Trip Live State v1</title><style>
-:root{--bg:#0d1320;--surface:#151d2e;--surface2:#1c2740;--text:#f5f7fb;--muted:#b8c2d9;--line:rgba(255,255,255,.08);--accent:#8fb2ff;--warm:#ffbf69;--ok:#34d399}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0d1320,#12192a);color:var(--text);font:14px/1.45 Inter,system-ui,sans-serif}a{color:inherit}#app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:90px}.hero,.card,.row{margin:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:24px;box-shadow:0 16px 36px rgba(0,0,0,.20)}.hero{padding:22px 18px}.kicker{font-size:11px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--accent)}.title{font-size:34px;font-weight:900;line-height:1.02;margin-top:8px}.sub{color:var(--muted);margin-top:10px;font-size:15px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:11px;font-weight:800;color:#dce6ff}.card{padding:20px}.heroNext .big{font-size:38px;font-weight:900;line-height:1.02;margin:8px 0 10px}.text{color:#e7ecf8;font-size:15px;line-height:1.6}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 13px;border-radius:14px;text-decoration:none;font-size:12px;font-weight:900;background:linear-gradient(180deg,#edf4ff,#dbe8ff);color:#0c1732}.btn.secondary{background:rgba(255,255,255,.05);color:#dbe8ff;border:1px solid var(--line)}.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 14px 14px}.meta .row{margin:0;padding:14px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);font-weight:900}.value{margin-top:6px;font-size:15px;font-weight:800}.sectionTitle{font-size:11px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}.item{padding:14px 0;border-top:1px solid var(--line)}.item:first-child{border-top:none;padding-top:0}.itemTitle{font-size:15px;font-weight:900}.itemNote{font-size:13px;color:var(--muted);margin-top:4px}.timelineItem{display:flex;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.timelineItem:first-child{border-top:none;padding-top:0}.time{width:70px;color:var(--accent);font-weight:900}.nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;background:rgba(13,19,32,.88);backdrop-filter:blur(16px);border-top:1px solid var(--line)}.navin{width:min(520px,100%);display:grid;grid-template-columns:repeat(5,1fr)}.tabbtn{padding:12px 6px 14px;text-align:center;color:var(--muted);font-size:11px;font-weight:800}.tabbtn.active{color:#fff}.hidden{display:none}.bookCard{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);margin-bottom:10px}.bookTop{display:flex;justify-content:space-between;gap:10px}.pill{font-size:10px;padding:4px 8px;border-radius:999px;background:rgba(255,191,105,.12);color:var(--warm);font-weight:900;border:1px solid rgba(255,191,105,.15)}@media(max-width:390px){.title{font-size:30px}.heroNext .big{font-size:32px}.meta{grid-template-columns:1fr}}
-</style></head><body><div id="app"></div><div class="nav"><div class="navin"><div class="tabbtn active" data-tab="live">Live</div><div class="tabbtn" data-tab="days">Days</div><div class="tabbtn" data-tab="book">Book Now</div><div class="tabbtn" data-tab="tickets">Tickets</div><div class="tabbtn" data-tab="budget">Budget</div></div></div><script>
+:root{--bg:#0d1320;--surface:#151d2e;--surface2:#1c2740;--text:#f5f7fb;--muted:#b8c2d9;--line:rgba(255,255,255,.08);--accent:#8fb2ff;--warm:#ffbf69;--ok:#34d399;--pink:#ff7ab6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,rgba(143,178,255,.10),transparent 24%),radial-gradient(circle at top right,rgba(255,122,182,.08),transparent 22%),linear-gradient(180deg,#0d1320,#12192a);color:var(--text);font:14px/1.45 Inter,system-ui,sans-serif}a{color:inherit}#app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:90px}.hero,.card,.row{margin:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.045));border-radius:24px;box-shadow:0 18px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%)}.hero{padding:24px 18px 18px}.kicker{font-size:11px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--accent)}.title{font-size:34px;font-weight:900;line-height:1.02;margin-top:8px;letter-spacing:-1.1px}.sub{color:#dde6fb;margin-top:10px;font-size:15px;line-height:1.6}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:11px;font-weight:800;color:#dce6ff;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}.card{padding:20px}.heroNext .big{font-size:40px;font-weight:900;line-height:1.02;margin:8px 0 10px;letter-spacing:-1.4px}.text{color:#e7ecf8;font-size:15px;line-height:1.6}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 13px;border-radius:14px;text-decoration:none;font-size:12px;font-weight:900;background:linear-gradient(180deg,#edf4ff,#dbe8ff);color:#0c1732}.btn.secondary{background:rgba(255,255,255,.05);color:#dbe8ff;border:1px solid var(--line)}.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 14px 14px}.meta .row{margin:0;padding:15px;border-radius:20px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);font-weight:900}.value{margin-top:6px;font-size:16px;font-weight:800;line-height:1.35}.sectionTitle{font-size:11px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}.sectionTitle.warm{color:var(--warm)}.item{padding:14px 0;border-top:1px solid var(--line)}.item:first-child{border-top:none;padding-top:0}.itemTitle{font-size:15px;font-weight:900;line-height:1.34}.itemNote{font-size:13px;color:#dbe6fb;margin-top:4px;line-height:1.55}.timelineItem{display:flex;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.timelineItem:first-child{border-top:none;padding-top:0}.time{width:70px;color:var(--accent);font-weight:900;font-size:13px}.nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;background:rgba(13,19,32,.88);backdrop-filter:blur(16px);border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.18)}.navin{width:min(520px,100%);display:grid;grid-template-columns:repeat(5,1fr)}.tabbtn{padding:10px 6px 14px;text-align:center;color:var(--muted);font-size:11px;font-weight:800;position:relative}.tabbtn.active{color:#fff}.tabbtn.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:3px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--pink))}.hidden{display:none}.bookCard{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);margin-bottom:10px}.bookTop{display:flex;justify-content:space-between;gap:10px}.pill{font-size:10px;padding:4px 8px;border-radius:999px;background:rgba(255,191,105,.12);color:var(--warm);font-weight:900;border:1px solid rgba(255,191,105,.15)}@media(max-width:390px){.title{font-size:30px}.heroNext .big{font-size:32px}.meta{grid-template-columns:1fr}}
+</style></head><body><div id="app"></div><div class="nav"><div class="navin"><div class="tabbtn active" data-tab="live">🧭<br>Live</div><div class="tabbtn" data-tab="days">📅<br>Days</div><div class="tabbtn" data-tab="book">🛎️<br>Book</div><div class="tabbtn" data-tab="tickets">🎟️<br>Tickets</div><div class="tabbtn" data-tab="budget">💰<br>Budget</div></div></div><script>
 const STATE = {
   "trip": {
     "id": "italy-switzerland-2026-03",
@@ -758,9 +758,9 @@ const STATE = {
             "mapQuery": "Caffè Gilli Florence"
           },
           {
-            "time": "09:00",
+            "time": "09:15",
             "title": "🖼️ Uffizi Gallery",
-            "detail": "⚠️ BOOK UFFIZI.IT. The Uffizi began as Medici administrative offices (uffizi = offices) in the 16th century before becoming one of the world’s great Renaissance art collections.",
+            "detail": "✅ BOOKED for 27 Mar at 09:15. Total €58. The Uffizi began as Medici administrative offices (uffizi = offices) in the 16th century before becoming one of the world’s great Renaissance art collections.",
             "type": "activity",
             "mapQuery": "Uffizi Gallery Florence"
           },
@@ -1167,6 +1167,13 @@ const STATE = {
         "pct": 12
       },
       {
+        "label": "Uffizi tickets",
+        "amount": "€58 (~RM 300)",
+        "icon": "🖼️",
+        "note": "✅ BOOKED for 2 adults · 27 Mar 09:15",
+        "pct": 6
+      },
+      {
         "label": "FCO → Penang flight",
         "amount": "82,500 miles + EUR 49.95 each",
         "icon": "✈️",
@@ -1311,11 +1318,6 @@ const STATE = {
         "label": "Rome hotel search (Mar 28–31)",
         "note": "Use Agoda · 2 adults · near Termini / Repubblica",
         "url": "https://www.agoda.com/search?textToSearch=Rome%20Termini%20Repubblica&checkIn=2026-03-28&checkOut=2026-03-31&rooms=1&adults=2&children=0&currency=MYR"
-      },
-      {
-        "label": "Uffizi Gallery tickets (Mar 27)",
-        "note": "Book official site — target morning slot",
-        "url": "https://www.uffizi.it/en/tickets"
       },
       {
         "label": "Accademia Gallery tickets (Mar 27)",
@@ -1545,13 +1547,35 @@ const STATE = {
             "pdfLabel": ""
           }
         ]
+      },
+      {
+        "name": "Uffizi Gallery",
+        "date": "Mar 27, 2026",
+        "legs": [
+          {
+            "train": "Timed entry",
+            "from": "Uffizi entrance",
+            "fromTime": "09:15",
+            "to": "Florence",
+            "toTime": "—",
+            "pnr": "Total €58"
+          }
+        ],
+        "passengers": [
+          {
+            "name": "2 adults · entry booked",
+            "images": [],
+            "pdfUrl": "",
+            "pdfLabel": ""
+          }
+        ]
       }
     ]
   },
   "meta": {
     "extractedFrom": "planner-template/italy-test.html",
-    "planVersion": "20260322-v52",
-    "normalizedVersion": 1
+    "planVersion": "20260322-v53",
+    "normalizedVersion": 2
   },
   "stays": [
     {
@@ -1631,7 +1655,6 @@ const STATE = {
     {
       "id": "day-1-item-1",
       "dayId": "day-1",
-      "date": null,
       "time": "Afternoon",
       "title": "Train from Nice → Riomaggiore",
       "detail": "Scenic coastal route. VALIDATE ticket before boarding — €50 fine otherwise. 2 large bags: take the main road up from station, NOT the stairs.",
@@ -1644,7 +1667,6 @@ const STATE = {
     {
       "id": "day-2-item-2",
       "dayId": "day-2",
-      "date": null,
       "time": "08:00",
       "title": "Buy Cinque Terre Card at station",
       "detail": "€18.50/person — trails + unlimited train between villages. Start north (Monterosso) and work south.",
@@ -1657,7 +1679,6 @@ const STATE = {
     {
       "id": "day-2-item-3",
       "dayId": "day-2",
-      "date": null,
       "time": "08:30",
       "title": "Train to Monterosso al Mare",
       "detail": "10min, every ~20min. The only village with a real sandy beach.",
@@ -1670,7 +1691,6 @@ const STATE = {
     {
       "id": "day-2-item-7",
       "dayId": "day-2",
-      "date": null,
       "time": "14:30",
       "title": "Train to Manarola",
       "detail": "Skip Corniglia (382-step climb). Manarola = most photogenic village. 5min train.",
@@ -1683,7 +1703,6 @@ const STATE = {
     {
       "id": "day-3-item-3",
       "dayId": "day-3",
-      "date": null,
       "time": "09:00",
       "title": "⚠️ Pack + check out Le Giare",
       "detail": "Pack EVERYTHING the night before. Walk 5min to station on FLAT road — do NOT take stairs with large bags.",
@@ -1696,7 +1715,6 @@ const STATE = {
     {
       "id": "day-3-item-4",
       "dayId": "day-3",
-      "date": null,
       "time": "09:55",
       "title": "🚂 REG 22910: Riomaggiore → Levanto",
       "detail": "✅ BOOKED. Departs Platform 1. Arrive Levanto 10:20. Follow signs to IC 666 platform.",
@@ -1709,7 +1727,6 @@ const STATE = {
     {
       "id": "day-3-item-5",
       "dayId": "day-3",
-      "date": null,
       "time": "10:40",
       "title": "🚂 IC 666 (PNR: LGLXHN): Levanto → Milan Centrale",
       "detail": "✅ BOOKED €76.80. Coach 7: Alex Seat 10A, Khai Yee Seat 10B. Show PNR LGLXHN to conductor + valid ID. Air-conditioned. Arrive Milan 13:59.",
@@ -1722,7 +1739,6 @@ const STATE = {
     {
       "id": "day-3-item-7",
       "dayId": "day-3",
-      "date": null,
       "time": "14:20",
       "title": "🚂 REG 2828 (Trenord): Milan → Varenna-Esino",
       "detail": "✅ BOOKED. Ticket code 2778108890. No reserved seats. Check big departure board for platform at Centrale. Arrive Varenna 15:24.",
@@ -1735,7 +1751,6 @@ const STATE = {
     {
       "id": "day-4-item-1",
       "dayId": "day-4",
-      "date": null,
       "time": "Evening",
       "title": "Late rail journey to Luzern",
       "detail": "Actual arrival is late tonight after the missed earlier connection. Priority is simple: get to ibis, check in, hot shower, sleep. No sightseeing tonight.",
@@ -1748,7 +1763,6 @@ const STATE = {
     {
       "id": "day-4-item-2",
       "dayId": "day-4",
-      "date": null,
       "time": "22:41",
       "title": "Arrive Luzern",
       "detail": "Get off at Luzern, walk/taxi to ibis, and do the minimum only. No pressure to explore tonight — tomorrow is now a recovery day.",
@@ -1761,7 +1775,6 @@ const STATE = {
     {
       "id": "day-6-item-2",
       "dayId": "day-6",
-      "date": null,
       "time": "09:06",
       "title": "🚆 PE LIX: Luzern → Interlaken Ost",
       "detail": "✅ BOOKED. Point-to-point ticket via Brünig – Interlaken Ost. Luzern 09:06 → Interlaken Ost 10:54 on PE LIX. Covered by SBB order 151420339818. Return is also covered on the same date ticket.",
@@ -1774,7 +1787,6 @@ const STATE = {
     {
       "id": "day-6-item-3",
       "dayId": "day-6",
-      "date": null,
       "time": "11:04",
       "title": "🚆 R 61: Interlaken Ost → Grindelwald",
       "detail": "✅ BOOKED. Interlaken Ost 11:04 → Grindelwald Terminal 11:40 on R 61. Ticket valid Luzern ↔ Grindelwald Terminal until 24 Mar 05:00.",
@@ -1787,7 +1799,6 @@ const STATE = {
     {
       "id": "day-6-item-7",
       "dayId": "day-6",
-      "date": null,
       "time": "16:30",
       "title": "Start return toward Luzern",
       "detail": "Aim for a late-afternoon return so the day feels full but not exhausting before the Venice transfer day.",
@@ -1800,7 +1811,6 @@ const STATE = {
     {
       "id": "day-7-item-3",
       "dayId": "day-7",
-      "date": null,
       "time": "08:39",
       "title": "🚂 Luzern → Arth-Goldau → Venezia S. Lucia",
       "detail": "✅ BOOKED CHF242.20 for 2. IR 2017: Luzern 08:39 Platform 4 → Arth-Goldau 09:11 Platform 6. Then EC 31: Arth-Goldau 09:18 Platform 3 → Venezia S. Lucia 14:42. Coach 3, seats 35 + 36. SBB order 151419996814. Trenitalia PNR RWXTWN. Keep PDF + ID ready.",
@@ -1813,7 +1823,6 @@ const STATE = {
     {
       "id": "day-7-item-5",
       "dayId": "day-7",
-      "date": null,
       "time": "14:12",
       "title": "Arrive Venice Santa Lucia",
       "detail": "Station opens directly onto Grand Canal — the arrival is spectacular. DO NOT take a taxi boat. Walk to your hotel first, then explore light.",
@@ -1826,7 +1835,6 @@ const STATE = {
     {
       "id": "day-9-item-3",
       "dayId": "day-9",
-      "date": null,
       "time": "09:45",
       "title": "Walk to Santa Lucia station",
       "detail": "Allow 20–30min with bags depending on bridge route from Palazzo Cendon. Leave buffer and use Google Maps walking mode.",
@@ -1839,7 +1847,6 @@ const STATE = {
     {
       "id": "day-9-item-4",
       "dayId": "day-9",
-      "date": null,
       "time": "10:26",
       "title": "🚄 Frecciarossa: Venice → Florence SMN",
       "detail": "⏳ BOOK TRENITALIA. 2hr. €40–55pp. 1st class only ~€10 more — worth it. Arrive Florence Santa Maria Novella 12:28.",
@@ -1852,7 +1859,6 @@ const STATE = {
     {
       "id": "day-11-item-2",
       "dayId": "day-11",
-      "date": null,
       "time": "10:30",
       "title": "🚄 Frecciarossa: Florence → Roma Termini",
       "detail": "⏳ BOOK TRENITALIA. 1hr 33min. €30–45pp. Arrive 12:03.",
@@ -1865,7 +1871,6 @@ const STATE = {
     {
       "id": "day-13-item-2",
       "dayId": "day-13",
-      "date": null,
       "time": "08:30",
       "title": "Leonardo Express: Roma Termini → FCO",
       "detail": "Use Leonardo Express to avoid stress. Allow generous buffer for long-haul departure and terminal formalities.",
@@ -1878,7 +1883,6 @@ const STATE = {
     {
       "id": "day-13-item-3",
       "dayId": "day-13",
-      "date": null,
       "time": "11:40",
       "title": "✈️ SQ365: Rome FCO → Singapore SIN",
       "detail": "✅ BOOKED. Depart Fiumicino Terminal 3 at 11:40 Tue 31 Mar. Arrive Singapore 06:00 Wed 1 Apr. Economy Advantage on Airbus A350-900. 30kg checked baggage each.",
@@ -1891,7 +1895,6 @@ const STATE = {
     {
       "id": "day-13-item-4",
       "dayId": "day-13",
-      "date": null,
       "time": "08:00",
       "title": "✈️ SQ132: Singapore SIN → Penang PEN",
       "detail": "✅ BOOKED. Depart Changi Terminal 2 at 08:00 Wed 1 Apr. Arrive Penang 09:25. Economy Advantage on Boeing 737-8 MAX. 2h connection in Singapore.",
@@ -1904,9 +1907,20 @@ const STATE = {
   ],
   "activities": [
     {
+      "id": "day-1-item-2",
+      "dayId": "day-1",
+      "time": "15:00",
+      "title": "Check in: Affittacamere Le Giare",
+      "detail": "Via Colombo 71. ✅ PAID RM819. Key from host. Leave heavier bag — you won't need it until Mar 20 checkout.",
+      "mapQuery": "Affittacamere Le Giare Riomaggiore",
+      "type": "hotel",
+      "ticketRequired": false,
+      "ticketState": "not_needed",
+      "status": "planned"
+    },
+    {
       "id": "day-1-item-3",
       "dayId": "day-1",
-      "date": null,
       "time": "16:30",
       "title": "Walk Via dell'Amore",
       "detail": "15min coastal path to Manarola. Best photos at golden hour 17:30–18:30. Walk back before dark — no lighting.",
@@ -1919,7 +1933,6 @@ const STATE = {
     {
       "id": "day-2-item-4",
       "dayId": "day-2",
-      "date": null,
       "time": "09:00",
       "title": "Monterosso Old Town + Limoncino",
       "detail": "Focaccia at Forno Pasticceria Flavia €2. Free limoncino tasting at Il Carugio. Buy a pesto jar €4.",
@@ -1932,7 +1945,6 @@ const STATE = {
     {
       "id": "day-2-item-5",
       "dayId": "day-2",
-      "date": null,
       "time": "10:30",
       "title": "🥾 Hike Monterosso → Vernazza",
       "detail": "90min moderate. Most scenic stretch of Blue Trail. Bring water. Views of the entire coastline arc.",
@@ -1945,7 +1957,6 @@ const STATE = {
     {
       "id": "day-2-item-8",
       "dayId": "day-2",
-      "date": null,
       "time": "15:00",
       "title": "📸 Manarola panoramic viewpoint",
       "detail": "Follow signs to 'Punto Panoramico' (10min walk above village). Best light 16:00–18:00. Stay until dark — the village lights are extraordinary.",
@@ -1958,7 +1969,6 @@ const STATE = {
     {
       "id": "day-3-item-1",
       "dayId": "day-3",
-      "date": null,
       "time": "07:00",
       "title": "Last swim, Riomaggiore beach",
       "detail": "Rocky beach below the harbour. No crowds at 07:00. Last sea swim before Alpine Switzerland.",
@@ -1969,9 +1979,20 @@ const STATE = {
       "status": "planned"
     },
     {
+      "id": "day-3-item-8",
+      "dayId": "day-3",
+      "time": "15:30",
+      "title": "Check in: Hotel Olivedo Varenna",
+      "detail": "✅ PAID RM671. Lakefront. 2min from ferry pier. Drop bags, walk straight to the terrace. Como in evening light is extraordinary.",
+      "mapQuery": "Hotel Olivedo Varenna",
+      "type": "hotel",
+      "ticketRequired": false,
+      "ticketState": "not_needed",
+      "status": "planned"
+    },
+    {
       "id": "day-3-item-9",
       "dayId": "day-3",
-      "date": null,
       "time": "15:45",
       "title": "🌿 Villa Cipressi — lakeside gardens",
       "detail": "Right next to Hotel Olivedo — 2 min walk. Historic 1400s villa, terraced gardens to the water. Cypress, magnolia, stone balustrades. €4pp walk-in. 30–40min. Romantic and quiet — almost no tourists.",
@@ -1984,7 +2005,6 @@ const STATE = {
     {
       "id": "day-3-item-10",
       "dayId": "day-3",
-      "date": null,
       "time": "16:30",
       "title": "🚣 Private boat rental — just the two of you",
       "detail": "Barche a Noleggio at the Varenna pier — small motorboat €25–35/hr, no licence needed. Cut the engine mid-lake and drift. Mirror-flat water in late afternoon, Alps reflected. Most romantic hour of the trip. Return by 18:00.",
@@ -1997,7 +2017,6 @@ const STATE = {
     {
       "id": "day-3-item-11",
       "dayId": "day-3",
-      "date": null,
       "time": "18:30",
       "title": "🚶 Passeggiata degli Innamorati",
       "detail": "The 'Walk of Lovers' — narrow lit path right on the waterfront, hugging the lake edge. Bellagio's lights starting to reflect on the Como water across from you. Alpine mountains silhouetting against the dusk sky. 15–20 min slow walk. Completely free. Most romantic spot in Varenna.",
@@ -2010,7 +2029,6 @@ const STATE = {
     {
       "id": "day-3-item-12",
       "dayId": "day-3",
-      "date": null,
       "time": "19:00",
       "title": "🌿 Villa Cipressi gardens (evening stroll)",
       "detail": "If still open — check the gate on your way past. Even if closed, the terrace view from outside is lovely at dusk. Worth the 2 min detour from the Passeggiata.",
@@ -2023,7 +2041,6 @@ const STATE = {
     {
       "id": "day-3-item-13",
       "dayId": "day-3",
-      "date": null,
       "time": "19:15",
       "title": "🏘️ Varenna old town evening wander",
       "detail": "Medieval lanes light up warmly at night. Walk Via Venini and the old centre — stone archways, hanging lanterns, locals out for their passeggiata. No agenda — just soak it in. This is real Italian lake life.",
@@ -2034,9 +2051,20 @@ const STATE = {
       "status": "planned"
     },
     {
+      "id": "day-4-item-3",
+      "dayId": "day-4",
+      "time": "23:00",
+      "title": "Check in: ibis Styles Luzern City",
+      "detail": "✅ BOOKED RM1,117 (3 nights). Drop bags, charge devices, sleep immediately.",
+      "mapQuery": "ibis Styles Luzern City",
+      "type": "hotel",
+      "ticketRequired": true,
+      "ticketState": "booked",
+      "status": "planned"
+    },
+    {
       "id": "day-5-item-2",
       "dayId": "day-5",
-      "date": null,
       "time": "11:00",
       "title": "Musegg Wall + Zytturm",
       "detail": "Lucerne’s preserved medieval rampart. Built as part of the city fortifications after Lucerne joined the Swiss Confederation in 1332; the Zytturm clock is famous for being allowed to chime one minute before all other city clocks.",
@@ -2049,7 +2077,6 @@ const STATE = {
     {
       "id": "day-5-item-3",
       "dayId": "day-5",
-      "date": null,
       "time": "12:15",
       "title": "Walk down into Altstadt via Weinmarkt",
       "detail": "Weinmarkt was one of medieval Lucerne’s civic and trading squares. This old town core grew when Lucerne became an important route between northern Europe and the St Gotthard pass into Italy.",
@@ -2062,7 +2089,6 @@ const STATE = {
     {
       "id": "day-5-item-5",
       "dayId": "day-5",
-      "date": null,
       "time": "14:30",
       "title": "Chapel Bridge → Jesuit Church → Reuss river walk",
       "detail": "Kapellbrücke dates to the 14th century and is one of Europe’s oldest covered wooden bridges; the Jesuit Church nearby is considered Switzerland’s first large Baroque church. This section shows Lucerne’s shift from medieval trading town to Catholic Baroque city.",
@@ -2075,7 +2101,6 @@ const STATE = {
     {
       "id": "day-5-item-6",
       "dayId": "day-5",
-      "date": null,
       "time": "15:45",
       "title": "Lion Monument + coffee break",
       "detail": "Carved in 1820–21 after a design by Bertel Thorvaldsen, the dying lion commemorates the Swiss Guards killed defending Louis XVI during the 1792 Tuileries attack in Paris. It is one of Lucerne’s most important memorials, not just a photo stop.",
@@ -2088,7 +2113,6 @@ const STATE = {
     {
       "id": "day-5-item-7",
       "dayId": "day-5",
-      "date": null,
       "time": "17:15",
       "title": "Optional Spreuer Bridge / Old Town final loop",
       "detail": "Spreuerbrücke is another historic wooden bridge, rebuilt in the 16th century after flood damage. It is known for its painted Dance of Death panels — a very different mood from the more famous Chapel Bridge.",
@@ -2101,7 +2125,6 @@ const STATE = {
     {
       "id": "day-6-item-4",
       "dayId": "day-6",
-      "date": null,
       "time": "11:45",
       "title": "Grindelwald village first",
       "detail": "Do not rush straight into cable-car mode. Walk the village first — this is where you get the chalet atmosphere, green valley feel and classic Swiss alpine setting you wanted.",
@@ -2114,7 +2137,6 @@ const STATE = {
     {
       "id": "day-6-item-6",
       "dayId": "day-6",
-      "date": null,
       "time": "14:00",
       "title": "Optional: Grindelwald First if weather is good",
       "detail": "If visibility is good, go up for the stronger alpine payoff. If weather is weak, stay in the village and keep the day focused on atmosphere instead of forcing a cable-car add-on.",
@@ -2125,9 +2147,32 @@ const STATE = {
       "status": "planned"
     },
     {
+      "id": "day-7-item-1",
+      "dayId": "day-7",
+      "time": "07:00",
+      "title": "Checkout ibis Luzern",
+      "detail": "Pack everything. Last Swiss breakfast. Station luggage lockers available if needed.",
+      "mapQuery": "ibis Styles Luzern City",
+      "type": "hotel",
+      "ticketRequired": false,
+      "ticketState": "not_needed",
+      "status": "planned"
+    },
+    {
+      "id": "day-7-item-6",
+      "dayId": "day-7",
+      "time": "14:45",
+      "title": "Check in: Palazzo Cendon - Il Piano Nobile",
+      "detail": "✅ BOOKED RM917.10 total (2 nights, ~RM458.55/night). Cannaregio. Better character than the budget chain options, still within target budget.",
+      "mapQuery": "Palazzo Cendon Il Piano Nobile Venice",
+      "type": "hotel",
+      "ticketRequired": true,
+      "ticketState": "booked",
+      "status": "planned"
+    },
+    {
       "id": "day-7-item-7",
       "dayId": "day-7",
-      "date": null,
       "time": "16:30",
       "title": "🌉 Walk to Rialto Bridge",
       "detail": "Free. 30min walk east. Best photo from Fondamenta del Vin. Rialto was Venice’s commercial heart for centuries — the bridge marks the historic crossing of the Grand Canal where merchants, banks and market life concentrated.",
@@ -2140,7 +2185,6 @@ const STATE = {
     {
       "id": "day-7-item-8",
       "dayId": "day-7",
-      "date": null,
       "time": "18:00",
       "title": "📸 San Marco at sunset",
       "detail": "Piazza free. Basilica entry €3. Campanile tower €10. This was the ceremonial and political center of the Venetian Republic — the place where Venice staged its power to the world.",
@@ -2153,7 +2197,6 @@ const STATE = {
     {
       "id": "day-8-item-1",
       "dayId": "day-8",
-      "date": null,
       "time": "07:30",
       "title": "🚢 Vaporetto to Murano + Burano",
       "detail": "Line 12 from Fondamente Nove. Murano became the center of Venetian glassmaking after furnaces were moved off the main islands in 1291 due to fire risk; Burano developed its own fishing village identity and lace tradition.",
@@ -2166,7 +2209,6 @@ const STATE = {
     {
       "id": "day-8-item-4",
       "dayId": "day-8",
-      "date": null,
       "time": "15:00",
       "title": "🏛️ Doge's Palace",
       "detail": "€25pp — book online. This was the political heart of the Venetian Republic: the Doge’s residence, senate chambers, courts and state bureaucracy all in one complex. Bridge of Sighs is inside.",
@@ -2179,7 +2221,6 @@ const STATE = {
     {
       "id": "day-8-item-5",
       "dayId": "day-8",
-      "date": null,
       "time": "17:30",
       "title": "🎭 Handmade masks — Laboratorio Artigiano",
       "detail": "Only buy true papier-mâché craft masks. Venice’s mask tradition comes from the republic’s carnival culture, when masks blurred class boundaries and allowed anonymity in public life.",
@@ -2192,7 +2233,6 @@ const STATE = {
     {
       "id": "day-8-item-6",
       "dayId": "day-8",
-      "date": null,
       "time": "19:00",
       "title": "🚤 Gondola at sunset",
       "detail": "€80/30min daytime, €100 evening. Gondolas were once everyday transport for Venetian elites; today they survive as one of the last visible symbols of Venice’s canal-based urban life.",
@@ -2205,7 +2245,6 @@ const STATE = {
     {
       "id": "day-9-item-1",
       "dayId": "day-9",
-      "date": null,
       "time": "08:30",
       "title": "San Polo sestiere morning walk",
       "detail": "Away from tourists. Scuola Grande di San Rocco (Tintoretto, €10). Campo Santa Margherita market: local coffee, focaccia €1.50.",
@@ -2216,9 +2255,20 @@ const STATE = {
       "status": "planned"
     },
     {
+      "id": "day-9-item-5",
+      "dayId": "day-9",
+      "time": "12:30",
+      "title": "Check in: La Grancontessa",
+      "detail": "✅ BOOKED RM965.80 total for 2 nights (~RM482.90/night). Good-value Florence stay under your RM500/night target.",
+      "mapQuery": "Hotel La Grancontessa Florence",
+      "type": "hotel",
+      "ticketRequired": true,
+      "ticketState": "booked",
+      "status": "planned"
+    },
+    {
       "id": "day-9-item-6",
       "dayId": "day-9",
-      "date": null,
       "time": "14:00",
       "title": "🏛️ Piazza della Signoria",
       "detail": "Free. Neptune Fountain, Perseus by Cellini, replica David. This square was the civic stage of republican Florence and later Medici rule — effectively the political heart of the city.",
@@ -2231,7 +2281,6 @@ const STATE = {
     {
       "id": "day-9-item-8",
       "dayId": "day-9",
-      "date": null,
       "time": "15:00",
       "title": "🌉 Ponte Vecchio",
       "detail": "Free. Florence’s oldest bridge, famous for the shops built along it. The current structure largely dates to the 14th century and survived World War II unlike many other European historic bridges.",
@@ -2244,7 +2293,6 @@ const STATE = {
     {
       "id": "day-9-item-9",
       "dayId": "day-9",
-      "date": null,
       "time": "17:00",
       "title": "🌅 Piazzale Michelangelo at sunset",
       "detail": "Walk 20min uphill or Bus 13. Built in the 19th century as part of Florence’s urban redesign, it is not ancient — but it gives the best overview of the Renaissance city and the Arno curve.",
@@ -2257,20 +2305,18 @@ const STATE = {
     {
       "id": "day-10-item-2",
       "dayId": "day-10",
-      "date": null,
-      "time": "09:00",
+      "time": "09:15",
       "title": "🖼️ Uffizi Gallery",
-      "detail": "⚠️ BOOK UFFIZI.IT. The Uffizi began as Medici administrative offices (uffizi = offices) in the 16th century before becoming one of the world’s great Renaissance art collections.",
+      "detail": "✅ BOOKED for 27 Mar at 09:15. Total €58. The Uffizi began as Medici administrative offices (uffizi = offices) in the 16th century before becoming one of the world’s great Renaissance art collections.",
       "mapQuery": "Uffizi Gallery Florence",
       "type": "activity",
       "ticketRequired": true,
-      "ticketState": "pending",
+      "ticketState": "booked",
       "status": "planned"
     },
     {
       "id": "day-10-item-4",
       "dayId": "day-10",
-      "date": null,
       "time": "14:00",
       "title": "⛪ Duomo complex",
       "detail": "Cupola climb €18. Brunelleschi’s dome solved one of the great engineering problems of the Renaissance and became the architectural symbol of Florence’s ambition and wealth.",
@@ -2283,7 +2329,6 @@ const STATE = {
     {
       "id": "day-10-item-5",
       "dayId": "day-10",
-      "date": null,
       "time": "16:00",
       "title": "👨‍🎨 Accademia — Michelangelo's David",
       "detail": "⚠️ BOOK ahead. David was carved by Michelangelo from a difficult block of marble and became a symbol of Florentine republican pride, not just a masterpiece of anatomy.",
@@ -2296,7 +2341,6 @@ const STATE = {
     {
       "id": "day-10-item-6",
       "dayId": "day-10",
-      "date": null,
       "time": "18:00",
       "title": "🛍️ Leather + souvenirs",
       "detail": "Scuola del Cuoio (leather school, quality). Procacci on Via de' Tornabuoni: truffle paste €8, best Florence food gift.",
@@ -2307,9 +2351,20 @@ const STATE = {
       "status": "planned"
     },
     {
+      "id": "day-11-item-3",
+      "dayId": "day-11",
+      "time": "12:30",
+      "title": "Check in: Hotel Artemide",
+      "detail": "⏳ BOOK NOW. Via Nazionale. Good base for a 3-night Rome stay, near Termini and Repubblica.",
+      "mapQuery": "Hotel Artemide Rome Via Nazionale",
+      "type": "hotel",
+      "ticketRequired": true,
+      "ticketState": "pending",
+      "status": "planned"
+    },
+    {
       "id": "day-11-item-5",
       "dayId": "day-11",
-      "date": null,
       "time": "14:00",
       "title": "🏘️ Trastevere walk",
       "detail": "Cross Tiber via Ponte Sisto. Trastevere was historically a working-class district outside Rome’s ancient core and still retains a more lived-in, neighborhood feel than the monumental center.",
@@ -2322,7 +2377,6 @@ const STATE = {
     {
       "id": "day-11-item-6",
       "dayId": "day-11",
-      "date": null,
       "time": "16:00",
       "title": "⛲ Trevi Fountain",
       "detail": "Go at quieter hours for fewer crowds. The current fountain is 18th century, built where an ancient Roman aqueduct — the Aqua Virgo — terminated, linking Baroque Rome to imperial infrastructure.",
@@ -2335,7 +2389,6 @@ const STATE = {
     {
       "id": "day-11-item-7",
       "dayId": "day-11",
-      "date": null,
       "time": "17:30",
       "title": "🏛️ Spanish Steps at sunset",
       "detail": "135 steps, completed in the 1720s to connect the Bourbon Spanish embassy below with the French church above — a very Roman mix of diplomacy, urban theater and prestige.",
@@ -2348,7 +2401,6 @@ const STATE = {
     {
       "id": "day-11-item-9",
       "dayId": "day-11",
-      "date": null,
       "time": "21:00",
       "title": "🌙 Piazza Navona evening",
       "detail": "Free. The long oval shape comes from the Stadium of Domitian beneath it, so you are effectively standing on the footprint of an ancient Roman arena reworked into Baroque Rome.",
@@ -2361,7 +2413,6 @@ const STATE = {
     {
       "id": "day-12-item-2",
       "dayId": "day-12",
-      "date": null,
       "time": "08:00",
       "title": "🏟️ Colosseum — 8am first slot",
       "detail": "⚠️ BOOK official site. Opened in AD 80 under Titus, the Colosseum was the Flavian amphitheater — Rome’s great arena for spectacles, imperial propaganda and mass entertainment.",
@@ -2374,7 +2425,6 @@ const STATE = {
     {
       "id": "day-12-item-3",
       "dayId": "day-12",
-      "date": null,
       "time": "09:30",
       "title": "🏛️ Roman Forum + Palatine Hill",
       "detail": "Included in combo. The Forum was the political, religious and legal center of ancient Rome, while the Palatine became the hill of imperial palaces and elite power.",
@@ -2387,7 +2437,6 @@ const STATE = {
     {
       "id": "day-12-item-5",
       "dayId": "day-12",
-      "date": null,
       "time": "14:30",
       "title": "⛪ Vatican Museums + Sistine Chapel",
       "detail": "⚠️ BOOK official site. The museums are the accumulated papal collections; the Sistine Chapel matters not just for Michelangelo’s ceiling, but because it remains the site of the papal conclave.",
@@ -2400,7 +2449,6 @@ const STATE = {
     {
       "id": "day-12-item-6",
       "dayId": "day-12",
-      "date": null,
       "time": "17:30",
       "title": "⛪ St Peter's Basilica (free)",
       "detail": "No booking needed. Built over the traditional tomb of St Peter, this is one of the central churches of Catholicism and a statement of papal power in architecture.",
@@ -2413,7 +2461,6 @@ const STATE = {
     {
       "id": "day-12-item-7",
       "dayId": "day-12",
-      "date": null,
       "time": "19:30",
       "title": "🌉 Castel Sant'Angelo at dusk",
       "detail": "€15. Originally Emperor Hadrian’s mausoleum, later converted into a papal fortress and refuge — one building that compresses imperial Rome, medieval defense and papal politics together.",
@@ -2428,7 +2475,6 @@ const STATE = {
     {
       "id": "day-1-item-4",
       "dayId": "day-1",
-      "date": null,
       "time": "16:30",
       "title": "☕ Arrival drink: Bar & Vini A Pié de Ma'",
       "detail": "Right at the bottom of the train stairs. Espresso €1.20, local white wine €3. Best spot to shake off the journey. Has focaccia + local anchovies.",
@@ -2445,7 +2491,6 @@ const STATE = {
     {
       "id": "day-1-item-5",
       "dayId": "day-1",
-      "date": null,
       "time": "19:30",
       "title": "🐟 Dinner: Il Pescato Cucinato",
       "detail": "Best value in Cinque Terre. Fried anchovies, calamari, mixed fish plate €10–14pp. Queue outside, eat standing at the counter or nearby steps. Cash only.",
@@ -2462,7 +2507,6 @@ const STATE = {
     {
       "id": "day-2-item-1",
       "dayId": "day-2",
-      "date": null,
       "time": "07:30",
       "title": "☕ Breakfast: Bar & Vini A Pié de Ma'",
       "detail": "Cornetto (croissant) €1.30 + cappuccino €1.40. Pack a focaccia slice for the hike (€2). Eat fast — first train to Monterosso at 08:30.",
@@ -2479,7 +2523,6 @@ const STATE = {
     {
       "id": "day-2-item-6",
       "dayId": "day-2",
-      "date": null,
       "time": "12:30",
       "title": "🦐 Lunch: Vernazza harbour steps",
       "detail": "Buy focaccia at Focacceria Vernazza (€2.50) + sit on the harbour steps. OR Gambero Rosso restaurant: spaghetti vongole €16, grilled fish €18. Book Gambero Rosso if you want proper sit-down.",
@@ -2496,7 +2539,6 @@ const STATE = {
     {
       "id": "day-2-item-9",
       "dayId": "day-2",
-      "date": null,
       "time": "20:00",
       "title": "🍝 Dinner: Trattoria La Grotta",
       "detail": "Riomaggiore. Inside a cave — genuinely unique setting. Pesto trofie €13, grilled sea bass €18, house Vermentino €14/bottle. Reserve ahead or arrive before 19:00. Best dinner in Cinque Terre.",
@@ -2513,7 +2555,6 @@ const STATE = {
     {
       "id": "day-3-item-2",
       "dayId": "day-3",
-      "date": null,
       "time": "08:30",
       "title": "☕ Breakfast: Riomaggiore station bar",
       "detail": "Quick espresso + cornetto before REG 22910 at 09:55. €2.50 total. Nothing fancy — fuel stop.",
@@ -2530,7 +2571,6 @@ const STATE = {
     {
       "id": "day-3-item-6",
       "dayId": "day-3",
-      "date": null,
       "time": "13:00",
       "title": "🍕 Lunch: Milano Centrale food hall",
       "detail": "You have 20min in Milan (14:20 train). Head to the lower level food hall — Spontini pizza al taglio (€4/slice, legendary in Milan) or grab a tramezzino for the train. Fast, excellent.",
@@ -2547,7 +2587,6 @@ const STATE = {
     {
       "id": "day-3-item-14",
       "dayId": "day-3",
-      "date": null,
       "time": "19:30",
       "title": "🥂 Aperitivo: Nilus Bar",
       "detail": "Lakeside terrace, order a Negroni or Aperol Spritz €5–6. Sit facing the water — Bellagio's lights now fully reflected on the lake. Como mountains as a dark silhouette behind. Perfect 30 min wind-down before dinner.",
@@ -2564,7 +2603,6 @@ const STATE = {
     {
       "id": "day-3-item-15",
       "dayId": "day-3",
-      "date": null,
       "time": "20:15",
       "title": "🍝 Dinner: Il Cavatappi",
       "detail": "Via XX Settembre 10. Risotto al lago (perch fillet) €15, tagliatelle with wild mushrooms €13, lake fish €18. Cosy stone interior, dim lighting — perfect romantic end to the day. If you haven't called ahead: +39 0341 815349. Ask for a window table.",
@@ -2581,7 +2619,6 @@ const STATE = {
     {
       "id": "day-5-item-1",
       "dayId": "day-5",
-      "date": null,
       "time": "09:30",
       "title": "Breakfast: Heini Luzern",
       "detail": "Start easy with pastries and coffee before the old-town loop. Order a butter gipfeli or nut pastry + coffee and keep it light after yesterday’s late arrival.",
@@ -2598,7 +2635,6 @@ const STATE = {
     {
       "id": "day-5-item-4",
       "dayId": "day-5",
-      "date": null,
       "time": "13:00",
       "title": "Lunch: Wirtshaus Galliker",
       "detail": "Best lunch anchor for today’s Swiss-city plan. Order one classic Swiss plate: veal sausage, schnitzel or rösti. This is the right stop for substance, not just scenery.",
@@ -2615,7 +2651,6 @@ const STATE = {
     {
       "id": "day-5-item-8",
       "dayId": "day-5",
-      "date": null,
       "time": "19:15",
       "title": "Dinner: Restaurant Pfistern",
       "detail": "Finish with a proper Swiss old-town dinner in a historic setting. Order rösti or Zürcher Geschnetzeltes and keep it an early, easy finish.",
@@ -2632,7 +2667,6 @@ const STATE = {
     {
       "id": "day-6-item-1",
       "dayId": "day-6",
-      "date": null,
       "time": "08:15",
       "title": "Breakfast + head to Luzern station",
       "detail": "Keep breakfast easy and be at Luzern station before 09:00. Train is the right call — no mountain-road stress, no parking issues, better use of the day.",
@@ -2649,7 +2683,6 @@ const STATE = {
     {
       "id": "day-6-item-5",
       "dayId": "day-6",
-      "date": null,
       "time": "13:00",
       "title": "Lunch in Grindelwald",
       "detail": "Have a proper village lunch before deciding on the uplift. Pick whatever is open and highly rated on the day — check same-day status before committing.",
@@ -2666,7 +2699,6 @@ const STATE = {
     {
       "id": "day-7-item-2",
       "dayId": "day-7",
-      "date": null,
       "time": "07:30",
       "title": "☕ Breakfast: Migros bakery, Lucerne Hbf",
       "detail": "Grab a Gipfeli + coffee at the station Migros (opens 06:30). CHF 5 total. Stock up on Swiss chocolate for the train — last chance for Swiss prices.",
@@ -2683,7 +2715,6 @@ const STATE = {
     {
       "id": "day-7-item-4",
       "dayId": "day-7",
-      "date": null,
       "time": "12:30",
       "title": "🥪 Lunch: On the train (packed) or Lugano",
       "detail": "Best option: pack lunch from Migros. Alternative: 20min stop in Lugano — Bottegone del Vino near station for quick wine + antipasti CHF 15. Train has bistro car — sandwiches CHF 9.",
@@ -2700,7 +2731,6 @@ const STATE = {
     {
       "id": "day-7-item-9",
       "dayId": "day-7",
-      "date": null,
       "time": "19:30",
       "title": "🦞 Dinner: All'Arco, Venice (cicchetti)",
       "detail": "Best cicchetti bar in Venice — Calle dell'Arco near Rialto Market. Bite-size snacks €1.50–3 each — baccalà mantecato, sarde in saor, meatballs. Order 6–8 pieces + ombra wine (€1.50/glass). Real Venice experience.",
@@ -2717,7 +2747,6 @@ const STATE = {
     {
       "id": "day-8-item-2",
       "dayId": "day-8",
-      "date": null,
       "time": "08:00",
       "title": "☕ Breakfast: Pasticceria Tonolo",
       "detail": "Best pastry shop in Venice. Dorsoduro 3764. Croissant + cappuccino €3.50. Sfogliatelle, tiramisu, bomboloni — all exceptional. Tiny, no seats — stand at the bar like Venetians. Opens 07:45.",
@@ -2734,7 +2763,6 @@ const STATE = {
     {
       "id": "day-8-item-3",
       "dayId": "day-8",
-      "date": null,
       "time": "12:30",
       "title": "🦐 Lunch: All'Arco (or Rialto Market)",
       "detail": "Return to All'Arco near Rialto for cicchetti lunch OR buy from the Rialto fish market stalls — cured meats, cheese, artichokes, €8–12 for a full spread. Eat on the market steps.",
@@ -2751,7 +2779,6 @@ const STATE = {
     {
       "id": "day-8-item-7",
       "dayId": "day-8",
-      "date": null,
       "time": "20:00",
       "title": "🎭 Dinner: Osteria Alle Testiere",
       "detail": "Venice's best small restaurant — only 24 seats. Book 2 weeks ahead (testiere.it). Tagliolini with shrimp €18, grilled turbot €32, wine pairing €20/person. Worth every euro — you'll remember this meal.",
@@ -2768,7 +2795,6 @@ const STATE = {
     {
       "id": "day-9-item-2",
       "dayId": "day-9",
-      "date": null,
       "time": "08:30",
       "title": "☕ Breakfast: Venice Santa Lucia station bar",
       "detail": "Quick espresso + tramezzino (crustless sandwich, €2.50) at the station before Frecciarossa. Bar right inside departures. Nothing special — fuel stop only.",
@@ -2785,7 +2811,6 @@ const STATE = {
     {
       "id": "day-9-item-7",
       "dayId": "day-9",
-      "date": null,
       "time": "14:00",
       "title": "🥩 Lunch: Mercato Centrale, Florence",
       "detail": "Arrive Florence ~12:30. Head straight to Mercato Centrale upstairs food hall (Via dell'Ariento). Best lunch in Florence — lampredotto (tripe) sandwich €5, pasta al ragù €8, fresh pizza €6. Local crowd, no tourists upstairs.",
@@ -2802,7 +2827,6 @@ const STATE = {
     {
       "id": "day-9-item-10",
       "dayId": "day-9",
-      "date": null,
       "time": "20:00",
       "title": "🍽️ Dinner: Trattoria Mario, Florence",
       "detail": "Via Rosina 2, since 1953. Cash only, communal tables, no menu — waiter tells you what's available. Ribollita €7, bistecca Fiorentina (600g) €35, house red €8/litre. Arrive at 19:45 for first seating — queue otherwise.",
@@ -2819,7 +2843,6 @@ const STATE = {
     {
       "id": "day-10-item-1",
       "dayId": "day-10",
-      "date": null,
       "time": "08:00",
       "title": "☕ Breakfast: Caffè Gilli",
       "detail": "Historic café since 1733, Piazza della Repubblica. Cornetto di crema €2.20, cappuccino €2. Stand at the bar (not the tables — table service doubles the price). Art Nouveau interior. Instagram moment.",
@@ -2836,7 +2859,6 @@ const STATE = {
     {
       "id": "day-10-item-3",
       "dayId": "day-10",
-      "date": null,
       "time": "13:00",
       "title": "🥗 Lunch: Buca Mario",
       "detail": "Oldest restaurant in Florence (1886). Via Porta Rossa. Pappardelle al cinghiale €14, ribollita €9, grilled Chianina beef €22. More formal than Mario — but the history and vaulted ceilings are worth it.",
@@ -2853,7 +2875,6 @@ const STATE = {
     {
       "id": "day-10-item-7",
       "dayId": "day-10",
-      "date": null,
       "time": "20:00",
       "title": "🥩 Dinner: Trattoria Sostanza",
       "detail": "Famous for butter rigatoni (rigatini al burro) and T-bone steak. Via della Porcellana 25. The butter pasta is life-changing — €12. Bistecca Fiorentina €55 for 2 (shared, minimum 1kg). Book ahead.",
@@ -2870,7 +2891,6 @@ const STATE = {
     {
       "id": "day-11-item-1",
       "dayId": "day-11",
-      "date": null,
       "time": "08:00",
       "title": "☕ Breakfast: Florence hotel or SMN station",
       "detail": "Quick breakfast at hotel or grab a cornetto at the Santa Maria Novella station bar before the Frecciarossa. €2.50. Keep it light — Rome has a big lunch waiting.",
@@ -2887,7 +2907,6 @@ const STATE = {
     {
       "id": "day-11-item-4",
       "dayId": "day-11",
-      "date": null,
       "time": "13:30",
       "title": "🍕 Lunch: Pizzarium Bonci, Rome",
       "detail": "Near Vatican (Via della Meloria). Gabriele Bonci's legendary pizza al taglio — sold by weight, €5–8 for a satisfying portion. Best pizza bianca in Rome. Eat standing outside.",
@@ -2904,7 +2923,6 @@ const STATE = {
     {
       "id": "day-11-item-8",
       "dayId": "day-11",
-      "date": null,
       "time": "20:30",
       "title": "🍝 Dinner: Ristorante Roscioli",
       "detail": "Via dei Giubbonari 21. Rome's best pasta — tonnarelli cacio e pepe €16, bucatini all'amatriciana €14. Enormous wine cellar. Book at least 1 week ahead (roscioli.com). If full: Felice a Testaccio (same quality, easier booking).",
@@ -2921,7 +2939,6 @@ const STATE = {
     {
       "id": "day-12-item-1",
       "dayId": "day-12",
-      "date": null,
       "time": "07:30",
       "title": "☕ Breakfast: Caffè Sant'Eustachio",
       "detail": "Piazza di Sant'Eustachio 82 — best espresso in Rome, full stop. Gran caffè speciale €2.20 (pre-sweetened — ask 'senza zucchero' if you want it plain). No seats — stand at bar. 5min walk from Pantheon.",
@@ -2938,7 +2955,6 @@ const STATE = {
     {
       "id": "day-12-item-4",
       "dayId": "day-12",
-      "date": null,
       "time": "13:00",
       "title": "🫙 Lunch: Terre e Domus, Roman Forum view",
       "detail": "Via Sacra (near Forum entrance). Rooftop terrace with direct views of the Colosseum and Forum. Cacio e pepe €14, supplì (fried rice balls) €4 each, local Frascati white €6/glass. Worth the slight premium for the view.",
@@ -2955,7 +2971,6 @@ const STATE = {
     {
       "id": "day-12-item-8",
       "dayId": "day-12",
-      "date": null,
       "time": "20:30",
       "title": "🍽️ Dinner: Da Enzo al 29, Trastevere",
       "detail": "Via dei Vascellari 29. Tiny, 10 tables, always full — book on their site. Cacio e pepe €13, coda alla vaccinara (oxtail stew) €14, carciofi alla romana €7. Authentic Romans eat here. One of Rome's best.",
@@ -2972,7 +2987,6 @@ const STATE = {
     {
       "id": "day-13-item-1",
       "dayId": "day-13",
-      "date": null,
       "time": "Morning",
       "title": "Final Rome breakfast + check out",
       "detail": "Keep the morning simple and efficient. Pack the night before and stay focused on the airport transfer.",
@@ -3209,6 +3223,30 @@ const STATE = {
           "pdfLabel": ""
         }
       ]
+    },
+    {
+      "id": "res-6",
+      "name": "Uffizi Gallery",
+      "date": "Mar 27, 2026",
+      "status": "booked",
+      "legs": [
+        {
+          "train": "Timed entry",
+          "from": "Uffizi entrance",
+          "fromTime": "09:15",
+          "to": "Florence",
+          "toTime": "—",
+          "pnr": "Total €58"
+        }
+      ],
+      "passengers": [
+        {
+          "name": "2 adults · entry booked",
+          "images": [],
+          "pdfUrl": "",
+          "pdfLabel": ""
+        }
+      ]
     }
   ]
 };
@@ -3222,11 +3260,11 @@ function fmtDay(n){ return new Intl.DateTimeFormat('en-GB',{weekday:'short',day:
 function pendingBookables(){ const out=[]; (STATE.segments||[]).forEach(s=>{ if(s.bookingRequired && s.bookingState==='pending') out.push({title:s.title,note:s.detail,url:'#',type:'transport'});}); (STATE.stays||[]).forEach(s=>{ if(s.bookingRequired && s.bookingState==='pending') out.push({title:s.name,note:s.note,url:s.bookingUrl||'#',type:'stay'});}); (STATE.activities||[]).forEach(a=>{ if(a.ticketRequired && a.ticketState==='pending') out.push({title:a.title,note:a.detail,url:'#',type:'activity'});}); if(!out.length){ (plan.urgent||[]).forEach(u=>out.push({title:u.label,note:u.note,url:u.url,type:'legacy'})); } return out; }
 function bookedTickets(){ return STATE.reservations||[]; }
 function budgetSummary(){ const items=plan.budget||[]; const booked=items.filter(isBooked).reduce((a,b)=>a+RM(b.amount),0); const pending=items.filter(x=>!isBooked(x)).reduce((a,b)=>a+RM(b.amount),0); return {booked,pending}; }
-function render(tab='live'){ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab)); const app=document.getElementById('app'); const day=currentDay(); const hotel=(STATE.stays||[]).find(s=>s.location&&day.title.toLowerCase().includes(String(s.location).split(',')[0].toLowerCase())&&s.bookingState==='booked') || (STATE.stays||[]).find(s=>s.status==='active'); const next=day.timeline[0]||{}; const transport=day.timeline.find(t=>t.type==='transport')||{}; const pending=pendingBookables(); const budget=budgetSummary(); if(tab==='live'){ app.innerHTML=`<div class='hero'><div class='kicker'>Live travel assistant</div><div class='title'>Today's flow</div><div class='sub'>${day.subtitle||day.title}</div><div class='chips'><div class='chip'>Today · Day ${day.day}</div><div class='chip'>${fmtDay(day.day)}</div>${hotel?`<div class='chip'>Stay · ${hotel.name}</div>`:''}</div></div><div class='card heroNext'><div class='kicker' style='color:var(--warm)'>Next move</div><div class='big'>${next.title||'Open today'}</div><div class='text'>${next.detail||''}</div><div class='actions'><a class='btn secondary' href='javascript:render("days")'>Open day plan</a>${hotel?.bookingUrl?`<a class='btn secondary' target='_blank' href='${hotel.bookingUrl}'>View hotel</a>`:''}</div></div><div class='meta'><div class='row'><div class='label'>Current stop</div><div class='value'>${day.title}</div></div><div class='row'><div class='label'>Transport</div><div class='value'>${transport.title||'No critical transport'}</div></div></div><div class='card'><div class='sectionTitle'>Pending now</div>${pending.slice(0,3).map(p=>`<div class='item'><div class='itemTitle'>${p.title}</div><div class='itemNote'>${p.note||''}</div></div>`).join('')||`<div class='itemTitle'>Nothing critical pending</div>`}</div><div class='card'><div class='sectionTitle'>Today timeline</div>${day.timeline.slice(0,6).map(t=>`<div class='timelineItem'><div class='time'>${t.time||''}</div><div><div class='itemTitle'>${t.title||''}</div><div class='itemNote'>${t.detail||''}</div></div></div>`).join('')}</div>`; }
-else if(tab==='days'){ app.innerHTML=`<div class='hero'><div class='kicker'>Days</div><div class='title'>Trip by day</div><div class='sub'>Canonical state still rendering current plan narrative</div></div>${plan.days.map(d=>`<div class='card'><div class='sectionTitle'>Day ${d.day} · ${fmtDay(d.day)}</div><div class='itemTitle'>${d.title}</div><div class='itemNote'>${d.subtitle||''}</div></div>`).join('')}`; }
-else if(tab==='book'){ app.innerHTML=`<div class='hero'><div class='kicker'>Book Now</div><div class='title'>Pending bookings</div><div class='sub'>Derived from state first, legacy urgent fallback second</div></div><div class='card'>${pending.map((p,i)=>`<div class='bookCard'><div class='bookTop'><div><div class='itemTitle'>${p.title}</div><div class='itemNote'>${p.note||''}</div></div><div class='pill'>#${i+1}</div></div><div class='actions'>${p.url?`<a class='btn' target='_blank' href='${p.url}'>Open</a>`:''}</div></div>`).join('')||'<div class="itemTitle">No pending bookings</div>'}</div>`; }
+function render(tab='live'){ document.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab)); const app=document.getElementById('app'); const day=currentDay(); const hotel=(STATE.stays||[]).find(s=>s.location&&day.title.toLowerCase().includes(String(s.location).split(',')[0].toLowerCase())&&s.bookingState==='booked') || (STATE.stays||[]).find(s=>s.status==='active'); const next=day.timeline[0]||{}; const transport=day.timeline.find(t=>t.type==='transport')||{}; const pending=pendingBookables(); const budget=budgetSummary(); if(tab==='live'){ app.innerHTML=`<div class='hero'><div class='kicker'>Live travel assistant</div><div class='title'>Today’s flow</div><div class='sub'>${day.subtitle||day.title}</div><div class='chips'><div class='chip'>Today · Day ${day.day}</div><div class='chip'>${fmtDay(day.day)}</div>${hotel?`<div class='chip'>Stay · ${hotel.name}</div>`:''}</div></div><div class='card heroNext'><div class='kicker' style='color:var(--warm)'>Next move</div><div class='big'>${next.title||'Open today'}</div><div class='text'>${next.detail||''}</div><div class='actions'><a class='btn secondary' href='javascript:render("days")'>Open day plan</a>${hotel?.bookingUrl?`<a class='btn secondary' target='_blank' href='${hotel.bookingUrl}'>View hotel</a>`:''}</div></div><div class='meta'><div class='row'><div class='label'>Current stop</div><div class='value'>${day.title}</div></div><div class='row'><div class='label'>Transport</div><div class='value'>${transport.title||'No critical transport'}</div></div></div><div class='card'><div class='sectionTitle warm'>Pending now</div>${pending.slice(0,3).map(p=>`<div class='bookCard'><div class='bookTop'><div><div class='itemTitle'>${p.title}</div><div class='itemNote'>${(p.note||'').split('. ')[0] || ''}</div></div><div class='pill'>Pending</div></div><div class='actions'>${p.url&&p.url!=='#'?`<a class='btn secondary' target='_blank' href='${p.url}'>Open</a>`:''}<a class='btn secondary' href='javascript:render("book")'>View all</a></div></div>`).join('')||`<div class='itemTitle'>Nothing critical pending</div>`}</div><div class='card'><div class='sectionTitle'>Today timeline</div>${day.timeline.slice(0,6).map(t=>`<div class='timelineItem'><div class='time'>${t.time||''}</div><div><div class='itemTitle'>${t.title||''}</div><div class='itemNote'>${t.detail||''}</div></div></div>`).join('')}</div>`; }
+else if(tab==='days'){ app.innerHTML=`<div class='hero'><div class='kicker'>Days</div><div class='title'>Trip by day</div><div class='sub'>Your itinerary, grounded in the new state-driven trip model.</div></div>${plan.days.map(d=>`<div class='card'><div class='sectionTitle'>Day ${d.day} · ${fmtDay(d.day)}</div><div class='itemTitle'>${d.title}</div><div class='itemNote'>${d.subtitle||''}</div></div>`).join('')}`; }
+else if(tab==='book'){ app.innerHTML=`<div class='hero'><div class='kicker'>Book Now</div><div class='title'>Pending bookings</div><div class='sub'>Actionable booking tasks derived from your trip state.</div></div><div class='card'>${pending.map((p,i)=>`<div class='bookCard'><div class='bookTop'><div><div class='itemTitle'>${p.title}</div><div class='itemNote'>${p.note||''}</div></div><div class='pill'>#${i+1}</div></div><div class='actions'>${p.url?`<a class='btn' target='_blank' href='${p.url}'>Open</a>`:''}</div></div>`).join('')||'<div class="itemTitle">No pending bookings</div>'}</div>`; }
 else if(tab==='tickets'){ const tickets=bookedTickets(); app.innerHTML=`<div class='hero'><div class='kicker'>Tickets</div><div class='title'>Booked travel</div><div class='sub'>Derived from reservations</div></div>${tickets.map(t=>`<div class='card'><div class='sectionTitle'>${t.date||''}</div><div class='itemTitle'>${t.name||''}</div>${(t.legs||[]).map(l=>`<div class='item'><div class='itemTitle'>${l.train||''}</div><div class='itemNote'>${l.from||''} ${l.fromTime||''} → ${l.to||''} ${l.toTime||''}${l.pnr?` · ${l.pnr}`:''}</div></div>`).join('')}</div>`).join('')}`; }
-else if(tab==='budget'){ app.innerHTML=`<div class='hero'><div class='kicker'>Budget</div><div class='title'>RM ${Math.round(budget.booked).toLocaleString()}</div><div class='sub'>Booked total · Pending estimate RM ${Math.round(budget.pending).toLocaleString()}</div></div><div class='card'>${(plan.budget||[]).map(i=>`<div class='item'><div class='itemTitle'>${i.label}</div><div class='itemNote'>${i.amount} · ${i.note||''}</div></div>`).join('')}</div>`; }
+else if(tab==='budget'){ app.innerHTML=`<div class='hero'><div class='kicker'>Budget</div><div class='title'>RM ${Math.round(budget.booked).toLocaleString()}</div><div class='sub'>Booked total · Pending estimate ≈ RM ${Math.round(budget.pending).toLocaleString()}</div></div><div class='card'>${(plan.budget||[]).map(i=>`<div class='item'><div class='itemTitle'>${i.label}</div><div class='itemNote'>${i.amount} · ${i.note||''}</div></div>`).join('')}</div>`; }
 }
 document.addEventListener('click',e=>{ const t=e.target.closest('.tabbtn'); if(t) render(t.dataset.tab); }); render('live');
 </script></body></html>
