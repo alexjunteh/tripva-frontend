@@ -1438,78 +1438,6 @@
         ]
       },
       {
-        "name": "Luzern → Venice",
-        "date": "Mar 24, 2026",
-        "legs": [
-          {
-            "train": "IR 2017",
-            "from": "Luzern",
-            "fromTime": "08:39 · Platform 4",
-            "to": "Arth-Goldau",
-            "toTime": "09:11 · Platform 6",
-            "pnr": "SBB order 151419996814"
-          },
-          {
-            "train": "EC 31",
-            "from": "Arth-Goldau",
-            "fromTime": "09:18 · Platform 3",
-            "to": "Venezia S. Lucia",
-            "toTime": "14:42",
-            "pnr": "RWXTWN"
-          }
-        ],
-        "passengers": [
-          {
-            "name": "Alex — Teh Jia Jun (Coach 3, Seat 36)",
-            "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
-          },
-          {
-            "name": "Khai Yee — Wong Khai Yee (Coach 3, Seat 35)",
-            "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
-          }
-        ]
-      },
-      {
-        "name": "FCO → PEN",
-        "date": "Mar 31 – Apr 1, 2026",
-        "legs": [
-          {
-            "train": "SQ365",
-            "from": "Rome FCO T3",
-            "fromTime": "31 Mar 11:40",
-            "to": "Singapore SIN",
-            "toTime": "01 Apr 06:00",
-            "pnr": "Booking 38499823"
-          },
-          {
-            "train": "SQ132",
-            "from": "Singapore SIN T2",
-            "fromTime": "01 Apr 08:00",
-            "to": "Penang PEN",
-            "toTime": "01 Apr 09:25",
-            "pnr": "Booking 38499823"
-          }
-        ],
-        "passengers": [
-          {
-            "name": "Alex — Teh Jia Jun (Ticket 6182474979615 · 30kg checked bag)",
-            "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
-          },
-          {
-            "name": "Khai Yee — Wong Khai Yee (Ticket 6182474979616 · 30kg checked bag)",
-            "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
-          }
-        ]
-      },
-      {
         "name": "Luzern ↔ Grindelwald",
         "date": "Mar 23–24, 2026",
         "legs": [
@@ -1534,14 +1462,50 @@
           {
             "name": "Alex — Teh Jia Jun (Ticket-ID 544413100538 · CHF 90)",
             "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
+            "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151420339818",
+            "pdfLabel": "View on SBB"
           },
           {
             "name": "Khai Yee — Wong Khai Yee (Ticket-ID 047161431286 · CHF 90)",
             "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
+            "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151420339818",
+            "pdfLabel": "View on SBB"
+          }
+        ]
+      },
+      {
+        "name": "Luzern → Venice",
+        "date": "Mar 24, 2026",
+        "legs": [
+          {
+            "train": "IR 2017",
+            "from": "Luzern",
+            "fromTime": "08:39 · Platform 4",
+            "to": "Arth-Goldau",
+            "toTime": "09:11 · Platform 6",
+            "pnr": "SBB order 151419996814"
+          },
+          {
+            "train": "EC 31",
+            "from": "Arth-Goldau",
+            "fromTime": "09:18 · Platform 3",
+            "to": "Venezia S. Lucia",
+            "toTime": "14:42",
+            "pnr": "RWXTWN"
+          }
+        ],
+        "passengers": [
+          {
+            "name": "Alex — Teh Jia Jun (Coach 3, Seat 36)",
+            "images": [],
+            "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151419996814",
+            "pdfLabel": "View on SBB"
+          },
+          {
+            "name": "Khai Yee — Wong Khai Yee (Coach 3, Seat 35)",
+            "images": [],
+            "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151419996814",
+            "pdfLabel": "View on SBB"
           }
         ]
       },
@@ -1592,6 +1556,42 @@
             "images": [],
             "pdfUrl": "",
             "pdfLabel": ""
+          }
+        ]
+      },
+      {
+        "name": "Rome → Penang",
+        "date": "Mar 31 – Apr 1, 2026",
+        "legs": [
+          {
+            "train": "SQ365",
+            "from": "Rome FCO T3",
+            "fromTime": "31 Mar 11:40",
+            "to": "Singapore SIN",
+            "toTime": "01 Apr 06:00",
+            "pnr": "Booking 38499823"
+          },
+          {
+            "train": "SQ132",
+            "from": "Singapore SIN T2",
+            "fromTime": "01 Apr 08:00",
+            "to": "Penang PEN",
+            "toTime": "01 Apr 09:25",
+            "pnr": "Booking 38499823"
+          }
+        ],
+        "passengers": [
+          {
+            "name": "Alex — Teh Jia Jun (Ticket 6182474979615 · 30kg checked bag)",
+            "images": [],
+            "pdfUrl": "https://www.singaporeair.com/en_UK/ppsclub-krisflyer/manage-booking/",
+            "pdfLabel": "Manage on SQ (ref DU7NVN)"
+          },
+          {
+            "name": "Khai Yee — Wong Khai Yee (Ticket 6182474979616 · 30kg checked bag)",
+            "images": [],
+            "pdfUrl": "https://www.singaporeair.com/en_UK/ppsclub-krisflyer/manage-booking/",
+            "pdfLabel": "Manage on SQ (ref DU7NVN)"
           }
         ]
       }
