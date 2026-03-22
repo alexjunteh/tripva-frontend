@@ -157,7 +157,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ops-todo:last-child{margin-bottom:0}
 .ops-todo-icon{font-size:18px;line-height:1.2}.ops-todo-main{flex:1}.ops-todo-title{font-size:14px;font-weight:900;line-height:1.32;letter-spacing:-.1px}.ops-todo-note{font-size:12px;color:#dbe8ff;margin-top:3px;line-height:1.48;font-weight:600}.ops-todo-actions{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}.ops-mini-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(180deg,#edf4ff,#dbe8ff);color:#0c1732;padding:8px 11px;border-radius:11px;font-size:11px;font-weight:900}.ops-mini-btn.secondary{background:rgba(255,255,255,.05);color:#dbe8ff;border:1px solid rgba(255,255,255,.10)}
 .ops-row{display:flex;gap:13px;padding:15px;border-radius:18px;margin-bottom:11px}.ops-row:last-child{margin-bottom:0}.ops-row-time{width:72px;flex-shrink:0;font-size:13px;font-weight:900;color:#95b8ff;padding-top:2px}.ops-row-main{flex:1}.ops-row-title{font-size:15px;font-weight:900;line-height:1.34;letter-spacing:-.1px}.ops-row-note{font-size:13px;color:#dbe8ff;margin-top:5px;line-height:1.55;font-weight:600}
-@media (max-width:390px){.ops-title{font-size:26px}.ops-card-title{font-size:23px}.ops-time-row{grid-template-columns:1fr}.ops-grid .ops-card{min-height:150px}}
+.ops-next-stage{margin:14px 14px 14px;padding:26px 20px 22px;border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 40px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.08)}
+.ops-next-label{font-size:11px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:#ffbf69;margin-bottom:10px}
+.ops-next-title{font-size:38px;font-weight:900;line-height:1.02;letter-spacing:-1.2px}
+.ops-next-text{font-size:16px;line-height:1.65;color:#eef3ff;margin-top:8px;font-weight:600}
+.ops-meta-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 14px}.ops-meta-item{padding:6px 2px}.ops-meta-lbl{font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;color:#a7c4ff;margin-bottom:6px}.ops-meta-val{font-size:15px;font-weight:800;line-height:1.35;color:#eef3ff}
+.ops-story-stack{display:flex;flex-direction:column;gap:12px;padding:0 14px}.ops-story-card{padding:18px 18px 16px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.10);box-shadow:0 16px 36px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.08)}.ops-story-kicker{font-size:11px;font-weight:900;letter-spacing:.75px;text-transform:uppercase;color:#a7c4ff;margin-bottom:8px}.ops-story-title{font-size:20px;font-weight:900;line-height:1.25;letter-spacing:-.25px}.ops-story-text{font-size:14px;color:#edf1fa;line-height:1.58;font-weight:600;margin-top:6px}.ops-inline-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media (max-width:390px){.ops-title{font-size:26px}.ops-card-title{font-size:23px}.ops-time-row{grid-template-columns:1fr}.ops-grid .ops-card{min-height:150px}.ops-meta-strip{grid-template-columns:1fr}.ops-next-title{font-size:32px}}
 
 /* Urgent section */
 .ov-section{padding:0 14px 6px}
@@ -443,46 +449,60 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="ops-scroll" id="opsScroll">
     <div class="ops-hero">
       <div class="ops-kicker">LIVE TRAVEL ASSISTANT</div>
-      <div class="ops-title">Live trip overview</div>
+      <div class="ops-title">Today’s flow</div>
       <div class="ops-sub" id="opsNowLine">Loading live itinerary status…</div>
       <div class="ops-chip-row" id="opsHeroChips"></div>
     </div>
-    <div class="ops-time-row">
-      <div class="ops-time-card"><div class="ops-time-lbl">Current time</div><div class="ops-time-val" id="opsCurrentTime">—</div></div>
-      <div class="ops-time-card"><div class="ops-time-lbl">Current stop</div><div class="ops-time-val" id="opsCurrentStop">—</div></div>
-    </div>
-    <div class="ops-card ops-primary">
-      <div class="ops-card-kicker">Next move</div>
-      <div class="ops-card-title" id="opsNextTitle">—</div>
-      <div class="ops-card-text" id="opsNextText">—</div>
+
+    <div class="ops-next-stage">
+      <div class="ops-next-label">NEXT MOVE</div>
+      <div class="ops-next-title" id="opsNextTitle">—</div>
+      <div class="ops-next-text" id="opsNextText">—</div>
       <div class="ops-actions" id="opsActions"></div>
     </div>
-    <div class="ops-grid">
-      <div class="ops-card">
-        <div class="ops-card-kicker">Transport status</div>
-        <div class="ops-mini-title" id="opsTransportTitle">—</div>
-        <div class="ops-card-text" id="opsTransportText">—</div>
+
+    <div class="ops-meta-strip">
+      <div class="ops-meta-item">
+        <div class="ops-meta-lbl">Current time</div>
+        <div class="ops-meta-val" id="opsCurrentTime">—</div>
       </div>
-      <div class="ops-card">
-        <div class="ops-card-kicker">Stay status</div>
-        <div class="ops-mini-title" id="opsStayTitle">—</div>
-        <div class="ops-card-text" id="opsStayText">—</div>
+      <div class="ops-meta-item">
+        <div class="ops-meta-lbl">Current stop</div>
+        <div class="ops-meta-val" id="opsCurrentStop">—</div>
       </div>
     </div>
-    <div class="ops-card">
-      <div class="ops-card-kicker">Pending now</div>
-      <div id="opsTodoList"></div>
-    </div>
-    <div class="ops-card">
-      <div class="ops-card-kicker">Today timeline</div>
-      <div id="opsTimeline"></div>
-    </div>
-    <div class="ops-card">
-      <div class="ops-card-kicker">Quick links</div>
-      <div class="ops-actions">
-        <a class="focus-btn" href="javascript:switchTab('tickets')">Open tickets</a>
-        <a class="focus-btn secondary" href="javascript:switchTab('days')">Today plan</a>
-        <a class="focus-btn secondary" href="javascript:switchTab('hotels')">Booking links</a>
+
+    <div class="ops-story-stack">
+      <div class="ops-story-card">
+        <div class="ops-story-kicker">Transport</div>
+        <div class="ops-story-title" id="opsTransportTitle">—</div>
+        <div class="ops-story-text" id="opsTransportText">—</div>
+      </div>
+
+      <div class="ops-story-card">
+        <div class="ops-story-kicker">Stay</div>
+        <div class="ops-story-title" id="opsStayTitle">—</div>
+        <div class="ops-story-text" id="opsStayText">—</div>
+        <div class="ops-inline-actions" id="opsStayActions"></div>
+      </div>
+
+      <div class="ops-card">
+        <div class="ops-card-kicker">Pending now</div>
+        <div id="opsTodoList"></div>
+      </div>
+
+      <div class="ops-card">
+        <div class="ops-card-kicker">Today timeline</div>
+        <div id="opsTimeline"></div>
+      </div>
+
+      <div class="ops-story-card">
+        <div class="ops-story-kicker">Quick links</div>
+        <div class="ops-inline-actions">
+          <a class="focus-btn" href="javascript:switchTab('tickets')">Tickets</a>
+          <a class="focus-btn secondary" href="javascript:switchTab('days')">Day plan</a>
+          <a class="focus-btn secondary" href="javascript:switchTab('hotels')">Book Now</a>
+        </div>
       </div>
     </div>
   </div>
