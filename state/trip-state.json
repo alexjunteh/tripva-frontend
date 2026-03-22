@@ -1509,13 +1509,21 @@
         "passengers": [
           {
             "name": "Alex — Teh Jia Jun (Coach 3, Seat 36)",
-            "images": [],
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/venice-overview.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/alex-venice-ir2017.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/alex-venice-ec31.jpg"
+            ],
             "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151419996814",
             "pdfLabel": "View on SBB"
           },
           {
             "name": "Khai Yee — Wong Khai Yee (Coach 3, Seat 35)",
-            "images": [],
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/venice-overview.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/ky-venice-ir2017.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/ky-venice-ec31.jpg"
+            ],
             "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151419996814",
             "pdfLabel": "View on SBB"
           }
