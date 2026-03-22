@@ -1,14 +1,28 @@
 {
-  "name": "Futurizta Trip Planner",
-  "short_name": "Trip Planner",
-  "description": "AI-powered travel planner with itinerary dashboard",
-  "start_url": "/trip-planner/",
+  "name": "Trip Live \u2014 AI Travel Assistant",
+  "short_name": "Trip Live",
+  "description": "AI-powered travel planner with live itinerary, ticket wallet, and budget tracking",
+  "start_url": "/trip-planner/italy-test.html",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
   "orientation": "portrait",
   "icons": [
-    { "src": "https://api.iconify.design/noto/airplane.svg?width=192", "sizes": "192x192", "type": "image/svg+xml" },
-    { "src": "https://api.iconify.design/noto/airplane.svg?width=512", "sizes": "512x512", "type": "image/svg+xml" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

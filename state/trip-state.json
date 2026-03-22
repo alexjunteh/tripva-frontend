@@ -65,14 +65,22 @@
             "title": "☕ Arrival drink: Bar & Vini A Pié de Ma'",
             "detail": "Right at the bottom of the train stairs. Espresso €1.20, local white wine €3. Best spot to shake off the journey. Has focaccia + local anchovies.",
             "type": "food",
-            "mapQuery": "Bar A Pié de Ma Riomaggiore"
+            "mapQuery": "Bar A Pié de Ma Riomaggiore",
+            "stars": 4.3,
+            "reviews": "1.2k",
+            "hours": "7:30–23:00",
+            "closedOn": null
           },
           {
             "time": "19:30",
             "title": "🐟 Dinner: Il Pescato Cucinato",
             "detail": "Best value in Cinque Terre. Fried anchovies, calamari, mixed fish plate €10–14pp. Queue outside, eat standing at the counter or nearby steps. Cash only.",
             "type": "food",
-            "mapQuery": "Il Pescato Cucinato Riomaggiore"
+            "mapQuery": "Il Pescato Cucinato Riomaggiore",
+            "stars": 4.4,
+            "reviews": "2.8k",
+            "hours": "11:30–22:00",
+            "closedOn": "Tue"
           }
         ],
         "highlights": [
@@ -101,7 +109,11 @@
             "title": "☕ Breakfast: Bar & Vini A Pié de Ma'",
             "detail": "Cornetto (croissant) €1.30 + cappuccino €1.40. Pack a focaccia slice for the hike (€2). Eat fast — first train to Monterosso at 08:30.",
             "type": "food",
-            "mapQuery": "Bar A Pie de Ma Riomaggiore"
+            "mapQuery": "Bar A Pie de Ma Riomaggiore",
+            "stars": 4.3,
+            "reviews": "1.2k",
+            "hours": "7:30–23:00",
+            "closedOn": null
           },
           {
             "time": "08:00",
@@ -157,7 +169,11 @@
             "title": "🍝 Dinner: Trattoria La Grotta",
             "detail": "Riomaggiore. Inside a cave — genuinely unique setting. Pesto trofie €13, grilled sea bass €18, house Vermentino €14/bottle. Reserve ahead or arrive before 19:00. Best dinner in Cinque Terre.",
             "type": "food",
-            "mapQuery": "Trattoria La Grotta Riomaggiore"
+            "mapQuery": "Trattoria La Grotta Riomaggiore",
+            "stars": 4.2,
+            "reviews": "1.5k",
+            "hours": "12:00–22:00",
+            "closedOn": "Tue"
           }
         ],
         "highlights": [
@@ -277,14 +293,22 @@
             "title": "🥂 Aperitivo: Nilus Bar",
             "detail": "Lakeside terrace, order a Negroni or Aperol Spritz €5–6. Sit facing the water — Bellagio's lights now fully reflected on the lake. Como mountains as a dark silhouette behind. Perfect 30 min wind-down before dinner.",
             "type": "food",
-            "mapQuery": "Nilus Bar Varenna"
+            "mapQuery": "Nilus Bar Varenna",
+            "stars": 4.4,
+            "reviews": "800+",
+            "hours": "10:00–01:00",
+            "closedOn": null
           },
           {
             "time": "20:15",
             "title": "🍝 Dinner: Il Cavatappi",
             "detail": "Via XX Settembre 10. Risotto al lago (perch fillet) €15, tagliatelle with wild mushrooms €13, lake fish €18. Cosy stone interior, dim lighting — perfect romantic end to the day. If you haven't called ahead: +39 0341 815349. Ask for a window table.",
             "type": "food",
-            "mapQuery": "Il Cavatappi Varenna"
+            "mapQuery": "Il Cavatappi Varenna",
+            "stars": 4.3,
+            "reviews": "1.8k",
+            "hours": "12:00–14:30, 18:30–22:00",
+            "closedOn": "Wed"
           }
         ],
         "highlights": [
@@ -351,10 +375,14 @@
         "timeline": [
           {
             "time": "09:30",
-            "title": "Breakfast: Heini Luzern",
-            "detail": "Start easy with pastries and coffee before the old-town loop. Order a butter gipfeli or nut pastry + coffee and keep it light after yesterday’s late arrival.",
+            "title": "☕ Breakfast: Bachmann Confiserie",
+            "detail": "Open Sundays. Swiss pastry institution — try a Nussgipfel (nut croissant) and coffee. Central location near Chapel Bridge, perfect start before the old-town loop.",
             "type": "food",
-            "mapQuery": "Heini Luzern"
+            "mapQuery": "Bachmann Confiserie Luzern Schwanenplatz",
+            "stars": 4.4,
+            "reviews": "1.8k",
+            "hours": "8:00–18:00",
+            "closedOn": null
           },
           {
             "time": "11:00",
@@ -372,10 +400,14 @@
           },
           {
             "time": "13:00",
-            "title": "Lunch: Wirtshaus Galliker",
-            "detail": "Best lunch anchor for today’s Swiss-city plan. Order one classic Swiss plate: veal sausage, schnitzel or rösti. This is the right stop for substance, not just scenery.",
+            "title": "🍽️ Lunch: Restaurant Taube",
+            "detail": "Open Sundays. Traditional Lucerne restaurant in the old town — serves Swiss classics like Zürcher Geschnetzeltes and rösti. Good alternative when Galliker is closed.",
             "type": "food",
-            "mapQuery": "Wirtshaus Galliker Luzern"
+            "mapQuery": "Restaurant Taube Luzern",
+            "stars": 4.3,
+            "reviews": "900+",
+            "hours": "11:00–23:00",
+            "closedOn": null
           },
           {
             "time": "14:30",
@@ -558,7 +590,11 @@
             "title": "🦞 Dinner: All'Arco, Venice (cicchetti)",
             "detail": "Best cicchetti bar in Venice — Calle dell'Arco near Rialto Market. Bite-size snacks €1.50–3 each — baccalà mantecato, sarde in saor, meatballs. Order 6–8 pieces + ombra wine (€1.50/glass). Real Venice experience.",
             "type": "food",
-            "mapQuery": "All'Arco cicchetti Venice"
+            "mapQuery": "All'Arco cicchetti Venice",
+            "stars": 4.5,
+            "reviews": "2.9k",
+            "hours": "8:00–14:30",
+            "closedOn": "Sun"
           }
         ],
         "highlights": [
@@ -594,14 +630,22 @@
             "title": "☕ Breakfast: Pasticceria Tonolo",
             "detail": "Best pastry shop in Venice. Dorsoduro 3764. Croissant + cappuccino €3.50. Sfogliatelle, tiramisu, bomboloni — all exceptional. Tiny, no seats — stand at the bar like Venetians. Opens 07:45.",
             "type": "food",
-            "mapQuery": "Pasticceria Tonolo Venice Dorsoduro"
+            "mapQuery": "Pasticceria Tonolo Venice Dorsoduro",
+            "stars": 4.5,
+            "reviews": "3.2k",
+            "hours": "7:45–20:00",
+            "closedOn": "Mon"
           },
           {
             "time": "12:30",
             "title": "🦐 Lunch: All'Arco (or Rialto Market)",
             "detail": "Return to All'Arco near Rialto for cicchetti lunch OR buy from the Rialto fish market stalls — cured meats, cheese, artichokes, €8–12 for a full spread. Eat on the market steps.",
             "type": "food",
-            "mapQuery": "Rialto Market Venice"
+            "mapQuery": "Rialto Market Venice",
+            "stars": 4.5,
+            "reviews": "2.9k",
+            "hours": "8:00–14:30",
+            "closedOn": "Sun"
           },
           {
             "time": "15:00",
@@ -629,7 +673,11 @@
             "title": "🎭 Dinner: Osteria Alle Testiere",
             "detail": "Venice's best small restaurant — only 24 seats. Book 2 weeks ahead (testiere.it). Tagliolini with shrimp €18, grilled turbot €32, wine pairing €20/person. Worth every euro — you'll remember this meal.",
             "type": "food",
-            "mapQuery": "Osteria Alle Testiere Venice"
+            "mapQuery": "Osteria Alle Testiere Venice",
+            "stars": 4.5,
+            "reviews": "1.3k",
+            "hours": "12:00–14:00, 19:00–22:30",
+            "closedOn": "Sun,Mon"
           }
         ],
         "highlights": [
@@ -700,7 +748,11 @@
             "title": "🥩 Lunch: Mercato Centrale, Florence",
             "detail": "Arrive Florence ~12:30. Head straight to Mercato Centrale upstairs food hall (Via dell'Ariento). Best lunch in Florence — lampredotto (tripe) sandwich €5, pasta al ragù €8, fresh pizza €6. Local crowd, no tourists upstairs.",
             "type": "food",
-            "mapQuery": "Mercato Centrale Florence"
+            "mapQuery": "Mercato Centrale Florence",
+            "stars": 4.3,
+            "reviews": "8k+",
+            "hours": "10:00–24:00",
+            "closedOn": null
           },
           {
             "time": "15:00",
@@ -721,7 +773,11 @@
             "title": "🍽️ Dinner: Trattoria Mario, Florence",
             "detail": "Via Rosina 2, since 1953. Cash only, communal tables, no menu — waiter tells you what's available. Ribollita €7, bistecca Fiorentina (600g) €35, house red €8/litre. Arrive at 19:45 for first seating — queue otherwise.",
             "type": "food",
-            "mapQuery": "Trattoria Mario Florence"
+            "mapQuery": "Trattoria Mario Florence",
+            "stars": 4.3,
+            "reviews": "6.5k",
+            "hours": "12:00–15:30",
+            "closedOn": "Sun"
           }
         ],
         "highlights": [
@@ -750,7 +806,11 @@
             "title": "☕ Breakfast: Caffè Gilli",
             "detail": "Historic café since 1733, Piazza della Repubblica. Cornetto di crema €2.20, cappuccino €2. Stand at the bar (not the tables — table service doubles the price). Art Nouveau interior. Instagram moment.",
             "type": "food",
-            "mapQuery": "Caffè Gilli Florence"
+            "mapQuery": "Caffè Gilli Florence",
+            "stars": 4.3,
+            "reviews": "4.2k",
+            "hours": "7:30–23:00",
+            "closedOn": null
           },
           {
             "time": "09:15",
@@ -764,7 +824,11 @@
             "title": "🥗 Lunch: Buca Mario",
             "detail": "Oldest restaurant in Florence (1886). Via Porta Rossa. Pappardelle al cinghiale €14, ribollita €9, grilled Chianina beef €22. More formal than Mario — but the history and vaulted ceilings are worth it.",
             "type": "food",
-            "mapQuery": "Buca Mario Florence"
+            "mapQuery": "Buca Mario Florence",
+            "stars": 4.2,
+            "reviews": "3.8k",
+            "hours": "12:00–14:30, 19:00–22:30",
+            "closedOn": "Sun"
           },
           {
             "time": "14:00",
@@ -792,7 +856,11 @@
             "title": "🥩 Dinner: Trattoria Sostanza",
             "detail": "Famous for butter rigatoni (rigatini al burro) and T-bone steak. Via della Porcellana 25. The butter pasta is life-changing — €12. Bistecca Fiorentina €55 for 2 (shared, minimum 1kg). Book ahead.",
             "type": "food",
-            "mapQuery": "Trattoria Sostanza Florence"
+            "mapQuery": "Trattoria Sostanza Florence",
+            "stars": 4.4,
+            "reviews": "2.1k",
+            "hours": "12:30–14:00, 19:30–21:30",
+            "closedOn": "Sat,Sun"
           }
         ],
         "highlights": [
@@ -870,7 +938,11 @@
             "title": "🍝 Dinner: Ristorante Roscioli",
             "detail": "Via dei Giubbonari 21. Rome's best pasta — tonnarelli cacio e pepe €16, bucatini all'amatriciana €14. Enormous wine cellar. Book at least 1 week ahead (roscioli.com). If full: Felice a Testaccio (same quality, easier booking).",
             "type": "food",
-            "mapQuery": "Roscioli Rome"
+            "mapQuery": "Roscioli Rome",
+            "stars": 4.5,
+            "reviews": "5.2k",
+            "hours": "12:30–15:30, 19:00–23:00",
+            "closedOn": null
           },
           {
             "time": "21:00",
@@ -955,7 +1027,11 @@
             "title": "🍽️ Dinner: Da Enzo al 29, Trastevere",
             "detail": "Via dei Vascellari 29. Tiny, 10 tables, always full — book on their site. Cacio e pepe €13, coda alla vaccinara (oxtail stew) €14, carciofi alla romana €7. Authentic Romans eat here. One of Rome's best.",
             "type": "food",
-            "mapQuery": "Da Enzo al 29 Trastevere Rome"
+            "mapQuery": "Da Enzo al 29 Trastevere Rome",
+            "stars": 4.5,
+            "reviews": "4.1k",
+            "hours": "12:00–15:00, 19:00–23:00",
+            "closedOn": "Sun"
           }
         ],
         "highlights": [
