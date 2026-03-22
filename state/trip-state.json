@@ -776,7 +776,7 @@
           {
             "time": "16:00",
             "title": "👨‍🎨 Accademia — Michelangelo's David",
-            "detail": "⚠️ BOOK ahead. David was carved by Michelangelo from a difficult block of marble and became a symbol of Florentine republican pride, not just a masterpiece of anatomy.",
+            "detail": "✅ BOOKED for 27 Mar at 16:00. Total €48 for 2 adults. David was carved by Michelangelo from a difficult block of marble and became a symbol of Florentine republican pride, not just a masterpiece of anatomy.",
             "type": "activity",
             "mapQuery": "Accademia Gallery Florence"
           },
@@ -1181,6 +1181,13 @@
         "icon": "💶",
         "note": "Estimate only",
         "pct": 65
+      },
+      {
+        "label": "Accademia tickets",
+        "amount": "€48 (~RM 250)",
+        "icon": "🗿",
+        "note": "✅ BOOKED for 2 adults · 27 Mar 16:00",
+        "pct": 5
       }
     ],
     "tips": [
@@ -1313,11 +1320,6 @@
         "label": "Rome hotel search (Mar 28–31)",
         "note": "Use Agoda · 2 adults · near Termini / Repubblica",
         "url": "https://www.agoda.com/search?textToSearch=Rome%20Termini%20Repubblica&checkIn=2026-03-28&checkOut=2026-03-31&rooms=1&adults=2&children=0&currency=MYR"
-      },
-      {
-        "label": "Accademia Gallery tickets (Mar 27)",
-        "note": "Book official/B-ticket — reserve David slot",
-        "url": "https://www.b-ticket.com/b-ticket/uffizi/"
       },
       {
         "label": "Colosseum tickets (Mar 29)",
@@ -1559,6 +1561,34 @@
         "passengers": [
           {
             "name": "2 adults · entry booked",
+            "images": [],
+            "pdfUrl": "",
+            "pdfLabel": ""
+          }
+        ]
+      },
+      {
+        "name": "Accademia Gallery",
+        "date": "Mar 27, 2026",
+        "legs": [
+          {
+            "train": "Timed entry",
+            "from": "Galleria dell'Accademia",
+            "fromTime": "16:00",
+            "to": "Florence",
+            "toTime": "—",
+            "pnr": "Total €48"
+          }
+        ],
+        "passengers": [
+          {
+            "name": "Alex — Teh Jia Jun (€24)",
+            "images": [],
+            "pdfUrl": "",
+            "pdfLabel": ""
+          },
+          {
+            "name": "Khai Yee — Wong Khai Yee (€24)",
             "images": [],
             "pdfUrl": "",
             "pdfLabel": ""
@@ -2326,11 +2356,11 @@
       "dayId": "day-10",
       "time": "16:00",
       "title": "👨‍🎨 Accademia — Michelangelo's David",
-      "detail": "⚠️ BOOK ahead. David was carved by Michelangelo from a difficult block of marble and became a symbol of Florentine republican pride, not just a masterpiece of anatomy.",
+      "detail": "✅ BOOKED for 27 Mar at 16:00. Total €48 for 2 adults.",
       "mapQuery": "Accademia Gallery Florence",
       "type": "activity",
       "ticketRequired": true,
-      "ticketState": "pending",
+      "ticketState": "booked",
       "status": "planned"
     },
     {
@@ -3240,6 +3270,30 @@
           "images": [],
           "pdfUrl": "",
           "pdfLabel": ""
+        }
+      ]
+    },
+    {
+      "id": "res-accademia",
+      "name": "Accademia Gallery",
+      "date": "Mar 27, 2026",
+      "status": "booked",
+      "legs": [
+        {
+          "train": "Timed entry",
+          "from": "Galleria dell'Accademia",
+          "fromTime": "16:00",
+          "to": "Florence",
+          "toTime": "—",
+          "pnr": "Total €48"
+        }
+      ],
+      "passengers": [
+        {
+          "name": "Alex — Teh Jia Jun (€24)"
+        },
+        {
+          "name": "Khai Yee — Wong Khai Yee (€24)"
         }
       ]
     }
