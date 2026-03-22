@@ -1469,13 +1469,17 @@
         "passengers": [
           {
             "name": "Alex — Teh Jia Jun (Ticket-ID 544413100538 · CHF 90)",
-            "images": [],
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/alex-grindelwald.jpg"
+            ],
             "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151420339818",
             "pdfLabel": "View on SBB"
           },
           {
             "name": "Khai Yee — Wong Khai Yee (Ticket-ID 047161431286 · CHF 90)",
-            "images": [],
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/ky-grindelwald.jpg"
+            ],
             "pdfUrl": "https://www.sbb.ch/ticketshop/b2c/ordertracking.do?hreflang=en&orderNumber=151420339818",
             "pdfLabel": "View on SBB"
           }
