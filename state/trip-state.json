@@ -1439,23 +1439,31 @@
       },
       {
         "name": "Luzern ↔ Grindelwald",
-        "date": "Mar 23–24, 2026",
+        "date": "Mar 23, 2026",
         "legs": [
           {
-            "train": "Point-to-point ticket",
+            "train": "PE LIX",
             "from": "Luzern",
-            "fromTime": "23 Mar 00:00 valid from",
-            "to": "Grindelwald Terminal",
-            "toTime": "24 Mar 05:00 valid until",
+            "fromTime": "09:06",
+            "to": "Interlaken Ost",
+            "toTime": "10:54",
             "pnr": "Order 151420339818"
           },
           {
-            "train": "Route",
-            "from": "via Brünig",
-            "fromTime": "Interlaken Ost",
-            "to": "Round-trip",
-            "toTime": "covered on same ticket",
+            "train": "R 61",
+            "from": "Interlaken Ost",
+            "fromTime": "11:04",
+            "to": "Grindelwald",
+            "toTime": "11:40",
             "pnr": null
+          },
+          {
+            "train": "Return",
+            "from": "Grindelwald",
+            "fromTime": "~16:00–17:00",
+            "to": "Luzern",
+            "toTime": "~18:30–19:30",
+            "pnr": "Same ticket (round-trip)"
           }
         ],
         "passengers": [
