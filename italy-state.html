@@ -1063,7 +1063,7 @@ function populateDashboard(p) {
     document.getElementById('tripDates').textContent=[t.dates,t.people&&t.people+' people'].filter(Boolean).join(' · ');
     if(t.days) document.getElementById('statDays').textContent=t.days;
     if(t.people) document.getElementById('statPeople').textContent=t.people;
-    if(t.budget) document.getElementById('statBudget').textContent=t.budget.replace(/per person.*/i,'').trim().substring(0,8);
+    if(t.budget){const _bi=p.budget||[];const _bt=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_bt>0?('~RM '+Math.round(_bt).toLocaleString()):'—';}
     const heroImg=t.imageUrl||( t.heroSeed?`https://picsum.photos/seed/${t.heroSeed}/900/500`:null);
     if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
   }
@@ -1509,7 +1509,7 @@ function sheetNav(dir) {
 // ══════════════════════════════════════
 function openEditModal() { document.getElementById('editName').value=tripMeta.name||''; document.getElementById('editEmoji').value=tripMeta.emoji||''; document.getElementById('editDates').value=tripMeta.dates||''; document.getElementById('editPeople').value=tripMeta.people||''; document.getElementById('editBudget').value=tripMeta.budget||''; document.getElementById('editModal').classList.add('open'); }
 function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
-function restoreMeta() { if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget) document.getElementById('statBudget').textContent=tripMeta.budget.replace(/per person.*/i,'').trim().substring(0,8); const cached=localStorage.getItem('tripai_plan'); if(cached){try{plan=JSON.parse(cached);populateDashboard(plan);}catch(e){}} else { renderLiveOps(); } }
+function restoreMeta() { if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripai_plan'); if(cached){try{plan=JSON.parse(cached);populateDashboard(plan);}catch(e){}} else { renderLiveOps(); } }
 
 // ══════════════════════════════════════
 //  SHARE / EXPORT
