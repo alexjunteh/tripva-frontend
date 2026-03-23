@@ -294,14 +294,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .day-gallery-hdr{font-size:13px;font-weight:900;letter-spacing:.3px;margin-bottom:10px;color:rgba(255,255,255,.7)}
 /* ── BOOK NOW SEGMENTS ── */
 .booknow-segment{margin-bottom:8px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:14px 12px;overflow:hidden}
+.card-btn.done-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:#4ade80}
 .booknow-seg-hdr{font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .booknow-seg-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .booknow-seg-dot.pending{background:#ffb24d}
 .booknow-seg-dot.booked{background:#4ade80}
 .booknow-seg-dot.arrange{background:rgba(255,255,255,.3)}
-.booknow-segment.pending .booknow-seg-hdr{color:#ffb24d}
-.booknow-segment.booked .booknow-seg-hdr{color:#4ade80}
-.booknow-segment.arrange .booknow-seg-hdr{color:rgba(255,255,255,.5)}
+.booknow-segment.pending .card-btn.done-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:#4ade80}
+.booknow-seg-hdr{color:#ffb24d}
+.booknow-segment.booked .card-btn.done-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:#4ade80}
+.booknow-seg-hdr{color:#4ade80}
+.booknow-segment.arrange .card-btn.done-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:#4ade80}
+.booknow-seg-hdr{color:rgba(255,255,255,.5)}
 .book-card.booked-card{border-left:3px solid rgba(74,222,128,.4)}
 .book-card.booked-card .book-card-title{color:rgba(255,255,255,.8)}
 .booked-chip{background:rgba(74,222,128,.15)!important;color:#4ade80!important;border-color:rgba(74,222,128,.3)!important}
@@ -372,6 +380,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* ─── TICKETS TAB ─── */
 #tab-tickets{background:var(--bg)}
+.next-tkt-hero{background:linear-gradient(135deg,#1a1040,#2a1060);border:1px solid rgba(149,184,255,.25);border-radius:20px;padding:18px;box-shadow:0 8px 32px rgba(124,106,247,.2)}
+.next-tkt-kicker{font-size:11px;font-weight:900;letter-spacing:.8px;color:#95b8ff;margin-bottom:8px}
+.next-tkt-route{font-size:20px;font-weight:900;letter-spacing:-.3px;line-height:1.2}
+.next-tkt-meta{font-size:13px;color:rgba(255,255,255,.6);margin-top:5px;font-weight:600}
+.next-tkt-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.next-tkt-btn{background:rgba(149,184,255,.15);border:1px solid rgba(149,184,255,.3);color:#95b8ff;font-size:12px;font-weight:800;padding:8px 16px;border-radius:20px;text-decoration:none;cursor:pointer}
+.next-tkt-btn.primary{background:linear-gradient(135deg,#7c6af7,#5b4dd4);border-color:transparent;color:white}
 .tickets-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 20px}
 .tickets-intro{padding:10px 0 4px;font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
 .bp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
@@ -673,6 +688,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 <!-- ── 4. TICKETS ── -->
 <div id="tab-tickets" class="tab-content">
+  <!-- NEXT TICKET HERO -->
+  <div id="nextTicketHero" style="display:none;padding:14px 14px 0">
+    <div class="next-tkt-hero">
+      <div class="next-tkt-kicker">⬆️ YOUR NEXT TICKET</div>
+      <div class="next-tkt-route" id="nextTktRoute">—</div>
+      <div class="next-tkt-meta" id="nextTktMeta"></div>
+      <div class="next-tkt-actions" id="nextTktActions"></div>
+    </div>
+  </div>
+  <div style="padding:10px 14px 2px;font-size:11px;font-weight:800;letter-spacing:.4px;color:rgba(255,255,255,.35)" id="allTicketsHdr">ALL TICKETS</div>
   <div class="tickets-scroll" id="ticketsScroll">
     <div class="empty-state" id="ticketsEmpty">
       <div class="es-icon">🎟️</div>
@@ -1379,6 +1404,26 @@ function populateDashboard(p) {
     });
   }
 
+  // ── NEXT TICKET DERIVATION ──
+  const nowYmd = getTripDateInfo ? getTripDateInfo().ymd : new Date().toISOString().slice(0,10);
+  const upcoming = (p.tickets||[]).filter(t => {
+    // Parse ticket date: "Mar 23, 2026" or "2026-03-23" format
+    const raw = t.date||'';
+    const m = raw.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/);
+    if(m){ const months={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const d=new Date(Date.UTC(parseInt(m[3]),months[m[1]]||0,parseInt(m[2]))); return d.toISOString().slice(0,10) >= nowYmd; }
+    return raw >= nowYmd;
+  }).sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+  const nextTkt = upcoming[0] || null;
+  const hero = document.getElementById('nextTicketHero');
+  if(nextTkt && hero){
+    hero.style.display = '';
+    document.getElementById('nextTktRoute').textContent = (/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(nextTkt.name||'')?'🎟️':/penang|flight|SQ/i.test(nextTkt.name||'')?'✈️':'🚂') + ' ' + (nextTkt.name||'');
+    const firstLeg = (nextTkt.legs||[])[0];
+    document.getElementById('nextTktMeta').textContent = (nextTkt.date||'') + (firstLeg ? ' · ' + (firstLeg.fromTime||'') + ' from ' + (firstLeg.from||'') + (firstLeg.fromPlatform?' · Platform '+firstLeg.fromPlatform:'') : '');
+    const pax0 = (nextTkt.passengers||[])[0];
+    const actEl = document.getElementById('nextTktActions');
+    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="switchTab('tickets')">View ticket →</button>` + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
+  }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
   try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
@@ -1749,7 +1794,27 @@ function loadFromHash() {
     if(data.plan){plan=data.plan;populateDashboard(plan);}
     if(data.msgs){msgs=data.msgs;const box=document.getElementById('chatMsgs');data.msgs.forEach(m=>{const el=document.createElement('div');el.className='msg '+(m.role==='assistant'?'ai':m.role);if(m.role==='assistant'||m.role==='ai'){el.innerHTML=`<div class="ai-ava">✈️</div><div class="bubble">${md(m.content)}</div><div class="msg-time">Restored</div>`;}else{el.innerHTML=`<div class="bubble">${esc(m.content)}</div><div class="msg-time">Restored</div>`;}box.appendChild(el);});}
     document.getElementById('restoredBanner').style.display='flex';
-    document.getElementById('saveBar').style.display='flex';
+    // ── NEXT TICKET DERIVATION ──
+  const nowYmd = getTripDateInfo ? getTripDateInfo().ymd : new Date().toISOString().slice(0,10);
+  const upcoming = (p.tickets||[]).filter(t => {
+    // Parse ticket date: "Mar 23, 2026" or "2026-03-23" format
+    const raw = t.date||'';
+    const m = raw.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/);
+    if(m){ const months={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const d=new Date(Date.UTC(parseInt(m[3]),months[m[1]]||0,parseInt(m[2]))); return d.toISOString().slice(0,10) >= nowYmd; }
+    return raw >= nowYmd;
+  }).sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+  const nextTkt = upcoming[0] || null;
+  const hero = document.getElementById('nextTicketHero');
+  if(nextTkt && hero){
+    hero.style.display = '';
+    document.getElementById('nextTktRoute').textContent = (/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(nextTkt.name||'')?'🎟️':/penang|flight|SQ/i.test(nextTkt.name||'')?'✈️':'🚂') + ' ' + (nextTkt.name||'');
+    const firstLeg = (nextTkt.legs||[])[0];
+    document.getElementById('nextTktMeta').textContent = (nextTkt.date||'') + (firstLeg ? ' · ' + (firstLeg.fromTime||'') + ' from ' + (firstLeg.from||'') + (firstLeg.fromPlatform?' · Platform '+firstLeg.fromPlatform:'') : '');
+    const pax0 = (nextTkt.passengers||[])[0];
+    const actEl = document.getElementById('nextTktActions');
+    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="switchTab('tickets')">View ticket →</button>` + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
+  }
+  document.getElementById('saveBar').style.display='flex';
     setTimeout(()=>switchTab('trip'),400);
     showToast('✅ Trip loaded!');
   } catch(e){console.warn('Hash load failed',e);}
