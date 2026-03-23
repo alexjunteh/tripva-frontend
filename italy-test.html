@@ -149,7 +149,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .live-next-title{font-size:22px;font-weight:900;line-height:1.15;letter-spacing:-.5px;margin-bottom:8px}
 .live-next-text{font-size:14px;color:rgba(255,255,255,.72);line-height:1.55;font-weight:500}
 .live-next-actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
-.live-next-actions .focus-btn:first-child{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#0a0a0f;border-color:transparent}
+.live-next-actions .focus-btn:first-child{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#0a0a0f;border-color:transparent;font-weight:800}
+.live-next-actions .focus-btn:not(:first-child){opacity:.7}
 .live-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 14px 0}
 .live-tile{background:#1a1a28;border:none;border-radius:18px;padding:16px 14px;min-height:90px;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .live-tile-icon{font-size:20px;margin-bottom:6px}
@@ -304,6 +305,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .booked-chip{background:rgba(74,222,128,.15)!important;color:#4ade80!important;border-color:rgba(74,222,128,.3)!important}
 .booked-btn{background:rgba(74,222,128,.12)!important;color:#4ade80!important;border-color:rgba(74,222,128,.25)!important}
 .book-card.arrange-card{opacity:.7;border-left:3px solid rgba(255,255,255,.15)}
+.book-card.priority .book-card-title::before{display:inline-block;margin-right:6px}
+.booknow-segment.pending .book-card:nth-child(2) .book-btn{background:rgba(255,178,77,.15);color:#ffb24d;border-color:rgba(255,178,77,.3)}
+.booknow-segment.pending .book-card:nth-child(2) .book-card-meta::after{content:'⏰ Book soon';background:rgba(255,80,80,.15);color:#ff6b6b;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;margin-left:8px}
 /* ── BUDGET SEGMENTS ── */
 .budget-section-hdr{font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:16px 0 8px;margin-top:4px}
 .budget-section-hdr.budget-booked{color:#4ade80;border-top:1px solid rgba(74,222,128,.15)}
@@ -312,6 +316,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .budget-row.budget-pending{border-left:3px solid rgba(255,178,77,.3);padding-left:12px;margin-left:2px;opacity:.85}
 .budget-row.budget-booked .budget-amount{color:#4ade80}
 .budget-row.budget-pending .budget-amount{color:#ffb24d}
+.bp-card.next-ticket{border:1px solid rgba(149,184,255,.2);box-shadow:0 0 20px rgba(124,106,247,.1)}
+.bp-card.next-ticket::before{content:"⬆️ NEXT";display:block;font-size:10px;font-weight:900;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
+.ticket-hint{display:block;font-size:11px;color:rgba(255,255,255,.35);text-align:center;padding:4px 0 12px;font-weight:500}
 .tl-platform{display:inline-flex;align-items:center;background:#ffb24d;color:#0a0a0f;font-size:11px;font-weight:900;padding:2px 7px;border-radius:6px;margin-left:6px;letter-spacing:.3px;vertical-align:middle}
 .tl-stars{font-size:12px;color:#ffb24d;margin-top:4px;line-height:1.4;font-weight:600}
 .tl-detail{font-size:13px;color:rgba(255,255,255,.78);margin-top:5px;line-height:1.65}
