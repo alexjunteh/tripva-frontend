@@ -1067,6 +1067,7 @@ async function loadTripPlan() {
           populateDashboard(plan);
           renderLiveOps();
           switchTab('plan');
+          if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Roam';
           const banner = document.getElementById('restoredBanner');
           if (banner) { banner.textContent = '✅ Trip loaded from shared link'; banner.style.display = 'flex'; }
           showLoadingSpinner(false);
@@ -1075,6 +1076,9 @@ async function loadTripPlan() {
       }
     } catch(e) { console.warn('Backend load failed:', e); }
     showLoadingSpinner(false);
+    // Plan not found for this id — show proper empty state
+    showNoTripFound();
+    return;
   }
 
   // Fallback: localStorage
@@ -1099,6 +1103,17 @@ async function loadTripPlan() {
   if (focusCard) {
     focusCard.style.display = 'block';
     focusCard.innerHTML = '<div style="text-align:center;padding:32px 16px"><div style="font-size:48px;margin-bottom:16px">🗺️</div><div style="font-size:18px;font-weight:800;margin-bottom:8px">No trip yet</div><div style="font-size:14px;color:rgba(255,255,255,.45);margin-bottom:20px">Plan your first trip to get started</div><a href="index.html" style="display:inline-block;background:linear-gradient(135deg,#95b8ff,#7c6af7);color:#0a0a0f;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:800;text-decoration:none">Plan a trip →</a></div>';
+  }
+}
+
+function showNoTripFound() {
+  switchTab('trip');
+  document.getElementById('tripName').textContent = 'No trip found';
+  document.getElementById('tripDates').textContent = '';
+  const focusCard = document.getElementById('focusCard');
+  if (focusCard) {
+    focusCard.style.display = 'block';
+    focusCard.innerHTML = '<div style="text-align:center;padding:40px 20px"><div style="font-size:56px;margin-bottom:16px">✈️</div><div style="font-size:20px;font-weight:800;margin-bottom:10px">No trip found</div><div style="font-size:14px;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:24px">This trip may have expired or the link is invalid.</div><a href="index.html" style="display:inline-block;background:linear-gradient(135deg,#95b8ff,#7c6af7);color:#0a0a0f;padding:13px 28px;border-radius:22px;font-size:14px;font-weight:900;text-decoration:none">Plan a new trip →</a></div>';
   }
 }
 
