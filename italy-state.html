@@ -327,6 +327,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .route-map-wrap.collapsed .route-map-toggle{position:relative;background:rgba(255,255,255,.04);border-radius:12px;margin:0 14px;padding:12px}
 .bp-card.next-ticket::before{content:"⬆️ NEXT";display:block;font-size:10px;font-weight:900;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
 .ticket-hint{display:block;font-size:11px;color:rgba(255,255,255,.35);text-align:center;padding:4px 0 12px;font-weight:500}
+.live-tile-wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px;min-height:60px}
+.live-tile-wide .live-tile-icon{font-size:28px;margin-bottom:0;flex:0 0 auto}
+.live-tile-wide .live-tile-val{font-size:22px;font-weight:900;flex:0 0 auto}
+.live-tile-wide .live-tile-lbl{font-size:13px;color:rgba(255,255,255,.55);margin-top:0;font-weight:500;flex:1}
 .ops-row-past{opacity:.4}
 .ops-row-past .ops-row-title{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2)}
 .done-dot{color:#4ade80;font-size:10px;margin-left:4px;font-weight:900}
@@ -569,6 +573,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="live-tile-val" id="opsStayTitle">—</div>
         <div class="live-tile-lbl" id="opsStayText"></div>
         <div class="live-tile-actions" id="opsStayActions"></div>
+      </div>
+      <div class="live-tile live-tile-wide" id="weatherTile">
+        <div class="live-tile-icon" id="weatherIcon">🌤️</div>
+        <div class="live-tile-val" id="weatherTemp">—</div>
+        <div class="live-tile-lbl" id="weatherDesc">Loading weather…</div>
       </div>
     </div>
 
@@ -1458,6 +1467,23 @@ function renderLiveOps(){
       if(titleLow.includes(city)){ heroImg=url; break; }
     }
   }
+
+  // ── LIVE WEATHER ──
+  const WX_CODES={0:'Clear sky',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
+  const WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌦️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',99:'⛈️'};
+  const WX_STOPS={'riomaggiore':[44.0997,9.7380],'cinque terre':[44.0997,9.7380],'vernazza':[44.1337,9.6831],'varenna':[46.0103,9.2847],'como':[46.0103,9.2847],'lucerne':[47.0502,8.3093],'luzern':[47.0502,8.3093],'grindelwald':[46.6244,8.0413],'interlaken':[46.6861,7.8536],'venice':[45.4408,12.3155],'venezia':[45.4408,12.3155],'florence':[43.7696,11.2558],'firenze':[43.7696,11.2558],'rome':[41.9028,12.4964],'roma':[41.9028,12.4964]};
+  let wxCoords=null;
+  for(const [k,v] of Object.entries(WX_STOPS)){if((destPart||'').includes(k)||titleLow.includes(k)){wxCoords=v;break;}}
+  if(wxCoords){
+    const wxCacheKey='wx_'+wxCoords.join('_')+'_'+info.ymd+new Date().getHours();
+    const wxCached=sessionStorage.getItem(wxCacheKey);
+    const applyWx=(c)=>{const code=c.weather_code;document.getElementById('weatherIcon').textContent=WX_ICONS[code]||'🌤️';document.getElementById('weatherTemp').textContent=Math.round(c.temperature_2m)+'°C';document.getElementById('weatherDesc').textContent=(WX_CODES[code]||'')+(c.wind_speed_10m?' · Wind '+c.wind_speed_10m+' km/h':'');};
+    if(wxCached){try{applyWx(JSON.parse(wxCached));}catch(e){}}
+    else fetch('https://api.open-meteo.com/v1/forecast?latitude='+wxCoords[0]+'&longitude='+wxCoords[1]+'&current=temperature_2m,weather_code,wind_speed_10m&timezone=Europe%2FRome')
+      .then(r=>r.json()).then(d=>{sessionStorage.setItem(wxCacheKey,JSON.stringify(d.current));applyWx(d.current);})
+      .catch(()=>{if(document.getElementById('weatherDesc'))document.getElementById('weatherDesc').textContent='Weather unavailable';});
+  }
+
   if(!heroImg) heroImg='https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=500&fit=crop';
   if(el('liveHero')) el('liveHero').style.backgroundImage=`url('${heroImg}')`;
   if(el('liveHeroLocation')) el('liveHeroLocation').textContent = day.title || 'Trip in progress';
