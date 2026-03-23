@@ -327,6 +327,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .route-map-wrap.collapsed .route-map-toggle{position:relative;background:rgba(255,255,255,.04);border-radius:12px;margin:0 14px;padding:12px}
 .bp-card.next-ticket::before{content:"⬆️ NEXT";display:block;font-size:10px;font-weight:900;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
 .ticket-hint{display:block;font-size:11px;color:rgba(255,255,255,.35);text-align:center;padding:4px 0 12px;font-weight:500}
+.ops-row-past{opacity:.4}
+.ops-row-past .ops-row-title{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2)}
+.done-dot{color:#4ade80;font-size:10px;margin-left:4px;font-weight:900}
+.ops-row-current .ops-row-title{color:var(--accent);font-weight:800}
+.ops-row-current{border-left:2px solid var(--accent);padding-left:8px}
 .tl-platform{display:inline-flex;align-items:center;background:#ffb24d;color:#0a0a0f;font-size:11px;font-weight:900;padding:2px 7px;border-radius:6px;margin-left:6px;letter-spacing:.3px;vertical-align:middle}
 .tl-stars{font-size:12px;color:#ffb24d;margin-top:4px;line-height:1.4;font-weight:600}
 .tl-detail{font-size:13px;color:rgba(255,255,255,.78);margin-top:5px;line-height:1.65}
@@ -1429,12 +1434,29 @@ function renderLiveOps(){
   const day=plan.days[currentIdx] || plan.days[0];
   const nextDay=plan.days[currentIdx+1];
   const hotelsByTitle = (plan.hotels||[]);
-  const currentHotel = hotelsByTitle.find(h => (day.title||'').toLowerCase().includes((h.city||'').split(',')[0].toLowerCase()) || (h.city||'').toLowerCase().includes((day.title||'').split(' ')[0].toLowerCase()));
+  // Match hotel by check-in/check-out dates first, then title
+  const currentHotel = hotelsByTitle.find(h => {
+    if(h.checkin && h.checkout){
+      return info.ymd >= h.checkin && info.ymd < h.checkout;
+    }
+    // fallback: city name match
+    const cityKey=(h.city||'').split(',')[0].toLowerCase().split(' ')[0];
+    const titleWords=(day.title||'').toLowerCase();
+    return cityKey.length>2 && titleWords.includes(cityKey);
+  }) || hotelsByTitle.find(h => (h.city||'').toLowerCase().split(',')[0].split(' ').some(w=>w.length>3 && (day.title||'').toLowerCase().includes(w)));
   // Set hero image
   const titleLow = (day.title||'').toLowerCase();
   let heroImg = '';
+  // For travel days (X → Y), prioritise destination (Y)
+  const arrowParts = titleLow.split(/→|to /);
+  const destPart = arrowParts.length > 1 ? arrowParts[arrowParts.length-1].trim() : titleLow;
   for(const [city, url] of Object.entries(CITY_IMGS)){
-    if(titleLow.includes(city)){ heroImg=url; break; }
+    if(destPart.includes(city)){ heroImg=url; break; }
+  }
+  if(!heroImg){
+    for(const [city, url] of Object.entries(CITY_IMGS)){
+      if(titleLow.includes(city)){ heroImg=url; break; }
+    }
   }
   if(!heroImg) heroImg='https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=500&fit=crop';
   if(el('liveHero')) el('liveHero').style.backgroundImage=`url('${heroImg}')`;
@@ -1458,11 +1480,13 @@ function renderLiveOps(){
   if(localHour >= 18 && nextDay?.timeline?.[0]) {
     firstItem = {...nextDay.timeline[0], title:`Tomorrow · ${nextDay.timeline[0].title}`};
   }
-  const trainItem=(day.timeline||[]).find(t=>/train|frecciarossa|leonardo express|rotair|rail/i.test((t.title||'')+' '+(t.detail||'')));
+  // Next upcoming train only (not already departed)
+  const allTrains=(day.timeline||[]).filter(t=>/train|frecciarossa|leonardo express|rotair|rail|PE LIX|EC |IR |IC /i.test((t.title||'')+' '+(t.detail||'')));
+  const trainItem=allTrains.find(t=>{ const tm=parseTimeMins(t.time); return tm<0||tm>nowMins; })||allTrains[allTrains.length-1]||null;
   const hotelItem=(day.timeline||[]).find(t=>t.type==='hotel');
   el('opsCurrentStop').textContent = day.title || 'Trip in progress';
   if(el('opsNowLine')) el('opsNowLine').textContent = day.subtitle || day.title || 'Trip in progress';
-  if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> · Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> · ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Next</strong> · ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
+  if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> · Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> · ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Train</strong> · ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
   el('opsNextTitle').textContent = firstItem.title || 'Open today\u2019s plan';
   el('opsNextText').textContent = firstItem.detail || 'Use the day sheet for the full itinerary.';
   const transportTitle = trainItem ? (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title) : 'No critical transport right now';
@@ -1483,7 +1507,19 @@ function renderLiveOps(){
     ...urgentPreview,
     (nextDay?`<div class="ops-todo"><div class="ops-todo-icon">➡️</div><div class="ops-todo-main"><div class="ops-todo-title">Next trip leg: Day ${nextDay.day} - ${esc(nextDay.title||'')}</div><div class="ops-todo-note">${formatDayDate(nextDay.day)} · ${esc(nextDay.subtitle||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx+1})">Open next day →</a><a class="ops-mini-btn secondary" href="javascript:switchTab('hotels')">Book Now hub</a></div></div></div>`:'')
   ].join('') || '<div class="ops-todo"><div class="ops-todo-icon">✅</div><div class="ops-todo-main"><div class="ops-todo-title">No urgent tasks right now</div><div class="ops-todo-note">Everything critical is already handled.</div></div></div>';
-  el('opsTimeline').innerHTML = (day.timeline||[]).slice(0,6).map(t=>`<div class="ops-row"><div class="ops-row-time">${esc(t.time||'')}</div><div class="ops-row-main"><div class="ops-row-title">${esc(t.title||'')}${t.platform?` <span class="tl-platform">P${esc(t.platform)}</span>`:''}</div>${t.stars?`<div class="tl-stars" style="margin:3px 0">⭐ ${t.stars}/5${t.reviews?' · '+t.reviews+' reviews':''}</div>`:''}<div class="ops-row-note">${esc(t.detail||'')}</div></div></div>`).join('');
+  el('opsTimeline').innerHTML = (day.timeline||[]).slice(0,7).map(t=>{
+    const tm=parseTimeMins(t.time);
+    const isPast=tm>=0 && tm<nowMins;
+    const isCurrent=t===firstItem;
+    return `<div class="ops-row${isPast?' ops-row-past':''}${isCurrent?' ops-row-current':''}">
+      <div class="ops-row-time">${esc(t.time||'')}${isPast?'<span class="done-dot">✓</span>':''}</div>
+      <div class="ops-row-main">
+        <div class="ops-row-title">${esc(t.title||'')}${t.platform?` <span class="tl-platform">P${esc(t.platform)}</span>`:''}</div>
+        ${t.stars?`<div class="tl-stars" style="margin:3px 0">⭐ ${t.stars}/5${t.reviews?' · '+t.reviews+' reviews':''}</div>`:''}
+        <div class="ops-row-note">${esc(t.detail||'')}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 // ══════════════════════════════════════
 //  DAY DETAIL SHEET
