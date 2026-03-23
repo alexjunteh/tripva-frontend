@@ -1892,13 +1892,17 @@
         "passengers": [
           {
             "name": "Alex — Teh Jia Jun (€24)",
-            "images": [],
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/alex-accademia.jpg"
+            ],
             "pdfUrl": "",
             "pdfLabel": ""
           },
           {
             "name": "Khai Yee — Wong Khai Yee (€24)",
-            "images": [],
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/ky-accademia.jpg"
+            ],
             "pdfUrl": "",
             "pdfLabel": ""
           }
