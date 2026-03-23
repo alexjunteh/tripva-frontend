@@ -331,6 +331,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .live-tile-wide .live-tile-icon{font-size:28px;margin-bottom:0;flex:0 0 auto}
 .live-tile-wide .live-tile-val{font-size:22px;font-weight:900;flex:0 0 auto}
 .live-tile-wide .live-tile-lbl{font-size:13px;color:rgba(255,255,255,.55);margin-top:0;font-weight:500;flex:1}
+.tomorrow-card{background:linear-gradient(135deg,rgba(255,190,60,.08),rgba(124,106,247,.08));border:1px solid rgba(255,190,60,.2);border-radius:16px;padding:16px}
+.tomorrow-wake{font-size:22px;font-weight:900;color:#ffbe3c;letter-spacing:-.5px}
+.tomorrow-train{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);margin-top:4px}
+.tomorrow-detail{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.tomorrow-badge{display:inline-block;background:rgba(255,190,60,.15);border:1px solid rgba(255,190,60,.3);color:#ffbe3c;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;margin-top:8px;letter-spacing:.3px}
 .ops-row-past{opacity:.4}
 .ops-row-past .ops-row-title{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2)}
 .done-dot{color:#4ade80;font-size:10px;margin-left:4px;font-weight:900}
@@ -588,6 +593,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="live-section">
       <div class="live-section-hdr">📋 Today's plan</div>
       <div id="opsTimeline"></div>
+    </div>
+
+    <!-- TOMORROW TRANSPORT -->
+    <div class="live-section" id="tomorrowSection" style="display:none">
+      <div class="live-section-hdr">🌅 Tomorrow</div>
+      <div id="tomorrowCard"></div>
     </div>
 
     <!-- QUICK ACCESS -->
@@ -1467,6 +1478,42 @@ function renderLiveOps(){
   if(!heroImg){
     for(const [city, url] of Object.entries(CITY_IMGS)){
       if(titleLow.includes(city)){ heroImg=url; break; }
+    }
+  }
+
+
+  // ── TOMORROW TRANSPORT ──
+  if(nextDay) {
+    const tmrTransports = (nextDay.timeline||[]).filter(t => t.type==='transport' && t.time);
+    const tmrFirst = tmrTransports[0] || null;
+    const tmrSection = document.getElementById('tomorrowSection');
+    const tmrCard = document.getElementById('tomorrowCard');
+    if(tmrFirst && tmrSection && tmrCard) {
+      tmrSection.style.display = '';
+      const trainMins = parseTimeMins(tmrFirst.time);
+      // Wake up = train time - 90min (get ready + breakfast + walk to station)
+      const wakeMins = trainMins - 90;
+      const wakeH = Math.floor(wakeMins/60);
+      const wakeM = wakeMins % 60;
+      const wakeStr = `${String(wakeH).padStart(2,'0')}:${String(wakeM).padStart(2,'0')}`;
+      // Leave hotel = train time - 30min
+      const leaveH = Math.floor((trainMins-30)/60);
+      const leaveM = (trainMins-30) % 60;
+      const leaveStr = `${String(leaveH).padStart(2,'0')}:${String(leaveM).padStart(2,'0')}`;
+      tmrCard.innerHTML = `<div class="tomorrow-card">
+        <div class="tomorrow-wake">⏰ Wake up by ${wakeStr}</div>
+        <div class="tomorrow-train">🚆 ${esc(tmrFirst.time)} · ${esc(tmrFirst.title)}</div>
+        <div class="tomorrow-detail">${esc((tmrFirst.detail||'').split('.')[0]||'')}</div>
+        ${tmrFirst.platform?`<div class="tomorrow-badge">Platform ${esc(tmrFirst.platform)}</div>`:''}
+        <div class="tomorrow-badge" style="margin-left:6px">Leave hotel by ${leaveStr}</div>
+      </div>`;
+    } else if(tmrSection) {
+      // Show tomorrow day even without transport
+      tmrSection.style.display = '';
+      tmrCard.innerHTML = `<div class="tomorrow-card">
+        <div class="tomorrow-train">Day ${nextDay.day} · ${esc(nextDay.title||'')}</div>
+        <div class="tomorrow-detail">${esc(nextDay.subtitle||'No early transport')}</div>
+      </div>`;
     }
   }
 
