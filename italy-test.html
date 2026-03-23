@@ -238,7 +238,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* Day list - big cards, 3 visible at a time */
 .days-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 20px;display:flex;flex-direction:column;gap:10px}
-.day-big-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s;position:relative;height:calc((100dvh - 168px) / 3);min-height:200px;max-height:280px;display:flex;flex-direction:column;flex-shrink:0}
+.day-big-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s;position:relative;height:calc((100dvh - 168px) / 3);min-height:200px;max-height:300px;display:flex;flex-direction:column;flex-shrink:0}
 .day-big-card:active{transform:scale(.985)}
 .day-big-card.today-card{border-color:rgba(52,211,153,.4)}
 .day-big-hero{flex:1;background-size:cover;background-position:center;position:relative;overflow:hidden;min-height:0}
@@ -257,6 +257,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .day-big-footer{padding:10px 16px 11px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .day-big-events{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px}
 .day-big-view{background:rgba(124,106,247,.14);border:1px solid rgba(124,106,247,.28);color:var(--accent2);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px;white-space:nowrap}
+/* ─── DAY PILL BADGE ─── */
+.day-pill-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:999px;line-height:1.4;min-width:18px;text-align:center;margin-top:1px}
+/* ─── DAY CARD HERO IMG + TYPE ROW ─── */
+.day-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.day-type-row{display:flex;gap:5px;padding:6px 14px 8px;flex-wrap:wrap;flex-shrink:0}
+.day-type-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;color:rgba(255,255,255,.75)}
 
 /* ─── DAY DETAIL BOTTOM SHEET ─── */
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -1280,7 +1286,8 @@ function populateDashboard(p) {
       pill.id='dp-'+i;
       const isToday=inferDayDate(d.day)===today;
       if(isToday) pill.classList.add('today-pill');
-      pill.innerHTML=`<span class="day-pill-num">${d.emoji||'📅'}</span><span class="day-pill-date">Day ${d.day} · ${formatDayDate(d.day)}</span>`;
+      const evtCnt=(d.timeline||[]).length;
+      pill.innerHTML=`<span class="day-pill-num">${d.emoji||'📅'}</span><span class="day-pill-date">Day ${d.day}</span>${evtCnt?`<span class="day-pill-badge">${evtCnt}</span>`:''}`.trim();
       pill.onclick=()=>{ document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); curDayIdx=i; const card=document.getElementById('dc-'+i); if(card) card.scrollIntoView({behavior:'smooth',block:'nearest'}); };
       strip.appendChild(pill);
     });
@@ -1293,8 +1300,14 @@ function populateDashboard(p) {
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
+      const tl=d.timeline||[];
+      const tTransport=tl.filter(t=>t.type==='transport').length;
+      const tFood=tl.filter(t=>t.type==='food').length;
+      const tAct=tl.filter(t=>t.type==='activity').length;
+      const typeChips=[tTransport?`<span class="day-type-chip">🚆 ${tTransport}</span>`:'',tFood?`<span class="day-type-chip">🍝 ${tFood}</span>`:'',tAct?`<span class="day-type-chip">🏛️ ${tAct}</span>`:''].filter(Boolean).join('');
       card.innerHTML=`
-        <div class="day-big-hero" style="background-image:url('${imgUrl}')">
+        <div class="day-big-hero">
+          <img class="day-hero-img" src="${imgUrl}" alt="${esc(d.title||'')}" loading="lazy" onerror="this.style.display='none'">
           <div class="day-big-grad"></div>
           <div class="day-big-overlay">
             <div class="day-big-badge"><span class="day-big-badge-dot"></span>DAY ${d.day} · ${formatDayDate(d.day)}</div>
@@ -1302,6 +1315,7 @@ function populateDashboard(p) {
             ${d.subtitle?`<div class="day-big-sub">${esc(d.subtitle)}</div>`:''}
           </div>
         </div>
+        ${typeChips?`<div class="day-type-row">${typeChips}</div>`:''}
         <div class="day-big-footer">
           <div class="day-big-events">📍 ${eventCount} events</div>
           <div class="day-big-view">View plan →</div>
