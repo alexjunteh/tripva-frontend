@@ -1864,15 +1864,21 @@
             "fromTime": "09:15",
             "to": "Florence",
             "toTime": "—",
-            "pnr": "Total €58"
+            "pnr": "PNR: U556DQEH · Total €58"
           }
         ],
         "passengers": [
           {
-            "name": "2 adults · entry booked",
-            "images": [],
-            "pdfUrl": "",
-            "pdfLabel": ""
+            "name": "Alex — Teh Jia Jun (€29)",
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/alex-uffizi.jpg"
+            ]
+          },
+          {
+            "name": "Khai Yee — Wong Khai Yee (€29)",
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/ky-uffizi.jpg"
+            ]
           }
         ]
       },
