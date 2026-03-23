@@ -558,10 +558,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="live-tile-val" id="opsCurrentTime">—</div>
         <div class="live-tile-lbl">Local time</div>
       </div>
-      <div class="live-tile">
-        <div class="live-tile-icon">📍</div>
-        <div class="live-tile-val" id="opsCurrentStop">—</div>
-        <div class="live-tile-lbl">Current stop</div>
+      <div class="live-tile" id="weatherTile">
+        <div class="live-tile-icon" id="weatherIcon">🌤️</div>
+        <div class="live-tile-val" id="weatherTemp">—</div>
+        <div class="live-tile-lbl" id="weatherDesc">Weather</div>
       </div>
       <div class="live-tile">
         <div class="live-tile-icon">🚆</div>
@@ -574,11 +574,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="live-tile-lbl" id="opsStayText"></div>
         <div class="live-tile-actions" id="opsStayActions"></div>
       </div>
-      <div class="live-tile live-tile-wide" id="weatherTile">
-        <div class="live-tile-icon" id="weatherIcon">🌤️</div>
-        <div class="live-tile-val" id="weatherTemp">—</div>
-        <div class="live-tile-lbl" id="weatherDesc">Loading weather…</div>
-      </div>
+
     </div>
 
     <div class="ops-story-stack">
@@ -1510,7 +1506,7 @@ function renderLiveOps(){
   const allTrains=(day.timeline||[]).filter(t=>/train|frecciarossa|leonardo express|rotair|rail|PE LIX|EC |IR |IC /i.test((t.title||'')+' '+(t.detail||'')));
   const trainItem=allTrains.find(t=>{ const tm=parseTimeMins(t.time); return tm<0||tm>nowMins; })||allTrains[allTrains.length-1]||null;
   const hotelItem=(day.timeline||[]).find(t=>t.type==='hotel');
-  el('opsCurrentStop').textContent = day.title || 'Trip in progress';
+  if(el('opsCurrentStop')) el('opsCurrentStop').textContent = day.title || 'Trip in progress';
   if(el('opsNowLine')) el('opsNowLine').textContent = day.subtitle || day.title || 'Trip in progress';
   if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> · Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> · ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Train</strong> · ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
   el('opsNextTitle').textContent = firstItem.title || 'Open today\u2019s plan';
