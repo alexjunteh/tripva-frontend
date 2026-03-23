@@ -1374,11 +1374,17 @@ function populateDashboard(p) {
 }
 
 function getTripDateInfo(){
-  const fmt = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit'});
   const now = new Date();
-  const parts = Object.fromEntries(fmt.formatToParts(now).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
-  const ymd = `${parts.year}-${parts.month}-${parts.day}`;
-  return { now, ymd, timeStr: new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Rome',hour:'2-digit',minute:'2-digit',hour12:false,weekday:'short',day:'2-digit',month:'short'}).format(now) };
+  const TZ = 'Europe/Rome';
+  const dateFmt = new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+  const timeFmt = new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false});
+  const dateParts = Object.fromEntries(dateFmt.formatToParts(now).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+  const timeParts = Object.fromEntries(timeFmt.formatToParts(now).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+  const ymd = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+  const localHour = parseInt(timeParts.hour,10);
+  const localMin = parseInt(timeParts.minute,10);
+  const timeStr = new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false,weekday:'short',day:'2-digit',month:'short'}).format(now);
+  return { now, ymd, timeStr, localHour, localMin };
 }
 function inferDayDate(dayNum){
   const base = new Date(Date.UTC(2026, 2, 18));
@@ -1485,8 +1491,8 @@ function renderLiveOps(){
   if(el('liveHeroLocation')) el('liveHeroLocation').textContent = day.title || 'Trip in progress';
   if(el('liveHeroDate')) el('liveHeroDate').textContent = `Day ${day.day} · ${formatDayDate(day.day)}`;
   // Pick next upcoming item based on current local time
-  const localHour = info.now.getHours();
-  const localMin = info.now.getMinutes();
+  const localHour = info.localHour;
+  const localMin = info.localMin;
   const nowMins = localHour * 60 + localMin;
   const parseTimeMins = (t) => {
     const m = String(t||'').match(/(\d{1,2}):(\d{2})/);
