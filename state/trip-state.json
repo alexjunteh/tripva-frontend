@@ -98,12 +98,12 @@
         "imageUrl": "https://loremflickr.com/900/500/cinque-terre,manarola?lock=1",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Riomaggiore_From_Ferry_Cinque_Terre_Italy_Sep23_A7C_07414.jpg/600px-Riomaggiore_From_Ferry_Cinque_Terre_Italy_Sep23_A7C_07414.jpg",
             "caption": "Train from Nice → Riomaggiore",
             "time": "Afternoon"
           },
           {
-            "url": "https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Via_dell%27Amore3.jpg/600px-Via_dell%27Amore3.jpg",
             "caption": "Walk Via dell'Amore",
             "time": "16:30"
           }
@@ -203,27 +203,22 @@
         "imageUrl": "https://loremflickr.com/900/500/cinque-terre,hiking?lock=2",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1595854341625-f2e08cf9e2b6?w=400&h=300&fit=crop",
-            "caption": "Breakfast: Bar & Vini A Pié de Ma'",
-            "time": "07:30"
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Monterosso_al_Mare-panorama-paese.jpg/600px-Monterosso_al_Mare-panorama-paese.jpg",
+            "caption": "Train to Monterosso al Mare",
+            "time": "08:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=400&h=300&fit=crop",
-            "caption": "Buy Cinque Terre Card at station",
-            "time": "08:00"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1569878698889-7bffa1896872?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Vernazza_and_the_sea%2C_Cinque_Terre%2C_Italy.jpg/600px-Vernazza_and_the_sea%2C_Cinque_Terre%2C_Italy.jpg",
             "caption": "Hike Monterosso → Vernazza",
             "time": "10:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1499678329028-101435549a4e?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Manarola_NW_Cinque_Terre_Sep23_A7C_07233.jpg/600px-Manarola_NW_Cinque_Terre_Sep23_A7C_07233.jpg",
             "caption": "Train to Manarola",
             "time": "14:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Riomaggiore_From_Ferry_Cinque_Terre_Italy_Sep23_A7C_07414.jpg/600px-Riomaggiore_From_Ferry_Cinque_Terre_Italy_Sep23_A7C_07414.jpg",
             "caption": "Dinner: Trattoria La Grotta",
             "time": "20:00"
           }
@@ -365,29 +360,19 @@
         "imageUrl": "https://loremflickr.com/900/500/lake-como,italy?lock=3",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Riomaggiore_From_Ferry_Cinque_Terre_Italy_Sep23_A7C_07414.jpg/600px-Riomaggiore_From_Ferry_Cinque_Terre_Italy_Sep23_A7C_07414.jpg",
             "caption": "Last swim, Riomaggiore beach",
             "time": "07:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1513581166391-887a96ddeafd?w=400&h=300&fit=crop",
-            "caption": "Lunch: Milano Centrale food hall",
-            "time": "13:00"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1553451166-232112bda6f6?w=400&h=300&fit=crop",
-            "caption": "🚂 REG 2828 (Trenord): Milan → Varenna-Esino",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Varenna_and_mountain_from_ferry.jpg/600px-Varenna_and_mountain_from_ferry.jpg",
+            "caption": "REG 2828 (Trenord): Milan → Varenna-Esino",
             "time": "14:20"
           },
           {
-            "url": "https://images.unsplash.com/photo-1560703650-ef3e0f254ae0?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Varenna_-_Villa_Cipressi.jpg/600px-Varenna_-_Villa_Cipressi.jpg",
             "caption": "Villa Cipressi — lakeside gardens",
             "time": "15:45"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1523978591478-c753949ff840?w=400&h=300&fit=crop",
-            "caption": "🚶 Passeggiata degli Innamorati",
-            "time": "18:30"
           }
         ]
       },
@@ -520,23 +505,23 @@
         "imageUrl": "https://loremflickr.com/900/500/lucerne,old-town,medieval?lock=5",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Kapellbruecke.JPG/600px-Kapellbruecke.JPG",
             "caption": "Breakfast: Bachmann Confiserie",
             "time": "09:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1611407544722-8e9f1c13e0fa?w=400&h=300&fit=crop",
-            "caption": "Musegg Wall + Zytturm",
-            "time": "11:00"
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Spreuerbruecke_Delsener.jpg/600px-Spreuerbruecke_Delsener.jpg",
+            "caption": "Optional Spreuer Bridge / Old Town final loop",
+            "time": "17:15"
           },
           {
-            "url": "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=300&fit=crop",
-            "caption": "Chapel Bridge → Jesuit Church → Reuss river walk",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Luzern_Jesuitenkirche.jpg/600px-Luzern_Jesuitenkirche.jpg",
+            "caption": "Jesuit Church, Lucerne",
             "time": "14:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1573108037329-37aa135a142e?w=400&h=300&fit=crop",
-            "caption": "Lion Monument + coffee break",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/L%C3%B6wendenkmal_Luzern.jpg/600px-L%C3%B6wendenkmal_Luzern.jpg",
+            "caption": "Lion Monument",
             "time": "15:45"
           }
         ]
@@ -612,22 +597,22 @@
         "imageUrl": "https://loremflickr.com/900/500/mount-titlis,switzerland?lock=6",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1570375743937-0f43bde21e05?w=400&h=300&fit=crop",
-            "caption": "🚆 PE LIX: Luzern → Interlaken Ost",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Goldswil-Viadukt_Panorama_mit_Interlaken_im_Hintergrund_2.jpg/600px-Goldswil-Viadukt_Panorama_mit_Interlaken_im_Hintergrund_2.jpg",
+            "caption": "PE LIX: Luzern → Interlaken Ost",
             "time": "09:06"
           },
           {
-            "url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-            "caption": "🚆 R 61: Interlaken Ost → Grindelwald",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Grindelwald_View_02.jpg/600px-Grindelwald_View_02.jpg",
+            "caption": "R 61: Interlaken Ost → Grindelwald",
             "time": "11:04"
           },
           {
-            "url": "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=300&fit=crop",
-            "caption": "Grindelwald village first",
-            "time": "11:45"
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Grindelwald_First.jpg/600px-Grindelwald_First.jpg",
+            "caption": "Optional: Grindelwald First if weather is good",
+            "time": "14:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/600px-Venezia_aerial_view.jpg",
             "caption": "Start return toward Luzern",
             "time": "16:30"
           }
@@ -723,28 +708,23 @@
         "imageUrl": "https://loremflickr.com/900/500/venice,grand-canal?lock=7",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=400&h=300&fit=crop",
-            "caption": "Breakfast: Migros bakery, Lucerne Hbf",
-            "time": "07:30"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&h=300&fit=crop",
-            "caption": "🚂 Luzern → Arth-Goldau → Venezia S. Lucia",
-            "time": "08:39"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/600px-Venezia_aerial_view.jpg",
             "caption": "Arrive Venice Santa Lucia",
             "time": "14:12"
           },
           {
-            "url": "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Rialto_2025_4.jpg/600px-Rialto_2025_4.jpg",
             "caption": "Walk to Rialto Bridge",
             "time": "16:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1504019347908-b45f9b0b8eb0?w=400&h=300&fit=crop",
-            "caption": "San Marco at sunset",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/600px-Venezia_aerial_view.jpg",
+            "caption": "Venice from above",
+            "time": "14:12"
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Piazza_San_Marco_%28Venice%29.jpg/600px-Piazza_San_Marco_%28Venice%29.jpg",
+            "caption": "Piazza San Marco",
             "time": "18:00"
           }
         ]
@@ -833,29 +813,19 @@
         "imageUrl": "https://loremflickr.com/900/500/venice,italy,rialto?lock=8",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Murano_sunset.JPG/600px-Murano_sunset.JPG",
             "caption": "Vaporetto to Murano + Burano",
             "time": "07:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/600px-Venezia_aerial_view.jpg",
             "caption": "Breakfast: Pasticceria Tonolo",
             "time": "08:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=400&h=300&fit=crop",
-            "caption": "Lunch: All'Arco (or Rialto Market)",
-            "time": "12:30"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1504019347908-b45f9b0b8eb0?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/%28Venice%29_Doge%27s_Palace_and_campanile_of_St._Mark%27s_Basilica_facing_the_sea.jpg/600px-%28Venice%29_Doge%27s_Palace_and_campanile_of_St._Mark%27s_Basilica_facing_the_sea.jpg",
             "caption": "Doge's Palace",
             "time": "15:00"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1498307833015-e7b400441eb8?w=400&h=300&fit=crop",
-            "caption": "Gondola at sunset",
-            "time": "19:00"
           }
         ]
       },
@@ -960,29 +930,29 @@
         "imageUrl": "https://loremflickr.com/900/500/florence,italy,ponte-vecchio?lock=9",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/600px-Venezia_aerial_view.jpg",
             "caption": "Breakfast: Venice Santa Lucia station bar",
             "time": "08:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/FirenzeDec092023_01.jpg/600px-FirenzeDec092023_01.jpg",
             "caption": "🚄 Frecciarossa: Venice → Florence SMN",
             "time": "10:26"
           },
           {
-            "url": "https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Piazza_Signoria_-_Firenze.jpg/600px-Piazza_Signoria_-_Firenze.jpg",
             "caption": "Piazza della Signoria",
             "time": "14:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1476362555312-ab9e108a0b7e?w=400&h=300&fit=crop",
-            "caption": "🌅 Piazzale Michelangelo at sunset",
-            "time": "17:00"
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Ponte_Vecchio_from_Ponte_alle_Grazie.jpg/600px-Ponte_Vecchio_from_Ponte_alle_Grazie.jpg",
+            "caption": "Ponte Vecchio",
+            "time": "15:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=300&fit=crop",
-            "caption": "Dinner: Trattoria Mario, Florence",
-            "time": "20:00"
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Florence_view_from_Piazzale_Michelangelo_-_panoramio.jpg/600px-Florence_view_from_Piazzale_Michelangelo_-_panoramio.jpg",
+            "caption": "Piazzale Michelangelo at sunset",
+            "time": "17:00"
           }
         ]
       },
@@ -1070,12 +1040,12 @@
         "imageUrl": "https://loremflickr.com/900/500/florence,duomo,cathedral?lock=10",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=400&h=300&fit=crop",
-            "caption": "🖼️ Uffizi Gallery",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Florence%2C_Italy_-_panoramio_%28125%29.jpg/600px-Florence%2C_Italy_-_panoramio_%28125%29.jpg",
+            "caption": "Uffizi Gallery",
             "time": "09:15"
           },
           {
-            "url": "https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/FirenzeDec092023_01.jpg/600px-FirenzeDec092023_01.jpg",
             "caption": "Lunch: Buca Mario",
             "time": "13:00"
           }
@@ -1171,38 +1141,28 @@
         "imageUrl": "https://loremflickr.com/900/500/rome,italy,trevi?lock=11",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/FirenzeDec092023_01.jpg/600px-FirenzeDec092023_01.jpg",
             "caption": "Breakfast: Florence hotel or SMN station",
             "time": "08:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop",
-            "caption": "Check in: Hotel Artemide",
-            "time": "12:30"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=400&h=300&fit=crop",
-            "caption": "Lunch: Pizzarium Bonci, Rome",
-            "time": "13:30"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Santa_Maria_in_Trastevere_fountain.jpg/600px-Santa_Maria_in_Trastevere_fountain.jpg",
             "caption": "Trastevere walk",
             "time": "14:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1525874684015-58379d421a52?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Trevi_Fountain_-_Roma.jpg/600px-Trevi_Fountain_-_Roma.jpg",
             "caption": "⛲ Trevi Fountain",
             "time": "16:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1529260830199-42c24126f198?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Piazza_di_Spagna_%28Rome%29_0004.jpg/600px-Piazza_di_Spagna_%28Rome%29_0004.jpg",
             "caption": "Spanish Steps at sunset",
             "time": "17:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1555992828-ca4dbe41d294?w=400&h=300&fit=crop",
-            "caption": "🌙 Piazza Navona evening",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Piazza_Navona_%28Rome%29_at_night.jpg/600px-Piazza_Navona_%28Rome%29_at_night.jpg",
+            "caption": "Piazza Navona evening",
             "time": "21:00"
           }
         ]
@@ -1290,32 +1250,32 @@
         "imageUrl": "https://loremflickr.com/900/500/rome,colosseum,ancient?lock=12",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1583508915901-b5f84c1dcde1?w=400&h=300&fit=crop",
-            "caption": "Breakfast: Caffè Sant'Eustachio",
-            "time": "07:30"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=400&h=300&fit=crop",
-            "caption": "🏟️ Colosseum — 8am first slot",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/600px-Colosseo_2020.jpg",
+            "caption": "Colosseum — 8am first slot",
             "time": "08:00"
           },
           {
-            "url": "https://images.unsplash.com/photo-1555992828-ca4dbe41d294?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Foro_Romano_Musei_Capitolini_Roma.jpg/600px-Foro_Romano_Musei_Capitolini_Roma.jpg",
             "caption": "Roman Forum + Palatine Hill",
             "time": "09:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop",
-            "caption": "Lunch: Terre e Domus, Roman Forum view",
-            "time": "13:00"
-          },
-          {
-            "url": "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Musei_vaticani_Coat_of_Arms.svg/600px-Musei_vaticani_Coat_of_Arms.svg.png",
             "caption": "Vatican Museums + Sistine Chapel",
             "time": "14:30"
           },
           {
-            "url": "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=400&h=300&fit=crop",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg/600px-Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg",
+            "caption": "St Peter's Basilica (free)",
+            "time": "17:30"
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Castel_Sant%27_Angelo_Between_Leaves.jpg/600px-Castel_Sant%27_Angelo_Between_Leaves.jpg",
+            "caption": "Castel Sant'Angelo at dusk",
+            "time": "19:30"
+          },
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Santa_Maria_in_Trastevere_fountain.jpg/600px-Santa_Maria_in_Trastevere_fountain.jpg",
             "caption": "Dinner: Da Enzo al 29, Trastevere",
             "time": "20:30"
           }
@@ -1370,9 +1330,9 @@
         "imageUrl": "https://loremflickr.com/900/500/airport,departure,plane?lock=13",
         "photos": [
           {
-            "url": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop",
-            "caption": "Final Rome breakfast + check out",
-            "time": "Morning"
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Fiumicino_Airport_T3.jpg/600px-Fiumicino_Airport_T3.jpg",
+            "caption": "Fiumicino Airport",
+            "time": "08:30"
           }
         ]
       }
