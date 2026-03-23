@@ -87,6 +87,25 @@ footer strong{color:rgba(255,255,255,.55)}
 .pwa-dismiss-btn{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;line-height:1;flex-shrink:0}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.gen-screen{padding:28px 20px 100px;display:flex;flex-direction:column;gap:16px}
+.gen-hero{text-align:center;padding:20px 0}
+.gen-dest{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px}
+.gen-dates{font-size:13px;color:rgba(255,255,255,.5);font-weight:600}
+.gen-progress-bar{height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.gen-progress-fill{height:100%;background:linear-gradient(90deg,#7c6af7,#95b8ff);border-radius:4px;transition:width .4s ease;width:0%}
+.gen-log{display:flex;flex-direction:column;gap:6px}
+.gen-log-item{font-size:13px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:8px}
+.gen-log-item.done{color:rgba(255,255,255,.85)}
+.gen-log-item.active{color:#95b8ff}
+.gen-log-icon{font-size:14px;width:18px;flex-shrink:0}
+.gen-days{display:flex;flex-direction:column;gap:8px}
+.gen-day-card{background:#1a1a28;border:1.5px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .25s}
+.gen-day-card.ready{border-color:rgba(124,106,247,.4);background:rgba(124,106,247,.1)}
+.gen-day-num{font-size:11px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:.5px;width:36px}
+.gen-day-title{flex:1;font-size:14px;font-weight:700;color:rgba(255,255,255,.6)}
+.gen-day-card.ready .gen-day-title{color:#fff}
+.gen-day-status{font-size:16px}
+.gen-done-title{text-align:center;font-size:22px;font-weight:900;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -117,6 +136,20 @@ footer strong{color:rgba(255,255,255,.55)}
       <span>🆓 Free to try</span>
       <span>⚡ Ready in 30 seconds</span>
       <span>🔗 Shareable link</span>
+    </div>
+    <div class="gen-screen" id="genScreen" style="display:none">
+      <div class="gen-hero">
+        <div class="gen-dest" id="genDest">Building your trip…</div>
+        <div class="gen-dates" id="genDates"></div>
+      </div>
+      <div class="gen-progress-bar"><div class="gen-progress-fill" id="genFill"></div></div>
+      <div class="gen-log" id="genLog"></div>
+      <div class="gen-days" id="genDays"></div>
+      <div class="gen-cta" id="genCta" style="display:none">
+        <div class="gen-done-title">🎉 Trip ready!</div>
+        <button class="form-submit-btn" onclick="openGeneratedTrip()">Open Dashboard →</button>
+      </div>
+    </div>
     </div>
   </div>
 </section>
@@ -276,10 +309,35 @@ async function submitTrip() {
   if (interests.length === 0) { showToast('⚠️ Pick at least one interest'); return; }
 
   document.getElementById('planForm').classList.add('hide');
-  document.getElementById('planProgress').classList.add('show');
   document.getElementById('submitBtn').disabled = true;
-  updateProgress('Thinking…', 'Claude is designing your route');
   document.getElementById('planner-section').scrollIntoView({ behavior: 'smooth' });
+
+  // Show generation screen
+  document.getElementById('genScreen').style.display = 'flex';
+  document.getElementById('genScreen').style.flexDirection = 'column';
+  document.getElementById('genDest').textContent = dest;
+  document.getElementById('genDates').textContent = start + ' → ' + end;
+
+  let skeletonData = null;
+  let totalDays = 0;
+  let completedDays = 0;
+  let tripState = null;
+  let buffer = '';
+
+  function addLog(icon, text, status) {
+    status = status || '';
+    const el = document.createElement('div');
+    el.className = 'gen-log-item ' + status;
+    el.innerHTML = '<span class="gen-log-icon">' + icon + '</span><span>' + text + '</span>';
+    document.getElementById('genLog').appendChild(el);
+    return el;
+  }
+
+  function setProgress(pct) {
+    document.getElementById('genFill').style.width = pct + '%';
+  }
+
+  const logRoute = addLog('⏳', 'Designing your route...', 'active');
 
   try {
     const resp = await fetch(BACKEND + '/api/plan?stream=true', {
@@ -298,73 +356,122 @@ async function submitTrip() {
 
     const reader = resp.body.getReader();
     const dec = new TextDecoder();
-    let tripState = null;
-    let buffer = '';
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       buffer += dec.decode(value, { stream: true });
-      // Split on double-newline (SSE event boundary)
-      const parts = buffer.split('\n\n');
-      buffer = parts.pop(); // keep incomplete last chunk
+      const parts = buffer.split('
+
+');
+      buffer = parts.pop();
       for (const part of parts) {
-        for (const line of part.split('\n')) {
+        for (const line of part.split('
+')) {
           if (!line.startsWith('data: ')) continue;
           try {
             const evt = JSON.parse(line.slice(6));
-            if (evt.type === 'start') updateProgress('Planning your trip…', evt.message || '');
-            if (evt.type === 'progress') updateProgress(null, evt.message || '');
+
+            if (evt.type === 'skeleton' && evt.data) {
+              skeletonData = evt.data;
+              const trip = evt.data.rawPlan && evt.data.rawPlan.trip;
+              if (trip && trip.name) document.getElementById('genDest').textContent = trip.name;
+              if (trip && trip.startDate) document.getElementById('genDates').textContent = trip.startDate + ' → ' + (trip.endDate || '');
+              totalDays = (evt.data.rawPlan && evt.data.rawPlan.days && evt.data.rawPlan.days.length) || 0;
+              logRoute.className = 'gen-log-item done';
+              logRoute.querySelector('.gen-log-icon').textContent = '✓';
+              addLog('✓', 'Hotels & budget planned', 'done');
+              setProgress(15);
+              const daysEl = document.getElementById('genDays');
+              ((evt.data.rawPlan && evt.data.rawPlan.days) || []).forEach(function(d) {
+                const card = document.createElement('div');
+                card.className = 'gen-day-card';
+                card.id = 'gen-day-' + d.day;
+                card.innerHTML = '<span class="gen-day-num">DAY ' + d.day + '</span><span class="gen-day-title">' + (d.title || '') + '</span><span class="gen-day-status">⏳</span>';
+                daysEl.appendChild(card);
+              });
+            }
+
+            if (evt.type === 'progress') {
+              const existing = document.querySelector('.gen-log-item.active');
+              if (existing) existing.className = 'gen-log-item';
+              if (evt.message && evt.message.includes('Day')) {
+                addLog('⏳', evt.message, 'active');
+              }
+            }
+
+            if (evt.type === 'day' && evt.data) {
+              completedDays++;
+              const card = document.getElementById('gen-day-' + evt.data.day);
+              if (card) {
+                card.classList.add('ready');
+                card.querySelector('.gen-day-status').textContent = '✓';
+                const activities = (evt.data.timeline || []).filter(function(t) { return t.type !== 'transport' && t.type !== 'logistics'; }).length;
+                card.querySelector('.gen-day-title').textContent = (evt.data.title || '') + (activities ? ' · ' + activities + ' stops' : '');
+              }
+              const active = document.querySelector('.gen-log-item.active');
+              if (active) { active.className = 'gen-log-item done'; active.querySelector('.gen-log-icon').textContent = '✓'; }
+              setProgress(15 + Math.round((completedDays / Math.max(totalDays, 1)) * 75));
+            }
+
             if (evt.type === 'done' && evt.data) tripState = evt.data;
-          } catch {}
+
+          } catch(e) {}
         }
       }
     }
-    // Process any remaining buffer
+
     if (buffer) {
-      for (const line of buffer.split('\n')) {
+      for (const line of buffer.split('
+')) {
         if (!line.startsWith('data: ')) continue;
-        try {
-          const evt = JSON.parse(line.slice(6));
-          if (evt.type === 'done' && evt.data) tripState = evt.data;
-        } catch {}
+        try { const e = JSON.parse(line.slice(6)); if (e.type === 'done' && e.data) tripState = e.data; } catch(ex) {}
       }
     }
 
     if (!tripState || !tripState.rawPlan) throw new Error('No plan data received');
 
-    updateProgress('🎉 Done!', 'Saving your trip…');
+    setProgress(100);
+    document.getElementById('genCta').style.display = 'block';
+    document.getElementById('submitBtn').style.display = 'none';
 
-    let gistId = null;
+    let shareUrl = null;
     try {
       const saveRes = await fetch(BACKEND + '/api/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan: tripState.rawPlan })
       });
-      if (saveRes.ok) {
-        const data = await saveRes.json();
-        gistId = data.id;
-      }
-    } catch(e) { /* non-fatal */ }
+      if (saveRes.ok) { const d = await saveRes.json(); shareUrl = d.url; }
+    } catch(e) {}
 
     localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
-    updateProgress('🚀 Opening your dashboard…', 'Your trip is ready!');
+    window._generatedTripState = tripState;
+    window._generatedShareUrl = shareUrl;
 
-    setTimeout(() => {
-      if (gistId) {
-        window.location.href = 'trip.html?id=' + encodeURIComponent(gistId);
-      } else {
-        window.location.href = 'trip.html';
-      }
-    }, 600);
+    setTimeout(function() { openGeneratedTrip(); }, 2000);
 
   } catch (err) {
     document.getElementById('planForm').classList.remove('hide');
-    document.getElementById('planProgress').classList.remove('show');
+    document.getElementById('genScreen').style.display = 'none';
     document.getElementById('submitBtn').disabled = false;
+    document.getElementById('submitBtn').style.display = 'block';
+    document.getElementById('genLog').innerHTML = '';
+    document.getElementById('genDays').innerHTML = '';
+    document.getElementById('genCta').style.display = 'none';
+    document.getElementById('genFill').style.width = '0%';
     showToast('⚠️ ' + err.message, 4000);
   }
+}
+
+function openGeneratedTrip() {
+  const shareUrl = window._generatedShareUrl;
+  if (shareUrl) {
+    try {
+      const id = new URL(shareUrl).searchParams.get('id');
+      if (id) { window.location.href = 'trip.html?id=' + id; return; }
+    } catch(e) {}
+  }
+  window.location.href = 'trip.html';
 }
 
 // PWA Install Prompt
