@@ -543,16 +543,18 @@
           {
             "time": "09:06",
             "title": "🚆 PE LIX: Luzern → Interlaken Ost",
-            "detail": "✅ BOOKED. Point-to-point ticket via Brünig – Interlaken Ost. Luzern 09:06 → Interlaken Ost 10:54 on PE LIX. Covered by SBB order 151420339818. Return is also covered on the same date ticket.",
+            "detail": "✅ BOOKED. Point-to-point ticket via Brünig – Interlaken Ost. Luzern 09:06 · Platform 12 → Interlaken Ost 10:54 on PE LIX. Covered by SBB order 151420339818. Return is also covered on the same date ticket.",
             "type": "transport",
-            "mapQuery": "Luzern Train Station"
+            "mapQuery": "Luzern Train Station",
+            "platform": "12"
           },
           {
             "time": "11:04",
             "title": "🚆 R 61: Interlaken Ost → Grindelwald",
-            "detail": "✅ BOOKED. Interlaken Ost 11:04 → Grindelwald Terminal 11:40 on R 61. Ticket valid Luzern ↔ Grindelwald Terminal until 24 Mar 05:00.",
+            "detail": "✅ BOOKED. Interlaken Ost 11:04 · Platform 2B → Grindelwald Terminal 11:40 on R 61. Ticket valid Luzern ↔ Grindelwald Terminal until 24 Mar 05:00.",
             "type": "transport",
-            "mapQuery": "Interlaken Ost station"
+            "mapQuery": "Interlaken Ost station",
+            "platform": "2B"
           },
           {
             "time": "11:45",
@@ -644,7 +646,8 @@
             "title": "🚂 Luzern → Arth-Goldau → Venezia S. Lucia",
             "detail": "✅ BOOKED CHF242.20 for 2. IR 2017: Luzern 08:39 Platform 4 → Arth-Goldau 09:11 Platform 6. Then EC 31: Arth-Goldau 09:18 Platform 3 → Venezia S. Lucia 14:42. Coach 3, seats 35 + 36. SBB order 151419996814. Trenitalia PNR RWXTWN. Keep PDF + ID ready.",
             "type": "transport",
-            "mapQuery": "Luzern Train Station"
+            "mapQuery": "Luzern Train Station",
+            "platform": "4"
           },
           {
             "time": "12:30",
@@ -1763,7 +1766,9 @@
             "fromTime": "09:06",
             "to": "Interlaken Ost",
             "toTime": "10:54",
-            "pnr": "Order 151420339818"
+            "pnr": "Order 151420339818",
+            "fromPlatform": "12",
+            "toPlatform": "4"
           },
           {
             "train": "R 61",
@@ -1771,7 +1776,9 @@
             "fromTime": "11:04",
             "to": "Grindelwald",
             "toTime": "11:40",
-            "pnr": null
+            "pnr": null,
+            "fromPlatform": "2B",
+            "toPlatform": "2"
           },
           {
             "train": "Return",
