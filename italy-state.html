@@ -1651,7 +1651,7 @@ function initRouteMap(){
   const map=L.map('routeMap',{zoomControl:false,attributionControl:false}).setView([45.5,10],6);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
   if(route.length>1){
-    L.polyline(route.map(r=>[r.lat,r.lng]),{color:'#7c6af7',weight:3,opacity:.6,dashArray:'8 6'}).addTo(map);
+    L.polyline(route.map(r=>[r.lat,r.lng]),{color:'#95b8ff',weight:3,opacity:.7,dashArray:'6 4'}).addTo(map);
   }
   stops.forEach((s,i)=>{
     const icon=L.divIcon({
@@ -1662,7 +1662,7 @@ function initRouteMap(){
     L.marker([s.lat,s.lng],{icon}).addTo(map)
       .bindPopup('<div style="font-weight:700;font-size:13px">'+s.name+'</div><div style="font-size:11px;color:#666">Day '+s.day+(s.nights?' · '+s.nights+' nights':' · Day trip')+'</div>');
   });
-  map.fitBounds(L.latLngBounds(stops.map(s=>[s.lat,s.lng])),{padding:[30,30]});
+  map.fitBounds(L.latLngBounds(stops.map(s=>[s.lat,s.lng])),{padding:[40,40],maxZoom:7});
 }
 // Auto-init when Days tab opens
 const _origSwitch=window.switchTab;
