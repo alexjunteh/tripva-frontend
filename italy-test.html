@@ -287,6 +287,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .day-gallery-caption{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,.8));font-size:11px;font-weight:700;color:#fff;line-height:1.3}
 .day-gallery-time{font-size:10px;color:rgba(255,255,255,.6);margin-bottom:2px}
 .day-gallery-hdr{font-size:13px;font-weight:900;letter-spacing:.3px;margin-bottom:10px;color:rgba(255,255,255,.7)}
+/* ── BOOK NOW SEGMENTS ── */
+.booknow-segment{margin-bottom:8px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:14px 12px;overflow:hidden}
+.booknow-seg-hdr{font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.booknow-seg-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.booknow-seg-dot.pending{background:#ffb24d}
+.booknow-seg-dot.booked{background:#4ade80}
+.booknow-seg-dot.arrange{background:rgba(255,255,255,.3)}
+.booknow-segment.pending .booknow-seg-hdr{color:#ffb24d}
+.booknow-segment.booked .booknow-seg-hdr{color:#4ade80}
+.booknow-segment.arrange .booknow-seg-hdr{color:rgba(255,255,255,.5)}
+.book-card.booked-card{border-left:3px solid rgba(74,222,128,.4)}
+.book-card.booked-card .book-card-title{color:rgba(255,255,255,.8)}
+.booked-chip{background:rgba(74,222,128,.15)!important;color:#4ade80!important;border-color:rgba(74,222,128,.3)!important}
+.booked-btn{background:rgba(74,222,128,.12)!important;color:#4ade80!important;border-color:rgba(74,222,128,.25)!important}
+.book-card.arrange-card{opacity:.7;border-left:3px solid rgba(255,255,255,.15)}
 /* ── BUDGET SEGMENTS ── */
 .budget-section-hdr{font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;padding:16px 0 8px;margin-top:4px}
 .budget-section-hdr.budget-booked{color:#4ade80;border-top:1px solid rgba(74,222,128,.15)}
@@ -1159,41 +1174,57 @@ function populateDashboard(p) {
     document.getElementById('hotelsEmpty')?.remove();
     scroll.innerHTML='';
 
-    const addGroup=(title)=>{ const g=document.createElement('div'); g.className='book-group-title'; g.textContent=title; scroll.appendChild(g); };
     const getHost=(url)=>{ try { return new URL(url).hostname.replace(/^www\./,''); } catch(e){ return ''; } };
     const extractWhen=(title,note)=>{ const s=`${title||''} ${note||''}`; const m=s.match(/(Mar\s+\d{1,2}(?:-\d{1,2})?,\s*2026|Mar\s+\d{1,2}(?:-\d{1,2})?|\d{1,2}:\d{2})/i); return m?m[1]:''; };
-    const addCard=(title,note,url,btn,priority=false,secondaryUrl='',rank='')=>{ const c=document.createElement('div'); c.className='book-card'+(priority?' priority':''); const host=getHost(url||''); const when=extractWhen(title,note); c.innerHTML=`<div class="book-card-title">${rank?`#${rank} · `:''}${esc(title||'')}</div><div class="book-card-note">${esc(note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${url?`<a class="book-btn" href="${url}" target="_blank">${btn||'Open →'}</a>`:''}${secondaryUrl?`<a class="book-btn secondary" href="${secondaryUrl}" target="_blank">Backup →</a>`:''}</div>`; scroll.appendChild(c); };
 
+    // ── PENDING ACTIONS (top priority, orange accent) ──
     const urgent=(p.urgent||[]);
-    const transportUrgent=urgent.filter(u=>/train|frecciarossa/i.test(u.label||''));
-    const ticketUrgent=urgent.filter(u=>/uffizi|accademia|colosseum|vatican|ticket/i.test(u.label||''));
-    const hotelUrgent=urgent.filter(u=>/hotel/i.test(u.label||'') || /agoda/.test(String(u.url||'')));
-    const flightUrgent=urgent.filter(u=>/flight/i.test(u.label||''));
-    let rankCounter=1;
-    const renderUrgent=(arr)=>arr.forEach(u=>{
-      const label=(u.label||'').toLowerCase();
-      let btn='Open →';
-      if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →';
-      else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →';
-      else if(label.includes('uffizi')||label.includes('colosseum')||label.includes('vatican')||label.includes('accademia')||label.includes('ticket')) btn='Book tickets →';
-      else if(label.includes('flight')) btn='Book flight →';
-      addCard(u.label||'', u.note||'', u.url||'#', btn, true, '', rankCounter++);
-    });
-    if(transportUrgent.length){ addGroup('Pending transport bookings'); renderUrgent(transportUrgent); }
-    if(ticketUrgent.length){ addGroup('Pending ticket bookings'); renderUrgent(ticketUrgent); }
-    if(hotelUrgent.length){ addGroup('Pending hotel bookings'); renderUrgent(hotelUrgent); }
-    if(flightUrgent.length){ addGroup('Pending flight bookings'); renderUrgent(flightUrgent); }
+    if(urgent.length) {
+      const pendingWrap=document.createElement('div'); pendingWrap.className='booknow-segment pending';
+      pendingWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot pending"></span>⚡ ACTION NEEDED (${urgent.length})</div>`;
+      urgent.forEach((u,i)=>{
+        const label=(u.label||'').toLowerCase();
+        let btn='Open →';
+        if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →';
+        else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →';
+        else if(label.includes('colosseum')||label.includes('vatican')||label.includes('ticket')) btn='Book tickets →';
+        else if(label.includes('flight')) btn='Book flight →';
+        const host=getHost(u.url||'');
+        const when=extractWhen(u.label,u.note);
+        const c=document.createElement('div'); c.className='book-card priority';
+        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank">${btn}</a>`:''}</div>`;
+        pendingWrap.appendChild(c);
+      });
+      scroll.appendChild(pendingWrap);
+    }
 
-    addGroup('Booked stays');
-    (p.hotels||[]).filter(h=>/✅|PAID|BOOKED/i.test(h.price||'')).forEach(h=>{
-      addCard(`${h.city} · ${h.name}`, `${h.price||''} · ${h.note||''}`, h.bookUrl||'#', 'Open location →', false);
-    });
+    // ── BOOKED STAYS (green accent) ──
+    const bookedHotels=(p.hotels||[]).filter(h=>/✅|PAID|BOOKED/i.test(h.price||''));
+    if(bookedHotels.length) {
+      const bookedWrap=document.createElement('div'); bookedWrap.className='booknow-segment booked';
+      bookedWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot booked"></span>✅ CONFIRMED STAYS (${bookedHotels.length})</div>`;
+      bookedHotels.forEach(h=>{
+        const c=document.createElement('div'); c.className='book-card booked-card';
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${h.bookUrl||'#'}" target="_blank">📍 Open location →</a></div>`;
+        bookedWrap.appendChild(c);
+      });
+      scroll.appendChild(bookedWrap);
+    }
 
-    addGroup('Still to arrange');
-    (p.hotels||[]).filter(h=>!/✅|PAID|BOOKED/i.test(h.price||'')).forEach(h=>{
-      const btn=/agoda\.com\/search/.test(h.bookUrl||'')?'Search Agoda →':'Open →';
-      addCard(`${h.city} · ${h.name}`, `${h.price||''} · ${h.note||''}`, h.bookUrl||'#', btn, false);
-    });
+    // ── STILL TO ARRANGE (dimmed) ──
+    const unbookedHotels=(p.hotels||[]).filter(h=>!/✅|PAID|BOOKED/i.test(h.price||''));
+    if(unbookedHotels.length) {
+      const arrangeWrap=document.createElement('div'); arrangeWrap.className='booknow-segment arrange';
+      arrangeWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot arrange"></span>🔍 STILL TO ARRANGE (${unbookedHotels.length})</div>`;
+      unbookedHotels.forEach(h=>{
+        const btn=/agoda\.com\/search/.test(h.bookUrl||'')?'Search Agoda →':'Open →';
+        const host=getHost(h.bookUrl||'');
+        const c=document.createElement('div'); c.className='book-card arrange-card';
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank">${btn}</a></div>`;
+        arrangeWrap.appendChild(c);
+      });
+      scroll.appendChild(arrangeWrap);
+    }
   }
 
   // ── BUDGET ──
