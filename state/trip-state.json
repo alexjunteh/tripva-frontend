@@ -1206,9 +1206,9 @@
             "mapQuery": "Terre e Domus Rome"
           },
           {
-            "time": "14:30",
+            "time": "16:30",
             "title": "⛪ Vatican Museums + Sistine Chapel",
-            "detail": "⚠️ BOOK official site. The museums are the accumulated papal collections; the Sistine Chapel matters not just for Michelangelo’s ceiling, but because it remains the site of the papal conclave.",
+            "detail": "✅ BOOKED. Guided tour, 2 adults, €80 total. Code: 2L2N0R202JVMU3NSR. Arrive 30 min early (16:00). Present voucher + ID at Customer Care outside entrance. Enter CORRIDOIO2/PASSAGEWAY2. Climb stairs far left → Guided Tours desk → get tickets → meet guide, get earphones.",
             "type": "activity",
             "mapQuery": "Vatican Museums Rome"
           },
@@ -1507,6 +1507,13 @@
         "icon": "🗿",
         "note": "✅ BOOKED for 2 adults · 27 Mar 16:00",
         "pct": 5
+      },
+      {
+        "label": "Vatican Museums guided tour",
+        "amount": "€80 (~RM 376)",
+        "icon": "⛪",
+        "note": "✅ BOOKED · 2 adults · Mar 30",
+        "pct": 8
       }
     ],
     "tips": [
@@ -1644,11 +1651,6 @@
         "label": "Colosseum tickets (Mar 29)",
         "note": "Book official site — early slot essential",
         "url": "https://ticketing.colosseo.it/en/"
-      },
-      {
-        "label": "Vatican Museums tickets (Mar 30)",
-        "note": "Book official site — morning entry best",
-        "url": "https://tickets.museivaticani.va/home"
       }
     ],
     "tickets": [
@@ -1897,6 +1899,41 @@
           {
             "name": "Khai Yee — Wong Khai Yee (€24)",
             "images": [],
+            "pdfUrl": "",
+            "pdfLabel": ""
+          }
+        ]
+      },
+      {
+        "name": "Vatican Museums — Guided Tour",
+        "date": "Mar 30, 2026",
+        "legs": [
+          {
+            "train": "Guided Tour",
+            "from": "Vatican Museums entrance (Viale Vaticano)",
+            "fromTime": "16:30",
+            "to": "Vatican Museums",
+            "toTime": "~19:00",
+            "pnr": "Code: 2L2N0R202JVMU3NSR"
+          }
+        ],
+        "passengers": [
+          {
+            "name": "Alex — Teh Jia Jun",
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/vatican-1.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/vatican-2.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/vatican-3.jpg"
+            ],
+            "pdfUrl": "",
+            "pdfLabel": ""
+          },
+          {
+            "name": "Khai Yee — Wong Khai Yee",
+            "images": [
+              "https://futuriztaos.github.io/trip-planner/tickets/vatican-1.jpg",
+              "https://futuriztaos.github.io/trip-planner/tickets/vatican-2.jpg"
+            ],
             "pdfUrl": "",
             "pdfLabel": ""
           }
