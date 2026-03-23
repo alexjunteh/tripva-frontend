@@ -1247,10 +1247,12 @@ function populateDashboard(p) {
 
     // ── PENDING ACTIONS (top priority, orange accent) ──
     const urgent=(p.urgent||[]);
-    if(urgent.length) {
+    const dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
+    const activeUrgent=urgent.filter(u=>!dismissed.includes(u.label||''));
+    if(activeUrgent.length) {
       const pendingWrap=document.createElement('div'); pendingWrap.className='booknow-segment pending';
-      pendingWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot pending"></span>⚡ ACTION NEEDED (${urgent.length})</div>`;
-      urgent.forEach((u,i)=>{
+      pendingWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot pending"></span>⚡ ACTION NEEDED (${activeUrgent.length})</div>`;
+      activeUrgent.forEach((u,i)=>{
         const label=(u.label||'').toLowerCase();
         let btn='Open →';
         if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →';
@@ -1259,8 +1261,9 @@ function populateDashboard(p) {
         else if(label.includes('flight')) btn='Book flight →';
         const host=getHost(u.url||'');
         const when=extractWhen(u.label,u.note);
-        const c=document.createElement('div'); c.className='book-card priority';
-        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank">${btn}</a>`:''}</div>`;
+        const itemKey=esc(u.label||'').replace(/'/g,"\'");
+        const c=document.createElement('div'); c.className='book-card priority'; c.id='bc-'+i;
+        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripai_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
         pendingWrap.appendChild(c);
       });
       scroll.appendChild(pendingWrap);
