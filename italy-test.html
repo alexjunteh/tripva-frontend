@@ -1288,9 +1288,12 @@ function populateDashboard(p) {
       if(isToday) pill.classList.add('today-pill');
       const evtCnt=(d.timeline||[]).length;
       pill.innerHTML=`<span class="day-pill-num">${d.emoji||'📅'}</span><span class="day-pill-date">Day ${d.day}</span>${evtCnt?`<span class="day-pill-badge">${evtCnt}</span>`:''}`.trim();
-      pill.onclick=()=>{ document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); curDayIdx=i; const card=document.getElementById('dc-'+i); if(card) card.scrollIntoView({behavior:'smooth',block:'nearest'}); };
+      pill.onclick=()=>{ document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); curDayIdx=i; const card=document.getElementById('dc-'+i); if(card) card.scrollIntoView({behavior:'smooth',block:'nearest'}); pill.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}); };
       strip.appendChild(pill);
     });
+    // Auto-scroll the initially active pill into view
+    const activePill=strip.querySelector('.day-pill.active');
+    if(activePill) setTimeout(()=>activePill.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}),120);
 
     // Day cards (compact summaries)
     const list=document.getElementById('daysList');
