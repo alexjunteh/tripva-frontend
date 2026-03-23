@@ -1420,6 +1420,10 @@ function parseBudgetToRM(str){
   return 0;
 }
 function renderLiveOps(){
+  const parseTimeMins = (t) => {
+    const m = String(t||'').match(/(\d{1,2}):(\d{2})/);
+    return m ? parseInt(m[1])*60 + parseInt(m[2]) : -1;
+  };
   if(!plan || !plan.days) return;
   const el=id=>document.getElementById(id);
   const cleanSub = s => {
@@ -1541,10 +1545,6 @@ function renderLiveOps(){
   const localHour = info.localHour;
   const localMin = info.localMin;
   const nowMins = localHour * 60 + localMin;
-  const parseTimeMins = (t) => {
-    const m = String(t||'').match(/(\d{1,2}):(\d{2})/);
-    return m ? parseInt(m[1])*60 + parseInt(m[2]) : -1;
-  };
   const timeline = day.timeline || [];
   // Find the next item whose time hasn't passed yet (or last if all done)
   let firstItem = timeline.find(t => {
