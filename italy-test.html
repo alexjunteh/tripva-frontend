@@ -537,6 +537,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 ::-webkit-scrollbar{width:2px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+/* ── PLANNER OVERLAY ── */
+.planner-overlay{position:fixed;inset:0;z-index:600;background:#0a0a0f;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,1,.4,1);overflow:hidden}
+.planner-overlay.open{transform:translateY(0)}
+.planner-header{padding:16px 20px 12px;background:rgba(10,10,15,.97);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.planner-title{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.planner-close{background:rgba(255,255,255,.08);border:none;color:#fff;font-size:18px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.planner-body{flex:1;overflow-y:auto;padding:20px 20px 120px;-webkit-overflow-scrolling:touch}
+.planner-section{margin-bottom:20px}
+.planner-label{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px}
+.planner-input{width:100%;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:inherit;-webkit-appearance:none;transition:border-color .2s}
+.planner-input:focus{border-color:#95b8ff}
+.planner-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.planner-travelers{display:flex;align-items:center;gap:14px;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:10px 16px}
+.planner-travelers span{font-size:20px;font-weight:900;min-width:24px;text-align:center}
+.planner-trav-btn{background:rgba(255,255,255,.08);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700}
+.planner-interests{display:flex;flex-wrap:wrap;gap:8px}
+.planner-interest{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;user-select:none}
+.planner-interest.sel{background:rgba(124,106,247,.2);border-color:#95b8ff;color:#fff}
+.planner-footer{position:fixed;bottom:0;left:0;right:0;padding:16px 20px;padding-bottom:calc(16px + var(--safe-b));background:rgba(10,10,15,.97);border-top:1px solid rgba(255,255,255,.06);z-index:601}
+.planner-btn{width:100%;background:linear-gradient(135deg,#95b8ff,#7c6af7);border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:#0a0a0f;cursor:pointer;letter-spacing:-.2px;transition:opacity .15s}
+.planner-btn:disabled{opacity:.4;cursor:not-allowed}
+.planner-btn:active:not(:disabled){opacity:.7}
+.planner-progress{display:none;padding:40px 20px;text-align:center}
+.planner-progress.show{display:block}
+.planner-form.hide{display:none}
+.plan-spin{width:44px;height:44px;border:3px solid rgba(124,106,247,.2);border-top-color:#95b8ff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 18px}
+.plan-prog-title{font-size:18px;font-weight:900;margin-bottom:8px}
+.plan-prog-msg{font-size:14px;color:rgba(255,255,255,.55);line-height:1.6}
 </style>
 </head>
 <body>
@@ -840,6 +868,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="more-item-label">Tips</div>
         <div class="more-item-sub">Local intel</div>
       </div>
+      <div class="more-item" onclick="closeMore();openPlanner()">
+        <div class="more-item-icon">✨</div>
+        <div class="more-item-label">New Trip</div>
+        <div class="more-item-sub">AI trip planner</div>
+      </div>
       <div class="more-item" onclick="closeMore();saveLink()">
         <div class="more-item-icon">🔗</div>
         <div class="more-item-label">Share</div>
@@ -851,6 +884,82 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <button class="more-action" onclick="closeMore();exportHtml()">💾 Export HTML</button>
       <button class="more-action" onclick="closeMore();openEditModal()">✏️ Edit Trip</button>
     </div>
+  </div>
+</div>
+
+
+<!-- ── PLANNER OVERLAY ── -->
+<div class="planner-overlay" id="plannerOverlay">
+  <div class="planner-header">
+    <div class="planner-title">✨ Plan a Trip</div>
+    <button class="planner-close" onclick="closePlanner()">✕</button>
+  </div>
+  <div class="planner-body">
+    <!-- FORM -->
+    <div class="planner-form" id="plannerForm">
+      <div class="planner-section">
+        <div class="planner-label">Where to?</div>
+        <input class="planner-input" id="pln-dest" type="text" placeholder="e.g. Italy + Switzerland" autocomplete="off">
+      </div>
+      <div class="planner-section">
+        <div class="planner-label">When?</div>
+        <div class="planner-row2">
+          <div>
+            <div class="planner-label" style="margin-bottom:6px">Start</div>
+            <input class="planner-input" id="pln-start" type="date">
+          </div>
+          <div>
+            <div class="planner-label" style="margin-bottom:6px">End</div>
+            <input class="planner-input" id="pln-end" type="date">
+          </div>
+        </div>
+      </div>
+      <div class="planner-section">
+        <div class="planner-label">Travellers</div>
+        <div class="planner-travelers">
+          <button class="planner-trav-btn" onclick="adjustTravellers(-1)">−</button>
+          <span id="pln-travellers">2</span>
+          <button class="planner-trav-btn" onclick="adjustTravellers(1)">+</button>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-left:4px" id="pln-trav-label">people</div>
+        </div>
+      </div>
+      <div class="planner-section">
+        <div class="planner-label">Budget (total)</div>
+        <input class="planner-input" id="pln-budget" type="text" placeholder="e.g. RM 15000" autocomplete="off">
+      </div>
+      <div class="planner-section">
+        <div class="planner-label">Travel style</div>
+        <input class="planner-input" id="pln-style" type="text" placeholder="e.g. efficiency-obsessed couple" autocomplete="off">
+      </div>
+      <div class="planner-section">
+        <div class="planner-label">Interests</div>
+        <div class="planner-interests" id="pln-interests">
+          <div class="planner-interest sel" data-v="food">🍝 Food</div>
+          <div class="planner-interest sel" data-v="trains">🚆 Trains</div>
+          <div class="planner-interest" data-v="hiking">🥾 Hiking</div>
+          <div class="planner-interest sel" data-v="history">🏛️ History</div>
+          <div class="planner-interest" data-v="beaches">🏖️ Beaches</div>
+          <div class="planner-interest sel" data-v="alpine views">🏔️ Alpine</div>
+          <div class="planner-interest" data-v="museums">🖼️ Museums</div>
+          <div class="planner-interest" data-v="nightlife">🍷 Nightlife</div>
+          <div class="planner-interest" data-v="shopping">🛍️ Shopping</div>
+          <div class="planner-interest" data-v="photography">📸 Photos</div>
+        </div>
+      </div>
+      <div class="planner-section">
+        <div class="planner-label">Home city (departure)</div>
+        <input class="planner-input" id="pln-home" type="text" placeholder="e.g. Penang, Malaysia" autocomplete="off">
+      </div>
+    </div>
+    <!-- PROGRESS STATE -->
+    <div class="planner-progress" id="plannerProgress">
+      <div class="plan-spin"></div>
+      <div class="plan-prog-title" id="planProgTitle">Building your trip…</div>
+      <div class="plan-prog-msg" id="planProgMsg">Claude is designing your itinerary</div>
+    </div>
+  </div>
+  <div class="planner-footer">
+    <button class="planner-btn" id="plannerSubmitBtn" onclick="submitPlan()">Generate Trip ✨</button>
   </div>
 </div>
 
@@ -1868,6 +1977,115 @@ const _origSwitch=window.switchTab;
 window.switchTab=function(t){_origSwitch(t);if(t==='trip'&&!routeMapInited){setTimeout(initRouteMap,300);}};
 // Also init if trip tab is loaded during populateDashboard
 setTimeout(()=>{if(document.getElementById('tab-trip')&&document.getElementById('tab-trip').classList.contains('active')&&!routeMapInited)initRouteMap();},2000);
+
+// ══════════════════════════════════════
+//  ROAM TRIP PLANNER — BACKEND WIRING
+// ══════════════════════════════════════
+const BACKEND_URL = 'https://tripai-backend.vercel.app';
+let plannerTravellers = 2;
+
+function openPlanner() {
+  document.getElementById('plannerOverlay').classList.add('open');
+}
+function closePlanner() {
+  document.getElementById('plannerOverlay').classList.remove('open');
+  // reset to form view
+  document.getElementById('plannerForm').classList.remove('hide');
+  document.getElementById('plannerProgress').classList.remove('show');
+  document.getElementById('plannerSubmitBtn').disabled = false;
+  document.getElementById('plannerSubmitBtn').textContent = 'Generate Trip ✨';
+}
+function adjustTravellers(delta) {
+  plannerTravellers = Math.max(1, Math.min(10, plannerTravellers + delta));
+  document.getElementById('pln-travellers').textContent = plannerTravellers;
+  document.getElementById('pln-trav-label').textContent = plannerTravellers === 1 ? 'person' : 'people';
+}
+// Toggle interest chips
+document.getElementById('pln-interests').addEventListener('click', function(e) {
+  const chip = e.target.closest('.planner-interest');
+  if (chip) chip.classList.toggle('sel');
+});
+
+async function submitPlan() {
+  const dest = document.getElementById('pln-dest').value.trim();
+  const start = document.getElementById('pln-start').value;
+  const end = document.getElementById('pln-end').value;
+  const budget = document.getElementById('pln-budget').value.trim();
+  const style = document.getElementById('pln-style').value.trim() || 'traveller couple';
+  const home = document.getElementById('pln-home').value.trim() || 'Malaysia';
+  const interests = [...document.querySelectorAll('.planner-interest.sel')].map(el => el.dataset.v);
+
+  if (!dest) { alert('Where are you going?'); return; }
+  if (!start || !end) { alert('Pick your travel dates'); return; }
+  if (!budget) { alert('What\'s your budget?'); return; }
+  if (interests.length === 0) { alert('Pick at least one interest'); return; }
+
+  // Show progress
+  document.getElementById('plannerForm').classList.add('hide');
+  document.getElementById('plannerProgress').classList.add('show');
+  document.getElementById('plannerSubmitBtn').disabled = true;
+  document.getElementById('plannerSubmitBtn').textContent = 'Planning…';
+
+  const updateProgress = (title, msg) => {
+    if (title) document.getElementById('planProgTitle').textContent = title;
+    if (msg) document.getElementById('planProgMsg').textContent = msg;
+  };
+
+  try {
+    updateProgress('Thinking…', 'Claude is designing your route');
+    const resp = await fetch(BACKEND_URL + '/api/plan?stream=true', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ destination: dest, startDate: start, endDate: end, travelers: plannerTravellers, budget, style, interests, homeCity: home })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || 'Backend error ' + resp.status);
+    }
+
+    // Parse SSE stream
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let tripState = null;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const lines = dec.decode(value).split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const evt = JSON.parse(line.slice(6));
+          if (evt.type === 'start') updateProgress('Planning your trip…', evt.message || '');
+          if (evt.type === 'progress') updateProgress(null, evt.message || '');
+          if (evt.type === 'done' && evt.data) { tripState = evt.data; }
+        } catch {}
+      }
+    }
+
+    if (!tripState || !tripState.rawPlan) throw new Error('No plan data received');
+
+    // Success — load into dashboard
+    updateProgress('🎉 Done!', 'Loading your dashboard…');
+    localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
+    plan = tripState.rawPlan;
+    setTimeout(() => {
+      closePlanner();
+      populateDashboard(plan);
+      renderLiveOps();
+      switchTab('trip');
+    }, 800);
+
+  } catch (err) {
+    document.getElementById('plannerForm').classList.remove('hide');
+    document.getElementById('plannerProgress').classList.remove('show');
+    document.getElementById('plannerSubmitBtn').disabled = false;
+    document.getElementById('plannerSubmitBtn').textContent = 'Generate Trip ✨';
+    alert('⚠️ ' + err.message);
+  }
+}
+
 </script>
 </body>
 </html>
