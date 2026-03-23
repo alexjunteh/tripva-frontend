@@ -1,6 +1,6 @@
 {
-  "name": "Trip Live \u2014 AI Travel Assistant",
-  "short_name": "Trip Live",
+  "name": "AI Trip Planner",
+  "short_name": "AI Trip",
   "description": "AI-powered travel planner with live itinerary, ticket wallet, and budget tracking",
   "start_url": "/trip-planner/italy-test.html",
   "display": "standalone",
