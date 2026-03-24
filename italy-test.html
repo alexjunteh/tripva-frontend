@@ -1355,7 +1355,20 @@ function populateDashboard(p) {
     const extractWhen=(title,note)=>{ const s=`${title||''} ${note||''}`; const m=s.match(/(Mar\s+\d{1,2}(?:-\d{1,2})?,\s*2026|Mar\s+\d{1,2}(?:-\d{1,2})?|\d{1,2}:\d{2})/i); return m?m[1]:''; };
 
     // ── PENDING ACTIONS (top priority, orange accent) ──
-    const urgent=(p.urgent||[]);
+    // Auto-derive ACTION NEEDED from state entities — no manual curation required
+    const derivedFromActivities=(state.activities||[])
+      .filter(a=>a.ticketRequired===true&&a.ticketState!=='booked'&&a.ticketState!=='not_needed')
+      .map(a=>({label:a.title||'Book ticket',note:(a.detail||'').slice(0,100),url:a.bookingUrl||'#',_derived:true}));
+    const derivedFromSegments=(state.segments||[])
+      .filter(s=>s.bookingRequired===true&&s.bookingState==='pending')
+      .map(s=>({label:s.title||'Book transport',note:(s.detail||'').slice(0,100),url:s.bookingUrl||'https://www.trenitalia.com/en.html',_derived:true}));
+    // Manual urgent array overrides derived — deduplicate by label
+    const manualLabels=new Set((p.urgent||[]).map(u=>u.label||''));
+    const urgent=[
+      ...(p.urgent||[]),
+      ...derivedFromActivities.filter(u=>!manualLabels.has(u.label)),
+      ...derivedFromSegments.filter(u=>!manualLabels.has(u.label))
+    ];
     const dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
     const activeUrgent=urgent.filter(u=>!dismissed.includes(u.label||''));
     if(activeUrgent.length) {
