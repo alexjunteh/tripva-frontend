@@ -116,6 +116,9 @@ footer strong{color:rgba(255,255,255,.55)}
 .gen-day-status{font-size:16px}
 .gen-done-title{text-align:center;font-size:22px;font-weight:900;margin-bottom:14px}
 </style>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://tripai-backend.vercel.app">
+<link rel="dns-prefetch" href="https://formspree.io">
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
@@ -138,7 +141,7 @@ footer strong{color:rgba(255,255,255,.55)}
   <div class="hero-content">
     <div class="hero-eyebrow">✨ Powered by AI</div>
     <h1>Your <span>AI travel</span> companion</h1>
-    <p class="hero-sub">Describe your trip. AI builds your full itinerary, day by day — with restaurants, transport, hotels, and insider tips.</p>
+    <p class="hero-sub">Describe your dream trip. In 30 seconds, AI builds your full day-by-day itinerary — real restaurants, transport, hotels, and insider tips.</p>
     <button class="hero-cta" onclick="document.getElementById('planner-section').scrollIntoView({behavior:'smooth'})">
       Plan my trip →
     </button>
@@ -166,7 +169,7 @@ footer strong{color:rgba(255,255,255,.55)}
 
 <div class="section">
   <div class="section-label">How it works</div>
-  <div class="section-title">Three steps to your perfect trip</div>
+  <div class="section-title">From idea to full itinerary in seconds</div>
   <div class="steps">
     <div class="step">
       <div class="step-num">📝</div>
@@ -193,6 +196,34 @@ footer strong{color:rgba(255,255,255,.55)}
     </div>
   </div>
 </div>
+
+<section style="padding:0 24px 72px">
+  <div style="max-width:700px;margin:0 auto">
+    <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;text-align:center">Everything your trip needs</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 16px">
+        <div style="font-size:28px;margin-bottom:10px">🧠</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px">AI-built itinerary</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">Full day-by-day plan built by Claude AI with real places and insider tips.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 16px">
+        <div style="font-size:28px;margin-bottom:10px">🔗</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px">Shareable link</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">Share your trip with travel companions instantly. One URL, everything inside.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 16px">
+        <div style="font-size:28px;margin-bottom:10px">📅</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px">Day-by-day detail</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">Each day has a full timeline — restaurants, transport times, check-ins, and more.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 16px">
+        <div style="font-size:28px;margin-bottom:10px">📱</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:6px">Works offline</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">Install as a PWA. Your trip stays accessible even without internet.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="planner-section">
   <div class="planner-wrap">
@@ -562,6 +593,20 @@ function handleEmailSubmit(e) {
     btn.disabled = false;
   });
 }
+// Pre-fill form from URL params (New Trip flow)
+document.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const dest = params.get('dest');
+  const start = params.get('start');
+  const end = params.get('end');
+  if (dest) { const el = document.getElementById('f-dest'); if (el) el.value = dest; }
+  if (start) { const el = document.getElementById('f-start'); if (el) el.value = start; }
+  if (end) { const el = document.getElementById('f-end'); if (el) el.value = end; }
+  if (dest || start || end) {
+    setTimeout(() => document.getElementById('planner-section')?.scrollIntoView({behavior:'smooth'}), 300);
+  }
+});
+
 </script>
 </body>
 </html>
