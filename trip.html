@@ -1110,6 +1110,24 @@ async function loadTripPlan() {
           tripMeta = plan.trip || {};
           localStorage.setItem('tripai_plan', JSON.stringify(plan));
           populateDashboard(plan);
+
+  // ── SYNC VALIDATOR — warn if segments and timeline drift ──
+  (function validateSync() {
+    const segs = (plan.segments||[]).filter(s=>s.bookingRequired);
+    const days  = plan.days||[];
+    const tlIdx = {};
+    days.forEach(d => (d.timeline||[]).forEach(t => { tlIdx[d.day+'|'+t.time] = t; }));
+    segs.forEach(s => {
+      const dayNum = parseInt((s.dayId||'').split('-')[1]||'0');
+      const tl = tlIdx[dayNum+'|'+s.time];
+      if (!tl) return;
+      const segBooked  = s.bookingState === 'booked';
+      const tlBooked   = /✅/.test(tl.detail||'') || /✅/.test(tl.title||'');
+      const tlPending  = /⏳/.test(tl.detail||'') || /⏳/.test(tl.title||'');
+      if (segBooked && tlPending)  console.warn('[SYNC DRIFT] '+s.id+': segment=booked but timeline shows ⏳');
+      if (!segBooked && tlBooked)  console.warn('[SYNC DRIFT] '+s.id+': segment=pending but timeline shows ✅');
+    });
+  })();
           renderLiveOps();
           switchTab('plan');
           if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Roam';
@@ -1914,6 +1932,7 @@ function renderTransportCard(tl) {
   if (!d || !/BOOKED|PNR|Coach|Platform|order\s+\d/i.test(d)) {
     return d ? `<div class="tl-detail">${esc(d)}</div>` : '';
   }
+  // Split on sentence boundaries that start a new train/segment/info
   const parts = d.split(/\.\s+(?=(?:Then\s+)?(?:[A-Z]{1,4}\s+\d|Coach|Trenitalia|SBB|Keep|IR|EC|PE|LIX|RE))/);
   let statusHtml='', legsHtml='', seats='', refs=[];
   parts.forEach(raw => {
@@ -1922,10 +1941,19 @@ function renderTransportCard(tl) {
     if (s.startsWith('✅') || s.startsWith('⏳')) {
       statusHtml = `<div class="tl-tc-status">${esc(s)}</div>`;
     } else if (/\d{2}:\d{2}.*→/.test(s) || /Platform/i.test(s)) {
+      // Parse leg: "IR 2017: Luzern 08:39 Platform 4 → Arth-Goldau 09:11 Platform 6"
       const m = s.match(/([\w\s\.]+?):\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?\s+→\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?/);
       if (m) {
         const [,train,from,ft,fp,to,tt,tp]=m;
-        legsHtml += `<div class="tl-tc-leg"><div class="tl-tc-train">${esc(train.trim())}</div><div class="tl-tc-route"><span>${esc(from.trim())}${fp?` <span class="tl-platform">P${esc(fp)}</span>`:''}</span><span class="tl-tc-arrow">→</span><span>${esc(to.trim())}${tp?` <span class="tl-platform">P${esc(tp)}</span>`:''}</span></div><div class="tl-tc-times">${esc(ft)} → ${esc(tt)}</div></div>`;
+        legsHtml += `<div class="tl-tc-leg">
+          <div class="tl-tc-train">${esc(train.trim())}</div>
+          <div class="tl-tc-route">
+            <span>${esc(from.trim())}${fp?` <span class="tl-platform">P${esc(fp)}</span>`:''}</span>
+            <span class="tl-tc-arrow">→</span>
+            <span>${esc(to.trim())}${tp?` <span class="tl-platform">P${esc(tp)}</span>`:''}</span>
+          </div>
+          <div class="tl-tc-times">${esc(ft)} → ${esc(tt)}</div>
+        </div>`;
       } else {
         legsHtml += `<div class="tl-tc-leg"><div class="tl-tc-misc">${esc(s)}</div></div>`;
       }
