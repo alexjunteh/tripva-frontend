@@ -1356,10 +1356,10 @@ function populateDashboard(p) {
 
     // ── PENDING ACTIONS (top priority, orange accent) ──
     // Auto-derive ACTION NEEDED from state entities — no manual curation required
-    const derivedFromActivities=(state.activities||[])
+    const derivedFromActivities=(APP_STATE.activities||[])
       .filter(a=>a.ticketRequired===true&&a.ticketState!=='booked'&&a.ticketState!=='not_needed')
       .map(a=>({label:a.title||'Book ticket',note:(a.detail||'').slice(0,100),url:a.bookingUrl||'#',_derived:true}));
-    const derivedFromSegments=(state.segments||[])
+    const derivedFromSegments=(APP_STATE.segments||[])
       .filter(s=>s.bookingRequired===true&&s.bookingState==='pending')
       .map(s=>({label:s.title||'Book transport',note:(s.detail||'').slice(0,100),url:s.bookingUrl||'https://www.trenitalia.com/en.html',_derived:true}));
     // Manual urgent array overrides derived — deduplicate by label

@@ -359,20 +359,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-tag.transport{background:rgba(52,211,153,.08);color:var(--green)}
 .tl-tag.hotel{background:rgba(167,139,250,.1);color:var(--accent2)}
 .tl-tag.tip{background:rgba(255,255,255,.06);color:var(--muted)}
-.tl-train-card{background:rgba(52,211,153,.06);border:1.5px solid rgba(52,211,153,.18);border-radius:14px;padding:12px 14px;margin-top:6px}
-.tl-train-status{font-size:11px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;color:#4ade80;margin-bottom:10px}
-.tl-train-leg{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.tl-train-leg:last-of-type{border-bottom:none;padding-bottom:0}
-.tl-train-num{font-size:11px;font-weight:800;color:var(--muted);width:60px;flex-shrink:0;padding-top:3px;line-height:1.3}
-.tl-train-route{flex:1;min-width:0}
-.tl-train-from,.tl-train-to{font-size:13px;font-weight:700;color:var(--text);line-height:1.4}
-.tl-train-t{font-weight:600;color:var(--accent);font-size:13px}
-.tl-train-arrow{font-size:10px;color:var(--muted);margin:3px 0 3px 2px}
-.tl-train-refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)}
-.tl-train-pnr{display:inline-flex;align-items:center;background:rgba(52,211,153,.12);color:#4ade80;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:.5px;font-family:monospace}
-.tl-train-order{background:rgba(149,184,255,.1);color:#95b8ff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:.3px;font-family:monospace}
-.tl-train-seats{font-size:12px;color:rgba(255,255,255,.5);width:100%;margin-top:4px;display:flex;align-items:center;gap:5px}
-.tl-train-note{font-size:11px;color:rgba(255,255,255,.3);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);font-style:italic}
 .tl-map-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--accent2);text-decoration:none;background:rgba(124,106,247,.08);padding:3px 9px;border-radius:8px;font-weight:600;margin-top:5px}
 /* Highlights strip */
 .day-highlights{display:flex;flex-direction:column;gap:6px;padding:14px 16px 8px;background:rgba(124,106,247,.05);border-bottom:1px solid var(--border);flex-shrink:0}
@@ -1370,10 +1356,10 @@ function populateDashboard(p) {
 
     // ── PENDING ACTIONS (top priority, orange accent) ──
     // Auto-derive ACTION NEEDED from state entities — no manual curation required
-    const derivedFromActivities=(state.activities||[])
+    const derivedFromActivities=(APP_STATE.activities||[])
       .filter(a=>a.ticketRequired===true&&a.ticketState!=='booked'&&a.ticketState!=='not_needed')
       .map(a=>({label:a.title||'Book ticket',note:(a.detail||'').slice(0,100),url:a.bookingUrl||'#',_derived:true}));
-    const derivedFromSegments=(state.segments||[])
+    const derivedFromSegments=(APP_STATE.segments||[])
       .filter(s=>s.bookingRequired===true&&s.bookingState==='pending')
       .map(s=>({label:s.title||'Book transport',note:(s.detail||'').slice(0,100),url:s.bookingUrl||'https://www.trenitalia.com/en.html',_derived:true}));
     // Manual urgent array overrides derived — deduplicate by label
@@ -1795,110 +1781,6 @@ function openDaySheet(idx) {
   document.getElementById('dp-'+idx)?.classList.add('active');
   document.getElementById('dp-'+idx)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
-
-// ─── TRAIN CARD RENDERER ─────────────────────────────────────────────────────
-function renderTlDetail(tl) {
-  if (!tl.detail) return '';
-  if (tl.type === 'transport') {
-    const d = tl.detail;
-    const isBooked = d.includes('\u2705 BOOKED') || d.includes('BOOKED');
-    const hasPlatform = tl.platform || /[Pp]latform\s*\d/.test(d);
-    const hasPNR = /PNR/i.test(d);
-    const hasCoach = /[Cc]oach\s+\d/.test(d);
-    if (isBooked || (hasPlatform && (hasPNR || hasCoach))) {
-      return renderTrainCard(tl);
-    }
-  }
-  return '<div class="tl-detail">' + esc(tl.detail) + '</div>';
-}
-
-function renderTrainCard(tl) {
-  const d = tl.detail || '';
-  const booked = d.includes('BOOKED');
-
-  // Extract price
-  const priceM = d.match(/(CHF\s?[\d,.']+|€[\d,.]+|RM\s?[\d,.]+)/);
-  const price = priceM ? priceM[1] : '';
-
-  // Extract PNRs (all uppercase letter+digit combos after "PNR")
-  const pnrs = [];
-  const pnrRe = /PNR[:\s]+([A-Z0-9]{5,10})/g;
-  let pm;
-  while ((pm = pnrRe.exec(d)) !== null) pnrs.push(pm[1]);
-  // Also check Trenitalia PNR at end
-  const trePnr = d.match(/Trenitalia PNR\s+([A-Z0-9]{5,10})/);
-  if (trePnr && !pnrs.includes(trePnr[1])) pnrs.push(trePnr[1]);
-
-  // Extract order number
-  const orderM = d.match(/(?:SBB\s+)?order\s+([\d]{6,})/i);
-  const order = orderM ? orderM[1] : '';
-
-  // Extract coach + seats
-  const coachM = d.match(/[Cc]oach\s+(\d+)[,\s]+(?:seat|seats?)\s+([\d\s+,&]+)/);
-  const seatInfo = coachM ? 'Coach ' + coachM[1] + ' · Seats ' + coachM[2].trim() : '';
-
-  // Parse legs — split on ". Then " to get each leg
-  const cleanDetail = d.replace(/^\u2705 BOOKED[^.]+\.\s*/, '');
-  const legTexts = cleanDetail.split(/\.\s+Then /i);
-
-  const legs = [];
-  for (const part of legTexts) {
-    // Match pattern: "TRAIN: From HH:MM Platform X → To HH:MM Platform Y"
-    const m = part.match(/^([A-Z][A-Z0-9\s]{1,10}):\s+(.+?)\s+(\d{1,2}:\d{2})(?:\s+[Pp]latform\s*(\S+))?\s+→\s+(.+?)(?:\s+(\d{1,2}:\d{2}))?(?:\s+[Pp]latform\s*(\S+))?/);
-    if (m) {
-      legs.push({
-        train: m[1].trim(),
-        from: m[2].trim(),
-        fromTime: m[3],
-        fromPlatform: tl.platform && legs.length === 0 ? tl.platform : (m[4] || null),
-        to: m[5].trim().replace(/\.$/, ''),
-        toTime: m[6] || null,
-        toPlatform: m[7] || null
-      });
-    }
-  }
-
-  if (legs.length === 0) {
-    return '<div class="tl-detail">' + esc(d) + '</div>';
-  }
-
-  let html = '<div class="tl-train-card">';
-  html += '<div class="tl-train-status">';
-  html += (booked ? '\u2705 Booked' : '\u23f3 To book');
-  if (price) html += ' &nbsp;·&nbsp; ' + esc(price);
-  html += '</div>';
-
-  for (const leg of legs) {
-    html += '<div class="tl-train-leg">';
-    html += '<div class="tl-train-num">' + esc(leg.train) + '</div>';
-    html += '<div class="tl-train-route">';
-    html += '<div class="tl-train-from">' + esc(leg.from) + '&nbsp;<span class="tl-train-t">' + esc(leg.fromTime) + '</span>';
-    if (leg.fromPlatform) html += '&nbsp;<span class="tl-platform">P' + esc(String(leg.fromPlatform)) + '</span>';
-    html += '</div>';
-    html += '<div class="tl-train-arrow">↓</div>';
-    html += '<div class="tl-train-to">' + esc(leg.to);
-    if (leg.toTime) html += '&nbsp;<span class="tl-train-t">' + esc(leg.toTime) + '</span>';
-    if (leg.toPlatform) html += '&nbsp;<span class="tl-platform">P' + esc(String(leg.toPlatform)) + '</span>';
-    html += '</div>';
-    html += '</div></div>';
-  }
-
-  if (pnrs.length || order || seatInfo) {
-    html += '<div class="tl-train-refs">';
-    pnrs.forEach(p => { html += '<span class="tl-train-pnr">PNR&nbsp;' + esc(p) + '</span>'; });
-    if (order) html += '<span class="tl-train-order">Order&nbsp;' + esc(order) + '</span>';
-    if (seatInfo) html += '<div class="tl-train-seats">\uD83E\uDEBC ' + esc(seatInfo) + '</div>';
-    html += '</div>';
-  }
-
-  if (d.includes('Keep PDF') || d.includes('valid ID')) {
-    html += '<div class="tl-train-note">\uD83D\uDCF1 Keep PDF + valid ID ready for the conductor</div>';
-  }
-
-  html += '</div>';
-  return html;
-}
-
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
   const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||idx}/900/400`;
@@ -1948,7 +1830,7 @@ function renderDaySheet(idx) {
       <div class="tl-main">
         <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${renderTlDetail(tl)}
+        ${tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:''}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
