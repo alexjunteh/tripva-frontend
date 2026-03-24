@@ -1126,6 +1126,7 @@ window.onload = () => {
 // ══════════════════════════════════════
 const NAV_TABS = ['plan','trip','days','tickets'];
 function switchTab(name) {
+  if(name==='live' && plan) { setTimeout(renderLiveOps, 50); }
   if (name === '_more') { openMore(); return; }
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1729,7 +1730,7 @@ function renderLiveOps(){
   const info=getTripDateInfo();
   if(el('opsCurrentTime')) el('opsCurrentTime').textContent = info.timeStr;
   // Refresh time every minute
-  if(!window._liveTimerSet){window._liveTimerSet=true;setInterval(()=>{const e=document.getElementById('opsCurrentTime');if(e&&plan){const i=getTripDateInfo();e.textContent=i.timeStr;}},60000);}
+  if(!window._liveTimerSet){window._liveTimerSet=true;setInterval(()=>{if(plan&&document.getElementById('tab-live')&&document.getElementById('tab-live').classList.contains('active')){renderLiveOps();}else{const e=document.getElementById('opsCurrentTime');if(e&&plan){const i=getTripDateInfo();e.textContent=i.timeStr;}}},60000);}
   let currentIdx = plan.days.findIndex(d=>inferDayDate(d.day)===info.ymd);
   if(currentIdx<0){
     if(info.ymd < '2026-03-18') currentIdx = 0;
