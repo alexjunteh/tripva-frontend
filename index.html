@@ -115,6 +115,31 @@ footer strong{color:rgba(255,255,255,.55)}
 .gen-day-card.ready .gen-day-title{color:#fff}
 .gen-day-status{font-size:16px}
 .gen-done-title{text-align:center;font-size:22px;font-weight:900;margin-bottom:14px}
+
+/* Pricing section */
+.pricing-section{padding:80px 24px;max-width:900px;margin:0 auto}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+@media(max-width:700px){.pricing-grid{grid-template-columns:1fr;max-width:360px;margin:48px auto 0}}
+.price-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 22px;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
+.price-card:hover{transform:translateY(-4px)}
+.price-card.featured{border-color:rgba(124,106,247,.5);background:linear-gradient(180deg,rgba(124,106,247,.08) 0%,var(--surface) 60%)}
+.price-card.featured::before{content:'Most Popular';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),var(--purple));color:#0a0a0f;font-size:11px;font-weight:900;letter-spacing:.5px;padding:4px 14px;border-radius:20px;white-space:nowrap}
+.price-tier{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.price-amount{font-size:40px;font-weight:900;letter-spacing:-1.5px;line-height:1;margin-bottom:4px}
+.price-amount span{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0}
+.price-period{font-size:12px;color:var(--muted);margin-bottom:18px}
+.price-desc{font-size:13px;color:rgba(255,255,255,.55);line-height:1.55;margin-bottom:20px;min-height:42px}
+.price-features{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;flex:1}
+.price-feature{font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.pf-check{color:#4ade80;flex-shrink:0}
+.pf-x{color:rgba(255,255,255,.2);flex-shrink:0}
+.price-btn{display:block;text-align:center;padding:13px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;border:none;text-decoration:none;transition:all .15s}
+.price-btn-free{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--border)}
+.price-btn-free:hover{border-color:var(--accent);background:rgba(149,184,255,.06)}
+.price-btn-pro{background:linear-gradient(135deg,var(--accent),var(--purple));color:#0a0a0f;box-shadow:0 0 30px rgba(124,106,247,.25)}
+.price-btn-pro:hover{opacity:.9;transform:translateY(-1px)}
+.price-btn-biz{background:rgba(255,255,255,.07);color:var(--text);border:1px solid rgba(149,184,255,.3)}
+.price-btn-biz:hover{border-color:var(--accent);background:rgba(149,184,255,.06)}
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://tripai-backend.vercel.app">
@@ -125,7 +150,7 @@ footer strong{color:rgba(255,255,255,.55)}
 
 <nav>
   <div class="nav-logo" onclick="document.getElementById('planner-section').scrollIntoView({behavior:'smooth'})">Roam</div>
-  <a class="nav-cta" href="#planner-section">Try it free →</a>
+  <a href="#pricing" style="font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;margin-right:8px;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Pricing</a><a class="nav-cta" href="#planner-section">Try it free →</a>
 </nav>
 
 <section class="hero">
@@ -223,6 +248,72 @@ footer strong{color:rgba(255,255,255,.55)}
         <div style="font-size:12px;color:var(--muted);line-height:1.6">Install as a PWA. Your trip stays accessible even without internet.</div>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="pricing" style="padding:80px 24px 20px">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;text-align:center">Pricing</div>
+    <div style="font-size:clamp(24px,5vw,38px);font-weight:900;letter-spacing:-.8px;text-align:center;margin-bottom:8px;line-height:1.15">Simple, honest pricing</div>
+    <p style="text-align:center;color:var(--muted);font-size:14px;margin-bottom:0">Start free. Upgrade when you need more.</p>
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="price-card">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">$0<span>/mo</span></div>
+        <div class="price-period">Forever free</div>
+        <div class="price-desc">Perfect for trying Roam on your next trip.</div>
+        <div class="price-features">
+          <div class="price-feature"><span class="pf-check">✓</span><span>3 AI trips per month</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Full day-by-day itinerary</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Shareable trip link</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Budget tracking</span></div>
+          <div class="price-feature"><span class="pf-x">✗</span><span style="color:var(--muted)">Save trips to account</span></div>
+          <div class="price-feature"><span class="pf-x">✗</span><span style="color:var(--muted)">Unlimited generation</span></div>
+          <div class="price-feature"><span class="pf-x">✗</span><span style="color:var(--muted)">Priority AI queue</span></div>
+        </div>
+        <a class="price-btn price-btn-free" href="#planner-section" onclick="document.getElementById('planner-section').scrollIntoView({behavior:'smooth'});return false">Start free →</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card featured">
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">$12<span>/mo</span></div>
+        <div class="price-period">Billed monthly · cancel anytime</div>
+        <div class="price-desc">For frequent travellers who want the full experience.</div>
+        <div class="price-features">
+          <div class="price-feature"><span class="pf-check">✓</span><span><strong>Unlimited</strong> AI trip generation</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Save trips to your account</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Priority AI queue</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Export to PDF / Google Cal</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Multi-city trip builder</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Best hotel & flight deals</span></div>
+          <div class="price-feature"><span class="pf-x">✗</span><span style="color:var(--muted)">Team / agency features</span></div>
+        </div>
+        <a class="price-btn price-btn-pro" href="#waitlist" onclick="document.getElementById('planner-section').scrollIntoView({behavior:'smooth'});return false">Get Pro — $12/mo</a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="price-card">
+        <div class="price-tier">Business</div>
+        <div class="price-amount">$49<span>/mo</span></div>
+        <div class="price-period">Billed monthly · cancel anytime</div>
+        <div class="price-desc">For travel agencies, content creators, and teams.</div>
+        <div class="price-features">
+          <div class="price-feature"><span class="pf-check">✓</span><span>Everything in Pro</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Up to 10 team members</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>White-label branding</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>API access</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Bulk trip generation</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Custom integrations</span></div>
+          <div class="price-feature"><span class="pf-check">✓</span><span>Dedicated support</span></div>
+        </div>
+        <a class="price-btn price-btn-biz" href="mailto:hello@getroam.app?subject=Business Plan">Contact us →</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:24px">💳 Secure payments via Stripe · No hidden fees · Cancel anytime</p>
   </div>
 </section>
 
