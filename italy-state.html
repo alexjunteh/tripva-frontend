@@ -1534,11 +1534,12 @@ function populateDashboard(p) {
     document.getElementById('ticketsEmpty')?.remove();
     scroll.innerHTML='<div class="tickets-intro">Tap to expand · Tap passenger to view ticket images</div>';
     p.tickets.forEach((tkt,ti)=>{
-      // Normalise new-format tickets {title,route,train,seats,images} → old {name,legs,passengers}
+      // Normalise schema: supports old {name,legs,passengers}, new {title,route,seats}, event {title,route,seats[traveler,detail]}
       const tktName = tkt.name || tkt.title || '';
       const tktDate = tkt.dateDisplay || tkt.date || '';
       let tktLegs = tkt.legs || [];
       if (!tktLegs.length && tkt.train) {
+        // Train ticket with single train field
         const parts = (tkt.route||'').split('→');
         tktLegs = [{
           train: tkt.train + (tkt.pnr ? ' · PNR: '+tkt.pnr : ''),
@@ -1546,11 +1547,19 @@ function populateDashboard(p) {
           to: (parts[1]||'').trim(), toTime: tkt.arrival||''
         }];
       }
+      if (!tktLegs.length && tkt.route) {
+        // Non-train ticket (concert, museum, attraction) — show venue as single info row
+        tktLegs = [{ train: tkt.route, from: '', fromTime: '', to: '', toTime: '' }];
+      }
       let tktPax = tkt.passengers || [];
       if (!tktPax.length && tkt.seats && tkt.seats.length) {
         tktPax = tkt.seats.map((s,si)=>({
-          name: s.passenger + ' — Coach ' + s.coach + ', Seat ' + s.seat,
-          images: tkt.images ? [tkt.images[si]].filter(Boolean) : []
+          // Support both old {passenger,coach,seat} and new {traveler,detail} schemas
+          name: s.traveler || s.passenger || ('Traveller '+(si+1)),
+          detail: s.detail || (s.coach ? 'Coach '+s.coach+', Seat '+s.seat : ''),
+          images: tkt.images ? [tkt.images[si]].filter(Boolean) : [],
+          pdfUrl: s.pdfUrl || (si===0 ? tkt.pdfUrl : null),  // fall back to ticket-level PDF
+          pdfLabel: s.pdfLabel || tkt.pdfLabel || 'Download PDF'
         }));
       }
       const bpId='bp-'+ti;
@@ -1573,7 +1582,7 @@ function populateDashboard(p) {
           <div class="bp-pax-trigger" onclick="document.getElementById('${pId}').classList.toggle('open')">
             <div class="bp-pax-left">
               <div class="bp-pax-name">👤 ${esc(pax.name||'')}</div>
-              <div class="bp-pax-hint">Tap to view ticket images</div>
+              <div class="bp-pax-hint">${pax.detail ? esc(pax.detail) : (pax.images&&pax.images.length ? 'Tap to view ticket images' : 'Tap to expand')}</div>
             </div>
             <span class="bp-pax-chev">▾</span>
           </div>
@@ -1587,8 +1596,8 @@ function populateDashboard(p) {
       bp.innerHTML=`
         <div class="bp-trigger" onclick="document.getElementById('${bpId}').classList.toggle('open')">
           <div>
-            <div class="bp-route">${/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(tktName)?'🎟️':/penang|flight|→.*→|SQ/i.test(tktName)?'✈️':'🚂'} ${esc(tktName)}</div>
-            <div class="bp-meta">${esc(tktDate)} · ${tktLegs.length === 1 ? "1 leg" : tktLegs.length + " legs"} · <span style="color:#4ade80;font-weight:700">✓ Confirmed</span></div>
+            <div class="bp-route">${/gallery|museum|uffizi|accademia|colosseum|vatican|palace|doge/i.test(tktName)?'🎟️':/concert|musici|vivaldi|fenice|opera|music/i.test(tktName)?'🎻':/penang|flight|→.*→|SQ/i.test(tktName)?'✈️':'🚂'} ${esc(tktName)}</div>
+            <div class="bp-meta">${esc(tktDate)} · ${tktLegs.length === 1 && !tkt.seats ? "1 leg" : tkt.seats ? (tkt.seats.length + " travellers") : (tktLegs.length + " legs")} · <span style="color:#4ade80;font-weight:700">✓ Confirmed</span></div>
           </div>
           <span class="bp-chevron">▾</span>
         </div>
