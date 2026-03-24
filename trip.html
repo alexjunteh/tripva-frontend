@@ -589,6 +589,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .fab-wrap.open .fab-action:nth-child(1){transition-delay:0ms}
 .fab-wrap.open .fab-action:nth-child(2){transition-delay:50ms}
 .fab-wrap.open .fab-action:nth-child(3){transition-delay:100ms}
+
+.tl-tc{background:rgba(255,255,255,.05);border-radius:10px;padding:10px 12px;margin-top:6px;border:1px solid rgba(255,255,255,.07)}
+.tl-tc-status{font-size:11px;color:#4ade80;font-weight:700;margin-bottom:8px}
+.tl-tc-legs{display:flex;flex-direction:column}
+.tl-tc-leg{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tl-tc-leg:last-child{border-bottom:none;padding-bottom:0}
+.tl-tc-train{font-size:10px;font-weight:900;color:var(--accent2,#7c6af7);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.tl-tc-route{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;flex-wrap:wrap;line-height:1.4}
+.tl-tc-arrow{color:rgba(255,255,255,.35);font-size:12px}
+.tl-tc-times{font-size:12px;color:rgba(255,255,255,.5);margin-top:3px;font-weight:600}
+.tl-tc-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
+.tl-tc-pill{background:rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,.75)}
+.tl-tc-misc{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5}
 </style>
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -1379,7 +1392,7 @@ function populateDashboard(p) {
     const strip=document.getElementById('dayStrip');
     strip.innerHTML='';
     const today=getTripDateInfo().ymd;
-    p.days.forEach((d,i) => {
+    (p.days||[]).forEach((d,i) => {
       const pill=document.createElement('div');
       pill.className='day-pill'+(i===0?' active':'');
       pill.id='dp-'+i;
@@ -1393,7 +1406,7 @@ function populateDashboard(p) {
     // Day cards (compact summaries)
     const list=document.getElementById('daysList');
     list.innerHTML='';
-    p.days.forEach((d,i) => {
+    (p.days||[]).forEach((d,i) => {
       const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||i}/900/500`;
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
@@ -1574,8 +1587,27 @@ function populateDashboard(p) {
     document.getElementById('ticketsEmpty')?.remove();
     scroll.innerHTML='<div class="tickets-intro">Tap to expand · Tap passenger to view ticket images</div>';
     p.tickets.forEach((tkt,ti)=>{
+      // Normalise new-format tickets {title,route,train,seats,images} → old {name,legs,passengers}
+      const tktName = tkt.name || tkt.title || '';
+      const tktDate = tkt.dateDisplay || tkt.date || '';
+      let tktLegs = tkt.legs || [];
+      if (!tktLegs.length && tkt.train) {
+        const parts = (tkt.route||'').split('→');
+        tktLegs = [{
+          train: tkt.train + (tkt.pnr ? ' · PNR: '+tkt.pnr : ''),
+          from: (parts[0]||'').trim(), fromTime: tkt.departure||'',
+          to: (parts[1]||'').trim(), toTime: tkt.arrival||''
+        }];
+      }
+      let tktPax = tkt.passengers || [];
+      if (!tktPax.length && tkt.seats && tkt.seats.length) {
+        tktPax = tkt.seats.map((s,si)=>({
+          name: s.passenger + ' — Coach ' + s.coach + ', Seat ' + s.seat,
+          images: tkt.images ? [tkt.images[si]].filter(Boolean) : []
+        }));
+      }
       const bpId='bp-'+ti;
-      const legsHtml=(tkt.legs||[]).map(l=>`
+      const legsHtml=(tktLegs).map(l=>`
         <div class="bp-leg">
           <span class="bp-train-badge">${esc(l.train||'')}</span>
           <div class="bp-leg-info">
@@ -1588,7 +1620,7 @@ function populateDashboard(p) {
             <div class="bp-leg-times">${esc(l.fromTime||'')} → ${esc(l.toTime||'')}</div>
           </div>
         </div>`).join('');
-      const paxHtml=(tkt.passengers||[]).map((pax,pi)=>{
+      const paxHtml=(tktPax).map((pax,pi)=>{
         const pId=`pax-${ti}-${pi}`;
         return `<div class="bp-pax-card" id="${pId}">
           <div class="bp-pax-trigger" onclick="document.getElementById('${pId}').classList.toggle('open')">
@@ -1608,8 +1640,8 @@ function populateDashboard(p) {
       bp.innerHTML=`
         <div class="bp-trigger" onclick="document.getElementById('${bpId}').classList.toggle('open')">
           <div>
-            <div class="bp-route">${/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(tkt.name||'')?'🎟️':/penang|flight|→.*→|SQ/i.test(tkt.name||'')?'✈️':'🚂'} ${esc(tkt.name||'')}</div>
-            <div class="bp-meta">${esc(tkt.date||'')} · ${(tkt.legs||[]).length === 1 ? "1 leg" : (tkt.legs||[]).length + " legs"} · <span style="color:#4ade80;font-weight:700">✓ Confirmed</span></div>
+            <div class="bp-route">${/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(tktName)?'🎟️':/penang|flight|→.*→|SQ/i.test(tktName)?'✈️':'🚂'} ${esc(tktName)}</div>
+            <div class="bp-meta">${esc(tktDate)} · ${tktLegs.length === 1 ? "1 leg" : tktLegs.length + " legs"} · <span style="color:#4ade80;font-weight:700">✓ Confirmed</span></div>
           </div>
           <span class="bp-chevron">▾</span>
         </div>
@@ -1629,7 +1661,10 @@ function populateDashboard(p) {
     const m = raw.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/);
     if(m){ const months={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const d=new Date(Date.UTC(parseInt(m[3]),months[m[1]]||0,parseInt(m[2]))); return d.toISOString().slice(0,10) >= nowYmd; }
     return raw >= nowYmd;
-  }).sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+  }).sort((a,b) => {
+    const parseD = s => { const mo={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const lm=s.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/); if(lm) return new Date(Date.UTC(+lm[3],mo[lm[1]]||0,+lm[2])).getTime(); return new Date(s).getTime()||0; };
+    return parseD(a.date||'') - parseD(b.date||'');
+  });
   const nextTkt = upcoming[0] || null;
   const hero = document.getElementById('nextTicketHero');
   if(nextTkt && hero){
@@ -1873,6 +1908,43 @@ function openDaySheet(idx) {
   document.getElementById('dp-'+idx)?.classList.add('active');
   document.getElementById('dp-'+idx)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
+
+function renderTransportCard(tl) {
+  const d = tl.detail || '';
+  if (!d || !/BOOKED|PNR|Coach|Platform|order\s+\d/i.test(d)) {
+    return d ? `<div class="tl-detail">${esc(d)}</div>` : '';
+  }
+  const parts = d.split(/\.\s+(?=(?:Then\s+)?(?:[A-Z]{1,4}\s+\d|Coach|Trenitalia|SBB|Keep|IR|EC|PE|LIX|RE))/);
+  let statusHtml='', legsHtml='', seats='', refs=[];
+  parts.forEach(raw => {
+    const s = raw.trim().replace(/\.$/, '');
+    if (!s) return;
+    if (s.startsWith('✅') || s.startsWith('⏳')) {
+      statusHtml = `<div class="tl-tc-status">${esc(s)}</div>`;
+    } else if (/\d{2}:\d{2}.*→/.test(s) || /Platform/i.test(s)) {
+      const m = s.match(/^([\w\s\.]+?):\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?\s+→\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?/);
+      if (m) {
+        const [,train,from,ft,fp,to,tt,tp]=m;
+        legsHtml += `<div class="tl-tc-leg"><div class="tl-tc-train">${esc(train.trim())}</div><div class="tl-tc-route"><span>${esc(from.trim())}${fp?` <span class="tl-platform">P${esc(fp)}</span>`:''}</span><span class="tl-tc-arrow">→</span><span>${esc(to.trim())}${tp?` <span class="tl-platform">P${esc(tp)}</span>`:''}</span></div><div class="tl-tc-times">${esc(ft)} → ${esc(tt)}</div></div>`;
+      } else {
+        legsHtml += `<div class="tl-tc-leg"><div class="tl-tc-misc">${esc(s)}</div></div>`;
+      }
+    } else if (/Coach\s+\d+/i.test(s)) {
+      const cm = s.match(/Coach\s+(\w+)[,.]?\s*seats?\s*([^.]+)/i);
+      if (cm) seats = `<span class="tl-tc-pill">🪑 Coach ${esc(cm[1])} · Seats ${esc(cm[2].trim())}</span>`;
+    } else if (/PNR\s+([A-Z0-9]+)/i.test(s)) {
+      const pm = s.match(/PNR\s+([A-Z0-9]+)/i);
+      if (pm) refs.push(`<span class="tl-tc-pill">🎫 PNR: ${esc(pm[1])}</span>`);
+    } else if (/order\s+(\d+)/i.test(s)) {
+      const om = s.match(/order\s+(\d+)/i);
+      if (om) refs.push(`<span class="tl-tc-pill">📋 #${esc(om[1])}</span>`);
+    }
+  });
+  if (!legsHtml) return `<div class="tl-detail">${esc(d)}</div>`;
+  const metaHtml = (seats||refs.length) ? `<div class="tl-tc-meta">${seats}${refs.join('')}</div>` : '';
+  return `<div class="tl-tc">${statusHtml}<div class="tl-tc-legs">${legsHtml}</div>${metaHtml}</div>`;
+}
+
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
   const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||idx}/900/400`;
@@ -1882,7 +1954,7 @@ function renderDaySheet(idx) {
   document.getElementById('sheetSub').textContent=[formatDayDate(d.day), d.subtitle||''].filter(Boolean).join(' · ');
 
   const body=document.getElementById('sheetBody');
-  const TYPE_ICONS={activity:'🎯',food:'🍴',transport:'🚆',hotel:'🏨',tip:'💡'};
+  const TYPE_ICONS={activity:'🎯',food:'🍴',transport:'🚆',hotel:'🏨',tip:'💡',logistics:'📋'};
 
   // ── HIGHLIGHTS strip ──
   let html='';
@@ -1922,7 +1994,7 @@ function renderDaySheet(idx) {
       <div class="tl-main">
         <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:''}
+        ${tl.type==='transport'?renderTransportCard(tl):(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
@@ -2029,7 +2101,10 @@ function loadFromHash() {
     const m = raw.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/);
     if(m){ const months={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const d=new Date(Date.UTC(parseInt(m[3]),months[m[1]]||0,parseInt(m[2]))); return d.toISOString().slice(0,10) >= nowYmd; }
     return raw >= nowYmd;
-  }).sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+  }).sort((a,b) => {
+    const parseD = s => { const mo={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const lm=s.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/); if(lm) return new Date(Date.UTC(+lm[3],mo[lm[1]]||0,+lm[2])).getTime(); return new Date(s).getTime()||0; };
+    return parseD(a.date||'') - parseD(b.date||'');
+  });
   const nextTkt = upcoming[0] || null;
   const hero = document.getElementById('nextTicketHero');
   if(nextTkt && hero){
