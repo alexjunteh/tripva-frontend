@@ -1,8 +1,8 @@
 {
-  "name": "AI Trip Planner",
-  "short_name": "AI Trip",
+  "name": "Roam",
+  "short_name": "Roam",
   "description": "AI-powered travel planner with live itinerary, ticket wallet, and budget tracking",
-  "start_url": "/trip-planner/italy-test.html",
+  "start_url": "/trip-planner/index.html",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",

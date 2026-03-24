@@ -40,9 +40,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* ─── APP SHELL ─── */
 #app{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.tab-content{display:none;flex:1;overflow:hidden;flex-direction:column;animation:fadeIn .22s ease}
+.tab-content{display:none;flex:1;overflow:hidden;flex-direction:column;animation:fadeIn .15s ease}
 .tab-content.active{display:flex}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── BOTTOM NAV - 5 TABS, iOS pill style ─── */
 .bottom-nav{display:flex;background:rgba(8,8,13,.97);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:1px solid var(--border);padding:6px 4px calc(6px + var(--safe-b));flex-shrink:0;z-index:100}
@@ -573,6 +573,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .plan-spin{width:44px;height:44px;border:3px solid rgba(124,106,247,.2);border-top-color:#95b8ff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 18px}
 .plan-prog-title{font-size:18px;font-weight:900;margin-bottom:8px}
 .plan-prog-msg{font-size:14px;color:rgba(255,255,255,.55);line-height:1.6}
+
+/* ── FLOATING ACTION BUTTON ── */
+.fab-wrap{position:fixed;bottom:calc(24px + var(--safe-b) + 56px);right:20px;z-index:500;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
+.fab-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.fab-action{display:flex;align-items:center;gap:10px;pointer-events:all;opacity:0;transform:translateY(8px) scale(.95);transition:opacity .2s ease,transform .2s ease}
+.fab-action-label{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;backdrop-filter:blur(12px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.fab-action-btn{width:44px;height:44px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.fab-main{position:fixed;bottom:calc(var(--safe-b) + 72px);right:20px;z-index:501;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#95b8ff,#7c6af7);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;color:#0a0a0f;box-shadow:0 4px 20px rgba(124,106,247,.45);transition:transform .2s,box-shadow .2s;font-weight:700;line-height:1}
+.fab-main:active{transform:scale(.9)}
+.fab-main.open{transform:rotate(45deg)}
+.fab-backdrop{position:fixed;inset:0;z-index:499;display:none}
+.fab-backdrop.show{display:block}
+.fab-wrap.open .fab-action{opacity:1;transform:translateY(0) scale(1)}
+.fab-wrap.open .fab-action:nth-child(1){transition-delay:0ms}
+.fab-wrap.open .fab-action:nth-child(2){transition-delay:50ms}
+.fab-wrap.open .fab-action:nth-child(3){transition-delay:100ms}
 </style>
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -589,6 +605,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <!-- ── 1. LIVE OPS ── -->
 <div id="tab-plan" class="tab-content active">
   <div class="ops-scroll" id="opsScroll">
+    <div id="liveEmptyState" class="empty-state" style="display:none;padding:60px 20px">
+      <div class="es-icon">📍</div>
+      <div class="es-title">Open your trip to see the live view</div>
+      <div class="es-text">Generate or load a trip to see real-time guidance, today's plan, and next moves.</div>
+      <button class="es-btn" onclick="switchTab('trip')">View Trip →</button>
+    </div>
     <!-- HERO: Location image + overlay -->
     <div class="live-hero" id="liveHero">
       <div class="live-hero-overlay">
@@ -673,6 +695,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="trip-hero-img" id="tripHeroImg"></div>
       <div class="trip-hero-grad"></div>
       <button class="hero-edit-btn" onclick="openEditModal()">Edit ✏️</button>
+      <button class="hero-edit-btn" style="left:14px;right:auto;background:rgba(124,106,247,.15);border-color:rgba(124,106,247,.3);color:var(--accent2)" onclick="goNewTrip()">✨ New Trip</button>
       <span class="trip-emoji" id="tripEmoji">🌍</span>
       <div class="trip-name" id="tripName">My Trip</div>
       <div class="trip-dates" id="tripDates">Plan your trip to get started</div>
@@ -714,9 +737,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div style="color:var(--muted);font-size:12px;padding:6px 4px;align-self:center">Plan a trip to see days →</div>
   </div>
   <div class="days-list" id="daysList">
-    <div class="empty-state">
+    <div class="empty-state" id="daysEmpty">
       <div class="es-icon">📅</div>
-      <div class="es-title">No days yet</div>
+      <div class="es-title">Days are still loading...</div>
       <div class="es-text">Each day appears here with hour-by-hour plans after the AI builds your trip.</div>
       <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
     </div>
@@ -738,8 +761,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="tickets-scroll" id="ticketsScroll">
     <div class="empty-state" id="ticketsEmpty">
       <div class="es-icon">🎟️</div>
-      <div class="es-title">No tickets yet</div>
-      <div class="es-text">Add train or flight ticket details and they'll appear here as boarding passes.</div>
+      <div class="es-title">No tickets yet — book your experiences below</div>
+      <div class="es-text">Train tickets, museum passes, and attraction bookings appear here.</div>
       <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
     </div>
   </div>
@@ -753,8 +776,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   </div>
   <div class="hotels-scroll" id="hotelsScroll">
     <div class="empty-state" id="hotelsEmpty">
-      <div class="es-icon">🏨</div><div class="es-title">No hotels yet</div>
-      <div class="es-text">Hotel recommendations appear here after planning.</div>
+      <div class="es-icon">✅</div><div class="es-title">All good — no urgent actions right now</div>
+      <div class="es-text">Hotel and booking links will appear here after generating a trip.</div>
     </div>
   </div>
 </div>
@@ -767,8 +790,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   </div>
   <div class="budget-scroll" id="budgetScroll">
     <div class="empty-state" id="budgetEmpty">
-      <div class="es-icon">💰</div><div class="es-title">No budget yet</div>
-      <div class="es-text">Cost breakdown appears here after planning.</div>
+      <div class="es-icon">💰</div><div class="es-title">Budget data unavailable for this trip</div>
+      <div class="es-text">Generate a trip to see a full cost breakdown.</div>
     </div>
   </div>
 </div>
@@ -1149,7 +1172,11 @@ function switchTab(name) {
   if (name === '_more') { openMore(); return; }
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
+  const _tabEl = document.getElementById('tab-'+name);
+  if (_tabEl) {
+    _tabEl.classList.add('active');
+    void _tabEl.offsetHeight; // force reflow to restart animation
+  }
   if (document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
 }
 function openMore() {
@@ -2190,6 +2217,73 @@ async function submitPlan() {
   }
 }
 
+function goNewTrip() {
+  const dest = (plan && plan.trip && (plan.trip.destination || plan.trip.name)) || '';
+  const start = (plan && plan.trip && plan.trip.startDate) || '';
+  const end = (plan && plan.trip && plan.trip.endDate) || '';
+  const params = new URLSearchParams();
+  if (dest) params.set('dest', dest);
+  if (start) params.set('start', start);
+  if (end) params.set('end', end);
+  const qs = params.toString();
+  window.location.href = qs ? 'index.html?' + qs : 'index.html';
+}
+
+// ── FAB ──
+let fabOpen = false;
+let _fabDeferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) { e.preventDefault(); _fabDeferredPrompt = e; });
+
+function toggleFab() {
+  fabOpen = !fabOpen;
+  document.getElementById('fabWrap').classList.toggle('open', fabOpen);
+  document.getElementById('fabMain').classList.toggle('open', fabOpen);
+  document.getElementById('fabBackdrop').classList.toggle('show', fabOpen);
+}
+function closeFab() {
+  fabOpen = false;
+  document.getElementById('fabWrap').classList.remove('open');
+  document.getElementById('fabMain').classList.remove('open');
+  document.getElementById('fabBackdrop').classList.remove('show');
+}
+function fabShare() {
+  closeFab();
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => showToast('🔗 Link copied! ✓'))
+    .catch(() => showToast('🔗 ' + window.location.href));
+}
+function fabNewTrip() { closeFab(); goNewTrip(); }
+function fabInstall() {
+  closeFab();
+  if (_fabDeferredPrompt) {
+    _fabDeferredPrompt.prompt();
+    _fabDeferredPrompt.userChoice.then(function() { _fabDeferredPrompt = null; });
+  } else {
+    showToast('📱 Open browser menu → Add to Home Screen');
+  }
+}
+
 </script>
+<!-- ── FLOATING ACTION BUTTON ── -->
+<div class="fab-backdrop" id="fabBackdrop" onclick="closeFab()"></div>
+<div class="fab-wrap" id="fabWrap">
+  <div class="fab-actions" id="fabActions">
+    <div class="fab-action">
+      <div class="fab-action-label">📱 Install</div>
+      <div class="fab-action-btn" onclick="fabInstall()">📱</div>
+    </div>
+    <div class="fab-action">
+      <div class="fab-action-label">✨ New Trip</div>
+      <div class="fab-action-btn" onclick="fabNewTrip()">✨</div>
+    </div>
+    <div class="fab-action">
+      <div class="fab-action-label">🔗 Share</div>
+      <div class="fab-action-btn" onclick="fabShare()">🔗</div>
+    </div>
+  </div>
+</div>
+<button class="fab-main" id="fabMain" onclick="toggleFab()">+</button>
+
+
 </body>
 </html>

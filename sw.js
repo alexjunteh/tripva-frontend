@@ -1,6 +1,6 @@
 // Service Worker — network-first for HTML, cache-first for static assets
-const CACHE_VERSION = 'triplive-v3';
-const STATIC_CACHE = 'triplive-static-v3';
+const CACHE_VERSION = 'roam-v1';
+const STATIC_CACHE = 'roam-static-v1';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
