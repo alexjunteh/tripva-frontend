@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="AI Trip Planner">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs" type="module" id="pdfjs-script"></script>
 <title>TripAI - AI Travel Planner</title>
 <link rel="manifest" href="manifest.json">
 <style>
@@ -393,6 +394,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* ─── TICKETS TAB ─── */
 #tab-tickets{background:var(--bg)}
+.tkt-upload-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid rgba(255,255,255,.2);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:opacity .3s}
+.tkt-upload-toast.error{border-color:#ef4444;color:#fca5a5}
+.tkt-upload-toast.success{border-color:#4ade80;color:#bbf7d0}
+#uploadTicketBtn:disabled{opacity:.5;cursor:not-allowed}
 .next-tkt-hero{background:linear-gradient(135deg,#1a1040,#2a1060);border:1px solid rgba(149,184,255,.25);border-radius:20px;padding:18px;box-shadow:0 8px 32px rgba(124,106,247,.2)}
 .next-tkt-kicker{font-size:11px;font-weight:900;letter-spacing:.8px;color:#95b8ff;margin-bottom:8px}
 .next-tkt-route{font-size:20px;font-weight:900;letter-spacing:-.3px;line-height:1.2}
@@ -752,7 +757,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="next-tkt-actions" id="nextTktActions"></div>
     </div>
   </div>
-  <div style="padding:10px 14px 2px;font-size:11px;font-weight:800;letter-spacing:.4px;color:rgba(255,255,255,.35)" id="allTicketsHdr">ALL TICKETS</div>
+  <div style="padding:10px 14px 6px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.4px;color:rgba(255,255,255,.35)" id="allTicketsHdr">ALL TICKETS</div>
+    <button id="uploadTicketBtn" onclick="document.getElementById('ticketFileInput').click()"
+      style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;cursor:pointer;letter-spacing:.3px">
+      <span>📎</span><span>Upload Ticket</span>
+    </button>
+    <input type="file" id="ticketFileInput" accept=".pdf" style="display:none" onchange="handleTicketUpload(event)">
+  </div>
   <div class="tickets-scroll" id="ticketsScroll">
     <div class="empty-state" id="ticketsEmpty">
       <div class="es-icon">🎟️</div>
@@ -2068,7 +2080,103 @@ function exportHtml() {
       ${(d.timeline||[]).map(tl=>`<div class="tl-row"><div class="tl-t">${esc2(tl.time||'')}</div><div class="tl-c"><div class="tl-n">${esc2(tl.title||'')}</div>${tl.detail?`<div class="tl-d">${esc2(tl.detail)}</div>`:''}</div></div>`).join('')}
     </div>`).join('');
   function esc2(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc2(t.name||'My Trip')}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0f;color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;max-width:700px;margin:0 auto}.hero{background:linear-gradient(160deg,#1a1040,#0d0d1a);padding:48px 24px 36px;text-align:center}.hero-e{font-size:56px;margin-bottom:12px}.hero-t{font-size:26px;font-weight:800;margin-bottom:6px}.hero-d{font-size:13px;color:rgba(255,255,255,.4)}.body{padding:20px}.day-section{background:#13131a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}h2{font-size:17px;font-weight:800;margin-bottom:4px;color:#a78bfa}.dsub{font-size:12px;color:rgba(255,255,255,.38);margin-bottom:14px}.tl-row{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}.tl-row:last-child{border:none}.tl-t{font-size:11px;color:#a78bfa;font-weight:800;width:50px;flex-shrink:0;padding-top:2px}.tl-c{flex:1}.tl-n{font-size:13px;font-weight:700}.tl-d{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.5}.footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,.25)}</style></head><body><div class="hero"><div class="hero-e">${esc2(t.emoji||'✈️')}</div><div class="hero-t">${esc2(t.name||'My Trip')}</div><div class="hero-d">${esc2([t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · '))}</div></div><div class="body">${daysHtml||'<div class="day-section">No plan generated yet.</div>'}</div><div class="footer">Made with TripAI · futuriztaos.github.io/trip-planner</div></body></html>`;
+  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc2(t.name||'My Trip')}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0f;color:rgba(255,255,255,.9);font-family:-apple-system,sans-serif;max-width:700px;margin:0 auto}.hero{background:linear-gradient(160deg,#1a1040,#0d0d1a);padding:48px 24px 36px;text-align:center}.hero-e{font-size:56px;margin-bottom:12px}.hero-t{font-size:26px;font-weight:800;margin-bottom:6px}.hero-d{font-size:13px;color:rgba(255,255,255,.4)}.body{padding:20px}.day-section{background:#13131a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}h2{font-size:17px;font-weight:800;margin-bottom:4px;color:#a78bfa}.dsub{font-size:12px;color:rgba(255,255,255,.38);margin-bottom:14px}.tl-row{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}.tl-row:last-child{border:none}.tl-t{font-size:11px;color:#a78bfa;font-weight:800;width:50px;flex-shrink:0;padding-top:2px}.tl-c{flex:1}.tl-n{font-size:13px;font-weight:700}.tl-d{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;line-height:1.5}.footer{text-align:center;padding:24px;font-size:12px;color:rgba(255,255,255,.25)}</style></head><body><div class="hero"><div class="hero-e">${esc2(t.emoji||'✈️')}</div><div class="hero-t">${esc2(t.name||'My Trip')}</div><div class="hero-d">${esc2([t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · '))}</div></div><div class="body">${daysHtml||'<div class="day-section">No plan generated yet.</div>'}</div><div class="footer">Made with TripAI · futuriztaos.github.io/trip-planner</div>
+<!-- ── TICKET UPLOAD HANDLER ── -->
+<script type="module">
+// Load PDF.js worker
+import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs';
+
+window._pdfjs = pdfjsLib;
+
+/** Extract all text from a PDF file object */
+async function extractPdfText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    fullText += content.items.map(item => item.str).join(' ') + '\n';
+  }
+  return fullText.trim();
+}
+
+/** Show a toast message */
+function showToast(msg, type = '') {
+  document.querySelectorAll('.tkt-upload-toast').forEach(el => el.remove());
+  const toast = document.createElement('div');
+  toast.className = `tkt-upload-toast ${type}`;
+  toast.innerHTML = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+}
+
+/** Main upload handler — called when file selected */
+window.handleTicketUpload = async function(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  event.target.value = ''; // reset so same file can be re-uploaded
+
+  const btn = document.getElementById('uploadTicketBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span><span>Reading PDF…</span>';
+  showToast('⏳ Reading ticket PDF…');
+
+  try {
+    // Step 1: extract text from PDF
+    const pdfText = await extractPdfText(file);
+    if (!pdfText || pdfText.length < 20) throw new Error('PDF appears to be empty or image-only');
+
+    showToast('🤖 Parsing with AI…');
+    btn.innerHTML = '<span>🤖</span><span>Parsing…</span>';
+
+    // Step 2: send to backend
+    const currentState = (window._tripState?.rawPlan) || plan;
+    if (!currentState) throw new Error('No trip state loaded');
+
+    const resp = await fetch('https://tripai-backend.vercel.app/api/ticket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdfText, state: currentState })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.message || `Server error ${resp.status}`);
+    }
+
+    const { state: updatedState, parsed } = await resp.json();
+
+    // Step 3: merge updated state back
+    if (window._tripState) window._tripState.rawPlan = updatedState;
+    window._preloadPlan = updatedState;
+    plan = updatedState;
+
+    // Step 4: persist + re-render
+    localStorage.setItem('tripai_plan', JSON.stringify(updatedState));
+    populateDashboard(updatedState);
+
+    const icon = parsed?.category === 'concert' ? '🎻'
+               : parsed?.category === 'train'   ? '🚆'
+               : parsed?.category === 'flight'  ? '✈️'
+               : '🎟️';
+    showToast(`${icon} <strong>${parsed?.title || 'Ticket'}</strong> added to dashboard ✅`, 'success');
+
+    // Switch to tickets tab to show the new ticket
+    if (typeof switchTab === 'function') switchTab('tickets');
+
+  } catch (err) {
+    console.error('[TicketUpload]', err);
+    showToast(`❌ ${err.message || 'Failed to process ticket'}`, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>📎</span><span>Upload Ticket</span>';
+  }
+};
+</script>
+
+</body></html>`;
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([doc],{type:'text/html'})); a.download=(t.name||'my-trip').replace(/[^a-z0-9]/gi,'-').toLowerCase()+'.html'; a.click(); showToast('💾 Exported!');
 }
 
@@ -2270,5 +2378,101 @@ async function submitPlan() {
 }
 
 </script>
+
+<!-- ── TICKET UPLOAD HANDLER ── -->
+<script type="module">
+// Load PDF.js worker
+import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs';
+
+window._pdfjs = pdfjsLib;
+
+/** Extract all text from a PDF file object */
+async function extractPdfText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    fullText += content.items.map(item => item.str).join(' ') + '\n';
+  }
+  return fullText.trim();
+}
+
+/** Show a toast message */
+function showToast(msg, type = '') {
+  document.querySelectorAll('.tkt-upload-toast').forEach(el => el.remove());
+  const toast = document.createElement('div');
+  toast.className = `tkt-upload-toast ${type}`;
+  toast.innerHTML = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+}
+
+/** Main upload handler — called when file selected */
+window.handleTicketUpload = async function(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  event.target.value = ''; // reset so same file can be re-uploaded
+
+  const btn = document.getElementById('uploadTicketBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span><span>Reading PDF…</span>';
+  showToast('⏳ Reading ticket PDF…');
+
+  try {
+    // Step 1: extract text from PDF
+    const pdfText = await extractPdfText(file);
+    if (!pdfText || pdfText.length < 20) throw new Error('PDF appears to be empty or image-only');
+
+    showToast('🤖 Parsing with AI…');
+    btn.innerHTML = '<span>🤖</span><span>Parsing…</span>';
+
+    // Step 2: send to backend
+    const currentState = (window._tripState?.rawPlan) || plan;
+    if (!currentState) throw new Error('No trip state loaded');
+
+    const resp = await fetch('https://tripai-backend.vercel.app/api/ticket', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdfText, state: currentState })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.message || `Server error ${resp.status}`);
+    }
+
+    const { state: updatedState, parsed } = await resp.json();
+
+    // Step 3: merge updated state back
+    if (window._tripState) window._tripState.rawPlan = updatedState;
+    window._preloadPlan = updatedState;
+    plan = updatedState;
+
+    // Step 4: persist + re-render
+    localStorage.setItem('tripai_plan', JSON.stringify(updatedState));
+    populateDashboard(updatedState);
+
+    const icon = parsed?.category === 'concert' ? '🎻'
+               : parsed?.category === 'train'   ? '🚆'
+               : parsed?.category === 'flight'  ? '✈️'
+               : '🎟️';
+    showToast(`${icon} <strong>${parsed?.title || 'Ticket'}</strong> added to dashboard ✅`, 'success');
+
+    // Switch to tickets tab to show the new ticket
+    if (typeof switchTab === 'function') switchTab('tickets');
+
+  } catch (err) {
+    console.error('[TicketUpload]', err);
+    showToast(`❌ ${err.message || 'Failed to process ticket'}`, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>📎</span><span>Upload Ticket</span>';
+  }
+};
+</script>
+
 </body>
 </html>
