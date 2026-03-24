@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" content="Roam — AI builds your full trip itinerary, day by day. Just describe your trip.">
+<meta property="og:title" content="Roam — AI Trip Planner">
+<meta property="og:description" content="AI builds your full trip itinerary, day by day. Just describe your trip.">
+<meta property="og:image" content="https://loremflickr.com/1200/630/travel,adventure">
+<meta property="og:url" content="https://futuriztaos.github.io/trip-planner/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Roam — AI Trip Planner">
+<meta name="twitter:description" content="AI builds your full trip itinerary, day by day.">
+<meta name="twitter:image" content="https://loremflickr.com/1200/630/travel,adventure">
 <title>Roam — AI Trip Planner</title>
 <style>
 :root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:#7c6af7;--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92);--r:16px}
@@ -107,6 +116,7 @@ footer strong{color:rgba(255,255,255,.55)}
 .gen-day-status{font-size:16px}
 .gen-done-title{text-align:center;font-size:22px;font-weight:900;margin-bottom:14px}
 </style>
+<script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -254,6 +264,18 @@ footer strong{color:rgba(255,255,255,.55)}
   </div>
 </section>
 
+<section style="padding:64px 24px;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center">
+  <div style="max-width:480px;margin:0 auto">
+    <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">Early Access</div>
+    <h2 style="font-size:clamp(22px,5vw,32px);font-weight:900;letter-spacing:-.5px;margin-bottom:10px">Be the first to know</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6">Get notified when Roam launches new features, destinations, and travel deals.</p>
+    <form id="emailForm" action="https://formspree.io/f/xpwzkqdb" method="POST" style="display:flex;gap:10px;max-width:400px;margin:0 auto" onsubmit="handleEmailSubmit(event)">
+      <input type="email" name="email" placeholder="your@email.com" required style="flex:1;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:14px;color:#fff;outline:none;font-family:inherit;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+      <button type="submit" style="background:linear-gradient(135deg,var(--accent),var(--purple));color:#0a0a0f;border:none;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap;transition:opacity .15s" id="emailSubmitBtn">Join list</button>
+    </form>
+    <div id="emailSuccess" style="display:none;margin-top:16px;font-size:14px;font-weight:700;color:#4ade80">✅ You're on the list!</div>
+  </div>
+</section>
 <footer>Built with ❤️ by <strong>Futurizta</strong> · getroam.app <span style="opacity:.4">(coming soon)</span></footer>
 
 <div class="toast" id="toast"></div>
@@ -357,6 +379,16 @@ async function submitTrip() {
     const reader = resp.body.getReader();
     const dec = new TextDecoder();
 
+    // Timeout warnings
+    const _t60 = setTimeout(() => {
+      const pm = document.querySelector('.prog-msg');
+      if (pm) pm.textContent = 'Taking longer than usual... still working 🛠️';
+    }, 60000);
+    const _t120 = setTimeout(() => {
+      const pm = document.querySelector('.prog-msg');
+      if (pm) pm.innerHTML = 'Taking longer than usual... still working 🛠️<br><br><button onclick="location.reload()" style="background:linear-gradient(135deg,var(--accent),var(--purple));color:#0a0a0f;border:none;padding:12px 24px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px">Retry →</button>';
+    }, 120000);
+
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
@@ -435,6 +467,7 @@ async function submitTrip() {
     document.getElementById('genCta').style.display = 'block';
     document.getElementById('submitBtn').style.display = 'none';
 
+    clearTimeout(_t60); clearTimeout(_t120);
     let shareUrl = null;
     try {
       const saveRes = await fetch(BACKEND + '/api/save', {
@@ -451,6 +484,11 @@ async function submitTrip() {
     setTimeout(function() { openGeneratedTrip(); }, 2000);
 
   } catch (err) {
+    clearTimeout(_t60); clearTimeout(_t120);
+    // Show friendly error with retry
+    document.querySelector('.prog-spin') && (document.querySelector('.prog-spin').style.display = 'none');
+    if (document.querySelector('.prog-title')) document.querySelector('.prog-title').textContent = '⚠️ Something went wrong';
+    if (document.querySelector('.prog-msg')) document.querySelector('.prog-msg').innerHTML = 'We hit a snag generating your trip. <br><br><button onclick="location.reload()" style="background:linear-gradient(135deg,var(--accent),var(--purple));color:#0a0a0f;border:none;padding:12px 24px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px">Try again →</button>';
     document.getElementById('planForm').classList.remove('hide');
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('submitBtn').disabled = false;
@@ -505,6 +543,25 @@ if (pwaInstallBtn) {
 if (pwaDismissBtn) pwaDismissBtn.addEventListener('click', hidePwaBanner);
 
 window.addEventListener('appinstalled', () => { hidePwaBanner(); deferredPrompt = null; });
+
+function handleEmailSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('emailSubmitBtn');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  }).then(r => {
+    document.getElementById('emailForm').style.display = 'none';
+    document.getElementById('emailSuccess').style.display = 'block';
+  }).catch(() => {
+    btn.textContent = 'Join list';
+    btn.disabled = false;
+  });
+}
 </script>
 </body>
 </html>
