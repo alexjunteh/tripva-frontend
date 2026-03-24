@@ -1067,6 +1067,24 @@ window.onload = () => {
   localStorage.setItem('tripai_plan', JSON.stringify(ITALY_PLAN));
   window._preloadPlan = ITALY_PLAN;
   window._tripState = APP_STATE;
+
+  // ── SYNC VALIDATOR — warn if segments and timeline drift ──
+  (function validateSync() {
+    const segs = (window._tripState?.segments||[]).filter(s=>s.bookingRequired);
+    const days  = window._tripState?.rawPlan?.days||[];
+    const tlIdx = {};
+    days.forEach(d => (d.timeline||[]).forEach(t => { tlIdx[d.day+'|'+t.time] = t; }));
+    segs.forEach(s => {
+      const dayNum = parseInt((s.dayId||'').split('-')[1]||'0');
+      const tl = tlIdx[dayNum+'|'+s.time];
+      if (!tl) return;
+      const segBooked  = s.bookingState === 'booked';
+      const tlBooked   = /✅/.test(tl.detail||'') || /✅/.test(tl.title||'');
+      const tlPending  = /⏳/.test(tl.detail||'') || /⏳/.test(tl.title||'');
+      if (segBooked && tlPending)  console.warn('[SYNC DRIFT] '+s.id+': segment=booked but timeline shows ⏳');
+      if (!segBooked && tlBooked)  console.warn('[SYNC DRIFT] '+s.id+': segment=pending but timeline shows ✅');
+    });
+  })();
 })();
 
 
@@ -1839,7 +1857,7 @@ function renderTransportCard(tl) {
       statusHtml = `<div class="tl-tc-status">${esc(s)}</div>`;
     } else if (/\d{2}:\d{2}.*→/.test(s) || /Platform/i.test(s)) {
       // Parse leg: "IR 2017: Luzern 08:39 Platform 4 → Arth-Goldau 09:11 Platform 6"
-      const m = s.match(/^([\w\s\.]+?):\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?\s+→\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?/);
+      const m = s.match(/([\w\s\.]+?):\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?\s+→\s+(.+?)\s+(\d{2}:\d{2})(?:\s+Platform\s+(\w+))?/);
       if (m) {
         const [,train,from,ft,fp,to,tt,tp]=m;
         legsHtml += `<div class="tl-tc-leg">
