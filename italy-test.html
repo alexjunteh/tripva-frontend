@@ -1496,8 +1496,27 @@ function populateDashboard(p) {
     document.getElementById('ticketsEmpty')?.remove();
     scroll.innerHTML='<div class="tickets-intro">Tap to expand · Tap passenger to view ticket images</div>';
     p.tickets.forEach((tkt,ti)=>{
+      // Normalise new-format tickets {title,route,train,seats,images} → old {name,legs,passengers}
+      const tktName = tkt.name || tkt.title || '';
+      const tktDate = tkt.dateDisplay || tkt.date || '';
+      let tktLegs = tkt.legs || [];
+      if (!tktLegs.length && tkt.train) {
+        const parts = (tkt.route||'').split('→');
+        tktLegs = [{
+          train: tkt.train + (tkt.pnr ? ' · PNR: '+tkt.pnr : ''),
+          from: (parts[0]||'').trim(), fromTime: tkt.departure||'',
+          to: (parts[1]||'').trim(), toTime: tkt.arrival||''
+        }];
+      }
+      let tktPax = tkt.passengers || [];
+      if (!tktPax.length && tkt.seats && tkt.seats.length) {
+        tktPax = tkt.seats.map((s,si)=>({
+          name: s.passenger + ' — Coach ' + s.coach + ', Seat ' + s.seat,
+          images: tkt.images ? [tkt.images[si]].filter(Boolean) : []
+        }));
+      }
       const bpId='bp-'+ti;
-      const legsHtml=(tkt.legs||[]).map(l=>`
+      const legsHtml=(tktLegs).map(l=>`
         <div class="bp-leg">
           <span class="bp-train-badge">${esc(l.train||'')}</span>
           <div class="bp-leg-info">
@@ -1510,7 +1529,7 @@ function populateDashboard(p) {
             <div class="bp-leg-times">${esc(l.fromTime||'')} → ${esc(l.toTime||'')}</div>
           </div>
         </div>`).join('');
-      const paxHtml=(tkt.passengers||[]).map((pax,pi)=>{
+      const paxHtml=(tktPax).map((pax,pi)=>{
         const pId=`pax-${ti}-${pi}`;
         return `<div class="bp-pax-card" id="${pId}">
           <div class="bp-pax-trigger" onclick="document.getElementById('${pId}').classList.toggle('open')">
@@ -1530,8 +1549,8 @@ function populateDashboard(p) {
       bp.innerHTML=`
         <div class="bp-trigger" onclick="document.getElementById('${bpId}').classList.toggle('open')">
           <div>
-            <div class="bp-route">${/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(tkt.name||'')?'🎟️':/penang|flight|→.*→|SQ/i.test(tkt.name||'')?'✈️':'🚂'} ${esc(tkt.name||'')}</div>
-            <div class="bp-meta">${esc(tkt.date||'')} · ${(tkt.legs||[]).length === 1 ? "1 leg" : (tkt.legs||[]).length + " legs"} · <span style="color:#4ade80;font-weight:700">✓ Confirmed</span></div>
+            <div class="bp-route">${/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(tktName)?'🎟️':/penang|flight|→.*→|SQ/i.test(tktName)?'✈️':'🚂'} ${esc(tktName)}</div>
+            <div class="bp-meta">${esc(tktDate)} · ${tktLegs.length === 1 ? "1 leg" : tktLegs.length + " legs"} · <span style="color:#4ade80;font-weight:700">✓ Confirmed</span></div>
           </div>
           <span class="bp-chevron">▾</span>
         </div>
