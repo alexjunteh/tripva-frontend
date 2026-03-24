@@ -149,6 +149,7 @@ footer strong{color:rgba(255,255,255,.55)}
       <span>🆓 Free to try</span>
       <span>⚡ Ready in 30 seconds</span>
       <span>🔗 Shareable link</span>
+      <span id="tripCounter" style="display:none">🗺️ <span id="tripCount">50+</span> trips planned</span>
     </div>
     <div class="gen-screen" id="genScreen" style="display:none">
       <div class="gen-hero">
@@ -607,6 +608,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+
+// Live trip counter
+fetch('https://tripai-backend.vercel.app/api/stats')
+  .then(r => r.json())
+  .then(d => {
+    const count = d.trips || 50;
+    const display = count >= 100 ? Math.floor(count/10)*10 + '+' : count + '+';
+    document.getElementById('tripCount').textContent = display;
+    document.getElementById('tripCounter').style.display = 'flex';
+  })
+  .catch(() => {});
 </script>
 </body>
 </html>
