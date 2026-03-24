@@ -176,19 +176,6 @@ footer strong{color:rgba(255,255,255,.55)}
       <span>🔗 Shareable link</span>
       <span id="tripCounter" style="display:none">🗺️ <span id="tripCount">50+</span> trips planned</span>
     </div>
-    <div class="gen-screen" id="genScreen" style="display:none">
-      <div class="gen-hero">
-        <div class="gen-dest" id="genDest">Building your trip…</div>
-        <div class="gen-dates" id="genDates"></div>
-      </div>
-      <div class="gen-progress-bar"><div class="gen-progress-fill" id="genFill"></div></div>
-      <div class="gen-log" id="genLog"></div>
-      <div class="gen-days" id="genDays"></div>
-      <div class="gen-cta" id="genCta" style="display:none">
-        <div class="gen-done-title">🎉 Trip ready!</div>
-        <button class="form-submit-btn" onclick="openGeneratedTrip()">Open Dashboard →</button>
-      </div>
-    </div>
     </div>
   </div>
 </section>
@@ -384,6 +371,19 @@ footer strong{color:rgba(255,255,255,.55)}
       <div class="prog-title" id="progTitle">Building your trip…</div>
       <div class="prog-msg" id="progMsg">AI is designing your itinerary</div>
     </div>
+    <div class="gen-screen" id="genScreen" style="display:none;flex-direction:column;gap:16px;padding:20px 0 40px">
+      <div class="gen-hero" style="text-align:center;padding:20px 0">
+        <div class="gen-dest" id="genDest" style="font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px">Building your trip…</div>
+        <div class="gen-dates" id="genDates" style="font-size:13px;color:rgba(255,255,255,.5);font-weight:600"></div>
+      </div>
+      <div class="gen-progress-bar"><div class="gen-progress-fill" id="genFill"></div></div>
+      <div class="gen-log" id="genLog"></div>
+      <div class="gen-days" id="genDays"></div>
+      <div class="gen-cta" id="genCta" style="display:none;text-align:center;padding-top:16px">
+        <div class="gen-done-title" style="font-size:22px;font-weight:900;margin-bottom:14px">🎉 Trip ready!</div>
+        <button class="form-submit-btn" onclick="openGeneratedTrip()">Open Dashboard →</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -455,11 +455,11 @@ async function submitTrip() {
 
   document.getElementById('planForm').classList.add('hide');
   document.getElementById('submitBtn').disabled = true;
-  document.getElementById('planner-section').scrollIntoView({ behavior: 'smooth' });
 
-  // Show generation screen
+  // Show generation screen first, then scroll to it
   document.getElementById('genScreen').style.display = 'flex';
   document.getElementById('genScreen').style.flexDirection = 'column';
+  setTimeout(() => document.getElementById('genScreen').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
   document.getElementById('genDest').textContent = dest;
   document.getElementById('genDates').textContent = start + ' → ' + end;
 
