@@ -9,171 +9,195 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07070f;--surf:#0d0d1c;--surf2:#13132a;--border:rgba(255,255,255,.07);
-  --text:#f2f2ff;--muted:rgba(242,242,255,.45);
+  --text:#f2f2ff;--muted:rgba(242,242,255,.42);
   --accent:#7b68ee;--accent2:#a78bfa;--blue:#60a5fa;
   --green:#34d399;--yellow:#fbbf24;--red:#f87171;--pink:#f472b6;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .deck{position:fixed;inset:0;display:flex;flex-direction:column}
-.progress-bar{height:3px;background:var(--border);flex-shrink:0;z-index:50}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));transition:width .4s cubic-bezier(.4,0,.2,1)}
 .slides-wrap{flex:1;overflow:hidden;position:relative}
-.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(16px,4vw,48px) clamp(16px,5vw,56px);opacity:0;transform:translateX(60px);transition:opacity .45s cubic-bezier(.4,0,.2,1),transform .45s cubic-bezier(.4,0,.2,1);pointer-events:none;overflow-y:auto}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(14px,3.5vw,44px) clamp(16px,5vw,56px);opacity:0;transform:translateX(60px);transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1);pointer-events:none;overflow-y:auto}
 .slide.active{opacity:1;transform:none;pointer-events:all}
 .slide.exit{opacity:0;transform:translateX(-60px)}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;flex-shrink:0;border-top:1px solid var(--border);gap:10px}
+.nav{display:flex;align-items:center;padding:8px 14px 10px;flex-shrink:0;border-top:1px solid var(--border);gap:8px}
 .nav-dots{display:flex;gap:4px;flex:1;justify-content:center;flex-wrap:wrap}
 .nav-dot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;border:none;padding:0}
 .nav-dot.active{background:var(--accent2);transform:scale(1.5)}
-.nav-btn{background:var(--surf2);border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:11px;font-size:18px;cursor:pointer;transition:all .15s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nav-btn{background:var(--surf2);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:10px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nav-btn:disabled{opacity:.2;cursor:default}
-.slide-num{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;min-width:36px}
+.slide-num{font-size:10px;font-weight:700;color:var(--muted);min-width:32px;text-align:center}
 
-/* BG THEMES */
-.bg-cover{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(123,104,238,.35),transparent 70%),var(--bg)}
-.bg-problem{background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(248,113,113,.12),transparent 60%),var(--bg)}
-.bg-solution{background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(52,211,153,.1),transparent 60%),var(--bg)}
-.bg-product{background:radial-gradient(ellipse 70% 50% at 50% 80%,rgba(96,165,250,.1),transparent 60%),var(--bg)}
-.bg-market{background:radial-gradient(ellipse 60% 60% at 70% 30%,rgba(251,191,36,.08),transparent 60%),var(--bg)}
-.bg-biz{background:radial-gradient(ellipse 60% 50% at 30% 60%,rgba(167,139,250,.12),transparent 60%),var(--bg)}
-.bg-unit{background:radial-gradient(ellipse 60% 60% at 80% 20%,rgba(52,211,153,.1),transparent 60%),var(--bg)}
-.bg-proj{background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(251,191,36,.1),transparent 60%),var(--bg)}
-.bg-flywheel{background:radial-gradient(ellipse 70% 60% at 20% 50%,rgba(96,165,250,.1),transparent 60%),var(--bg)}
-.bg-traction{background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(52,211,153,.1),transparent 60%),var(--bg)}
-.bg-whynow{background:radial-gradient(ellipse 60% 50% at 80% 60%,rgba(96,165,250,.1),transparent 60%),var(--bg)}
-.bg-comp{background:radial-gradient(ellipse 60% 50% at 20% 40%,rgba(244,114,182,.1),transparent 60%),var(--bg)}
-.bg-team{background:radial-gradient(ellipse 60% 50% at 60% 30%,rgba(123,104,238,.15),transparent 60%),var(--bg)}
-.bg-ask{background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(251,191,36,.12),transparent 60%),var(--bg)}
-.bg-milestones{background:radial-gradient(ellipse 70% 50% at 50% 10%,rgba(52,211,153,.1),transparent 60%),var(--bg)}
+/* BG */
+.bg0{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(123,104,238,.38),transparent 70%),var(--bg)}
+.bg1{background:radial-gradient(ellipse 70% 60% at 15% 60%,rgba(248,113,113,.14),transparent 65%),var(--bg)}
+.bg2{background:radial-gradient(ellipse 60% 55% at 80% 50%,rgba(52,211,153,.12),transparent 65%),var(--bg)}
+.bg3{background:radial-gradient(ellipse 65% 55% at 50% 80%,rgba(96,165,250,.1),transparent 65%),var(--bg)}
+.bg4{background:radial-gradient(ellipse 65% 55% at 80% 20%,rgba(244,114,182,.1),transparent 65%),var(--bg)}
+.bg5{background:radial-gradient(ellipse 65% 65% at 70% 30%,rgba(251,191,36,.09),transparent 65%),var(--bg)}
+.bg6{background:radial-gradient(ellipse 60% 55% at 30% 65%,rgba(167,139,250,.13),transparent 65%),var(--bg)}
+.bg7{background:radial-gradient(ellipse 65% 60% at 80% 20%,rgba(52,211,153,.11),transparent 65%),var(--bg)}
+.bg8{background:radial-gradient(ellipse 80% 55% at 50% 110%,rgba(251,191,36,.12),transparent 65%),var(--bg)}
+.bg9{background:radial-gradient(ellipse 65% 55% at 20% 50%,rgba(96,165,250,.11),transparent 65%),var(--bg)}
+.bg10{background:radial-gradient(ellipse 65% 55% at 75% 40%,rgba(52,211,153,.1),transparent 65%),var(--bg)}
+.bg11{background:radial-gradient(ellipse 65% 55% at 20% 40%,rgba(244,114,182,.1),transparent 65%),var(--bg)}
+.bg12{background:radial-gradient(ellipse 60% 55% at 65% 30%,rgba(123,104,238,.16),transparent 65%),var(--bg)}
+.bg13{background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(251,191,36,.12),transparent 65%),var(--bg)}
+.bg14{background:radial-gradient(ellipse 70% 55% at 50% 10%,rgba(52,211,153,.1),transparent 65%),var(--bg)}
+.bg15{background:radial-gradient(ellipse 65% 55% at 30% 60%,rgba(96,165,250,.1),transparent 65%),var(--bg)}
 
 /* TYPE */
 .lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(167,139,250,.4),transparent)}
-.h1{font-size:clamp(32px,6.5vw,68px);font-weight:900;line-height:1.05;letter-spacing:-2px}
-.h2{font-size:clamp(22px,4vw,44px);font-weight:900;line-height:1.1;letter-spacing:-1.5px}
-.sub{font-size:clamp(13px,1.8vw,17px);color:var(--muted);line-height:1.6;margin-top:10px}
+.h1{font-size:clamp(30px,6vw,64px);font-weight:900;line-height:1.05;letter-spacing:-2px}
+.h2{font-size:clamp(20px,3.8vw,42px);font-weight:900;line-height:1.1;letter-spacing:-1.5px}
+.sub{font-size:clamp(12px,1.7vw,16px);color:var(--muted);line-height:1.65;margin-top:10px}
 .grad{background:linear-gradient(135deg,var(--accent2),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .grad2{background:linear-gradient(135deg,var(--blue),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .grad3{background:linear-gradient(135deg,var(--yellow),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .grad4{background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gradr{background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
-/* UTILS */
-.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
-.card-sm{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:12px 14px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* LAYOUT */
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:15px;padding:14px 16px}
+.card-sm{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:11px;padding:10px 13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-@media(max-width:500px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.g4{grid-template-columns:1fr 1fr}}
-.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
-.logomark{position:absolute;top:14px;left:16px;font-size:14px;font-weight:900;opacity:.35;letter-spacing:-.3px}
-.conf{position:absolute;bottom:52px;right:14px;font-size:9px;color:rgba(255,255,255,.12);font-weight:600;letter-spacing:1px;text-transform:uppercase}
-.src{font-size:9px;color:rgba(255,255,255,.2);font-weight:600;font-style:italic}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+@media(max-width:480px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}.g4{grid-template-columns:1fr 1fr}}
+.mt6{margin-top:6px}.mt10{margin-top:10px}.mt14{margin-top:14px}.mt18{margin-top:18px}
+.logomark{position:absolute;top:12px;left:14px;font-size:13px;font-weight:900;opacity:.3;letter-spacing:-.3px}
+.conf{position:absolute;bottom:48px;right:12px;font-size:9px;color:rgba(255,255,255,.1);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.src{font-size:9px;color:rgba(255,255,255,.18);font-weight:600;font-style:italic;margin-top:7px}
+.tag{display:inline-block;font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:.3px}
+.tag-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.tag-yellow{background:rgba(251,191,36,.12);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+.tag-red{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.tag-blue{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.tag-purple{background:rgba(167,139,250,.12);color:var(--accent2);border:1px solid rgba(167,139,250,.2)}
 
-/* CHAOS CHIPS */
-.chaos-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.chaos-chip{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.18);border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:5px}
+/* PROBLEM */
+.chaos-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chaos-chip{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.16);border-radius:8px;padding:6px 11px;font-size:11px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:4px}
+.pain-stat{background:linear-gradient(135deg,rgba(248,113,113,.1),rgba(251,191,36,.06));border:1px solid rgba(248,113,113,.2);border-radius:14px;padding:16px;margin-top:12px;display:flex;align-items:center;gap:14px}
+.pain-num{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;flex-shrink:0}
+.pain-copy{font-size:13px;font-weight:700;line-height:1.5}
 
-/* FLOW */
-.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
-.flow-step{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:11px;padding:9px 14px;font-size:12px;font-weight:700;color:var(--green);flex:1;min-width:80px;text-align:center}
-.flow-arrow{color:var(--muted);font-size:16px;flex-shrink:0}
+/* SOLUTION */
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px}
+.flow-step{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:8px 13px;font-size:11px;font-weight:800;color:var(--green);flex:1;min-width:70px;text-align:center;line-height:1.3}
+.flow-arrow{color:var(--muted);font-size:14px;flex-shrink:0}
 
-/* MARKET RINGS */
-.market-visual{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:16px}
-.market-ring{display:flex;flex-direction:column;align-items:center;gap:6px}
+/* UNFAIR ADVANTAGE */
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.adv-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:13px}
+.adv-icon{font-size:22px;margin-bottom:6px}
+.adv-title{font-size:12px;font-weight:800;margin-bottom:4px}
+.adv-body{font-size:11px;color:var(--muted);line-height:1.5}
+.adv-tag{margin-top:7px}
+
+/* MARKET */
+.market-visual{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:14px}
+.mring{display:flex;flex-direction:column;align-items:center;gap:5px}
 .ring{border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
-.ring-outer{width:140px;height:140px;background:rgba(251,191,36,.08);border:2px solid rgba(251,191,36,.3)}
-.ring-mid{width:108px;height:108px;background:rgba(167,139,250,.1);border:2px solid rgba(167,139,250,.4)}
-.ring-inner{width:74px;height:74px;background:rgba(52,211,153,.12);border:2px solid rgba(52,211,153,.5)}
+.ring-a{width:130px;height:130px;background:rgba(251,191,36,.08);border:2px solid rgba(251,191,36,.3)}
+.ring-b{width:100px;height:100px;background:rgba(167,139,250,.1);border:2px solid rgba(167,139,250,.35)}
+.ring-c{width:70px;height:70px;background:rgba(52,211,153,.12);border:2px solid rgba(52,211,153,.45)}
 
-/* REV BARS */
-.rev-stream{display:flex;flex-direction:column;gap:7px;margin-top:14px}
-.rev-row{display:flex;align-items:center;gap:10px}
-.rev-label{font-size:11px;font-weight:700;width:100px;flex-shrink:0;color:var(--muted)}
-.rev-bar-wrap{flex:1;height:26px;background:rgba(255,255,255,.05);border-radius:7px;overflow:hidden}
-.rev-bar{height:100%;border-radius:7px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:800;white-space:nowrap}
-.rev-pct{font-size:11px;font-weight:700;color:var(--muted);width:36px;text-align:right}
+/* BIZ MODEL */
+.rev-stream{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.rev-row{display:flex;align-items:center;gap:8px}
+.rev-lbl{font-size:10px;font-weight:700;width:90px;flex-shrink:0;color:var(--muted)}
+.rev-bw{flex:1;height:24px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden}
+.rev-b{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:800;white-space:nowrap}
+.rev-pct{font-size:10px;font-weight:700;color:var(--muted);width:30px;text-align:right}
 
-/* UNIT ECONOMICS */
-.unit-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:14px}
-.unit-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center;flex:1;min-width:70px}
-.unit-num{font-size:20px;font-weight:900;letter-spacing:-1px}
-.unit-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:3px}
-.unit-arrow{color:var(--muted);font-size:14px;flex-shrink:0}
+/* UNIT ECON */
+.unit-funnel{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px}
+.unit-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:11px;padding:9px 10px;text-align:center;flex:1;min-width:58px}
+.unit-num{font-size:18px;font-weight:900;letter-spacing:-1px}
+.unit-lbl{font-size:9px;color:var(--muted);font-weight:600;margin-top:2px;line-height:1.3}
 
-/* PROJECTION CHART */
-.proj-chart{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-.proj-year{display:flex;align-items:center;gap:12px}
-.proj-year-lbl{font-size:12px;font-weight:800;width:50px;flex-shrink:0;color:var(--muted)}
+/* PROJECTION */
+.proj-wrap{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.proj-year{display:flex;align-items:center;gap:10px}
+.proj-ylbl{font-size:11px;font-weight:800;width:44px;flex-shrink:0;color:var(--muted)}
 .proj-bars{flex:1;display:flex;flex-direction:column;gap:3px}
-.proj-bar-row{display:flex;align-items:center;gap:6px}
-.proj-bar-wrap{flex:1;height:20px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden}
-.proj-bar{height:100%;border-radius:6px;transition:width 1.2s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:800;white-space:nowrap}
-.proj-total{font-size:13px;font-weight:900;letter-spacing:-.5px;width:64px;text-align:right;flex-shrink:0}
-.proj-bar-lbl{font-size:9px;color:var(--muted);width:56px;flex-shrink:0}
-.scenarios{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.scenario{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px 14px;flex:1;min-width:100px}
-.scenario-name{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-.scenario-val{font-size:22px;font-weight:900;letter-spacing:-1px}
-.scenario-sub{font-size:10px;color:var(--muted);margin-top:3px}
+.proj-br{display:flex;align-items:center;gap:5px}
+.proj-blbl{font-size:9px;color:var(--muted);width:50px;flex-shrink:0}
+.proj-bw{flex:1;height:18px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden}
+.proj-b{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:7px;font-size:9px;font-weight:800;white-space:nowrap}
+.proj-total{font-size:12px;font-weight:900;letter-spacing:-.5px;width:52px;text-align:right;flex-shrink:0}
+.scenarios{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.scen{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:11px;padding:9px 12px;flex:1;min-width:80px}
+.scen-name{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+.scen-val{font-size:20px;font-weight:900;letter-spacing:-1px}
+.scen-sub{font-size:9px;color:var(--muted);margin-top:2px}
 
 /* FLYWHEEL */
-.flywheel{position:relative;margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.fw-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px}
-.fw-icon{font-size:24px;margin-bottom:8px}
-.fw-title{font-size:13px;font-weight:800;margin-bottom:4px}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.fw-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:13px}
+.fw-icon{font-size:20px;margin-bottom:6px}
+.fw-title{font-size:12px;font-weight:800;margin-bottom:3px}
 .fw-body{font-size:11px;color:var(--muted);line-height:1.5}
-.fw-arrow{font-size:22px;text-align:center;color:var(--accent2);padding:8px 0}
 
-/* COMPETITION MATRIX */
-.matrix{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.02);margin-top:14px}
+/* COMPETITION */
+.matrix{border:1px solid var(--border);border-radius:13px;overflow:hidden;background:rgba(255,255,255,.02);margin-top:12px}
 .mx-inner{display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr}
-.mx-head{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:8px 6px;text-align:center}
-.mx-rl{font-size:11px;font-weight:700;padding:9px 8px;color:var(--muted);display:flex;align-items:center}
-.mx-c{padding:9px 6px;text-align:center;border-top:1px solid var(--border);font-size:13px;display:flex;align-items:center;justify-content:center}
+.mx-head{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:8px 5px;text-align:center}
+.mx-rl{font-size:11px;font-weight:700;padding:8px 7px;color:var(--muted);display:flex;align-items:center}
+.mx-c{padding:8px 5px;text-align:center;border-top:1px solid var(--border);font-size:12px;display:flex;align-items:center;justify-content:center}
 .mx-c.us{background:rgba(123,104,238,.08)}
 
 /* TIMELINE */
-.timeline{display:flex;flex-direction:column;gap:0;margin-top:14px;position:relative}
-.timeline::before{content:'';position:absolute;left:13px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),transparent)}
-.tl-item{display:flex;gap:12px;align-items:flex-start;padding:8px 0 8px 6px}
-.tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;border:2px solid var(--bg)}
+.timeline{display:flex;flex-direction:column;margin-top:12px;position:relative}
+.timeline::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),transparent)}
+.tl-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0 7px 4px}
+.tl-dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;margin-top:3px;border:2px solid var(--bg)}
 .tl-dot.done{background:var(--green)}.tl-dot.next{background:var(--accent)}.tl-dot.future{background:var(--surf2);border-color:var(--muted)}
 .tl-title{font-size:12px;font-weight:800}.tl-sub{font-size:10px;color:var(--muted);margin-top:1px}
 
-/* FUND */
-.fund-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
-.fund-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:12px}
-.fund-pct{font-size:26px;font-weight:900;letter-spacing:-1px}.fund-name{font-size:10px;color:var(--muted);margin-top:2px;font-weight:600}
-
 /* TEAM */
-.team-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:20px;max-width:420px}
-.team-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;margin-bottom:12px}
-.team-name{font-size:18px;font-weight:900;letter-spacing:-.5px}
-.team-role{font-size:12px;color:var(--accent2);font-weight:700;margin-top:3px}
-.team-bio{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
-.team-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:12px}
-.team-tag{background:rgba(123,104,238,.1);border:1px solid rgba(123,104,238,.2);border-radius:7px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--accent2)}
-.hire-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);margin-top:7px}
-.hire-item::before{content:'+ ';color:var(--green);font-weight:900}
+.team-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:17px;padding:18px;max-width:420px}
+.t-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;margin-bottom:11px}
+.t-name{font-size:17px;font-weight:900;letter-spacing:-.4px}
+.t-role{font-size:11px;color:var(--accent2);font-weight:700;margin-top:2px}
+.t-bio{font-size:11px;color:var(--muted);line-height:1.65;margin-top:9px}
+.t-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.t-tag{background:rgba(123,104,238,.1);border:1px solid rgba(123,104,238,.2);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--accent2)}
+.t-hire{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--muted);margin-top:6px}
+.t-hire::before{content:'+ ';color:var(--green);font-weight:900}
+
+/* FUND */
+.fund-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.fund-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:11px}
+.fund-pct{font-size:24px;font-weight:900;letter-spacing:-1px}
+.fund-name{font-size:10px;color:var(--muted);margin-top:2px;font-weight:600;line-height:1.4}
 
 /* WHY NOW */
-.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
-.why-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px}
-.why-icon{font-size:24px;margin-bottom:6px}
-.why-title{font-size:13px;font-weight:800;margin-bottom:3px}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.why-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:13px}
+.why-icon{font-size:20px;margin-bottom:5px}
+.why-title{font-size:12px;font-weight:800;margin-bottom:3px}
 .why-body{font-size:11px;color:var(--muted);line-height:1.5}
 
-/* TRACTION GRID */
-.t-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
-@media(min-width:520px){.t-grid{grid-template-columns:repeat(3,1fr)}}
-.t-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:13px;padding:12px;text-align:center}
-.t-num{font-size:26px;font-weight:900;letter-spacing:-1px}
-.t-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:3px}
+/* TRACTION */
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+@media(max-width:480px){.t-grid{grid-template-columns:1fr 1fr}}
+.tc{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:11px;text-align:center}
+.tc-num{font-size:24px;font-weight:900;letter-spacing:-1px}
+.tc-lbl{font-size:9px;color:var(--muted);font-weight:600;margin-top:3px}
 
-/* COVER */
-.cover-pills{display:flex;gap:7px;margin-top:24px;flex-wrap:wrap}
-.cover-pill{background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:18px;padding:6px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.55)}
+/* COVER PILLS */
+.cover-pills{display:flex;gap:6px;margin-top:20px;flex-wrap:wrap}
+.cover-pill{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:16px;padding:5px 13px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5)}
+
+/* VELOCITY STRIP */
+.velocity{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.vel-item{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.15);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:7px;flex:1;min-width:100px}
+.vel-num{font-size:18px;font-weight:900;color:var(--green);letter-spacing:-1px}
+.vel-lbl{font-size:10px;color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
@@ -181,387 +205,406 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
   <div class="slides-wrap" id="sw">
 
-    <!-- 1: COVER -->
-    <div class="slide bg-cover active" data-i="0">
+    <!-- 1: COVER — strong hook, velocity signal front and center -->
+    <div class="slide bg0 active" data-i="0">
       <div class="logomark">Roam ✈</div>
-      <div style="font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px">Seed Round · 2026</div>
+      <div style="font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px">Seed Round · 2026</div>
       <div class="h1"><span class="grad">The AI Operating</span><br>System for Travel</div>
-      <div class="sub">Plan your trip in 60 seconds. Execute it from one live dashboard. Book everything in place.</div>
-      <div class="cover-pills">
+      <div class="sub" style="max-width:560px">Travelers waste <strong style="color:var(--text)">16 hours</strong> planning every trip. Roam eliminates that — generating a complete, bookable itinerary dashboard in under 60 seconds.</div>
+      <div class="velocity mt14">
+        <div class="vel-item"><div class="vel-num">10</div><div class="vel-lbl">days from idea<br>to live product</div></div>
+        <div class="vel-item"><div class="vel-num">$0</div><div class="vel-lbl">infra cost<br>at launch</div></div>
+        <div class="vel-item"><div class="vel-num">23×</div><div class="vel-lbl">affiliate ROI<br>benchmark</div></div>
+        <div class="vel-item"><div class="vel-num">$5M</div><div class="vel-lbl">ARR target<br>year 3</div></div>
+      </div>
+      <div class="cover-pills mt10">
         <div class="cover-pill">AI-Powered Planning</div>
         <div class="cover-pill">Affiliate-First Revenue</div>
-        <div class="cover-pill">Live Trip Dashboard</div>
-        <div class="cover-pill">Mobile-First PWA</div>
         <div class="cover-pill">Day-1 Monetization</div>
+        <div class="cover-pill">Mobile PWA</div>
       </div>
       <div class="conf">Confidential · Not for distribution · Roam 2026</div>
     </div>
 
-    <!-- 2: PROBLEM -->
-    <div class="slide bg-problem" data-i="1">
+    <!-- 2: PROBLEM — make it visceral with real data -->
+    <div class="slide bg1" data-i="1">
       <div class="logomark">Roam ✈</div>
-      <div class="lbl">The Problem</div>
-      <div class="h2">Trip planning is<br><span style="background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">completely broken</span></div>
-      <div class="sub">The average traveller context-switches across <strong>12+ apps</strong> before their trip — and still travels unprepared.</div>
-      <div class="chaos-grid">
-        <div class="chaos-chip"><span>🔍</span>Google Search</div>
-        <div class="chaos-chip"><span>🗺️</span>Google Maps</div>
-        <div class="chaos-chip"><span>🏨</span>Booking.com</div>
-        <div class="chaos-chip"><span>✈️</span>Skyscanner</div>
-        <div class="chaos-chip"><span>📋</span>Notion / Docs</div>
-        <div class="chaos-chip"><span>🎟️</span>GetYourGuide</div>
-        <div class="chaos-chip"><span>🚆</span>Trainline</div>
-        <div class="chaos-chip"><span>💬</span>Reddit</div>
-        <div class="chaos-chip"><span>📸</span>Instagram</div>
-        <div class="chaos-chip"><span>📱</span>WhatsApp Groups</div>
+      <div class="lbl">The Pain</div>
+      <div class="h2">Travel planning is<br><span class="gradr">exhausting and broken</span></div>
+      <div class="pain-stat">
+        <div class="pain-num">16hrs</div>
+        <div>
+          <div class="pain-copy">The average traveler spends <strong>two full work days</strong> planning a single trip — juggling 12+ apps, tabs, and group chats.</div>
+          <div style="margin-top:5px;font-size:10px;color:var(--muted)">For Gen Z & Millennials: 20+ hours. — Priceline Research, Feb 2024</div>
+        </div>
       </div>
-      <div class="sub mt12" style="font-size:13px">Existing tools <strong style="color:var(--text)">plan only</strong> or <strong style="color:var(--text)">track only.</strong> Nothing operates the full trip end-to-end.</div>
+      <div class="chaos-grid">
+        <div class="chaos-chip">🔍 Google Search</div>
+        <div class="chaos-chip">🗺️ Google Maps</div>
+        <div class="chaos-chip">🏨 Booking.com</div>
+        <div class="chaos-chip">✈️ Skyscanner</div>
+        <div class="chaos-chip">📋 Notion/Docs</div>
+        <div class="chaos-chip">🎟️ GetYourGuide</div>
+        <div class="chaos-chip">🚆 Trainline</div>
+        <div class="chaos-chip">💬 Reddit</div>
+        <div class="chaos-chip">📱 WhatsApp</div>
+        <div class="chaos-chip">📸 Instagram</div>
+      </div>
+      <div class="sub mt10" style="font-size:13px">Existing tools <strong style="color:var(--text)">plan only</strong> or <strong style="color:var(--text)">track only.</strong> Nobody has built the end-to-end operating layer. <strong style="color:var(--text)">Until now.</strong></div>
     </div>
 
     <!-- 3: SOLUTION -->
-    <div class="slide bg-solution" data-i="2">
+    <div class="slide bg2" data-i="2">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">The Solution</div>
-      <div class="h2">One prompt.<br><span class="grad2">One dashboard.</span><br>Everything.</div>
-      <div class="sub">Roam generates a complete, executable trip plan — then becomes your live command center throughout the journey.</div>
-      <div class="flow mt12">
-        <div class="flow-step">💬 One Prompt</div>
+      <div class="h2">One prompt.<br><span class="grad2">One dashboard.</span><br>Everything booked.</div>
+      <div class="sub">Roam generates a complete, executable trip plan from a single input — then becomes your live command center for the entire journey.</div>
+      <div class="flow">
+        <div class="flow-step">💬 Describe your trip</div>
         <div class="flow-arrow">→</div>
-        <div class="flow-step">🤖 AI Generates</div>
+        <div class="flow-step">🤖 AI builds full plan</div>
         <div class="flow-arrow">→</div>
-        <div class="flow-step">🗺️ Live Dashboard</div>
+        <div class="flow-step">🗺️ Live dashboard</div>
         <div class="flow-arrow">→</div>
-        <div class="flow-step">📲 Book + Travel</div>
+        <div class="flow-step">📲 One tap to book</div>
       </div>
       <div class="g2 mt12">
         <div class="card-sm">
-          <div style="font-size:12px;font-weight:800;color:var(--green);line-height:1.8">✓ Day-by-day itinerary<br>✓ Interactive route map<br>✓ Pre-filled booking links</div>
+          <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:7px">PLANNING → DONE IN 60s</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green);line-height:1.9">✓ Day-by-day itinerary<br>✓ Interactive route map<br>✓ Pre-filled booking links</div>
         </div>
         <div class="card-sm">
-          <div style="font-size:12px;font-weight:800;color:var(--green);line-height:1.8">✓ Budget tracker<br>✓ Ticket wallet<br>✓ Works offline (PWA)</div>
+          <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:7px">IN-TRIP COMMAND CENTER</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green);line-height:1.9">✓ Live daily timeline<br>✓ Budget tracker<br>✓ Works offline (PWA)</div>
         </div>
+      </div>
+      <div class="card-sm mt10" style="border-color:rgba(52,211,153,.2)">
+        <div style="font-size:11px;font-weight:700;color:var(--green)">🚀 Live now: <span style="color:var(--muted)">futuriztaos.github.io/trip-planner — try it before this meeting ends</span></div>
       </div>
     </div>
 
-    <!-- 4: PRODUCT -->
-    <div class="slide bg-product" data-i="3">
+    <!-- 4: PRODUCT — 6-tab showcase -->
+    <div class="slide bg3" data-i="3">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">The Product</div>
-      <div class="h2">A trip dashboard<br><span style="background:linear-gradient(135deg,var(--blue),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">built for the road</span></div>
+      <div class="h2">One dashboard.<br><span style="background:linear-gradient(135deg,var(--blue),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Six powerful tabs.</span></div>
       <div class="g3 mt12">
-        <div class="card-sm" style="border-color:rgba(96,165,250,.25)"><div style="font-size:20px;margin-bottom:6px">🧭</div><div style="font-size:12px;font-weight:800;color:var(--blue)">Live Tab</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Today's hero, Next Move, weather, transport</div></div>
-        <div class="card-sm" style="border-color:rgba(167,139,250,.25)"><div style="font-size:20px;margin-bottom:6px">🗺️</div><div style="font-size:12px;font-weight:800;color:var(--accent2)">Trip Tab</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Route map + full itinerary overview</div></div>
-        <div class="card-sm" style="border-color:rgba(52,211,153,.25)"><div style="font-size:20px;margin-bottom:6px">📅</div><div style="font-size:12px;font-weight:800;color:var(--green)">Days</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Hour-by-hour timeline per day</div></div>
-        <div class="card-sm" style="border-color:rgba(251,191,36,.25)"><div style="font-size:20px;margin-bottom:6px">🎟️</div><div style="font-size:12px;font-weight:800;color:var(--yellow)">Tickets</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Your booked tickets + details</div></div>
-        <div class="card-sm" style="border-color:rgba(248,113,113,.25)"><div style="font-size:20px;margin-bottom:6px">⚡</div><div style="font-size:12px;font-weight:800;color:var(--red)">Book Now</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Urgent actions + affiliate links</div></div>
-        <div class="card-sm" style="border-color:rgba(244,114,182,.25)"><div style="font-size:20px;margin-bottom:6px">💰</div><div style="font-size:12px;font-weight:800;color:var(--pink)">Budget</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Booked vs pending spend</div></div>
+        <div class="card-sm" style="border-color:rgba(96,165,250,.22)"><div style="font-size:18px;margin-bottom:5px">🧭</div><div style="font-size:11px;font-weight:800;color:var(--blue)">Live Tab</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Today's hero, Next Move, live weather</div></div>
+        <div class="card-sm" style="border-color:rgba(167,139,250,.22)"><div style="font-size:18px;margin-bottom:5px">🗺️</div><div style="font-size:11px;font-weight:800;color:var(--accent2)">Trip Tab</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Route map + full itinerary</div></div>
+        <div class="card-sm" style="border-color:rgba(52,211,153,.22)"><div style="font-size:18px;margin-bottom:5px">📅</div><div style="font-size:11px;font-weight:800;color:var(--green)">Days</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Hour-by-hour timeline</div></div>
+        <div class="card-sm" style="border-color:rgba(251,191,36,.22)"><div style="font-size:18px;margin-bottom:5px">🎟️</div><div style="font-size:11px;font-weight:800;color:var(--yellow)">Tickets</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Confirmed bookings wallet</div></div>
+        <div class="card-sm" style="border-color:rgba(248,113,113,.22)"><div style="font-size:18px;margin-bottom:5px">⚡</div><div style="font-size:11px;font-weight:800;color:var(--red)">Book Now</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Urgent actions + affiliate links</div></div>
+        <div class="card-sm" style="border-color:rgba(244,114,182,.22)"><div style="font-size:18px;margin-bottom:5px">💰</div><div style="font-size:11px;font-weight:800;color:var(--pink)">Budget</div><div style="font-size:10px;color:var(--muted);margin-top:3px">Booked vs pending spend</div></div>
+      </div>
+      <div class="sub mt10" style="font-size:12px">Input: destination + dates + style + budget + group size. Output: a complete, shareable, bookable trip dashboard — in under 60 seconds.</div>
+    </div>
+
+    <!-- 5: UNFAIR ADVANTAGE — the "why will we win" slide -->
+    <div class="slide bg4" data-i="4">
+      <div class="logomark">Roam ✈</div>
+      <div class="lbl">Unfair Advantage</div>
+      <div class="h2">Four moats<br><span class="grad">competitors can't copy</span></div>
+      <div class="adv-grid">
+        <div class="adv-card" style="border-color:rgba(96,165,250,.2)">
+          <div class="adv-icon">🔍</div>
+          <div class="adv-title" style="color:var(--blue)">SEO Content Moat</div>
+          <div class="adv-body">Every generated trip = a public, shareable URL. 10,000 trips = 10,000 indexed itinerary pages. TripAdvisor built $1.7B in annual revenue on this exact playbook.</div>
+          <div class="adv-tag"><span class="tag tag-blue">Compounding</span></div>
+        </div>
+        <div class="adv-card" style="border-color:rgba(52,211,153,.2)">
+          <div class="adv-icon">📈</div>
+          <div class="adv-title" style="color:var(--green)">AI Quality Flywheel</div>
+          <div class="adv-body">More trip data → better personalization → higher completion rates → higher affiliate conversion. A pure LLM chatbot has no equivalent feedback loop.</div>
+          <div class="adv-tag"><span class="tag tag-green">Defensible</span></div>
+        </div>
+        <div class="adv-card" style="border-color:rgba(244,114,182,.2)">
+          <div class="adv-icon">⚡</div>
+          <div class="adv-title" style="color:var(--pink)">Execution Velocity</div>
+          <div class="adv-body">Full-stack MVP — frontend, backend, AI pipeline, affiliate layer, validator — built and deployed in <strong style="color:var(--text)">10 days by one person.</strong> This is the team's tempo.</div>
+          <div class="adv-tag"><span class="tag tag-purple">Proven</span></div>
+        </div>
+        <div class="adv-card" style="border-color:rgba(251,191,36,.2)">
+          <div class="adv-icon">🔗</div>
+          <div class="adv-title" style="color:var(--yellow)">Affiliate Relationships</div>
+          <div class="adv-body">Booking.com, GYG, Trainline, Rentalcars — once signed, these are sticky distribution partnerships that take 6–12 months to negotiate. First-mover advantage is real.</div>
+          <div class="adv-tag"><span class="tag tag-yellow">Strategic</span></div>
+        </div>
       </div>
     </div>
 
-    <!-- 5: MARKET -->
-    <div class="slide bg-market" data-i="4">
+    <!-- 6: MARKET -->
+    <div class="slide bg5" data-i="5">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Market Opportunity</div>
-      <div class="h2">A <span class="grad3">$1.7 trillion</span><br>market, still fragmented</div>
+      <div class="h2">A <span class="grad3">$1.7 trillion</span><br>market ripe for disruption</div>
       <div class="market-visual">
-        <div class="market-ring">
-          <div class="ring ring-outer"><div style="font-size:17px;font-weight:900;color:var(--yellow)">$1.7T</div><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase">TAM</div></div>
-          <div style="font-size:10px;font-weight:700;color:var(--yellow)">Global Travel</div>
-        </div>
-        <div class="market-ring">
-          <div class="ring ring-mid"><div style="font-size:14px;font-weight:900;color:var(--accent2)">$180B</div><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase">SAM</div></div>
-          <div style="font-size:10px;font-weight:700;color:var(--accent2)">Online Leisure</div>
-        </div>
-        <div class="market-ring">
-          <div class="ring ring-inner"><div style="font-size:12px;font-weight:900;color:var(--green)">$4B</div><div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase">SOM</div></div>
-          <div style="font-size:10px;font-weight:700;color:var(--green)">AI Planning</div>
-        </div>
+        <div class="mring"><div class="ring ring-a"><div style="font-size:15px;font-weight:900;color:var(--yellow)">$1.7T</div><div style="font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase">TAM</div></div><div style="font-size:9px;font-weight:700;color:var(--yellow)">Global Travel</div></div>
+        <div class="mring"><div class="ring ring-b"><div style="font-size:13px;font-weight:900;color:var(--accent2)">$180B</div><div style="font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase">SAM</div></div><div style="font-size:9px;font-weight:700;color:var(--accent2)">Online Leisure</div></div>
+        <div class="mring"><div class="ring ring-c"><div style="font-size:11px;font-weight:900;color:var(--green)">$4B</div><div style="font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase">SOM</div></div><div style="font-size:9px;font-weight:700;color:var(--green)">AI Planning</div></div>
       </div>
-      <div class="g2 mt12">
-        <div class="card-sm"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:4px">INITIAL WEDGE</div><div style="font-size:12px;font-weight:700">Millennial leisure travelers, 25–40, English-speaking</div></div>
-        <div class="card-sm"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:4px">EXPANSION</div><div style="font-size:12px;font-weight:700">Group trips · Creators · Agency white-label · B2B API</div></div>
+      <div class="g2 mt10">
+        <div class="card-sm"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">WEDGE</div><div style="font-size:12px;font-weight:700">Millennial leisure travelers, 25–40, English-speaking, mobile-first</div></div>
+        <div class="card-sm"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">EXPANSION</div><div style="font-size:12px;font-weight:700">Group trips · Travel creators · Agency white-label · B2B API</div></div>
       </div>
-      <div class="src mt8">Sources: UNWTO Global Tourism 2024 · Phocuswright Online Travel Report · Mordor Intelligence AI Travel Market 2025</div>
+      <div class="g4 mt8">
+        <div class="card-sm" style="text-align:center"><div style="font-size:16px;font-weight:900;color:var(--yellow)">+8%</div><div style="font-size:9px;color:var(--muted)">Travel above 2019 (IATA 2024)</div></div>
+        <div class="card-sm" style="text-align:center"><div style="font-size:16px;font-weight:900;color:var(--blue)">68%</div><div style="font-size:9px;color:var(--muted)">Bookings on mobile (Statista 2024)</div></div>
+        <div class="card-sm" style="text-align:center"><div style="font-size:16px;font-weight:900;color:var(--green)">+45%</div><div style="font-size:9px;color:var(--muted)">Travel affiliate revenue YoY (Partnerize 2024)</div></div>
+        <div class="card-sm" style="text-align:center"><div style="font-size:16px;font-weight:900;color:var(--pink)">300M</div><div style="font-size:9px;color:var(--muted)">ChatGPT weekly users — AI trust proven</div></div>
+      </div>
+      <div class="src mt6">UNWTO 2024 · Phocuswright · IATA · Statista · Partnerize Global Travel Benchmarks 2024</div>
     </div>
 
-    <!-- 6: BUSINESS MODEL -->
-    <div class="slide bg-biz" data-i="5">
+    <!-- 7: BUSINESS MODEL -->
+    <div class="slide bg6" data-i="6">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Business Model</div>
-      <div class="h2">Affiliate-first.<br><span class="grad">SaaS at scale.</span></div>
+      <div class="h2">Affiliate revenue<br><span class="grad">from day one.</span><br>SaaS at scale.</div>
       <div class="rev-stream">
-        <div class="rev-row"><div class="rev-label">Hotels 🏨</div><div class="rev-bar-wrap"><div class="rev-bar" style="width:75%;background:linear-gradient(90deg,rgba(52,211,153,.3),rgba(52,211,153,.15))"><span style="color:var(--green)">Booking.com · 4–6%</span></div></div><div class="rev-pct" style="color:var(--green)">75%</div></div>
-        <div class="rev-row"><div class="rev-label">Activities 🎯</div><div class="rev-bar-wrap"><div class="rev-bar" style="width:55%;background:linear-gradient(90deg,rgba(167,139,250,.3),rgba(167,139,250,.15))"><span style="color:var(--accent2)">GetYourGuide · 8%</span></div></div><div class="rev-pct" style="color:var(--accent2)">55%</div></div>
-        <div class="rev-row"><div class="rev-label">Transport 🚆</div><div class="rev-bar-wrap"><div class="rev-bar" style="width:40%;background:linear-gradient(90deg,rgba(96,165,250,.3),rgba(96,165,250,.15))"><span style="color:var(--blue)">Trainline · 2–4%</span></div></div><div class="rev-pct" style="color:var(--blue)">40%</div></div>
-        <div class="rev-row"><div class="rev-label">Pro SaaS 💎</div><div class="rev-bar-wrap"><div class="rev-bar" style="width:30%;background:linear-gradient(90deg,rgba(251,191,36,.3),rgba(251,191,36,.15))"><span style="color:var(--yellow)">$12–49/mo · Unlimited + Collab</span></div></div><div class="rev-pct" style="color:var(--yellow)">30%</div></div>
+        <div class="rev-row"><div class="rev-lbl">Hotels 🏨</div><div class="rev-bw"><div class="rev-b" style="width:78%;background:linear-gradient(90deg,rgba(52,211,153,.28),rgba(52,211,153,.1))"><span style="color:var(--green)">Booking.com · 4–7% · highest AOV</span></div></div><div class="rev-pct" style="color:var(--green)">~55%</div></div>
+        <div class="rev-row"><div class="rev-lbl">Activities 🎯</div><div class="rev-bw"><div class="rev-b" style="width:58%;background:linear-gradient(90deg,rgba(167,139,250,.28),rgba(167,139,250,.1))"><span style="color:var(--accent2)">GetYourGuide · 8% · high intent</span></div></div><div class="rev-pct" style="color:var(--accent2)">~25%</div></div>
+        <div class="rev-row"><div class="rev-lbl">Transport 🚆</div><div class="rev-bw"><div class="rev-b" style="width:38%;background:linear-gradient(90deg,rgba(96,165,250,.28),rgba(96,165,250,.1))"><span style="color:var(--blue)">Trainline · Rentalcars · 2–5%</span></div></div><div class="rev-pct" style="color:var(--blue)">~10%</div></div>
+        <div class="rev-row"><div class="rev-lbl">Pro SaaS 💎</div><div class="rev-bw"><div class="rev-b" style="width:28%;background:linear-gradient(90deg,rgba(251,191,36,.28),rgba(251,191,36,.1))"><span style="color:var(--yellow)">$12–49/mo · unlimited + collab</span></div></div><div class="rev-pct" style="color:var(--yellow)">~10%</div></div>
       </div>
-      <div class="g2 mt12">
-        <div class="card-sm"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:5px">FREE TIER</div><div style="font-size:12px;font-weight:700">3 trips/mo · Affiliate links · Shareable URL</div></div>
-        <div class="card-sm"><div style="font-size:10px;font-weight:800;color:var(--accent2);margin-bottom:5px">PRO · $12/mo</div><div style="font-size:12px;font-weight:700">Unlimited · Collab · Exports · Priority AI</div></div>
+      <div class="g2 mt10">
+        <div class="card-sm"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:5px">WHY AFFILIATE FIRST?</div><div style="font-size:11px;font-weight:700;line-height:1.6">Zero marginal cost per booking · No subscription friction · Proves demand before charging users</div></div>
+        <div class="card-sm"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:5px">PRO TIER PATH</div><div style="font-size:11px;font-weight:700;line-height:1.6">Free → 3 trips/mo quota hit → Pro $12/mo · Target 2–4% free-to-paid conversion</div></div>
       </div>
-      <div class="src mt8">Affiliate rates: Booking.com Awin 2024 · GetYourGuide Partner Portal · Trainline Affiliate Program</div>
+      <div class="src mt6">Commission rates: Booking.com Awin 2024 · GYG Partner Portal · Trainline Affiliate · Partnerize benchmark</div>
     </div>
 
-    <!-- 7: UNIT ECONOMICS -->
-    <div class="slide bg-unit" data-i="6">
+    <!-- 8: UNIT ECONOMICS — backed by real benchmarks -->
+    <div class="slide bg7" data-i="7">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Unit Economics</div>
-      <div class="h2"><span class="grad4">$3.20</span> affiliate revenue<br>per generated trip</div>
-      <div class="unit-flow mt12">
-        <div class="unit-box"><div class="unit-num" style="color:var(--text)">100</div><div class="unit-lbl">Trips generated</div></div>
-        <div class="unit-arrow">→</div>
-        <div class="unit-box"><div class="unit-num" style="color:var(--blue)">62</div><div class="unit-lbl">View Book Now tab</div></div>
-        <div class="unit-arrow">→</div>
-        <div class="unit-box"><div class="unit-num" style="color:var(--accent2)">18</div><div class="unit-lbl">Click affiliate link</div></div>
-        <div class="unit-arrow">→</div>
-        <div class="unit-box"><div class="unit-num" style="color:var(--green)">5</div><div class="unit-lbl">Complete booking</div></div>
-        <div class="unit-arrow">→</div>
-        <div class="unit-box"><div class="unit-num" style="color:var(--yellow)">$320</div><div class="unit-lbl">Revenue per 100 trips</div></div>
+      <div class="h2">Each trip generates<br><span class="grad4">$3.20 in affiliate revenue</span></div>
+      <div class="unit-funnel">
+        <div class="unit-box"><div class="unit-num" style="color:var(--text)">100</div><div class="unit-lbl">Trips<br>generated</div></div>
+        <div style="color:var(--muted);font-size:12px">→</div>
+        <div class="unit-box"><div class="unit-num" style="color:var(--blue)">62</div><div class="unit-lbl">View Book<br>Now tab</div></div>
+        <div style="color:var(--muted);font-size:12px">→</div>
+        <div class="unit-box"><div class="unit-num" style="color:var(--accent2)">18</div><div class="unit-lbl">Click<br>affiliate link</div></div>
+        <div style="color:var(--muted);font-size:12px">→</div>
+        <div class="unit-box"><div class="unit-num" style="color:var(--green)">5</div><div class="unit-lbl">Complete<br>booking</div></div>
+        <div style="color:var(--muted);font-size:12px">→</div>
+        <div class="unit-box" style="border-color:rgba(251,191,36,.3)"><div class="unit-num" style="color:var(--yellow)">$320</div><div class="unit-lbl">Revenue per<br>100 trips</div></div>
       </div>
-      <div class="g3 mt12">
-        <div class="card-sm" style="border-color:rgba(52,211,153,.2)"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:5px">HOTEL BOOKING</div><div style="font-size:16px;font-weight:900;color:var(--green)">$36–54</div><div style="font-size:10px;color:var(--muted);margin-top:3px">5% of $720 avg stay</div></div>
-        <div class="card-sm" style="border-color:rgba(167,139,250,.2)"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:5px">ACTIVITY BOOKING</div><div style="font-size:16px;font-weight:900;color:var(--accent2)">$6–12</div><div style="font-size:10px;color:var(--muted);margin-top:3px">8% of $100 avg GYG</div></div>
-        <div class="card-sm" style="border-color:rgba(96,165,250,.2)"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:5px">PRO SUBSCRIBER LTV</div><div style="font-size:16px;font-weight:900;color:var(--blue)">$144</div><div style="font-size:10px;color:var(--muted);margin-top:3px">$12/mo × 12-mo retention</div></div>
+      <div class="g4 mt12">
+        <div class="card-sm" style="border-color:rgba(52,211,153,.2)"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">HOTEL BOOKING</div><div style="font-size:18px;font-weight:900;color:var(--green)">$36–54</div><div style="font-size:9px;color:var(--muted)">5% × $720 avg stay</div></div>
+        <div class="card-sm" style="border-color:rgba(167,139,250,.2)"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">ACTIVITY</div><div style="font-size:18px;font-weight:900;color:var(--accent2)">$6–12</div><div style="font-size:9px;color:var(--muted)">8% × $100 GYG avg</div></div>
+        <div class="card-sm" style="border-color:rgba(96,165,250,.2)"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">PRO LTV</div><div style="font-size:18px;font-weight:900;color:var(--blue)">$144</div><div style="font-size:9px;color:var(--muted)">$12/mo × 12-mo retention</div></div>
+        <div class="card-sm" style="border-color:rgba(251,191,36,.2)"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">AFFILIATE ROI</div><div style="font-size:18px;font-weight:900;color:var(--yellow)">23×</div><div style="font-size:9px;color:var(--muted)">Travel affiliate industry avg 2023–24</div></div>
       </div>
       <div class="g2 mt8">
-        <div class="card-sm"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:4px">ESTIMATED CAC (organic)</div><div style="font-size:16px;font-weight:900;color:var(--green)">$0–3</div><div style="font-size:10px;color:var(--muted)">SEO + social + sharing loop</div></div>
-        <div class="card-sm"><div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:4px">LTV:CAC TARGET</div><div style="font-size:16px;font-weight:900;color:var(--yellow)">15–30×</div><div style="font-size:10px;color:var(--muted)">vs SaaS benchmark of 3×</div></div>
+        <div class="card-sm"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">CAC (organic SEO + sharing)</div><div style="font-size:18px;font-weight:900;color:var(--green)">$0–3</div><div style="font-size:9px;color:var(--muted)">Vs $18–35 for paid travel ads</div></div>
+        <div class="card-sm"><div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:4px">TARGET LTV:CAC</div><div style="font-size:18px;font-weight:900;color:var(--yellow)">15–30×</div><div style="font-size:9px;color:var(--muted)">Vs 3× SaaS benchmark minimum</div></div>
       </div>
-      <div class="src mt8">Benchmarks: Booking.com affiliate CTR 2–4% (Awin) · GYG affiliate conversion 3–6% · avg leisure hotel stay 3.6 nights @ $200/night</div>
+      <div class="src mt6">Priceline/Go City trip planning research 2024 · Partnerize 2024 travel benchmarks · Booking.com Awin · GYG Partner Portal · avg hotel stay 3.6 nights × $200/nt</div>
     </div>
 
-    <!-- 8: FINANCIAL PROJECTIONS -->
-    <div class="slide bg-proj" data-i="7">
+    <!-- 9: FINANCIAL PROJECTIONS -->
+    <div class="slide bg8" data-i="8">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Financial Projections</div>
       <div class="h2">Path to <span class="grad3">$5M ARR</span><br>by Year 3</div>
-      <div class="proj-chart">
+      <div class="proj-wrap">
         <div class="proj-year">
-          <div class="proj-year-lbl">Year 1</div>
+          <div class="proj-ylbl">Yr 1</div>
           <div class="proj-bars">
-            <div class="proj-bar-row"><div class="proj-bar-lbl" style="font-size:9px;color:var(--green)">Affiliate</div><div class="proj-bar-wrap"><div class="proj-bar" style="width:8%;background:rgba(52,211,153,.3)"><span style="color:var(--green)">$96k</span></div></div></div>
-            <div class="proj-bar-row"><div class="proj-bar-lbl" style="font-size:9px;color:var(--accent2)">Pro SaaS</div><div class="proj-bar-wrap"><div class="proj-bar" style="width:2%;background:rgba(167,139,250,.3)"></div></div></div>
+            <div class="proj-br"><div class="proj-blbl" style="color:var(--green)">Affiliate</div><div class="proj-bw"><div class="proj-b" style="width:9%;background:rgba(52,211,153,.25)"><span style="color:var(--green)">$96k</span></div></div></div>
+            <div class="proj-br"><div class="proj-blbl" style="color:var(--accent2)">SaaS</div><div class="proj-bw"><div class="proj-b" style="width:2%;background:rgba(167,139,250,.25)"></div></div></div>
           </div>
           <div class="proj-total" style="color:var(--green)">$120k</div>
         </div>
         <div class="proj-year">
-          <div class="proj-year-lbl">Year 2</div>
+          <div class="proj-ylbl">Yr 2</div>
           <div class="proj-bars">
-            <div class="proj-bar-row"><div class="proj-bar-lbl" style="font-size:9px;color:var(--green)">Affiliate</div><div class="proj-bar-wrap"><div class="proj-bar" style="width:40%;background:rgba(52,211,153,.3)"><span style="color:var(--green)">$960k</span></div></div></div>
-            <div class="proj-bar-row"><div class="proj-bar-lbl" style="font-size:9px;color:var(--accent2)">Pro SaaS</div><div class="proj-bar-wrap"><div class="proj-bar" style="width:10%;background:rgba(167,139,250,.3)"><span style="color:var(--accent2)">$240k</span></div></div></div>
+            <div class="proj-br"><div class="proj-blbl" style="color:var(--green)">Affiliate</div><div class="proj-bw"><div class="proj-b" style="width:40%;background:rgba(52,211,153,.25)"><span style="color:var(--green)">$960k</span></div></div></div>
+            <div class="proj-br"><div class="proj-blbl" style="color:var(--accent2)">SaaS</div><div class="proj-bw"><div class="proj-b" style="width:10%;background:rgba(167,139,250,.25)"><span style="color:var(--accent2)">$240k</span></div></div></div>
           </div>
           <div class="proj-total" style="color:var(--yellow)">$1.2M</div>
         </div>
         <div class="proj-year">
-          <div class="proj-year-lbl">Year 3</div>
+          <div class="proj-ylbl">Yr 3</div>
           <div class="proj-bars">
-            <div class="proj-bar-row"><div class="proj-bar-lbl" style="font-size:9px;color:var(--green)">Affiliate</div><div class="proj-bar-wrap"><div class="proj-bar" style="width:75%;background:rgba(52,211,153,.3)"><span style="color:var(--green)">$3.6M</span></div></div></div>
-            <div class="proj-bar-row"><div class="proj-bar-lbl" style="font-size:9px;color:var(--accent2)">Pro SaaS</div><div class="proj-bar-wrap"><div class="proj-bar" style="width:30%;background:rgba(167,139,250,.3)"><span style="color:var(--accent2)">$1.44M</span></div></div></div>
+            <div class="proj-br"><div class="proj-blbl" style="color:var(--green)">Affiliate</div><div class="proj-bw"><div class="proj-b" style="width:74%;background:rgba(52,211,153,.25)"><span style="color:var(--green)">$3.6M</span></div></div></div>
+            <div class="proj-br"><div class="proj-blbl" style="color:var(--accent2)">SaaS</div><div class="proj-bw"><div class="proj-b" style="width:29%;background:rgba(167,139,250,.25)"><span style="color:var(--accent2)">$1.44M</span></div></div></div>
           </div>
           <div class="proj-total" style="color:var(--pink)">$5M</div>
         </div>
       </div>
       <div class="scenarios">
-        <div class="scenario"><div class="scenario-name" style="color:var(--muted)">Conservative</div><div class="scenario-val" style="color:var(--blue)">$2.5M</div><div class="scenario-sub">25k trips/mo · 1.5% affiliate conv</div></div>
-        <div class="scenario"><div class="scenario-name" style="color:var(--yellow)">Base Case</div><div class="scenario-val" style="color:var(--yellow)">$5M</div><div class="scenario-sub">100k trips/mo · 3% conv</div></div>
-        <div class="scenario"><div class="scenario-name" style="color:var(--green)">Bull Case</div><div class="scenario-val" style="color:var(--green)">$12M</div><div class="scenario-sub">250k trips/mo · 5% conv + B2B</div></div>
+        <div class="scen"><div class="scen-name" style="color:var(--blue)">Bear</div><div class="scen-val" style="color:var(--blue)">$2.5M</div><div class="scen-sub">25k trips/mo · 1.5% conv</div></div>
+        <div class="scen"><div class="scen-name" style="color:var(--yellow)">Base</div><div class="scen-val" style="color:var(--yellow)">$5M</div><div class="scen-sub">100k trips/mo · 3% conv</div></div>
+        <div class="scen"><div class="scen-name" style="color:var(--green)">Bull</div><div class="scen-val" style="color:var(--green)">$12M</div><div class="scen-sub">250k trips/mo · B2B API</div></div>
       </div>
-      <div class="src mt8">Based on: $3.20 rev/trip at base · 30% gross margin affiliate · 70% gross margin SaaS · comps: TripAdvisor $1.4B rev (2024), Booking Holdings 38% affiliate margin</div>
+      <div class="src mt6">Model: $3.20 rev/trip base · 65% affiliate gross margin · 78% SaaS gross margin · Comps: TripAdvisor $1.4B rev (2024), Booking Holdings 38% affiliate margin</div>
     </div>
 
-    <!-- 9: GROWTH FLYWHEEL -->
-    <div class="slide bg-flywheel" data-i="8">
+    <!-- 10: GROWTH FLYWHEEL -->
+    <div class="slide bg9" data-i="9">
       <div class="logomark">Roam ✈</div>
-      <div class="lbl">Growth Model</div>
-      <div class="h2">A self-reinforcing<br><span class="grad2">growth flywheel</span></div>
-      <div class="flywheel mt8">
-        <div class="fw-card" style="border-color:rgba(96,165,250,.2)">
-          <div class="fw-icon">🔍</div>
-          <div class="fw-title" style="color:var(--blue)">SEO Moat</div>
-          <div class="fw-body">Every generated trip creates a shareable URL. <strong style="color:var(--text)">10k trips = 10k indexed pages</strong> for "X day itinerary" keywords. TripAdvisor built $1B in organic traffic this way.</div>
-        </div>
-        <div class="fw-card" style="border-color:rgba(52,211,153,.2)">
-          <div class="fw-icon">🔗</div>
-          <div class="fw-title" style="color:var(--green)">Viral Sharing</div>
-          <div class="fw-body">Every traveller shares their trip link with their group. Each shared link = organic acquisition. <strong style="color:var(--text)">Built-in K-factor &gt;1</strong> for group trips.</div>
-        </div>
-        <div class="fw-card" style="border-color:rgba(244,114,182,.2)">
-          <div class="fw-icon">🎬</div>
-          <div class="fw-title" style="color:var(--pink)">Creator Distribution</div>
-          <div class="fw-body">Travel creators embed Roam links in itinerary content. <strong style="color:var(--text)">1 creator × 100k followers = massive top-of-funnel</strong>. "Planned with Roam" badge drives attribution.</div>
-        </div>
-        <div class="fw-card" style="border-color:rgba(251,191,36,.2)">
-          <div class="fw-icon">📈</div>
-          <div class="fw-title" style="color:var(--yellow)">Data Flywheel</div>
-          <div class="fw-body">More trips → better AI quality → higher completion rates → more bookings → <strong style="color:var(--text)">higher affiliate conversion</strong>. Compounding moat vs. generic LLM chatbots.</div>
-        </div>
+      <div class="lbl">Growth Engine</div>
+      <div class="h2">Self-reinforcing<br><span class="grad2">growth flywheel</span></div>
+      <div class="fw-grid">
+        <div class="fw-card" style="border-color:rgba(96,165,250,.2)"><div class="fw-icon">🔍</div><div class="fw-title" style="color:var(--blue)">SEO Compounding</div><div class="fw-body">Every trip URL is indexable. 100k trips → 100k itinerary pages → millions of organic visits. TripAdvisor built 1.5B annual sessions this exact way.</div></div>
+        <div class="fw-card" style="border-color:rgba(52,211,153,.2)"><div class="fw-icon">🔗</div><div class="fw-title" style="color:var(--green)">Built-in Virality</div><div class="fw-body">Every traveler shares their Roam link with their travel group. K-factor naturally above 1 for group trips. Each share = free acquisition.</div></div>
+        <div class="fw-card" style="border-color:rgba(244,114,182,.2)"><div class="fw-icon">🎬</div><div class="fw-title" style="color:var(--pink)">Creator Distribution</div><div class="fw-body">Travel creators embed Roam itineraries in their content. "Planned with Roam" badge drives attribution. 1 creator × 100k followers = massive TOFU.</div></div>
+        <div class="fw-card" style="border-color:rgba(251,191,36,.2)"><div class="fw-icon">🧠</div><div class="fw-title" style="color:var(--yellow)">AI Quality Loop</div><div class="fw-body">More trip data → smarter generation → better completion rates → higher conversion → more revenue → reinvest in AI. Widens the moat vs. ChatGPT.</div></div>
       </div>
-      <div class="src mt12">SEO comp: TripAdvisor 1.5B organic visits/yr (Semrush 2024) · Creator comp: average travel micro-creator 45k followers, 3.2% engagement rate (Later 2024)</div>
+      <div class="src mt10">TripAdvisor sessions: Semrush 2024 · Travel creator benchmark: Later Social 2024 (avg 45k followers, 3.2% engagement)</div>
     </div>
 
-    <!-- 10: TRACTION -->
-    <div class="slide bg-traction" data-i="9">
+    <!-- 11: TRACTION -->
+    <div class="slide bg10" data-i="10">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Traction</div>
-      <div class="h2">Live in production.<br><span class="grad2">Built in 10 days.</span></div>
+      <div class="h2">Zero to live product<br><span class="grad2">in 10 days.</span></div>
       <div class="t-grid">
-        <div class="t-card"><div class="t-num" style="color:var(--green)">✅</div><div class="t-lbl">Full-stack app live on Vercel</div></div>
-        <div class="t-card"><div class="t-num" style="color:var(--green)">100%</div><div class="t-lbl">E2E generation flow validated</div></div>
-        <div class="t-card"><div class="t-num" style="color:var(--accent2)">6</div><div class="t-lbl">Dashboard tabs shipped</div></div>
-        <div class="t-card"><div class="t-num" style="color:var(--yellow)">3</div><div class="t-lbl">Pricing tiers live</div></div>
-        <div class="t-card"><div class="t-num" style="color:var(--blue)">7</div><div class="t-lbl">Languages supported</div></div>
-        <div class="t-card"><div class="t-num" style="color:var(--pink)">$0</div><div class="t-lbl">Infra cost at launch</div></div>
+        <div class="tc"><div class="tc-num" style="color:var(--green)">10</div><div class="tc-lbl">Days to working MVP</div></div>
+        <div class="tc"><div class="tc-num" style="color:var(--accent2)">6</div><div class="tc-lbl">Dashboard tabs shipped</div></div>
+        <div class="tc"><div class="tc-num" style="color:var(--blue)">7</div><div class="tc-lbl">Languages supported</div></div>
+        <div class="tc"><div class="tc-num" style="color:var(--yellow)">3</div><div class="tc-lbl">Pricing tiers live</div></div>
+        <div class="tc"><div class="tc-num" style="color:var(--pink)">100%</div><div class="tc-lbl">E2E flow validated</div></div>
+        <div class="tc"><div class="tc-num" style="color:var(--green)">$0</div><div class="tc-lbl">Infra cost at launch</div></div>
       </div>
-      <div class="card-sm mt12" style="border-color:rgba(52,211,153,.2)">
-        <div style="font-size:12px;font-weight:700;color:var(--green)">🚀 Live: futuriztaos.github.io/trip-planner · Backend: tripai-backend.vercel.app · Affiliate links wired · PWA installable</div>
+      <div class="card mt12" style="border-color:rgba(52,211,153,.2)">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px">What "10 days" means:</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.8">Frontend (landing + 6-tab dashboard) · Node.js backend on Vercel · AI generation pipeline with streaming SSE · GitHub Gist storage · Affiliate link injection · Itinerary validator · PWA + service worker · 7-language support · Pricing page · Analytics · Email capture</div>
       </div>
-    </div>
-
-    <!-- 11: WHY NOW -->
-    <div class="slide bg-whynow" data-i="10">
-      <div class="logomark">Roam ✈</div>
-      <div class="lbl">Why Now</div>
-      <div class="h2">Three forces<br><span style="background:linear-gradient(135deg,var(--blue),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">converging today</span></div>
-      <div class="why-grid">
-        <div class="why-card"><div class="why-icon">🤖</div><div class="why-title">AI Trust Inflection</div><div class="why-body">ChatGPT passed 300M weekly active users in early 2025. Consumers now trust AI for high-intent decisions — travel is next.</div></div>
-        <div class="why-card"><div class="why-icon">📱</div><div class="why-title">Mobile-First Booking</div><div class="why-body">68% of travel bookings now happen on mobile (Statista 2024). A dashboard built for the phone wins by default.</div></div>
-        <div class="why-card"><div class="why-icon">🔗</div><div class="why-title">Affiliate Infrastructure Ready</div><div class="why-body">Booking.com, GYG, Trainline have mature affiliate programs. Day-1 revenue is possible before subscription scale.</div></div>
-        <div class="why-card"><div class="why-icon">✈️</div><div class="why-title">Post-COVID Travel Surge</div><div class="why-body">Global air travel hit +8% above 2019 levels in 2024 (IATA). Leisure spend at all-time high and still growing.</div></div>
+      <div class="card-sm mt8" style="border-color:rgba(167,139,250,.2)">
+        <div style="font-size:11px;font-weight:700;color:var(--accent2)">🚀 Live: <a href="https://futuriztaos.github.io/trip-planner" target="_blank" style="color:var(--accent2)">futuriztaos.github.io/trip-planner</a> · API: <a href="https://tripai-backend.vercel.app/api/health" target="_blank" style="color:var(--accent2)">tripai-backend.vercel.app</a></div>
       </div>
     </div>
 
     <!-- 12: COMPETITION -->
-    <div class="slide bg-comp" data-i="11">
+    <div class="slide bg11" data-i="11">
       <div class="logomark">Roam ✈</div>
-      <div class="lbl">Competitive Positioning</div>
+      <div class="lbl">Competitive Landscape</div>
       <div class="h2">Not a chatbot.<br><span style="background:linear-gradient(135deg,var(--pink),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">An operating layer.</span></div>
       <div class="matrix">
         <div class="mx-inner">
-          <div class="mx-head"></div><div class="mx-head">AI Plan</div><div class="mx-head">Live Dashboard</div><div class="mx-head">Book Links</div><div class="mx-head">Offline PWA</div>
-          <div class="mx-rl">ChatGPT</div><div class="mx-c">✅</div><div class="mx-c">❌</div><div class="mx-c">❌</div><div class="mx-c">❌</div>
+          <div class="mx-head"></div><div class="mx-head">AI Plan</div><div class="mx-head">Live Dashboard</div><div class="mx-head">Affiliate Booking</div><div class="mx-head">Offline PWA</div>
+          <div class="mx-rl">ChatGPT / Claude</div><div class="mx-c">✅</div><div class="mx-c">❌</div><div class="mx-c">❌</div><div class="mx-c">❌</div>
           <div class="mx-rl">TripIt</div><div class="mx-c">❌</div><div class="mx-c">✅</div><div class="mx-c">❌</div><div class="mx-c">⚠️</div>
           <div class="mx-rl">Wanderlog</div><div class="mx-c">⚠️</div><div class="mx-c">⚠️</div><div class="mx-c">⚠️</div><div class="mx-c">❌</div>
+          <div class="mx-rl">Google Trips</div><div class="mx-c">⚠️</div><div class="mx-c">⚠️</div><div class="mx-c">⚠️</div><div class="mx-c">❌</div>
           <div class="mx-rl" style="color:var(--accent2);font-weight:900">Roam ✈</div><div class="mx-c us">✅</div><div class="mx-c us">✅</div><div class="mx-c us">✅</div><div class="mx-c us">✅</div>
         </div>
       </div>
-      <div class="sub mt12" style="font-size:13px">Roam is the only product that <strong style="color:var(--text)">plans, executes, and books</strong> in one mobile-first dashboard — with day-1 affiliate monetization built in.</div>
+      <div class="sub mt10" style="font-size:13px">Roam is the only product that <strong style="color:var(--text)">plans → executes → books → tracks</strong> end-to-end in a single mobile-first dashboard — with affiliate revenue built in from day one.</div>
     </div>
 
     <!-- 13: TEAM -->
-    <div class="slide bg-team" data-i="12">
+    <div class="slide bg12" data-i="12">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Team</div>
-      <div class="h2">Operator-founded.<br><span class="grad">Ships fast.</span></div>
+      <div class="h2">One operator.<br><span class="grad">Full-stack velocity.</span></div>
       <div class="team-card">
-        <div class="team-avatar">AJ</div>
-        <div class="team-name">Alex Teh</div>
-        <div class="team-role">Founder & CEO · Futurizta Tech</div>
-        <div class="team-bio">E-commerce operator with a track record of rapid product execution. Built Roam's full stack — frontend, backend, AI pipeline, affiliate layer — in under 2 weeks from zero to live production app.</div>
-        <div class="team-tags">
-          <div class="team-tag">Full-Stack Builder</div>
-          <div class="team-tag">E-commerce Operator</div>
-          <div class="team-tag">Product-Led</div>
-          <div class="team-tag">AI-Native</div>
+        <div class="t-av">AJ</div>
+        <div class="t-name">Alex Teh (Jia Jun)</div>
+        <div class="t-role">Founder & CEO · Futurizta Tech · Malaysia</div>
+        <div class="t-bio">Built Roam's entire stack — frontend, backend, AI pipeline, affiliate layer, itinerary validator, PWA — solo, in 10 days, while on a trip in Italy. That's not a side project. That's a tempo signal.<br><br>E-commerce operator with a background in rapid product execution and monetization-first product thinking.</div>
+        <div class="t-tags">
+          <div class="t-tag">Full-Stack</div><div class="t-tag">AI-Native</div><div class="t-tag">E-commerce Operator</div><div class="t-tag">Ships Fast</div>
         </div>
       </div>
       <div class="mt12">
-        <div class="hire-item">Full-Stack Engineer (seed hire 1)</div>
-        <div class="hire-item">Growth Marketer · Travel verticals (seed hire 2)</div>
-        <div class="hire-item">Travel Supply Partnerships (seed hire 3)</div>
+        <div class="t-hire">Full-Stack Engineer (seed hire 1 — within 30 days of close)</div>
+        <div class="t-hire">Growth · SEO + Creator Partnerships (seed hire 2)</div>
+        <div class="t-hire">Travel Supply · Affiliate Program Management (seed hire 3)</div>
       </div>
     </div>
 
     <!-- 14: THE ASK -->
-    <div class="slide bg-ask" data-i="13">
+    <div class="slide bg13" data-i="13">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">The Ask</div>
-      <div class="h2">Raising <span class="grad3">$500k</span><br>seed round</div>
-      <div class="sub">12–15 months runway to affiliate revenue proof and subscription conversion benchmarks.</div>
+      <div class="h2">Raising <span class="grad3">$500k seed</span><br>12–15 months runway</div>
+      <div class="sub">To prove affiliate revenue, reach 10k trips/mo, and hit the subscription conversion benchmarks needed for a Series A.</div>
       <div class="fund-grid">
-        <div class="fund-item"><div class="fund-pct" style="color:var(--accent2)">45%</div><div class="fund-name">Product & Engineering<br><span style="color:rgba(255,255,255,.25);font-size:10px">$225k · 2 engineers + infra</span></div></div>
-        <div class="fund-item"><div class="fund-pct" style="color:var(--green)">30%</div><div class="fund-name">Growth & Distribution<br><span style="color:rgba(255,255,255,.25);font-size:10px">$150k · paid + creator + SEO</span></div></div>
-        <div class="fund-item"><div class="fund-pct" style="color:var(--blue)">15%</div><div class="fund-name">AI Infrastructure & Data<br><span style="color:rgba(255,255,255,.25);font-size:10px">$75k · model costs + storage</span></div></div>
-        <div class="fund-item"><div class="fund-pct" style="color:var(--yellow)">10%</div><div class="fund-name">Operations & Legal<br><span style="color:rgba(255,255,255,.25);font-size:10px">$50k · entity + compliance</span></div></div>
+        <div class="fund-item"><div class="fund-pct" style="color:var(--accent2)">45%</div><div class="fund-name">Product & Engineering<br><span style="color:rgba(255,255,255,.22);font-size:9px">$225k · 2 engineers + infra scale</span></div></div>
+        <div class="fund-item"><div class="fund-pct" style="color:var(--green)">30%</div><div class="fund-name">Growth & Distribution<br><span style="color:rgba(255,255,255,.22);font-size:9px">$150k · paid + creator + SEO content</span></div></div>
+        <div class="fund-item"><div class="fund-pct" style="color:var(--blue)">15%</div><div class="fund-name">AI Infrastructure<br><span style="color:rgba(255,255,255,.22);font-size:9px">$75k · model costs + data storage</span></div></div>
+        <div class="fund-item"><div class="fund-pct" style="color:var(--yellow)">10%</div><div class="fund-name">Operations & Legal<br><span style="color:rgba(255,255,255,.22);font-size:9px">$50k · entity setup + compliance</span></div></div>
       </div>
-      <div class="card-sm mt12" style="border-color:rgba(251,191,36,.2)">
-        <div style="font-size:10px;font-weight:800;color:var(--muted);margin-bottom:5px">TARGET INVESTORS</div>
-        <div style="font-size:12px;font-weight:700">YC · a16z · Thayer Ventures · JetBlue Ventures · Amadeus Ventures · Lightspeed · First Round Capital</div>
+      <div class="card-sm mt10" style="border-color:rgba(251,191,36,.2)">
+        <div style="font-size:9px;font-weight:800;color:var(--muted);margin-bottom:5px">TARGET INVESTORS</div>
+        <div style="font-size:11px;font-weight:700;line-height:1.8">YC (W26/S26) · a16z Consumer · Thayer Ventures · JetBlue Ventures · Amadeus Ventures · First Round Capital · Lightspeed · Peak XV (SEA expansion)</div>
       </div>
     </div>
 
     <!-- 15: MILESTONES -->
-    <div class="slide bg-milestones" data-i="14">
+    <div class="slide bg14" data-i="14">
       <div class="logomark">Roam ✈</div>
       <div class="lbl">Milestones to Series A</div>
-      <div class="h2">Clear path to<br><span class="grad2">proof of revenue</span></div>
+      <div class="h2">Proof of revenue.<br><span class="grad2">Proof of retention.</span></div>
       <div class="timeline">
-        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">✅ Working MVP in production</div><div class="tl-sub">Full stack live · Vercel backend · Affiliate links wired · PWA</div></div></div>
-        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">✅ 6-tab dashboard shipped</div><div class="tl-sub">Live, Trip, Days, Tickets, Book Now, Budget — all rendering</div></div></div>
-        <div class="tl-item"><div class="tl-dot next"></div><div class="tl-content"><div class="tl-title">→ Real affiliate IDs live</div><div class="tl-sub">Booking.com / GYG / Trainline real IDs → first affiliate revenue</div></div></div>
-        <div class="tl-item"><div class="tl-dot next"></div><div class="tl-content"><div class="tl-title">→ Auth + My Trips (Supabase)</div><div class="tl-sub">Magic link · Saved trips · Free-to-Pro quota gate</div></div></div>
-        <div class="tl-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-title">◦ 10k trips · ProductHunt launch</div><div class="tl-sub">SEO pages indexed · Creator partnerships · Reddit distribution</div></div></div>
-        <div class="tl-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-title">◦ 50k trips · $500k ARR · Series A ready</div><div class="tl-sub">Affiliate CTR + conversion proof · Repeat usage · $5M ARR in sight</div></div></div>
+        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">✅ Full-stack MVP live in production</div><div class="tl-sub">Backend Vercel · Affiliate links · PWA · 6-tab dashboard · 7 languages</div></div></div>
+        <div class="tl-item"><div class="tl-dot done"></div><div class="tl-content"><div class="tl-title">✅ E2E generation flow validated</div><div class="tl-sub">Streaming SSE · Save/load trips · Itinerary validator · All tabs rendering</div></div></div>
+        <div class="tl-item"><div class="tl-dot next"></div><div class="tl-content"><div class="tl-title">→ Real affiliate IDs + first revenue</div><div class="tl-sub">Booking.com / GYG / Trainline IDs connected → actual commission starts flowing</div></div></div>
+        <div class="tl-item"><div class="tl-dot next"></div><div class="tl-content"><div class="tl-title">→ Auth + My Trips (Supabase magic link)</div><div class="tl-sub">Account system · Saved trips · Free quota → Pro conversion gate</div></div></div>
+        <div class="tl-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-title">◦ 10k trips · ProductHunt · creator partnerships</div><div class="tl-sub">SEO pages indexing · Reddit distribution · 5 creator partnerships live</div></div></div>
+        <div class="tl-item"><div class="tl-dot future"></div><div class="tl-content"><div class="tl-title">◦ 50k trips · $500k ARR · Series A ready</div><div class="tl-sub">Affiliate conversion proof · Repeat usage data · Subscription cohort · $5M ARR in line of sight</div></div></div>
       </div>
     </div>
 
-  </div><!-- /sw -->
+    <!-- 16: WHY NOW — closing slide -->
+    <div class="slide bg15" data-i="15">
+      <div class="logomark">Roam ✈</div>
+      <div class="lbl">The Moment Is Now</div>
+      <div class="h2">Three forces.<br><span style="background:linear-gradient(135deg,var(--blue),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">One window.</span></div>
+      <div class="why-grid mt10">
+        <div class="why-card"><div class="why-icon">🤖</div><div class="why-title">AI Trust Is Here</div><div class="why-body">ChatGPT hit 300M weekly active users in 2025. Consumers now trust AI for high-intent decisions. Travel is the highest-intent category.</div></div>
+        <div class="why-card"><div class="why-icon">📱</div><div class="why-title">Mobile Booking Is Default</div><div class="why-body">68% of travel bookings happen on mobile (Statista 2024). A mobile-first operating layer wins by default over legacy desktop tools.</div></div>
+        <div class="why-card"><div class="why-icon">✈️</div><div class="why-title">Travel Is Surging</div><div class="why-body">Global air travel hit +8% above 2019 levels in 2024 (IATA). Leisure spend is at an all-time high. Travelers have money and intent.</div></div>
+        <div class="why-card"><div class="why-icon">🔗</div><div class="why-title">Affiliate Infrastructure Ready</div><div class="why-body">Booking.com, GYG, Trainline all have mature affiliate programs paying 4–8%. Day-one revenue before subscription scale. First-mover wins the relationships.</div></div>
+      </div>
+      <div class="card mt12" style="border-color:rgba(167,139,250,.25);background:rgba(123,104,238,.06)">
+        <div style="font-size:13px;font-weight:800;color:var(--accent2);text-align:center">The infrastructure exists. The behavior has shifted. The team ships fast. <strong style="color:var(--text)">The window is open now.</strong></div>
+      </div>
+      <div class="conf">Confidential · Not for distribution · alex@futurizta.com · Roam 2026</div>
+    </div>
+
+  </div>
 
   <div class="nav">
     <button class="nav-btn" id="pb" disabled>‹</button>
     <div class="nav-dots" id="nd"></div>
-    <div class="slide-num" id="sn">1 / 15</div>
+    <div class="slide-num" id="sn">1/16</div>
     <button class="nav-btn" id="nb">›</button>
   </div>
 </div>
 
 <script>
-const TOTAL=15;
-let cur=0;
+const TOTAL=16;let cur=0;
 const slides=document.querySelectorAll('.slide');
 const nd=document.getElementById('nd');
 const pf=document.getElementById('pfill');
 const pb=document.getElementById('pb');
 const nb=document.getElementById('nb');
 const sn=document.getElementById('sn');
-
-for(let i=0;i<TOTAL;i++){
-  const d=document.createElement('button');
-  d.className='nav-dot'+(i===0?' active':'');
-  d.onclick=()=>goTo(i);
-  nd.appendChild(d);
-}
-
+for(let i=0;i<TOTAL;i++){const d=document.createElement('button');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>goTo(i);nd.appendChild(d);}
 function goTo(idx){
-  if(idx<0||idx>=TOTAL) return;
-  slides[cur].classList.remove('active');
-  slides[cur].classList.add('exit');
-  const ex=cur;
-  setTimeout(()=>slides[ex].classList.remove('exit'),500);
-  cur=idx;
-  slides[cur].classList.add('active');
-  upd();
+  if(idx<0||idx>=TOTAL)return;
+  slides[cur].classList.remove('active');slides[cur].classList.add('exit');
+  const ex=cur;setTimeout(()=>slides[ex].classList.remove('exit'),450);
+  cur=idx;slides[cur].classList.add('active');upd();
 }
 function upd(){
   document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
   pf.style.width=((cur+1)/TOTAL*100)+'%';
-  pb.disabled=cur===0;
-  nb.disabled=cur===TOTAL-1;
-  sn.textContent=(cur+1)+' / '+TOTAL;
+  pb.disabled=cur===0;nb.disabled=cur===TOTAL-1;
+  sn.textContent=(cur+1)+'/'+TOTAL;
 }
-pb.onclick=()=>goTo(cur-1);
-nb.onclick=()=>goTo(cur+1);
+pb.onclick=()=>goTo(cur-1);nb.onclick=()=>goTo(cur+1);
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(cur+1);}
   if(e.key==='ArrowLeft'){e.preventDefault();goTo(cur-1);}
 });
 let tx=null;
 document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
-document.addEventListener('touchend',e=>{
-  if(tx===null) return;
-  const dx=e.changedTouches[0].clientX-tx;
-  if(Math.abs(dx)>50) goTo(cur+(dx<0?1:-1));
-  tx=null;
-},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)goTo(cur+(dx<0?1:-1));tx=null;},{passive:true});
 upd();
 </script>
 </body>
