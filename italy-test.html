@@ -1090,7 +1090,12 @@ window.onload = () => {
   const ITALY_PLAN = APP_STATE.rawPlan;
   localStorage.setItem('tripai_plan_v', PLAN_V);
   localStorage.setItem('tripai_meta', JSON.stringify(ITALY_PLAN.trip));
-  localStorage.setItem('tripai_plan', JSON.stringify(ITALY_PLAN));
+  // Use scoped key so italy-test.html doesn't overwrite trip.html's generated plan
+  localStorage.setItem('tripai_italy_plan', JSON.stringify(ITALY_PLAN));
+  // Only set the shared key if no generated trip is already there
+  if (!localStorage.getItem('tripai_plan') || localStorage.getItem('tripai_plan_v') === PLAN_V) {
+    localStorage.setItem('tripai_plan', JSON.stringify(ITALY_PLAN));
+  }
   window._preloadPlan = ITALY_PLAN;
   window._tripState = APP_STATE;
 
