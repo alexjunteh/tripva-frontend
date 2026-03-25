@@ -106,6 +106,17 @@ def audit(filepath):
     print(f"ITINERARY AUDIT: {filepath}")
     print(f"{'='*60}")
 
+        # ── CONTRACT: photoUrl must never be stored in state for photospots ──
+    for d in days:
+        for t in d.get('timeline', []):
+            if t.get('type') == 'photospot':
+                if 'photoUrl' in t:
+                    errors.append(f"Day {d.get('day','?')} {t.get('time','?')} | PHOTOSPOT CONTRACT VIOLATION: 'photoUrl' in state for '{t.get('title','')}' — photos are engine-derived via SPOT_PHOTO_DB, never stored in state")
+                if not t.get('title'):
+                    errors.append(f"Day {d.get('day','?')} {t.get('time','?')} | PHOTOSPOT: missing 'title' field")
+                if not t.get('mapQuery') and not (t.get('lat') and t.get('lng')):
+                    warnings.append(f"Day {d.get('day','?')} {t.get('time','?')} | PHOTOSPOT: '{t.get('title','')}' has no mapQuery or GPS coords")
+
     if not errors and not warnings:
         print("✅ ALL CHECKS PASS — clean to commit\n")
         return 0

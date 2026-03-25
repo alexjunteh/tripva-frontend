@@ -2015,6 +2015,56 @@ function renderTransportCard(tl) {
   return `<div class="tl-tc">${statusHtml}<div class="tl-tc-legs">${legsHtml}</div>${metaHtml}</div>`;
 }
 
+// ── PHOTOSPOT PHOTO ENGINE ──
+// Curated photo DB: keyword → verified CDN URL
+// Sources: Flickr (title-verified) + Unsplash (city fallbacks)
+// To update: replace URL for a key; state never stores photoUrls
+const SPOT_PHOTO_DB = {
+  // Venice — Flickr verified
+  'bridge of sighs':      'https://live.staticflickr.com/65535/52493320633_50b8c1396c_b.jpg',
+  'libreria acqua alta':  'https://live.staticflickr.com/4697/39445545884_3792440f92_b.jpg',
+  // Venice — Unsplash city fallbacks
+  "st mark":              'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&h=400&fit=crop',
+  "accademia bridge":     'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600&h=400&fit=crop',
+  "scala contarini":      'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=600&h=400&fit=crop',
+  // Cinque Terre — Flickr verified
+  "vernazza":             'https://live.staticflickr.com/65535/53111656785_b2d2e9bb86_b.jpg',
+  "manarola":             'https://live.staticflickr.com/65535/50543709071_3fc27656cf_b.jpg',
+  // Switzerland — Unsplash verified
+  "chapel bridge":        'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=600&h=400&fit=crop',
+  "eiger":                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop',
+  "grindelwald":          'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop',
+  // Florence — Flickr verified
+  "piazzale michelangelo":'https://live.staticflickr.com/65535/51524143636_4645131122_b.jpg',
+  "ponte vecchio":        'https://live.staticflickr.com/65535/53897311701_5246910f88_b.jpg',
+  // Rome — Flickr verified
+  "trevi fountain":       'https://live.staticflickr.com/65535/52821162431_efdcb72951_b.jpg',
+  "trevi":                'https://live.staticflickr.com/65535/52821162431_efdcb72951_b.jpg',
+  "pantheon":             'https://live.staticflickr.com/65535/54721824094_8698acd543_b.jpg',
+};
+// City fallback images (Unsplash — verified 200)
+const CITY_PHOTO_FALLBACK = {
+  'venice':   'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&h=400&fit=crop',
+  'florence': 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&h=400&fit=crop',
+  'rome':     'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&h=400&fit=crop',
+  'lucerne':  'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=600&h=400&fit=crop',
+  'cinque terre': 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600&h=400&fit=crop',
+};
+function getSpotPhoto(title, city) {
+  const t = (title||'').toLowerCase();
+  // Scan DB by keyword match (longest match wins)
+  let best = null, bestLen = 0;
+  for(const [kw, url] of Object.entries(SPOT_PHOTO_DB)){
+    if(t.includes(kw) && kw.length > bestLen){ best=url; bestLen=kw.length; }
+  }
+  if(best) return best;
+  // City fallback
+  const c = (city||'').toLowerCase();
+  for(const [cw, url] of Object.entries(CITY_PHOTO_FALLBACK)){
+    if(c.includes(cw)) return url;
+  }
+  return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop';
+}
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
   const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||idx}/900/400`;
@@ -2024,7 +2074,7 @@ function renderDaySheet(idx) {
   document.getElementById('sheetSub').textContent=[formatDayDate(d.day), d.subtitle||''].filter(Boolean).join(' · ');
 
   const body=document.getElementById('sheetBody');
-  const TYPE_ICONS={activity:'🎯',food:'🍴',transport:'🚆',hotel:'🏨',tip:'💡',logistics:'📋'};
+  const TYPE_ICONS={activity:'🎯',food:'🍴',transport:'🚆',hotel:'🏨',tip:'💡',logistics:'📋',photospot:'📸'};
 
   // ── HIGHLIGHTS strip ──
   let html='';
@@ -2064,7 +2114,7 @@ function renderDaySheet(idx) {
       <div class="tl-main">
         <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.type==='transport'?renderTransportCard(tl):(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
+        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?`<div class="tl-ps-wrap"><img src="${getSpotPhoto(tl.title,d.city||'')}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">${tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:''}</div>`:(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
