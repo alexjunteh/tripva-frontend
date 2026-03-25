@@ -1719,10 +1719,6 @@ function populateDashboard(p) {
   }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
-  try { localStorage.setItem('tripai_plan',JSON.stringify(p)) + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
-  }
-  document.getElementById('saveBar').style.display='flex';
-  renderLiveOps();
   try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
 }
 
@@ -2196,8 +2192,7 @@ function loadFromHash() {
   }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
-  try { localStorage.setItem('tripai_plan',JSON.stringify(p)) + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
-  }
+  try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
   document.getElementById('saveBar').style.display='flex';
     setTimeout(()=>switchTab('trip'),400);
     showToast('✅ Trip loaded!');
