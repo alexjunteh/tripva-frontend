@@ -1552,7 +1552,9 @@ function populateDashboard(p) {
         const btn=/agoda\.com\/search/.test(h.bookUrl||'')?'Search Agoda →':'Open →';
         const host=getHost(h.bookUrl||'');
         const c=document.createElement('div'); c.className='book-card arrange-card';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank">${btn}</a></div>`;
+        const starsStr = h.stars ? '⭐'.repeat(Math.min(h.stars,5)) : '';
+        const ratingStr = h.rating ? `${h.rating}/10` : '';
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank">${btn}</a></div>`;
         arrangeWrap.appendChild(c);
       });
       scroll.appendChild(arrangeWrap);
@@ -1563,8 +1565,9 @@ function populateDashboard(p) {
   if (p.budget && p.budget.length > 0) {
     const scroll=document.getElementById('budgetScroll');
     document.getElementById('budgetEmpty')?.remove();
-    const paidItems=(p.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')||/✅|PAID|BOOKED/i.test(b.amount||''));
-    const pendingItems=(p.budget||[]).filter(b=>!(/✅|Paid|BOOKED/i.test(b.note||'')||/✅|PAID|BOOKED/i.test(b.amount||'')));
+    const isBooked = b => b.status === 'booked' || /✅|Paid|BOOKED/i.test(b.note||'') || /✅|PAID|BOOKED/i.test(b.amount||'');
+    const paidItems = (p.budget||[]).filter(b => isBooked(b));
+    const pendingItems = (p.budget||[]).filter(b => !isBooked(b));
     const paidTotal=paidItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
     const pendingTotal=pendingItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
     scroll.innerHTML=`<div class="budget-hero">
@@ -1583,9 +1586,9 @@ function populateDashboard(p) {
         const row=document.createElement('div');
         row.className='budget-row '+cssClass;
         row.innerHTML=`
-          <div class="budget-icon">${b.icon||'💰'}</div>
+          <div class="budget-icon">${b.icon || (b.category === 'accommodation' ? '🏨' : b.category === 'transport' ? '🚆' : b.category === 'food' ? '🍜' : b.category === 'activities' ? '🎯' : '💰')}</div>
           <div class="budget-info">
-            <div class="budget-label">${esc(b.label||'')}</div>
+            <div class="budget-label">${esc(b.label||b.item||'')}</div>
             ${b.note?`<div class="budget-note">${esc(b.note)}</div>`:''}
             <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
           </div>
@@ -2220,7 +2223,8 @@ function toggleRouteMap(){
 function initRouteMap(){
   if(routeMapInited||typeof L==='undefined') return;
   routeMapInited=true;
-  const stops=plan?.mapStops||[];
+  const homeCity = (tripMeta?.homeCity || plan?.trip?.homeCity || '').toLowerCase().split(',')[0].trim();
+  const stops = (plan?.mapStops||[]).filter(s => !homeCity || !(s.name||'').toLowerCase().includes(homeCity));
   const route=plan?.mapRoute||[];
   if(!stops.length) return;
   const map=L.map('routeMap',{zoomControl:false,attributionControl:false}).setView([45.5,10],6);
