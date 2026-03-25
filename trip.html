@@ -1199,7 +1199,20 @@ function showLoadingSpinner(show) {
 //  NAVIGATION
 // ══════════════════════════════════════
 const NAV_TABS = ['plan','trip','days','tickets'];
-function switchTab(name) {
+function openTicket(tktTitle) {
+  switchTab('tickets');
+  // Find and expand the ticket card matching the title
+  setTimeout(()=>{
+    const cards = document.querySelectorAll('.bp-card');
+    cards.forEach(card => {
+      const routeEl = card.querySelector('.bp-route');
+      if(routeEl && routeEl.textContent.includes(tktTitle.replace(/^[\p{Emoji}\s]+/u,'').trim().slice(0,20))){
+        card.classList.add('open');
+        card.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+  }, 200);
+}function switchTab(name) {
   if (name === '_more') { openMore(); return; }
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1690,9 +1703,20 @@ function populateDashboard(p) {
     document.getElementById('nextTktRoute').textContent = (/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(nextTkt.name||'')?'🎟️':/penang|flight|SQ/i.test(nextTkt.name||'')?'✈️':'🚂') + ' ' + (nextTkt.name||'');
     const firstLeg = (nextTkt.legs||[])[0];
     document.getElementById('nextTktMeta').textContent = (nextTkt.date||'') + (firstLeg ? ' · ' + (firstLeg.fromTime||'') + ' from ' + (firstLeg.from||'') + (firstLeg.fromPlatform?' · Platform '+firstLeg.fromPlatform:'') : '');
-    const pax0 = (nextTkt.passengers||[])[0];
+    // Derive pax0 across both schemas (passengers[] or seats[])
+    const pax0 = (nextTkt.passengers||[])[0] || (nextTkt.seats||[]).map((s,si)=>({
+      name: s.traveler||s.passenger||('Traveller '+(si+1)),
+      pdfUrl: s.pdfUrl||(si===0?nextTkt.pdfUrl:null)
+    }))[0];
+    const tktPdfUrl = (pax0&&pax0.pdfUrl) || nextTkt.pdfUrl || '';
+    const tktTitle  = nextTkt.title || nextTkt.name || '';
     const actEl = document.getElementById('nextTktActions');
-    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="switchTab('tickets')">View ticket →</button>` + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
+    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="openTicket(${JSON.stringify(tktTitle)})">View ticket →</button>`
+      + (tktPdfUrl ? `<a class="next-tkt-btn" href="${tktPdfUrl}" target="_blank">📄 Open PDF</a>` : '');
+  }
+  document.getElementById('saveBar').style.display='flex';
+  renderLiveOps();
+  try { localStorage.setItem('tripai_plan',JSON.stringify(p)) + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
   }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
@@ -1873,16 +1897,21 @@ function renderLiveOps(){
   // Next upcoming transport item — use type:'transport' first, then keyword regex fallback
   const isTransport=t=>t.type==='transport'||/train|frecciarossa|leonardo express|rotair|rail|PE LIX/i.test((t.title||'')+' '+(t.detail||''));
   const allTrains=(day.timeline||[]).filter(isTransport);
-  const trainItem=allTrains.find(t=>{ const tm=parseTimeMins(t.time); return tm<0||tm>nowMins; })||null;
+  let trainItem=allTrains.find(t=>{ const tm=parseTimeMins(t.time); return tm<0||tm>nowMins; })||null;
+  const trainItemDay=day; // transport tile = today only
   const hotelItem=(day.timeline||[]).find(t=>t.type==='hotel');
   if(el('opsCurrentStop')) el('opsCurrentStop').textContent = day.title || 'Trip in progress';
   if(el('opsNowLine')) el('opsNowLine').textContent = day.subtitle || day.title || 'Trip in progress';
   if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> · Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> · ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Train</strong> · ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
   el('opsNextTitle').textContent = firstItem.title || 'Open today\u2019s plan';
   el('opsNextText').textContent = firstItem.detail || 'Use the day sheet for the full itinerary.';
-  const transportTitle = trainItem ? (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title) : 'No critical transport right now';
-  let transportText = trainItem ? ((String(trainItem.detail||'').split('. ')[0]||trainItem.detail||'') + (String(trainItem.detail||'').includes('. ')?'.':'')) : '';
-  if(transportText.trim() === transportTitle.trim() || transportText.trim() === `${transportTitle}.`) transportText = '';
+  const transportTitle = trainItem
+    ? (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title)
+    : 'No train today';
+  let transportText = trainItem
+    ? (String(trainItem.detail||'').split('. ')[0]||trainItem.detail||'')
+    : 'Check tomorrow’s section below';
+  if(transportText.trim()===transportTitle.trim()||transportText.trim()===`${transportTitle}.`) transportText='';
   el('opsTransportTitle').textContent = transportTitle;
   el('opsTransportText').textContent = transportText;
   el('opsStayTitle').textContent = currentHotel ? currentHotel.name : (hotelItem ? hotelItem.title : 'Hotel not matched');
@@ -1893,7 +1922,18 @@ function renderLiveOps(){
   acts.push(`<a class="ops-link secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx})">Open day sheet</a>`);
   if(currentHotel?.bookUrl) acts.push(`<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">View hotel</a>`);
   el('opsActions').innerHTML = acts.join('');
-  const urgentPreview=(plan.urgent||[]).slice(0,2).map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('uffizi')||label.includes('accademia')||label.includes('colosseum')||label.includes('vatican')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⏳</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="${u.url||'#'}" target="_blank">${btn}</a></div></div></div>`; });
+  // Derive urgent inline — renderLiveOps is self-contained, never reads global state patches
+  const _urgentActs=(plan.days||[]).flatMap(d=>(d.timeline||[])
+    .filter(a=>a.ticketRequired===true&&a.ticketState!=='booked'&&a.ticketState!=='not_needed')
+    .map(a=>({label:(a.title||'').replace(/^[\p{Emoji}\s]+/u,'').trim()||a.title,note:(a.detail||'').slice(0,120),url:a.bookingUrl||'#',_derived:true}))
+  );
+  const _urgentSegs=(plan.days||[]).flatMap(d=>(d.timeline||[])
+    .filter(s=>s.type==='transport'&&s.bookingRequired===true&&s.bookingState!=='booked')
+    .map(s=>({label:s.title||'Book transport',note:(s.detail||'').slice(0,120),url:s.bookingUrl||'https://www.trenitalia.com/en.html',_derived:true}))
+  );
+  const _dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
+  const urgent=[..._urgentActs,..._urgentSegs].filter(u=>!_dismissed.includes(u.label||''));
+  const urgentPreview=urgent.slice(0,2).map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('uffizi')||label.includes('accademia')||label.includes('colosseum')||label.includes('vatican')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⏳</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="${u.url||'#'}" target="_blank">${btn}</a></div></div></div>`; });
   el('opsTodoList').innerHTML = [
     ...urgentPreview,
     (nextDay?`<div class="ops-todo"><div class="ops-todo-icon">➡️</div><div class="ops-todo-main"><div class="ops-todo-title">Next trip leg: Day ${nextDay.day} - ${esc(nextDay.title||'')}</div><div class="ops-todo-note">${formatDayDate(nextDay.day)} · ${esc(nextDay.subtitle||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx+1})">Open next day →</a><a class="ops-mini-btn secondary" href="javascript:switchTab('hotels')">Book Now hub</a></div></div></div>`:'')
@@ -2140,9 +2180,20 @@ function loadFromHash() {
     document.getElementById('nextTktRoute').textContent = (/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(nextTkt.name||'')?'🎟️':/penang|flight|SQ/i.test(nextTkt.name||'')?'✈️':'🚂') + ' ' + (nextTkt.name||'');
     const firstLeg = (nextTkt.legs||[])[0];
     document.getElementById('nextTktMeta').textContent = (nextTkt.date||'') + (firstLeg ? ' · ' + (firstLeg.fromTime||'') + ' from ' + (firstLeg.from||'') + (firstLeg.fromPlatform?' · Platform '+firstLeg.fromPlatform:'') : '');
-    const pax0 = (nextTkt.passengers||[])[0];
+    // Derive pax0 across both schemas (passengers[] or seats[])
+    const pax0 = (nextTkt.passengers||[])[0] || (nextTkt.seats||[]).map((s,si)=>({
+      name: s.traveler||s.passenger||('Traveller '+(si+1)),
+      pdfUrl: s.pdfUrl||(si===0?nextTkt.pdfUrl:null)
+    }))[0];
+    const tktPdfUrl = (pax0&&pax0.pdfUrl) || nextTkt.pdfUrl || '';
+    const tktTitle  = nextTkt.title || nextTkt.name || '';
     const actEl = document.getElementById('nextTktActions');
-    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="switchTab('tickets')">View ticket →</button>` + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
+    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="openTicket(${JSON.stringify(tktTitle)})">View ticket →</button>`
+      + (tktPdfUrl ? `<a class="next-tkt-btn" href="${tktPdfUrl}" target="_blank">📄 Open PDF</a>` : '');
+  }
+  document.getElementById('saveBar').style.display='flex';
+  renderLiveOps();
+  try { localStorage.setItem('tripai_plan',JSON.stringify(p)) + (pax0?.pdfUrl ? `<a class="next-tkt-btn" href="${pax0.pdfUrl}" target="_blank">SBB / PDF</a>` : '');
   }
   document.getElementById('saveBar').style.display='flex';
     setTimeout(()=>switchTab('trip'),400);
