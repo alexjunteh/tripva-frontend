@@ -1102,7 +1102,10 @@ async function loadTripPlan() {
   if (id) {
     try {
       showLoadingSpinner(true);
-      const res = await fetch('https://tripai-backend.vercel.app/api/trip?id=' + encodeURIComponent(id));
+      const tripFetchCtrl = new AbortController();
+      const tripFetchTimeout = setTimeout(() => tripFetchCtrl.abort(), 15000); // 15s timeout
+      const res = await fetch('https://tripai-backend.vercel.app/api/trip?id=' + encodeURIComponent(id), { signal: tripFetchCtrl.signal });
+      clearTimeout(tripFetchTimeout);
       if (res.ok) {
         const data = await res.json();
         if (data && data.rawPlan) {

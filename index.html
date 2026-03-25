@@ -589,18 +589,25 @@ async function submitTrip() {
     clearTimeout(_t60); clearTimeout(_t120);
     let shareUrl = null;
     try {
+      const saveController = new AbortController();
+      const saveTimeout = setTimeout(() => saveController.abort(), 10000); // 10s max for save
       const saveRes = await fetch(BACKEND + '/api/save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: tripState.rawPlan })
+        body: JSON.stringify({ plan: tripState.rawPlan }),
+        signal: saveController.signal
       });
+      clearTimeout(saveTimeout);
       if (saveRes.ok) { const d = await saveRes.json(); shareUrl = d.url; }
-    } catch(e) {}
+    } catch(e) {
+      console.warn('Save failed (will use localStorage fallback):', e.message);
+    }
 
     localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
     window._generatedTripState = tripState;
     window._generatedShareUrl = shareUrl;
 
-    setTimeout(function() { openGeneratedTrip(); }, 2000);
+    // Always redirect — use ?id= if saved, localStorage fallback if not
+    setTimeout(function() { openGeneratedTrip(); }, 1000);
 
   } catch (err) {
     clearTimeout(_t60); clearTimeout(_t120);
