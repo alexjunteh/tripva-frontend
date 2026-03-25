@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Roam — Investor Deck</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070f;
+  --surf:#0d0d1c;
+  --surf2:#13132a;
+  --border:rgba(255,255,255,.07);
+  --text:#f2f2ff;
+  --muted:rgba(242,242,255,.45);
+  --accent:#7b68ee;
+  --accent2:#a78bfa;
+  --blue:#60a5fa;
+  --green:#34d399;
+  --yellow:#fbbf24;
+  --red:#f87171;
+  --pink:#f472b6;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* ── DECK SHELL ── */
+.deck{position:fixed;inset:0;display:flex;flex-direction:column}
+.progress-bar{height:3px;background:var(--border);flex-shrink:0;position:relative;z-index:50}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));transition:width .4s cubic-bezier(.4,0,.2,1);width:8.33%}
+.slides-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:5vw;opacity:0;transform:translateX(60px);transition:opacity .45s cubic-bezier(.4,0,.2,1),transform .45s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.slide.active{opacity:1;transform:none;pointer-events:all}
+.slide.exit{opacity:0;transform:translateX(-60px)}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 16px;flex-shrink:0;border-top:1px solid var(--border);gap:12px}
+.nav-counter{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.nav-dots{display:flex;gap:5px;flex:1;justify-content:center;flex-wrap:wrap}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;border:none;padding:0}
+.nav-dot.active{background:var(--accent2);transform:scale(1.4)}
+.nav-btn{background:var(--surf2);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:12px;font-size:18px;cursor:pointer;transition:all .15s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nav-btn:active{scale:.92}
+.nav-btn:disabled{opacity:.25;cursor:default}
+
+/* ── SLIDE BACKGROUNDS ── */
+.slide-cover{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(123,104,238,.35) 0%,transparent 70%),var(--bg)}
+.slide-problem{background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(248,113,113,.12) 0%,transparent 60%),var(--bg)}
+.slide-solution{background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(52,211,153,.1) 0%,transparent 60%),var(--bg)}
+.slide-product{background:radial-gradient(ellipse 70% 50% at 50% 80%,rgba(96,165,250,.1) 0%,transparent 60%),var(--bg)}
+.slide-market{background:radial-gradient(ellipse 60% 60% at 70% 30%,rgba(251,191,36,.08) 0%,transparent 60%),var(--bg)}
+.slide-biz{background:radial-gradient(ellipse 60% 50% at 30% 60%,rgba(167,139,250,.12) 0%,transparent 60%),var(--bg)}
+.slide-traction{background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(52,211,153,.1) 0%,transparent 60%),var(--bg)}
+.slide-whynow{background:radial-gradient(ellipse 60% 50% at 80% 60%,rgba(96,165,250,.1) 0%,transparent 60%),var(--bg)}
+.slide-competition{background:radial-gradient(ellipse 60% 50% at 20% 40%,rgba(244,114,182,.1) 0%,transparent 60%),var(--bg)}
+.slide-team{background:radial-gradient(ellipse 60% 50% at 60% 30%,rgba(123,104,238,.15) 0%,transparent 60%),var(--bg)}
+.slide-ask{background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(251,191,36,.12) 0%,transparent 60%),var(--bg)}
+.slide-milestones{background:radial-gradient(ellipse 70% 50% at 50% 10%,rgba(52,211,153,.1) 0%,transparent 60%),var(--bg)}
+
+/* ── TYPOGRAPHY ── */
+.slide-label{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.slide-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(167,139,250,.4),transparent)}
+.h1{font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.05;letter-spacing:-2px}
+.h2{font-size:clamp(26px,4.5vw,48px);font-weight:900;line-height:1.1;letter-spacing:-1.5px}
+.h3{font-size:clamp(16px,2.5vw,24px);font-weight:700;line-height:1.3}
+.subtitle{font-size:clamp(15px,2vw,20px);color:var(--muted);line-height:1.6;margin-top:14px}
+.grad{background:linear-gradient(135deg,var(--accent2),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad2{background:linear-gradient(135deg,var(--blue),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad3{background:linear-gradient(135deg,var(--yellow),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── CARDS ── */
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:20px 22px;backdrop-filter:blur(10px)}
+.card-sm{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}}
+
+/* ── STAT BIG ── */
+.stat-big{text-align:center}
+.stat-num{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:-2px;line-height:1}
+.stat-unit{font-size:13px;color:var(--muted);margin-top:6px;font-weight:600}
+
+/* ── PROBLEM CHAOS ── */
+.chaos-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chaos-chip{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:6px}
+.chaos-chip span{font-size:16px}
+
+/* ── SOLUTION FLOW ── */
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.flow-step{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--green);flex:1;min-width:100px;text-align:center}
+.flow-arrow{color:var(--muted);font-size:18px;flex-shrink:0}
+
+/* ── MARKET RINGS ── */
+.market-visual{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:20px}
+.market-ring{display:flex;flex-direction:column;align-items:center;gap:8px}
+.ring{border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative}
+.ring-outer{width:160px;height:160px;background:rgba(251,191,36,.08);border:2px solid rgba(251,191,36,.3)}
+.ring-mid{width:120px;height:120px;background:rgba(167,139,250,.1);border:2px solid rgba(167,139,250,.4)}
+.ring-inner{width:80px;height:80px;background:rgba(52,211,153,.12);border:2px solid rgba(52,211,153,.5)}
+.ring .ring-val{font-size:16px;font-weight:900;letter-spacing:-1px}
+.ring .ring-lbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+
+/* ── REVENUE BARS ── */
+.rev-stream{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.rev-row{display:flex;align-items:center;gap:12px}
+.rev-label{font-size:12px;font-weight:700;width:110px;flex-shrink:0;color:var(--muted)}
+.rev-bar-wrap{flex:1;height:28px;background:rgba(255,255,255,.05);border-radius:8px;overflow:hidden;position:relative}
+.rev-bar{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;font-size:12px;font-weight:800;white-space:nowrap;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.rev-pct{font-size:12px;font-weight:700;color:var(--muted);width:40px;text-align:right}
+
+/* ── COMPETITION MATRIX ── */
+.matrix{position:relative;margin-top:16px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02)}
+.matrix-inner{padding:20px;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr;gap:0}
+.mx-head{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:8px;text-align:center}
+.mx-row-label{font-size:12px;font-weight:700;padding:10px 8px;color:var(--muted);display:flex;align-items:center}
+.mx-cell{padding:10px 8px;text-align:center;border-top:1px solid var(--border);font-size:14px;display:flex;align-items:center;justify-content:center}
+.mx-cell.us{background:rgba(123,104,238,.08)}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:16px;position:relative}
+.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),transparent)}
+.tl-item{display:flex;gap:14px;align-items:flex-start;padding:10px 0 10px 8px;position:relative}
+.tl-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:3px;border:2px solid var(--bg)}
+.tl-dot.done{background:var(--green)}
+.tl-dot.next{background:var(--accent)}
+.tl-dot.future{background:var(--surf2);border-color:var(--muted)}
+.tl-content{flex:1}
+.tl-title{font-size:13px;font-weight:800}
+.tl-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── FUND BARS ── */
+.fund-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.fund-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px}
+.fund-pct{font-size:28px;font-weight:900;letter-spacing:-1px}
+.fund-name{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
+
+/* ── LOGO MARK ── */
+.logomark{font-size:18px;font-weight:900;letter-spacing:-.5px;position:absolute;top:18px;left:20px;opacity:.5}
+.logomark span{color:var(--accent2)}
+
+/* ── COVER EXTRAS ── */
+.cover-tagline{font-size:clamp(14px,2.2vw,18px);color:var(--accent2);font-weight:700;letter-spacing:.5px;margin-top:10px;text-transform:uppercase;letter-spacing:3px}
+.cover-sub{font-size:clamp(14px,2vw,18px);color:var(--muted);margin-top:16px;max-width:600px;line-height:1.6}
+.cover-pills{display:flex;gap:8px;margin-top:28px;flex-wrap:wrap}
+.cover-pill{background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:20px;padding:7px 16px;font-size:13px;font-weight:700;color:rgba(255,255,255,.6)}
+
+/* ── WHY NOW ── */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+@media(max-width:520px){.why-grid{grid-template-columns:1fr}}
+.why-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:16px}
+.why-icon{font-size:28px;margin-bottom:8px}
+.why-title{font-size:14px;font-weight:800;margin-bottom:4px}
+.why-body{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ── TEAM ── */
+.team-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:24px;max-width:420px}
+.team-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+.team-name{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.team-role{font-size:13px;color:var(--accent2);font-weight:700;margin-top:4px}
+.team-bio{font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px}
+.team-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.team-tag{background:rgba(123,104,238,.1);border:1px solid rgba(123,104,238,.2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--accent2)}
+.hiring-row{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+.hire-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--muted)}
+.hire-item::before{content:'+ ';color:var(--green);font-weight:900}
+
+/* ── TRACTION ── */
+.traction-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+@media(min-width:600px){.traction-grid{grid-template-columns:repeat(3,1fr)}}
+.t-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+.t-num{font-size:28px;font-weight:900;letter-spacing:-1px}
+.t-label{font-size:11px;color:var(--muted);font-weight:600;margin-top:4px}
+
+/* ── CONFIDENTIAL FOOTER ── */
+.conf{position:absolute;bottom:60px;right:20px;font-size:10px;color:rgba(255,255,255,.15);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="slides-wrap" id="slidesWrap">
+
+    <!-- ── SLIDE 1: COVER ── -->
+    <div class="slide slide-cover active" data-idx="0">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="cover-tagline">Seed Round · 2026</div>
+      <div class="h1"><span class="grad">The AI Operating</span><br>System for Travel</div>
+      <div class="cover-sub">Plan your trip in minutes. Execute it from one dashboard. Book everything in place.</div>
+      <div class="cover-pills">
+        <div class="cover-pill">AI-Powered Planning</div>
+        <div class="cover-pill">Affiliate-First Revenue</div>
+        <div class="cover-pill">Live Trip Dashboard</div>
+        <div class="cover-pill">Mobile-First PWA</div>
+      </div>
+      <div class="conf">Confidential · Not for distribution</div>
+    </div>
+
+    <!-- ── SLIDE 2: PROBLEM ── -->
+    <div class="slide slide-problem" data-idx="1">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">The Problem</div>
+      <div class="h2">Trip planning is<br><span class="grad" style="background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;background-clip:text">completely broken</span></div>
+      <div class="subtitle">The average traveler context-switches across <strong>12+ apps and tabs</strong> before their trip begins — and still travels unprepared.</div>
+      <div class="chaos-grid">
+        <div class="chaos-chip"><span>🔍</span>Google Search</div>
+        <div class="chaos-chip"><span>🗺️</span>Google Maps</div>
+        <div class="chaos-chip"><span>🏨</span>Booking.com</div>
+        <div class="chaos-chip"><span>✈️</span>Skyscanner</div>
+        <div class="chaos-chip"><span>📋</span>Notion / Docs</div>
+        <div class="chaos-chip"><span>🎟️</span>GetYourGuide</div>
+        <div class="chaos-chip"><span>🚆</span>Trainline</div>
+        <div class="chaos-chip"><span>💬</span>Reddit</div>
+        <div class="chaos-chip"><span>📸</span>Instagram</div>
+        <div class="chaos-chip"><span>📱</span>WhatsApp</div>
+      </div>
+      <div class="subtitle" style="margin-top:18px;font-size:15px">Existing tools <strong style="color:var(--text)">plan only</strong> or <strong style="color:var(--text)">track only.</strong> Nothing operates the full trip end-to-end.</div>
+    </div>
+
+    <!-- ── SLIDE 3: SOLUTION ── -->
+    <div class="slide slide-solution" data-idx="2">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">The Solution</div>
+      <div class="h2">One prompt.<br><span class="grad2">One dashboard.</span><br>Everything.</div>
+      <div class="subtitle">Roam generates a complete, executable trip plan from a single input — then becomes your live command center throughout the journey.</div>
+      <div class="flow">
+        <div class="flow-step">💬 One Prompt</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">🤖 AI Generates</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">🗺️ Live Dashboard</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">📲 Book + Travel</div>
+      </div>
+      <div class="grid2" style="margin-top:18px">
+        <div class="card-sm">
+          <div style="font-size:13px;font-weight:800;margin-bottom:8px;color:var(--green)">✓ Day-by-day itinerary</div>
+          <div style="font-size:13px;font-weight:800;margin-bottom:8px;color:var(--green)">✓ Interactive route map</div>
+          <div style="font-size:13px;font-weight:800;color:var(--green)">✓ Pre-filled booking links</div>
+        </div>
+        <div class="card-sm">
+          <div style="font-size:13px;font-weight:800;margin-bottom:8px;color:var(--green)">✓ Budget tracker</div>
+          <div style="font-size:13px;font-weight:800;margin-bottom:8px;color:var(--green)">✓ Ticket wallet</div>
+          <div style="font-size:13px;font-weight:800;color:var(--green)">✓ Works offline (PWA)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 4: PRODUCT ── -->
+    <div class="slide slide-product" data-idx="3">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">The Product</div>
+      <div class="h2">A trip dashboard<br><span class="grad" style="background:linear-gradient(135deg,var(--blue),var(--accent2));-webkit-background-clip:text;background-clip:text">built for the road</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px">
+        <div class="card-sm" style="border-color:rgba(96,165,250,.25)">
+          <div style="font-size:22px;margin-bottom:8px">🧭</div>
+          <div style="font-size:13px;font-weight:800;color:var(--blue)">Live Tab</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Today's hero, Next Move chip, weather, transport status</div>
+        </div>
+        <div class="card-sm" style="border-color:rgba(167,139,250,.25)">
+          <div style="font-size:22px;margin-bottom:8px">🗺️</div>
+          <div style="font-size:13px;font-weight:800;color:var(--accent2)">Trip Tab</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Full route map + itinerary overview</div>
+        </div>
+        <div class="card-sm" style="border-color:rgba(52,211,153,.25)">
+          <div style="font-size:22px;margin-bottom:8px">📅</div>
+          <div style="font-size:13px;font-weight:800;color:var(--green)">Days Tab</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Hour-by-hour timeline per day</div>
+        </div>
+        <div class="card-sm" style="border-color:rgba(251,191,36,.25)">
+          <div style="font-size:22px;margin-bottom:8px">🎟️</div>
+          <div style="font-size:13px;font-weight:800;color:var(--yellow)">Tickets</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Booked tickets with details</div>
+        </div>
+        <div class="card-sm" style="border-color:rgba(248,113,113,.25)">
+          <div style="font-size:22px;margin-bottom:8px">⚡</div>
+          <div style="font-size:13px;font-weight:800;color:var(--red)">Book Now</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Urgent actions + affiliate booking links</div>
+        </div>
+        <div class="card-sm" style="border-color:rgba(244,114,182,.25)">
+          <div style="font-size:22px;margin-bottom:8px">💰</div>
+          <div style="font-size:13px;font-weight:800;color:var(--pink)">Budget</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Booked vs pending spend tracker</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 5: MARKET ── -->
+    <div class="slide slide-market" data-idx="4">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Market Opportunity</div>
+      <div class="h2">A <span class="grad3">$1.7 trillion</span><br>market, still fragmented</div>
+      <div class="market-visual">
+        <div class="market-ring">
+          <div class="ring ring-outer">
+            <div style="font-size:18px;font-weight:900;color:var(--yellow)">$1.7T</div>
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">TAM</div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--yellow)">Global Travel</div>
+        </div>
+        <div class="market-ring">
+          <div class="ring ring-mid">
+            <div style="font-size:16px;font-weight:900;color:var(--accent2)">$180B</div>
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">SAM</div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent2)">Online Leisure Travel</div>
+        </div>
+        <div class="market-ring">
+          <div class="ring ring-inner">
+            <div style="font-size:14px;font-weight:900;color:var(--green)">$4B</div>
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">SOM</div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--green)">AI Travel Planning</div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:18px">
+        <div class="card-sm"><div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px">INITIAL WEDGE</div><div style="font-size:13px;font-weight:700">Millennial leisure travelers, 25–40, English-speaking</div></div>
+        <div class="card-sm"><div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px">EXPANSION</div><div style="font-size:13px;font-weight:700">Group planning · Travel creators · Agency white-label · B2B API</div></div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 6: BUSINESS MODEL ── -->
+    <div class="slide slide-biz" data-idx="5">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Business Model</div>
+      <div class="h2">Affiliate-first revenue.<br><span class="grad">SaaS upsell at scale.</span></div>
+      <div class="rev-stream">
+        <div class="rev-row">
+          <div class="rev-label">Hotels 🏨</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" style="width:75%;background:linear-gradient(90deg,rgba(52,211,153,.3),rgba(52,211,153,.15))"><span style="color:var(--green)">4–6% commission</span></div></div>
+          <div class="rev-pct" style="color:var(--green)">~75%</div>
+        </div>
+        <div class="rev-row">
+          <div class="rev-label">Activities 🎯</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" style="width:55%;background:linear-gradient(90deg,rgba(167,139,250,.3),rgba(167,139,250,.15))"><span style="color:var(--accent2)">8% commission</span></div></div>
+          <div class="rev-pct" style="color:var(--accent2)">~55%</div>
+        </div>
+        <div class="rev-row">
+          <div class="rev-label">Transport 🚆</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" style="width:40%;background:linear-gradient(90deg,rgba(96,165,250,.3),rgba(96,165,250,.15))"><span style="color:var(--blue)">2–4% commission</span></div></div>
+          <div class="rev-pct" style="color:var(--blue)">~40%</div>
+        </div>
+        <div class="rev-row">
+          <div class="rev-label">Pro SaaS 💎</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" style="width:30%;background:linear-gradient(90deg,rgba(251,191,36,.3),rgba(251,191,36,.15))"><span style="color:var(--yellow)">$12–49/mo</span></div></div>
+          <div class="rev-pct" style="color:var(--yellow)">~30%</div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <div class="card-sm"><div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:6px">FREE TIER</div><div style="font-size:13px;font-weight:700">3 trips/month · Affiliate links · Shareable URL</div></div>
+        <div class="card-sm"><div style="font-size:11px;font-weight:800;color:var(--accent2);margin-bottom:6px">PRO · $12/mo</div><div style="font-size:13px;font-weight:700">Unlimited trips · Collaboration · Exports · Priority AI</div></div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 7: TRACTION ── -->
+    <div class="slide slide-traction" data-idx="6">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Traction</div>
+      <div class="h2">Live in production.<br><span class="grad2">Built in 10 days.</span></div>
+      <div class="traction-grid">
+        <div class="t-card"><div class="t-num grad2" style="background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;background-clip:text">✅</div><div class="t-label">Working production app</div></div>
+        <div class="t-card"><div class="t-num" style="color:var(--green)">100%</div><div class="t-label">E2E generation flow validated</div></div>
+        <div class="t-card"><div class="t-num" style="color:var(--accent2)">6</div><div class="t-label">Dashboard tabs shipped</div></div>
+        <div class="t-card"><div class="t-num" style="color:var(--yellow)">3</div><div class="t-label">Pricing tiers live</div></div>
+        <div class="t-card"><div class="t-num" style="color:var(--blue)">7</div><div class="t-label">Languages supported</div></div>
+        <div class="t-card"><div class="t-num" style="color:var(--pink)">$0</div><div class="t-label">Infrastructure cost at launch</div></div>
+      </div>
+      <div class="card-sm" style="margin-top:14px;border-color:rgba(52,211,153,.2)">
+        <div style="font-size:13px;font-weight:700;color:var(--green)">🚀 Live at futuriztaos.github.io/trip-planner · Backend on Vercel · Affiliate links wired · PWA installable</div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 8: WHY NOW ── -->
+    <div class="slide slide-whynow" data-idx="7">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Why Now</div>
+      <div class="h2">Three forces<br><span class="grad" style="background:linear-gradient(135deg,var(--blue),var(--accent2));-webkit-background-clip:text;background-clip:text">converging today</span></div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🤖</div>
+          <div class="why-title">AI Trust Shift</div>
+          <div class="why-body">Consumers now trust AI for high-intent planning. ChatGPT proved the category. Roam executes it for travel.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">📱</div>
+          <div class="why-title">Mobile-First Behavior</div>
+          <div class="why-body">Travel research and booking has fully moved to mobile. A dashboard built for the phone beats desktop every time.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🔗</div>
+          <div class="why-title">Affiliate Infrastructure</div>
+          <div class="why-body">Booking.com, GYG, Trainline all have mature affiliate programs. Day-one revenue possible before subscription scale.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🏕️</div>
+          <div class="why-title">Post-COVID Travel Surge</div>
+          <div class="why-body">Leisure travel spend is at all-time highs. Travelers are booking more trips, further in advance, with higher intent.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 9: COMPETITION ── -->
+    <div class="slide slide-competition" data-idx="8">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Competitive Positioning</div>
+      <div class="h2">Not a chatbot.<br><span class="grad" style="background:linear-gradient(135deg,var(--pink),var(--accent2));-webkit-background-clip:text;background-clip:text">An operating layer.</span></div>
+      <div class="matrix">
+        <div class="matrix-inner">
+          <div class="mx-head"></div>
+          <div class="mx-head">AI Plan</div>
+          <div class="mx-head">Live Dashboard</div>
+          <div class="mx-head">Book Links</div>
+          <div class="mx-head">Offline PWA</div>
+          
+          <div class="mx-row-label">ChatGPT</div>
+          <div class="mx-cell">✅</div><div class="mx-cell">❌</div><div class="mx-cell">❌</div><div class="mx-cell">❌</div>
+
+          <div class="mx-row-label">TripIt</div>
+          <div class="mx-cell">❌</div><div class="mx-cell">✅</div><div class="mx-cell">❌</div><div class="mx-cell">⚠️</div>
+
+          <div class="mx-row-label">Wanderlog</div>
+          <div class="mx-cell">⚠️</div><div class="mx-cell">⚠️</div><div class="mx-cell">⚠️</div><div class="mx-cell">❌</div>
+
+          <div class="mx-row-label" style="color:var(--accent2);font-weight:900">Roam ✈</div>
+          <div class="mx-cell us">✅</div><div class="mx-cell us">✅</div><div class="mx-cell us">✅</div><div class="mx-cell us">✅</div>
+        </div>
+      </div>
+      <div class="subtitle" style="margin-top:14px;font-size:14px">Roam is the only product that <strong style="color:var(--text)">plans, executes, and books</strong> — in one mobile-first dashboard.</div>
+    </div>
+
+    <!-- ── SLIDE 10: TEAM ── -->
+    <div class="slide slide-team" data-idx="9">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Team</div>
+      <div class="h2">Operator-founded.<br><span class="grad">Ships fast.</span></div>
+      <div class="team-card">
+        <div class="team-avatar">AJ</div>
+        <div class="team-name">Alex Teh</div>
+        <div class="team-role">Founder & CEO · Futurizta Tech</div>
+        <div class="team-bio">E-commerce operator with a track record of rapid product execution. Built Roam's full stack — frontend, backend, AI pipeline — in under 2 weeks from zero.</div>
+        <div class="team-tags">
+          <div class="team-tag">Full-Stack Builder</div>
+          <div class="team-tag">E-commerce Operator</div>
+          <div class="team-tag">Product-Led</div>
+          <div class="team-tag">AI-Native</div>
+        </div>
+      </div>
+      <div class="hiring-row">
+        <div class="hire-item">Full-Stack Engineer (seed hire 1)</div>
+        <div class="hire-item">Growth Marketer · Travel verticals (seed hire 2)</div>
+        <div class="hire-item">Travel Supply Partnerships (seed hire 3)</div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 11: ASK ── -->
+    <div class="slide slide-ask" data-idx="10">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">The Ask</div>
+      <div class="h2">Raising <span class="grad3">$500k</span><br>seed round</div>
+      <div class="subtitle">12–15 months runway to affiliate revenue proof and subscription conversion benchmarks.</div>
+      <div class="fund-grid">
+        <div class="fund-item">
+          <div class="fund-pct" style="color:var(--accent2)">45%</div>
+          <div class="fund-name">Product & Engineering</div>
+        </div>
+        <div class="fund-item">
+          <div class="fund-pct" style="color:var(--green)">30%</div>
+          <div class="fund-name">Growth & Distribution</div>
+        </div>
+        <div class="fund-item">
+          <div class="fund-pct" style="color:var(--blue)">15%</div>
+          <div class="fund-name">AI Infrastructure & Data</div>
+        </div>
+        <div class="fund-item">
+          <div class="fund-pct" style="color:var(--yellow)">10%</div>
+          <div class="fund-name">Operations & Legal</div>
+        </div>
+      </div>
+      <div class="card-sm" style="margin-top:14px;border-color:rgba(251,191,36,.2)">
+        <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px">TARGET INVESTORS</div>
+        <div style="font-size:13px;font-weight:700">Consumer AI · Travel Tech · YC · a16z · Thayer Ventures · JetBlue Ventures · Amadeus Ventures</div>
+      </div>
+    </div>
+
+    <!-- ── SLIDE 12: MILESTONES ── -->
+    <div class="slide slide-milestones" data-idx="11">
+      <div class="logomark">Roam <span>✈</span></div>
+      <div class="slide-label">Milestones to Series A</div>
+      <div class="h2">Clear path to<br><span class="grad2">proof of revenue</span></div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot done"></div>
+          <div class="tl-content"><div class="tl-title">✅ Working MVP in production</div><div class="tl-sub">Full stack live · Backend on Vercel · Affiliate links wired</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot done"></div>
+          <div class="tl-content"><div class="tl-title">✅ 6-tab dashboard shipped</div><div class="tl-sub">Live, Trip, Days, Tickets, Book Now, Budget</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot next"></div>
+          <div class="tl-content"><div class="tl-title">→ Affiliate IDs live + first revenue</div><div class="tl-sub">Booking.com / GYG / Trainline real IDs connected</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot next"></div>
+          <div class="tl-content"><div class="tl-title">→ Auth + My Trips (Supabase)</div><div class="tl-sub">Magic link · Saved trips · Free quota</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot future"></div>
+          <div class="tl-content"><div class="tl-title">◦ 10k trips generated</div><div class="tl-sub">ProductHunt launch · Reddit · Creator partnerships</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot future"></div>
+          <div class="tl-content"><div class="tl-title">◦ 50k trips · Proven affiliate efficiency · Series A ready</div><div class="tl-sub">Affiliate CTR + conversion benchmarks · Repeat usage data</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slides-wrap -->
+
+  <div class="nav">
+    <button class="nav-btn" id="prevBtn" disabled>‹</button>
+    <div class="nav-dots" id="navDots"></div>
+    <button class="nav-btn" id="nextBtn">›</button>
+  </div>
+</div>
+
+<script>
+const TOTAL = 12;
+let cur = 0;
+
+const slides = document.querySelectorAll('.slide');
+const dots = document.getElementById('navDots');
+const progressFill = document.getElementById('progressFill');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+// Build dots
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('button');
+  d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => goTo(i));
+  dots.appendChild(d);
+}
+
+function goTo(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('exit');
+  const exiting = cur;
+  setTimeout(() => slides[exiting].classList.remove('exit'), 500);
+  cur = idx;
+  slides[cur].classList.add('active');
+  updateNav();
+}
+
+function updateNav() {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  progressFill.style.width = ((cur + 1) / TOTAL * 100) + '%';
+  prevBtn.disabled = cur === 0;
+  nextBtn.disabled = cur === TOTAL - 1;
+}
+
+prevBtn.addEventListener('click', () => goTo(cur - 1));
+nextBtn.addEventListener('click', () => goTo(cur + 1));
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(cur - 1); }
+});
+
+// Swipe
+let touchX = null;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50) goTo(cur + (dx < 0 ? 1 : -1));
+  touchX = null;
+}, { passive: true });
+
+updateNav();
+</script>
+</body>
+</html>
