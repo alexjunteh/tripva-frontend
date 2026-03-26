@@ -1632,14 +1632,23 @@ async function loadTripPlan() {
     // Flag so restoreMeta doesn't override with localStorage
     window._demoMode = true;
     // Schedule AFTER restoreMeta runs (setTimeout 0 ensures correct order)
+    // Each step wrapped in try/catch — switchTab ALWAYS fires even if populate throws
     setTimeout(() => {
-      plan = DEMO_TRIP;
-      tripMeta = plan.trip || {};
-      populateDashboard(plan);
-      renderLiveOps();
-      switchTab('days');
-      document.title = plan.trip.name + ' · Roam';
+      try {
+        plan = DEMO_TRIP;
+        tripMeta = plan.trip || {};
+        populateDashboard(plan);
+      } catch(e) { console.error('[Demo] populateDashboard error:', e); }
+      try { renderLiveOps(); } catch(e) { console.error('[Demo] renderLiveOps error:', e); }
+      try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
+      try { document.title = plan.trip.name + ' · Roam'; } catch(e) {}
     }, 0);
+    // Double-safety: force Days tab after 600ms in case something fires late
+    setTimeout(() => {
+      if (window._demoMode && plan && plan.days) {
+        switchTab('days');
+      }
+    }, 600);
     showLoadingSpinner(false);
     return;
   }
