@@ -1877,8 +1877,8 @@ function renderLiveOps(){
   if(el('opsCurrentStop')) el('opsCurrentStop').textContent = day.title || 'Trip in progress';
   if(el('opsNowLine')) el('opsNowLine').textContent = day.subtitle || day.title || 'Trip in progress';
   if(el('opsHeroChips')) el('opsHeroChips').innerHTML = [`<span class="ops-chip"><strong>Today</strong> · Day ${day.day}</span>`, currentHotel?`<span class="ops-chip"><strong>Stay</strong> · ${esc(currentHotel.name||'')}</span>`:'', trainItem?`<span class="ops-chip"><strong>Train</strong> · ${esc(trainItem.time||'TBC')}</span>`:''].filter(Boolean).join('');
-  el('opsNextTitle').textContent = firstItem.title || 'Open today\u2019s plan';
-  el('opsNextText').textContent = firstItem.detail || 'Use the day sheet for the full itinerary.';
+  if(el('opsNextTitle')) el('opsNextTitle').textContent = firstItem.title || 'Open today\u2019s plan';
+  if(el('opsNextText')) el('opsNextText').textContent = firstItem.detail || 'Use the day sheet for the full itinerary.';
   const transportTitle = trainItem
     ? (trainItem._inProgress
         ? `🚄 In progress · ${trainItem.title}`
@@ -1888,16 +1888,16 @@ function renderLiveOps(){
     ? (String(trainItem.detail||'').split('. ')[0]||trainItem.detail||'')
     : 'Check tomorrow’s section below';
   if(transportText.trim()===transportTitle.trim()||transportText.trim()===`${transportTitle}.`) transportText='';
-  el('opsTransportTitle').textContent = transportTitle;
-  el('opsTransportText').textContent = transportText;
-  el('opsStayTitle').textContent = currentHotel ? currentHotel.name : (hotelItem ? hotelItem.title : 'Hotel not matched');
-  el('opsStayText').textContent = currentHotel ? `${currentHotel.price||''} · ${currentHotel.note||''}` : (hotelItem ? hotelItem.detail||'' : 'Check Book Now tab');
+  if(el('opsTransportTitle')) el('opsTransportTitle').textContent = transportTitle;
+  if(el('opsTransportText')) el('opsTransportText').textContent = transportText;
+  if(el('opsStayTitle')) el('opsStayTitle').textContent = currentHotel ? currentHotel.name : (hotelItem ? hotelItem.title : 'Hotel not matched');
+  if(el('opsStayText')) el('opsStayText').textContent = currentHotel ? `${currentHotel.price||''} · ${currentHotel.note||''}` : (hotelItem ? hotelItem.detail||'' : 'Check Book Now tab');
   if(el('opsStayActions')) el('opsStayActions').innerHTML = currentHotel?.bookUrl ? `<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">View hotel</a>` : '';
   const acts=[];
   if(trainItem?.mapQuery) acts.push(`<a class="ops-link" target="_blank" href="https://maps.google.com/?q=${encodeURIComponent(trainItem.mapQuery)}">Transport map</a>`);
   acts.push(`<a class="ops-link secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx})">Open day sheet</a>`);
   if(currentHotel?.bookUrl) acts.push(`<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">View hotel</a>`);
-  el('opsActions').innerHTML = acts.join('');
+  if(el('opsActions')) el('opsActions').innerHTML = acts.join('');
   // Derive urgent inline — renderLiveOps is self-contained, never reads global state patches
   const _urgentActs=(plan.days||[]).flatMap(d=>(d.timeline||[])
     .filter(a=>a.ticketRequired===true&&a.ticketState!=='booked'&&a.ticketState!=='not_needed')
@@ -1910,11 +1910,11 @@ function renderLiveOps(){
   const _dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
   const urgent=[..._urgentActs,..._urgentSegs].filter(u=>!_dismissed.includes(u.label||''));
   const urgentPreview=urgent.slice(0,2).map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('uffizi')||label.includes('accademia')||label.includes('colosseum')||label.includes('vatican')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⏳</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="${u.url||'#'}" target="_blank">${btn}</a></div></div></div>`; });
-  el('opsTodoList').innerHTML = [
+  if(el('opsTodoList')) el('opsTodoList').innerHTML = [
     ...urgentPreview,
     (nextDay?`<div class="ops-todo"><div class="ops-todo-icon">➡️</div><div class="ops-todo-main"><div class="ops-todo-title">Next trip leg: Day ${nextDay.day} - ${esc(nextDay.title||'')}</div><div class="ops-todo-note">${formatDayDate(nextDay.day)} · ${esc(nextDay.subtitle||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx+1})">Open next day →</a><a class="ops-mini-btn secondary" href="javascript:switchTab('hotels')">Book Now hub</a></div></div></div>`:'')
   ].join('') || '<div class="ops-todo"><div class="ops-todo-icon">✅</div><div class="ops-todo-main"><div class="ops-todo-title">No urgent tasks right now</div><div class="ops-todo-note">Everything critical is already handled.</div></div></div>';
-  el('opsTimeline').innerHTML = (day.timeline||[]).slice(0,7).map(t=>{
+  if(el('opsTimeline')) el('opsTimeline').innerHTML = (day.timeline||[]).slice(0,7).map(t=>{
     const tm=parseTimeMins(t.time);
     const isPast=tm>=0 && tm<nowMins;
     const isCurrent=t===firstItem;
