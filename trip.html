@@ -991,7 +991,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-plan" onclick="switchTab('plan')"><span class="nav-icon">🧭</span><span class="nav-lbl">Live</span></button>
   <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></button>
-  <button class="nav-btn" id="nav-book" onclick="openMoreTab('hotels')"><span class="nav-icon">🏨</span><span class="nav-lbl">Book</span></button>
+  <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></button>
   <button class="nav-btn" id="nav-budget" onclick="openMoreTab('budget')"><span class="nav-icon">💰</span><span class="nav-lbl">Budget</span></button>
   <button class="nav-btn" id="nav-more" onclick="openMore()"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></button>
 </nav>
@@ -1036,6 +1036,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="more-item-icon">🎟️</div>
         <div class="more-item-label">Tickets</div>
         <div class="more-item-sub">Saved passes</div>
+      </div>
+      <div class="more-item" onclick="openMoreTab('hotels')">
+        <div class="more-item-icon">🏨</div>
+        <div class="more-item-label">Book Now</div>
+        <div class="more-item-sub">Hotels + trains</div>
       </div>
       <div class="more-item" onclick="openMoreTab('tips')">
         <div class="more-item-icon">💡</div>
