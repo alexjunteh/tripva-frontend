@@ -2450,7 +2450,6 @@ function renderLiveOps(){
     return clipped.length > 84 ? clipped.slice(0,81) + '…' : clipped;
   };
   // CITY_IMGS moved to DOMContentLoaded scope
-};
   const info=getTripDateInfo();
   if(el('opsCurrentTime')) el('opsCurrentTime').textContent = info.timeStr;
   // Refresh time every minute
