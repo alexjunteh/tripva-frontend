@@ -989,8 +989,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <button class="nav-btn" id="nav-trip" onclick="switchTab('trip')"><span class="nav-icon">🗺️</span><span class="nav-lbl">Trip</span></button>
   <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></button>
   <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></button>
-  <button class="nav-btn" id="nav-more" onclick="openMore()"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></button>
+  <button class="nav-btn" id="nav-budget" onclick="openMoreTab('budget')"><span class="nav-icon">💰</span><span class="nav-lbl">Budget</span></button>
   <button class="nav-btn sos-nav" id="nav-sos" onclick="switchTab('sos')"><span class="nav-icon">🆘</span><span class="nav-lbl">SOS</span></button>
+  <button class="nav-btn" id="nav-more" onclick="openMore()"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></button>
 </nav>
 
 </div><!-- /app -->
@@ -2071,7 +2072,24 @@ function populateDashboard(p) {
       <div class="budget-hero-lbl">Confirmed spend</div>
       <div class="budget-hero-num">≈ RM ${Math.round(paidTotal).toLocaleString()}</div>
       <div class="budget-hero-sub">Pending ≈ RM ${Math.round(pendingTotal).toLocaleString()} · Total ≈ RM ${Math.round(paidTotal+pendingTotal).toLocaleString()}</div>
+      <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);font-weight:600">
+        💱 Convert to:
+        <select id="fxSelectInline" onchange="onFxChange(this.value)" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:4px 8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">
+          <option value="USD">USD 🇺🇸</option>
+          <option value="EUR">EUR 🇪🇺</option>
+          <option value="GBP">GBP 🇬🇧</option>
+          <option value="AUD">AUD 🇦🇺</option>
+          <option value="MYR">MYR 🇲🇾</option>
+          <option value="SGD">SGD 🇸🇬</option>
+          <option value="JPY">JPY 🇯🇵</option>
+          <option value="THB">THB 🇹🇭</option>
+          <option value="KRW">KRW 🇰🇷</option>
+          <option value="CNY">CNY 🇨🇳</option>
+        </select>
+      </div>
     </div>`;
+    // sync inline select to current preference
+    requestAnimationFrame(()=>{const s=document.getElementById('fxSelectInline');if(s)s.value=fxHomeCurrency;});
     function addBudgetSection(items, label, cssClass) {
       if(!items.length) return;
       const hdr=document.createElement('div');
