@@ -127,37 +127,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;ali
 .stats-strip{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 clamp(16px,4vw,40px)}
 .stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
 @media(max-width:600px){.stats-inner{grid-template-columns:repeat(2,1fr)}}
-.stat-item{padding:28px 24px;text-align:center;border-right:1px solid var(--border)}
+.stat-item{padding:20px 16px;text-align:center;border-right:1px solid var(--border)}
 .stat-item:last-child{border-right:none}
 @media(max-width:600px){.stat-item:nth-child(2){border-right:none}.stat-item:nth-child(3){border-top:1px solid var(--border)}.stat-item:nth-child(4){border-top:1px solid var(--border);border-right:none}}
 .stat-val{font-size:clamp(26px,3vw,36px);font-weight:900;letter-spacing:-1.5px;color:#fff;display:block}
 .stat-lbl{font-size:13px;color:var(--muted);margin-top:4px;font-weight:500}
 
 /* ─── SECTIONS ───────────────────────────────────────────────────────────── */
-.section{position:relative;z-index:1;padding:100px clamp(16px,4vw,40px)}
+.section{position:relative;z-index:1;padding:72px clamp(16px,4vw,40px)}
 .section-inner{max-width:1200px;margin:0 auto}
-.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
 .eyebrow::before{content:'';width:16px;height:1px;background:var(--accent);opacity:.6}
-h2.section-title{font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:16px;color:#fff}
+h2.section-title{font-size:clamp(26px,3.5vw,42px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:12px;color:#fff}
 .section-desc{font-size:clamp(14px,1.5vw,16px);color:var(--muted2);line-height:1.75;max-width:520px}
 
 /* ─── HOW IT WORKS ───────────────────────────────────────────────────────── */
-.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-top:64px}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-top:36px}
 @media(max-width:640px){.steps-grid{grid-template-columns:1fr}}
-.step{padding:36px 32px;background:var(--bg);position:relative}
-.step-n{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--accent);opacity:.6;margin-bottom:20px}
-.step-icon{width:44px;height:44px;border-radius:14px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px}
-.step-title{font-size:17px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px;color:#fff}
+.step{padding:24px 24px;background:var(--bg);position:relative}
+.step-n{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--accent);opacity:.6;margin-bottom:12px}
+.step-icon{width:40px;height:40px;border-radius:12px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
+.step-title{font-size:16px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px;color:#fff}
 .step-desc{font-size:13px;color:var(--muted2);line-height:1.7}
 
 /* ─── FEATURES ───────────────────────────────────────────────────────────── */
-.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:64px}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:36px}
 @media(max-width:640px){.feat-grid{grid-template-columns:1fr}}
-.feat{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px 28px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s}
+.feat{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px 22px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s}
 .feat:hover{border-color:var(--border2);transform:translateY(-3px)}
 .feat.featured{background:linear-gradient(135deg,rgba(124,93,250,.09),rgba(99,163,255,.04));border-color:rgba(167,139,250,.2)}
 .feat::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);pointer-events:none}
-.feat-icon-box{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;background:var(--surface2);border:1px solid var(--border2)}
+.feat-icon-box{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;background:var(--surface2);border:1px solid var(--border2)}
 .feat-title{font-size:17px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px;color:#fff}
 .feat-desc{font-size:13px;color:var(--muted2);line-height:1.72}
 .feat-tag{display:inline-flex;align-items:center;gap:4px;margin-top:16px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.3px;text-transform:uppercase;opacity:.75}
@@ -183,7 +183,7 @@ h2.section-title{font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-
 @media(max-width:640px){.sc-label.side{display:none}}
 
 /* ─── PRICING ────────────────────────────────────────────────────────────── */
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px}
 @media(max-width:760px){.pricing-grid{grid-template-columns:1fr;max-width:360px;margin:64px auto 0}}
 .price-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
 .price-card:hover{transform:translateY(-4px)}
