@@ -1963,10 +1963,10 @@ function populateDashboard(p) {
   // ── TRIP META ──
   if (p.trip) {
     const t=p.trip; tripMeta={...tripMeta,...t};
-    localStorage.setItem('tripai_meta',JSON.stringify(tripMeta));
-    document.getElementById('tripEmoji').textContent=t.emoji||'🌍';
-    document.getElementById('tripName').textContent=t.name||'My Trip';
-    document.getElementById('tripDates').textContent=[t.dates,t.people&&t.people+' people'].filter(Boolean).join(' · ');
+    try{localStorage.setItem('tripai_meta',JSON.stringify(tripMeta));}catch(e){}
+    const _te=document.getElementById('tripEmoji'); if(_te) _te.textContent=t.emoji||'🌍';
+    const _tn=document.getElementById('tripName'); if(_tn) _tn.textContent=t.name||'My Trip';
+    const _td=document.getElementById('tripDates'); if(_td) _td.textContent=[t.dates,t.people&&t.people+' people'].filter(Boolean).join(' · ');
     if(t.days) document.getElementById('statDays').textContent=t.days;
     if(t.people) document.getElementById('statPeople').textContent=t.people;
     if(t.budget){const _bi=p.budget||[];const _bt=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_bt>0?('~RM '+Math.round(_bt).toLocaleString()):'—';}
@@ -2029,7 +2029,7 @@ function populateDashboard(p) {
     });
 
     // Itin list in overview
-    document.getElementById('itinList').innerHTML=p.days.map((d,i)=>`
+    const _itin=document.getElementById('itinList'); if(_itin) _itin.innerHTML=p.days.map((d,i)=>`
       <div class="itin-row" onclick="switchTab('days');setTimeout(()=>openDaySheet(${i}),150)">
         <div class="day-badge ${i<3?'done':''}">Day ${d.day}</div>
         <div class="itin-info">
