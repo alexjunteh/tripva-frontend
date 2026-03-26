@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AI Trip Planner">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 <title>Roam — Your Trip</title>
 <meta property="og:title" content="My Trip — Roam AI Planner">
 <meta property="og:description" content="View my AI-generated trip itinerary built with Roam.">
@@ -1596,8 +1596,9 @@ function resetPacking() {
 // ══════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════
-window.onload = () => {
-  setTimeout(() => document.getElementById('splash').classList.add('gone'), 1300);
+document.addEventListener("DOMContentLoaded", () => {
+  const _splashMs = (new URLSearchParams(location.search).get('demo')==='1') ? 400 : 1300;
+  setTimeout(() => document.getElementById('splash').classList.add('gone'), _splashMs);
   loadTripPlan();
   const firstMsgTimeEl = document.getElementById('firstMsgTime');
   if (firstMsgTimeEl) firstMsgTimeEl.textContent = fmtTime(new Date());
