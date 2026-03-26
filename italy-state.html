@@ -1867,6 +1867,11 @@ function renderLiveOps(){
   const isTransport=t=>t.type==='transport'||/train|frecciarossa|leonardo express|rotair|rail|PE LIX/i.test((t.title||'')+' '+(t.detail||''));
   const allTrains=(day.timeline||[]).filter(isTransport);
   let trainItem=allTrains.find(t=>{ const tm=parseTimeMins(t.time); return tm<0||tm>nowMins; })||null;
+  // If no future train, check if currently in-progress (departed within last 3h)
+  if(!trainItem){
+    const inProg=allTrains.find(t=>{ const tm=parseTimeMins(t.time); return tm>=0&&tm<=nowMins&&(nowMins-tm)<=180; })||null;
+    if(inProg) trainItem={...inProg,_inProgress:true};
+  }
   const trainItemDay=day; // transport tile = today only
   const hotelItem=(day.timeline||[]).find(t=>t.type==='hotel');
   if(el('opsCurrentStop')) el('opsCurrentStop').textContent = day.title || 'Trip in progress';
@@ -1875,7 +1880,9 @@ function renderLiveOps(){
   el('opsNextTitle').textContent = firstItem.title || 'Open today\u2019s plan';
   el('opsNextText').textContent = firstItem.detail || 'Use the day sheet for the full itinerary.';
   const transportTitle = trainItem
-    ? (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title)
+    ? (trainItem._inProgress
+        ? `🚄 In progress · ${trainItem.title}`
+        : (trainItem.time ? `${trainItem.time} · ${trainItem.title}` : trainItem.title))
     : 'No train today';
   let transportText = trainItem
     ? (String(trainItem.detail||'').split('. ')[0]||trainItem.detail||'')
@@ -2037,13 +2044,14 @@ function renderTransportCard(tl) {
   if (!d || !/BOOKED|PNR|Coach|Platform|order\s+\d/i.test(d)) {
     return d ? `<div class="tl-detail">${esc(d)}</div>` : '';
   }
-  // Split on sentence boundaries that start a new train/segment/info
-  const parts = d.split(/\.\s+(?=(?:Then\s+)?(?:[A-Z]{1,4}\s+\d|Coach|Trenitalia|SBB|Keep|IR|EC|PE|LIX|RE))/);
+  // Split into individual sentences for reliable parsing (avoids status consuming leg lines)
+  const parts = d.split(/\.\s+/).map(s=>s.trim().replace(/\.$/, ''));
   let statusHtml='', legsHtml='', seats='', refs=[];
   parts.forEach(raw => {
     const s = raw.trim().replace(/\.$/, '');
     if (!s) return;
-    if (s.startsWith('✅') || s.startsWith('⏳')) {
+    // Status: starts with ✅/⏳ and does NOT contain a time→time leg
+    if ((s.startsWith('✅') || s.startsWith('⏳')) && !/\d{2}:\d{2}.*→/.test(s)) {
       statusHtml = `<div class="tl-tc-status">${esc(s)}</div>`;
     } else if (/\d{2}:\d{2}.*→/.test(s) || /Platform/i.test(s)) {
       // Parse leg: "IR 2017: Luzern 08:39 Platform 4 → Arth-Goldau 09:11 Platform 6"
