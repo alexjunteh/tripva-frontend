@@ -111,8 +111,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;ali
 .phone{width:260px;height:530px;background:#0c0c18;border:1.5px solid rgba(255,255,255,.28);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 60px 100px rgba(0,0,0,.7),0 20px 40px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06),inset 0 1px 0 rgba(255,255,255,.15),inset 0 -1px 0 rgba(255,255,255,.04),-30px 20px 60px rgba(124,93,250,.2),0 0 60px rgba(124,93,250,.08)}
 .phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:26px;background:#0c0c18;border-bottom-left-radius:18px;border-bottom-right-radius:18px;z-index:10}
 .phone-side-btn{position:absolute;right:-3px;top:100px;width:3px;height:40px;background:rgba(255,255,255,.12);border-radius:2px}
-.phone iframe{width:375px;height:667px;border:none;transform:scale(.693);transform-origin:top left;pointer-events:none}
-@media(max-width:900px){.phone{width:220px;height:448px}.phone iframe{transform:scale(.587)}}
+.phone iframe{width:375px;height:765px;border:none;transform:scale(.693);transform-origin:top left;pointer-events:none}
+@media(max-width:900px){.phone{width:220px;height:448px}.phone iframe{width:375px;height:763px;transform:scale(.587);transform-origin:top left}}
 /* glow under phone */
 .phone-shadow{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);width:200px;height:40px;background:rgba(124,93,250,.25);filter:blur(24px);border-radius:50%;pointer-events:none}
 /* floating cards */
@@ -173,9 +173,9 @@ h2.section-title{font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-
 .sc-phone.side:hover{opacity:.9;transform:scale(.9) translateY(12px)}
 .sc-phone iframe{border:none;pointer-events:none;display:block}
 .sc-phone.center{width:240px;height:480px}
-.sc-phone.center iframe{width:375px;height:667px;transform:scale(.64);transform-origin:top left}
+.sc-phone.center iframe{width:375px;height:750px;transform:scale(.64);transform-origin:top left}
 .sc-phone.side{width:180px;height:360px}
-.sc-phone.side iframe{width:375px;height:667px;transform:scale(.48);transform-origin:top left}
+.sc-phone.side iframe{width:375px;height:750px;transform:scale(.48);transform-origin:top left}
 @media(max-width:640px){.sc-phone.side{display:none}.sc-phone.center{width:220px;height:440px}.sc-phone.center iframe{transform:scale(.587)}}
 .sc-labels{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin-top:16px}
 .sc-label{font-size:11px;font-weight:700;color:var(--muted);text-align:center;letter-spacing:.5px;text-transform:uppercase;width:240px;flex-shrink:0}
