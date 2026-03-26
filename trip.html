@@ -602,6 +602,82 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-tc-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
 .tl-tc-pill{background:rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;color:rgba(255,255,255,.75)}
 .tl-tc-misc{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5}
+
+/* ─── CURRENCY CONVERTER ─── */
+.fx-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;flex-shrink:0}
+.fx-bar-lbl{font-size:12px;color:var(--muted);font-weight:600}
+.fx-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text);position:relative}
+.fx-select{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px}
+.budget-converted{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500;text-align:right}
+
+/* ─── SOS TAB ─── */
+#tab-sos{background:#0f0608}
+.sos-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 24px}
+.sos-header{padding:20px 16px 12px;background:linear-gradient(135deg,rgba(220,38,38,.25),rgba(185,28,28,.1));border-bottom:1px solid rgba(239,68,68,.2);flex-shrink:0}
+.sos-title{font-size:26px;font-weight:900;color:#ff4444;letter-spacing:-.5px;margin-bottom:4px}
+.sos-sub{font-size:13px;color:rgba(255,255,255,.6);font-weight:600}
+.sos-location{font-size:14px;font-weight:800;color:rgba(255,255,255,.85);margin-top:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 12px}
+.sos-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sos-card{display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(220,38,38,.12);border:2px solid rgba(220,38,38,.35);border-radius:18px;padding:16px 10px;text-decoration:none;min-height:100px;transition:all .15s;gap:4px}
+.sos-card:active{background:rgba(220,38,38,.25);transform:scale(.96)}
+.sos-card.police{border-color:rgba(59,130,246,.5);background:rgba(59,130,246,.1)}
+.sos-card.police:active{background:rgba(59,130,246,.25)}
+.sos-card.ambulance{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.1)}
+.sos-card.ambulance:active{background:rgba(239,68,68,.25)}
+.sos-card.fire{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.08)}
+.sos-card.fire:active{background:rgba(245,158,11,.2)}
+.sos-card.tourist{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.1)}
+.sos-card.tourist:active{background:rgba(167,139,250,.25)}
+.sos-card-icon{font-size:28px;line-height:1}
+.sos-card-num{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1.1}
+.sos-card-lbl{font-size:11px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.sos-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px;margin-bottom:12px}
+.sos-section-hdr{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.45);margin-bottom:10px}
+.sos-address{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.55}
+.sos-copy-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);padding:9px 14px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;width:100%;transition:all .15s}
+.sos-copy-btn:active{background:rgba(255,255,255,.14)}
+.sos-embassy-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:var(--accent2);padding:13px 16px;border-radius:13px;font-size:13px;font-weight:800;text-decoration:none;transition:all .15s}
+.sos-embassy-btn:active{background:rgba(167,139,250,.25)}
+.nav-btn.sos-nav{color:#ff6b6b}
+.nav-btn.sos-nav.active{color:#ff4444}
+.nav-btn.sos-nav.active::before{background:rgba(220,38,38,.15)}
+
+/* ─── PACK MODAL ─── */
+.pack-modal{position:fixed;inset:0;z-index:650;background:#0a0a0f;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+.pack-modal.open{transform:translateY(0)}
+.pack-header{padding:16px 20px;background:rgba(10,10,15,.98);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pack-title{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.pack-close{background:rgba(255,255,255,.08);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pack-body{flex:1;overflow-y:auto;padding:14px 16px 100px;-webkit-overflow-scrolling:touch}
+.pack-spinner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 20px}
+.pack-spin{width:44px;height:44px;border:3px solid rgba(124,106,247,.2);border-top-color:#95b8ff;border-radius:50%;animation:spin 1s linear infinite}
+.pack-spin-text{font-size:14px;color:var(--muted);font-weight:600}
+.pack-category{margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.pack-cat-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;transition:background .15s}
+.pack-cat-hdr:active{background:rgba(255,255,255,.04)}
+.pack-cat-left{display:flex;align-items:center;gap:10px}
+.pack-cat-icon{font-size:20px}
+.pack-cat-name{font-size:15px;font-weight:800}
+.pack-cat-count{font-size:12px;color:var(--muted);font-weight:600}
+.pack-cat-chev{color:var(--muted);font-size:16px;transition:transform .25s}
+.pack-category.open .pack-cat-chev{transform:rotate(180deg)}
+.pack-items{display:none;padding:4px 14px 12px;border-top:1px solid var(--border)}
+.pack-category.open .pack-items{display:block}
+.pack-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pack-item:last-child{border-bottom:none}
+.pack-cb{width:22px;height:22px;border-radius:7px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:transparent}
+.pack-cb.checked{background:var(--accent);border-color:var(--accent)}
+.pack-cb.checked::after{content:'✓';color:#fff;font-size:13px;font-weight:900}
+.pack-item-text{font-size:14px;font-weight:600;transition:opacity .15s}
+.pack-item.checked .pack-item-text{opacity:.45;text-decoration:line-through}
+.pack-all-done{display:none;text-align:center;padding:40px 20px;font-size:26px}
+.pack-all-done.show{display:block}
+.pack-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:calc(12px + var(--safe-b));background:rgba(10,10,15,.98);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;z-index:651}
+.pack-progress{font-size:12px;color:var(--muted);font-weight:700}
+.pack-reset{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:9px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}
+.pack-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.3);color:var(--accent2);padding:9px 16px;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;transition:all .15s;margin:10px 14px 4px}
+.pack-btn:active{transform:scale(.96)}
+
 </style>
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -725,6 +801,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div id="routeMap" style="width:100%;height:220px;border-radius:16px;z-index:1;margin:0 14px;width:calc(100% - 28px)"></div>
       <div class="route-map-toggle" id="routeMapToggle" onclick="toggleRouteMap()">🗺️ Route map</div>
     </div>
+    <button class="pack-btn" id="packBtn" onclick="openPackModal()">🎒 Packing List</button>
     <div class="ov-section">
       <div class="ov-section-hdr">📅 Itinerary</div>
       <div id="itinList">
@@ -801,6 +878,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <button class="sub-back" onclick="switchTab('_more')">‹</button>
     <div class="sub-title">💰 Budget</div>
   </div>
+  <div class="fx-bar">
+    <div class="fx-bar-lbl">Convert to:</div>
+    <div class="fx-pill">
+      💱 <span id="fxSelectedLabel">USD</span> ▾
+      <select class="fx-select" id="fxSelect" onchange="onFxChange(this.value)">
+        <option value="USD">USD – US Dollar</option>
+        <option value="EUR">EUR – Euro</option>
+        <option value="GBP">GBP – British Pound</option>
+        <option value="AUD">AUD – Australian Dollar</option>
+        <option value="MYR">MYR – Malaysian Ringgit</option>
+        <option value="SGD">SGD – Singapore Dollar</option>
+        <option value="JPY">JPY – Japanese Yen</option>
+        <option value="THB">THB – Thai Baht</option>
+      </select>
+    </div>
+  </div>
   <div class="budget-scroll" id="budgetScroll">
     <div class="empty-state" id="budgetEmpty">
       <div class="es-icon">💰</div><div class="es-title">Budget data unavailable for this trip</div>
@@ -858,6 +951,38 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   </div>
 </div>
 
+<!-- ── 8. SOS EMERGENCY ── -->
+<div id="tab-sos" class="tab-content">
+  <div class="sos-header">
+    <div class="sos-title">🆘 Emergency SOS</div>
+    <div class="sos-sub">Tap a number to call immediately</div>
+    <div class="sos-location" id="sosLocation">Detecting location from trip...</div>
+  </div>
+  <div class="sos-scroll">
+    <div class="sos-grid" id="sosGrid">
+      <!-- populated by JS -->
+    </div>
+    <div class="sos-section" id="sosHotelSection" style="display:none">
+      <div class="sos-section-hdr">🏨 Your Hotel Address</div>
+      <div class="sos-address" id="sosHotelAddr"></div>
+      <button class="sos-copy-btn" onclick="copySOSAddr()">📋 Copy Address</button>
+    </div>
+    <div class="sos-section">
+      <div class="sos-section-hdr">🌍 Embassy Finder</div>
+      <a id="sosEmbassyLink" href="https://www.embassypages.com/" target="_blank" class="sos-embassy-btn">🏛️ Find Your Embassy →</a>
+    </div>
+    <div class="sos-section">
+      <div class="sos-section-hdr">📞 General Emergency Tips</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.7;font-weight:600">
+        • Stay calm. Speak slowly and clearly.<br>
+        • State your location first when calling.<br>
+        • Keep your passport number handy.<br>
+        • Screenshot this page for offline access.
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── BOTTOM NAV (5 tabs) ── -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-plan" onclick="switchTab('plan')"><span class="nav-icon">🧭</span><span class="nav-lbl">Live</span></button>
@@ -865,6 +990,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></button>
   <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></button>
   <button class="nav-btn" id="nav-more" onclick="openMore()"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></button>
+  <button class="nav-btn sos-nav" id="nav-sos" onclick="switchTab('sos')"><span class="nav-icon">🆘</span><span class="nav-lbl">SOS</span></button>
 </nav>
 
 </div><!-- /app -->
@@ -1076,6 +1202,377 @@ FORMAT RULES:
 const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into this EXACT JSON structure. Output ONLY valid JSON, no markdown, no explanation:
 
 {"trip":{"name":"trip name","emoji":"single emoji","destination":"city/country","dates":"date range","people":number,"budget":"budget per person with currency","days":number,"heroSeed":"destination-keyword"},"days":[{"day":1,"title":"Day title","subtitle":"brief subtitle","emoji":"emoji","heroSeed":"place-keyword","timeline":[{"time":"HH:MM","title":"Activity title","detail":"Full detail with prices and tips","type":"activity|food|transport|hotel|tip","mapQuery":"Google Maps search query"}]}],"hotels":[{"city":"city","name":"hotel name","nights":number,"price":"price with currency","tier":"budget|mid|splurge","note":"why this hotel","bookUrl":"booking URL","heroSeed":"keyword"}],"budget":[{"label":"item","amount":"amount","icon":"emoji","note":"note","pct":0}],"tips":[{"category":"category","icon":"emoji","items":["tip 1","tip 2"]}],"urgent":[{"label":"what to book","note":"why urgent","url":"URL"}],"tickets":[]}`;
+
+
+// ══════════════════════════════════════
+//  AFFILIATE TRACKING
+// ══════════════════════════════════════
+function detectAffiliatePartner(url) {
+  const s = String(url||'').toLowerCase();
+  if (s.includes('agoda') || s.includes('booking.com')) return 'booking';
+  if (s.includes('getyourguide')) return 'gyg';
+  if (s.includes('trainline')) return 'trainline';
+  if (s.includes('rentalcar')) return 'rentalcars';
+  return 'generic';
+}
+
+function trackAffiliateClick(partner) {
+  try {
+    fetch('https://tripai-backend.vercel.app/api/track', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        partner,
+        destination: plan?.trip?.destination || '',
+        tripId: new URLSearchParams(location.search).get('id') || 'local'
+      })
+    }).catch(()=>{});
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════
+//  CURRENCY CONVERTER
+// ══════════════════════════════════════
+const FX_CURRENCIES = ['USD','EUR','GBP','AUD','MYR','SGD','JPY','THB'];
+const DEST_CURRENCY_MAP = {
+  japan:'JPY', italy:'EUR', france:'EUR', spain:'EUR', germany:'EUR',
+  portugal:'EUR', greece:'EUR', netherlands:'EUR', switzerland:'CHF',
+  austria:'EUR', belgium:'EUR', thailand:'THB', malaysia:'MYR',
+  singapore:'SGD', australia:'AUD', 'new zealand':'NZD', uk:'GBP',
+  ireland:'EUR', indonesia:'IDR', india:'INR', vietnam:'VND'
+};
+
+let fxRates = null; // { USD:1, EUR:0.92, ... } keyed by target currency, base USD
+let fxHomeCurrency = localStorage.getItem('roam_home_currency') || 'USD';
+let fxSourceCurrency = 'USD'; // detected from trip destination
+
+async function loadFxRates() {
+  const cached = localStorage.getItem('roam_fx_rates');
+  const ts = parseInt(localStorage.getItem('roam_fx_timestamp') || '0');
+  const now = Date.now();
+  if (cached && (now - ts) < 3600000) {
+    fxRates = JSON.parse(cached);
+    return;
+  }
+  try {
+    const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const d = await r.json();
+    fxRates = d.rates;
+    localStorage.setItem('roam_fx_rates', JSON.stringify(fxRates));
+    localStorage.setItem('roam_fx_timestamp', String(now));
+  } catch(e) { fxRates = null; }
+}
+
+function detectSourceCurrency(destination) {
+  const d = (destination||'').toLowerCase();
+  for (const [key, cur] of Object.entries(DEST_CURRENCY_MAP)) {
+    if (d.includes(key)) return cur;
+  }
+  return 'USD';
+}
+
+function convertAmount(amountStr, fromCur, toCur) {
+  if (!fxRates || fromCur === toCur) return null;
+  // parse number from string
+  const num = parseFloat(String(amountStr).replace(/[^0-9.]/g,''));
+  if (!num || isNaN(num)) return null;
+  // convert: amount in fromCur -> USD -> toCur
+  const fromRate = fxRates[fromCur] || 1;
+  const toRate = fxRates[toCur] || 1;
+  const usd = num / fromRate;
+  const converted = usd * toRate;
+  // format
+  const sym = {USD:'$',EUR:'€',GBP:'£',AUD:'A$',MYR:'RM',SGD:'S$',JPY:'¥',THB:'฿',CHF:'CHF'}[toCur] || toCur+' ';
+  if (toCur === 'JPY') return `≈ ${sym}${Math.round(converted).toLocaleString()} ${toCur}`;
+  return `≈ ${sym}${converted.toFixed(2)} ${toCur}`;
+}
+
+function onFxChange(val) {
+  fxHomeCurrency = val;
+  localStorage.setItem('roam_home_currency', val);
+  document.getElementById('fxSelectedLabel').textContent = val;
+  updateBudgetConversions();
+}
+
+function updateBudgetConversions() {
+  if (!fxRates) return;
+  document.querySelectorAll('.budget-amount[data-raw]').forEach(el => {
+    const raw = el.dataset.raw;
+    const src = el.dataset.src || fxSourceCurrency;
+    let conv = el.querySelector('.budget-converted');
+    if (!conv) {
+      conv = document.createElement('div');
+      conv.className = 'budget-converted';
+      el.appendChild(conv);
+    }
+    const result = convertAmount(raw, src, fxHomeCurrency);
+    conv.textContent = (result && src !== fxHomeCurrency) ? result : '';
+  });
+}
+
+function initFxBar() {
+  const sel = document.getElementById('fxSelect');
+  if (!sel) return;
+  sel.value = fxHomeCurrency;
+  document.getElementById('fxSelectedLabel').textContent = fxHomeCurrency;
+  fxSourceCurrency = detectSourceCurrency(plan?.trip?.destination || '');
+  loadFxRates().then(() => updateBudgetConversions());
+}
+
+// ══════════════════════════════════════
+//  SOS EMERGENCY TAB
+// ══════════════════════════════════════
+const SOS_NUMBERS = {
+  japan:     {police:'110',ambulance:'119',fire:'119',tourist:'03-3501-0110'},
+  italy:     {police:'113',ambulance:'118',fire:'115',tourist:'06-488-991'},
+  france:    {police:'17',ambulance:'15',fire:'18',tourist:'3114'},
+  thailand:  {police:'191',ambulance:'1669',fire:'199',tourist:'1155'},
+  malaysia:  {police:'999',ambulance:'999',fire:'994',tourist:'1300-885-050'},
+  singapore: {police:'999',ambulance:'995',fire:'995',tourist:'1800-736-2000'},
+  usa:       {police:'911',ambulance:'911',fire:'911',tourist:'1-800-432-2778'},
+  uk:        {police:'999',ambulance:'999',fire:'999',tourist:'0845-46-47'},
+  australia: {police:'000',ambulance:'000',fire:'000',tourist:'1300-555-135'},
+  spain:     {police:'091',ambulance:'112',fire:'080',tourist:'902-102-112'},
+  germany:   {police:'110',ambulance:'112',fire:'112',tourist:'116-116'},
+  indonesia: {police:'110',ambulance:'118',fire:'113',tourist:'021-5703600'},
+  india:     {police:'100',ambulance:'102',fire:'101',tourist:'1363'},
+  china:     {police:'110',ambulance:'120',fire:'119',tourist:'12301'},
+  uae:       {police:'999',ambulance:'998',fire:'997',tourist:'800-POLICE'},
+  turkey:    {police:'155',ambulance:'112',fire:'110',tourist:'174'},
+  greece:    {police:'100',ambulance:'166',fire:'199',tourist:'171'},
+  portugal:  {police:'112',ambulance:'112',fire:'112',tourist:'800-296-296'},
+  netherlands:{police:'112',ambulance:'112',fire:'112',tourist:'0900-8844'},
+  switzerland:{police:'117',ambulance:'144',fire:'118',tourist:'0800-100-200-30'},
+  austria:   {police:'133',ambulance:'144',fire:'122',tourist:'01-24555'},
+  belgium:   {police:'101',ambulance:'100',fire:'100',tourist:'070-232-377'},
+  czech:     {police:'158',ambulance:'155',fire:'150',tourist:'800-001-201'},
+  hungary:   {police:'107',ambulance:'104',fire:'105',tourist:'438-8080'},
+  poland:    {police:'997',ambulance:'999',fire:'998',tourist:'0-800-200-300'},
+  croatia:   {police:'192',ambulance:'194',fire:'193',tourist:'062-999-999'},
+  mexico:    {police:'911',ambulance:'911',fire:'911',tourist:'078'},
+  brazil:    {police:'190',ambulance:'192',fire:'193',tourist:'0800-143-336'},
+  argentina: {police:'911',ambulance:'107',fire:'100',tourist:'0800-555-0016'},
+  colombia:  {police:'123',ambulance:'125',fire:'119',tourist:'01-800-093-1505'},
+  'south africa':{police:'10111',ambulance:'10177',fire:'10177',tourist:'083-123-2345'},
+  egypt:     {police:'122',ambulance:'123',fire:'180',tourist:'126'},
+  morocco:   {police:'190',ambulance:'150',fire:'150',tourist:'0801-003-006'},
+  kenya:     {police:'999',ambulance:'999',fire:'999',tourist:'020-604-767'},
+  vietnam:   {police:'113',ambulance:'115',fire:'114',tourist:'1800-599-918'},
+  cambodia:  {police:'117',ambulance:'119',fire:'118',tourist:'023-726-258'},
+  philippines:{police:'911',ambulance:'911',fire:'911',tourist:'1521'},
+  'south korea':{police:'112',ambulance:'119',fire:'119',tourist:'1330'},
+  taiwan:    {police:'110',ambulance:'119',fire:'119',tourist:'0800-011-765'},
+  'hong kong':{police:'999',ambulance:'999',fire:'999',tourist:'2807-6177'},
+  'new zealand':{police:'111',ambulance:'111',fire:'111',tourist:'0800-736-363'},
+  canada:    {police:'911',ambulance:'911',fire:'911',tourist:'1-800-267-6788'},
+  ireland:   {police:'999',ambulance:'999',fire:'999',tourist:'1890-252-100'},
+  scotland:  {police:'999',ambulance:'999',fire:'999',tourist:'0131-247-4000'},
+  norway:    {police:'112',ambulance:'113',fire:'110',tourist:'22-24-89-00'},
+  sweden:    {police:'112',ambulance:'112',fire:'112',tourist:'08-587-172-00'},
+  denmark:   {police:'114',ambulance:'112',fire:'112',tourist:'70-222-442'},
+  finland:   {police:'112',ambulance:'112',fire:'112',tourist:'029-516-0013'}
+};
+
+function detectSOSCountry(destination) {
+  const d = (destination||'').toLowerCase();
+  // Try longest match first
+  const keys = Object.keys(SOS_NUMBERS).sort((a,b) => b.length - a.length);
+  for (const k of keys) {
+    if (d.includes(k)) return k;
+  }
+  return null;
+}
+
+function renderSOSTab() {
+  const destination = plan?.trip?.destination || '';
+  const country = detectSOSCountry(destination);
+  const nums = country ? SOS_NUMBERS[country] : {police:'112',ambulance:'112',fire:'112',tourist:'112'};
+  const countryLabel = country ? (country.charAt(0).toUpperCase() + country.slice(1)) : (destination || 'your destination');
+
+  document.getElementById('sosLocation').textContent = '📍 ' + (destination || 'Unknown destination');
+
+  const cardTypes = [
+    {cls:'police',  icon:'🚔', label:'Police',      num: nums.police},
+    {cls:'ambulance',icon:'🚑',label:'Ambulance',   num: nums.ambulance},
+    {cls:'fire',    icon:'🚒', label:'Fire',         num: nums.fire},
+    {cls:'tourist', icon:'ℹ️', label:'Tourist Police',num: nums.tourist}
+  ];
+
+  document.getElementById('sosGrid').innerHTML = cardTypes.map(c =>
+    `<a class="sos-card ${c.cls}" href="tel:${c.num}">
+      <div class="sos-card-icon">${c.icon}</div>
+      <div class="sos-card-num">${c.num}</div>
+      <div class="sos-card-lbl">${c.label}</div>
+    </a>`
+  ).join('');
+
+  // Hotel address
+  const hotel = plan?.hotels?.[0];
+  if (hotel) {
+    const addr = [hotel.name, hotel.city].filter(Boolean).join(', ');
+    document.getElementById('sosHotelAddr').textContent = addr + (hotel.address ? ', ' + hotel.address : '');
+    document.getElementById('sosHotelSection').style.display = 'block';
+    document.getElementById('sosHotelSection').dataset.addr = addr;
+  }
+
+  // Embassy link
+  const embassyQuery = encodeURIComponent(`embassy ${countryLabel}`);
+  document.getElementById('sosEmbassyLink').href = `https://www.google.com/search?q=${embassyQuery}+embassy+finder`;
+}
+
+function copySOSAddr() {
+  const addr = document.getElementById('sosHotelSection').dataset.addr || document.getElementById('sosHotelAddr').textContent;
+  navigator.clipboard?.writeText(addr).then(() => showToast('📋 Address copied!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = addr; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('📋 Address copied!');
+  });
+}
+
+// ══════════════════════════════════════
+//  PACKING LIST
+// ══════════════════════════════════════
+const PACK_CATEGORIES = [
+  {key:'clothing',   icon:'👕', name:'Clothing'},
+  {key:'documents',  icon:'📄', name:'Documents'},
+  {key:'electronics',icon:'🔌', name:'Electronics'},
+  {key:'toiletries', icon:'🧴', name:'Toiletries'},
+  {key:'misc',       icon:'🎒', name:'Misc & Extras'}
+];
+
+let packingData = null;
+
+function getPackStorageKey() {
+  const tripId = new URLSearchParams(location.search).get('id') || 'local';
+  return 'roam_packing_' + tripId;
+}
+
+function loadPackingState() {
+  try { return JSON.parse(localStorage.getItem(getPackStorageKey()) || '{}'); } catch(e) { return {}; }
+}
+
+function savePackingState(state) {
+  localStorage.setItem(getPackStorageKey(), JSON.stringify(state));
+}
+
+function openPackModal() {
+  document.getElementById('packModal').classList.add('open');
+  if (!packingData) fetchPacking();
+  else renderPackingList(packingData);
+}
+
+function closePackModal() {
+  document.getElementById('packModal').classList.remove('open');
+}
+
+async function fetchPacking() {
+  const body = document.getElementById('packBody');
+  document.getElementById('packFooter').style.display = 'none';
+  body.innerHTML = `<div class="pack-spinner"><div class="pack-spin"></div><div class="pack-spin-text">Building your packing list with AI...</div></div>`;
+
+  const p = plan?.trip || {};
+  try {
+    const r = await fetch('https://tripai-backend.vercel.app/api/packing', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        destination: p.destination || 'unknown',
+        startDate: p.dates?.split(/[-–]/)[0]?.trim() || '',
+        endDate:   p.dates?.split(/[-–]/)[1]?.trim() || '',
+        activities: (plan?.days||[]).flatMap(d=>d.timeline||[]).filter(t=>t.type==='activity').map(t=>t.title).slice(0,8).join(', '),
+        tripStyle: p.budget || 'mid-range',
+        people: p.people || 1
+      })
+    });
+    if (!r.ok) throw new Error('API error '+r.status);
+    packingData = await r.json();
+    renderPackingList(packingData);
+  } catch(e) {
+    body.innerHTML = `<div class="empty-state"><div class="es-icon">❌</div><div class="es-title">Could not load packing list</div><div class="es-text">${e.message}</div><button class="es-btn" onclick="fetchPacking()">Try again</button></div>`;
+  }
+}
+
+function renderPackingList(data) {
+  const state = loadPackingState();
+  const body = document.getElementById('packBody');
+  body.innerHTML = '';
+  let totalItems = 0, checkedItems = 0;
+
+  PACK_CATEGORIES.forEach((cat, ci) => {
+    const items = data[cat.key] || [];
+    if (!items.length) return;
+    totalItems += items.length;
+    const catChecked = items.filter(item => state[cat.key+'_'+item]).length;
+    checkedItems += catChecked;
+
+    const div = document.createElement('div');
+    div.className = 'pack-category' + (ci === 0 ? ' open' : '');
+    div.innerHTML = `
+      <div class="pack-cat-hdr" onclick="this.closest('.pack-category').classList.toggle('open')">
+        <div class="pack-cat-left">
+          <div class="pack-cat-icon">${cat.icon}</div>
+          <div class="pack-cat-name">${cat.name}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="pack-cat-count">${catChecked}/${items.length}</div>
+          <div class="pack-cat-chev">▾</div>
+        </div>
+      </div>
+      <div class="pack-items">
+        ${items.map(item => {
+          const k = cat.key+'_'+item;
+          const checked = !!state[k];
+          return `<div class="pack-item${checked?' checked':''}" data-key="${k}" onclick="togglePackItem(this,'${k}')">
+            <div class="pack-cb${checked?' checked':''}"></div>
+            <div class="pack-item-text">${item}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    body.appendChild(div);
+  });
+
+  // All done message
+  const done = document.createElement('div');
+  done.className = 'pack-all-done' + (checkedItems === totalItems && totalItems > 0 ? ' show' : '');
+  done.id = 'packAllDone';
+  done.innerHTML = '✈️ All packed!<br><span style="font-size:16px;color:var(--muted)">You\'re ready to fly!</span>';
+  body.appendChild(done);
+
+  document.getElementById('packFooter').style.display = 'flex';
+  updatePackProgress(checkedItems, totalItems);
+}
+
+function togglePackItem(el, key) {
+  const state = loadPackingState();
+  const isChecked = !state[key];
+  state[key] = isChecked;
+  savePackingState(state);
+  el.classList.toggle('checked', isChecked);
+  el.querySelector('.pack-cb').classList.toggle('checked', isChecked);
+  // Recount
+  const body = document.getElementById('packBody');
+  const total = body.querySelectorAll('.pack-item').length;
+  const checked = body.querySelectorAll('.pack-item.checked').length;
+  updatePackProgress(checked, total);
+  const allDone = document.getElementById('packAllDone');
+  if (allDone) allDone.classList.toggle('show', checked === total && total > 0);
+  // Update category count
+  const catDiv = el.closest('.pack-category');
+  if (catDiv) {
+    const catTotal = catDiv.querySelectorAll('.pack-item').length;
+    const catChecked = catDiv.querySelectorAll('.pack-item.checked').length;
+    catDiv.querySelector('.pack-cat-count').textContent = `${catChecked}/${catTotal}`;
+  }
+}
+
+function updatePackProgress(checked, total) {
+  document.getElementById('packProgress').textContent = `${checked} / ${total} packed`;
+}
+
+function resetPacking() {
+  localStorage.removeItem(getPackStorageKey());
+  if (packingData) renderPackingList(packingData);
+}
 
 // ══════════════════════════════════════
 //  INIT
@@ -1524,7 +2021,7 @@ function populateDashboard(p) {
         const when=extractWhen(u.label,u.note);
         const itemKey=esc(u.label||'').replace(/'/g,"\'");
         const c=document.createElement('div'); c.className='book-card priority'; c.id='bc-'+i;
-        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripai_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
+        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank" onclick="trackAffiliateClick('${detectAffiliatePartner(u.url)}')">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripai_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
         pendingWrap.appendChild(c);
       });
       scroll.appendChild(pendingWrap);
@@ -1537,7 +2034,7 @@ function populateDashboard(p) {
       bookedWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot booked"></span>✅ CONFIRMED STAYS (${bookedHotels.length})</div>`;
       bookedHotels.forEach(h=>{
         const c=document.createElement('div'); c.className='book-card booked-card';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${h.bookUrl||'#'}" target="_blank">📍 Open location →</a></div>`;
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">📍 Open location →</a></div>`;
         bookedWrap.appendChild(c);
       });
       scroll.appendChild(bookedWrap);
@@ -1554,7 +2051,7 @@ function populateDashboard(p) {
         const c=document.createElement('div'); c.className='book-card arrange-card';
         const starsStr = h.stars ? '⭐'.repeat(Math.min(h.stars,5)) : '';
         const ratingStr = h.rating ? `${h.rating}/10` : '';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank">${btn}</a></div>`;
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">${btn}</a></div>`;
         arrangeWrap.appendChild(c);
       });
       scroll.appendChild(arrangeWrap);
@@ -1592,12 +2089,13 @@ function populateDashboard(p) {
             ${b.note?`<div class="budget-note">${esc(b.note)}</div>`:''}
             <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
           </div>
-          <div class="budget-amount">${esc(b.amount||'')}</div>`;
+          <div class="budget-amount" data-raw="${esc(b.amount||'')}" data-src="${fxSourceCurrency}">${esc(b.amount||'')}</div>`;
         scroll.appendChild(row);
       });
     }
     addBudgetSection(paidItems, '✅ BOOKED / PAID ('+paidItems.length+')', 'budget-booked');
     addBudgetSection(pendingItems, '⏳ PENDING / ESTIMATE ('+pendingItems.length+')', 'budget-pending');
+    initFxBar();
   }
 
   // ── TIPS ──
@@ -1613,6 +2111,8 @@ function populateDashboard(p) {
       </div>`).join('');
     document.getElementById('ts-0')?.classList.add('open');
   }
+  // Render SOS tab
+  renderSOSTab();
 
   // ── URGENT ──
   document.getElementById('nav-trip')?.querySelector('.nav-badge')?.remove();
@@ -1918,11 +2418,11 @@ function renderLiveOps(){
   el('opsTransportText').textContent = transportText;
   el('opsStayTitle').textContent = currentHotel ? currentHotel.name : (hotelItem ? hotelItem.title : 'Hotel not matched');
   el('opsStayText').textContent = currentHotel ? `${currentHotel.price||''} · ${currentHotel.note||''}` : (hotelItem ? hotelItem.detail||'' : 'Check Book Now tab');
-  if(el('opsStayActions')) el('opsStayActions').innerHTML = currentHotel?.bookUrl ? `<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">View hotel</a>` : '';
+  if(el('opsStayActions')) el('opsStayActions').innerHTML = currentHotel?.bookUrl ? `<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}" onclick="trackAffiliateClick('booking')">View hotel</a>` : '';
   const acts=[];
   if(trainItem?.mapQuery) acts.push(`<a class="ops-link" target="_blank" href="https://maps.google.com/?q=${encodeURIComponent(trainItem.mapQuery)}">Transport map</a>`);
   acts.push(`<a class="ops-link secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx})">Open day sheet</a>`);
-  if(currentHotel?.bookUrl) acts.push(`<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}">View hotel</a>`);
+  if(currentHotel?.bookUrl) acts.push(`<a class="ops-link secondary" target="_blank" href="${currentHotel.bookUrl}" onclick="trackAffiliateClick('booking')">View hotel</a>`);
   el('opsActions').innerHTML = acts.join('');
   // Derive urgent inline — renderLiveOps is self-contained, never reads global state patches
   const _urgentActs=(plan.days||[]).flatMap(d=>(d.timeline||[])
@@ -1935,7 +2435,7 @@ function renderLiveOps(){
   );
   const _dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
   const urgent=[..._urgentActs,..._urgentSegs].filter(u=>!_dismissed.includes(u.label||''));
-  const urgentPreview=urgent.slice(0,2).map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('uffizi')||label.includes('accademia')||label.includes('colosseum')||label.includes('vatican')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⏳</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="${u.url||'#'}" target="_blank">${btn}</a></div></div></div>`; });
+  const urgentPreview=urgent.slice(0,2).map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('uffizi')||label.includes('accademia')||label.includes('colosseum')||label.includes('vatican')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⏳</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="${u.url||'#'}" target="_blank" onclick="trackAffiliateClick('generic')">${btn}</a></div></div></div>`; });
   el('opsTodoList').innerHTML = [
     ...urgentPreview,
     (nextDay?`<div class="ops-todo"><div class="ops-todo-icon">➡️</div><div class="ops-todo-main"><div class="ops-todo-title">Next trip leg: Day ${nextDay.day} - ${esc(nextDay.title||'')}</div><div class="ops-todo-note">${formatDayDate(nextDay.day)} · ${esc(nextDay.subtitle||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="javascript:switchTab('days');openDaySheet(${currentIdx+1})">Open next day →</a><a class="ops-mini-btn secondary" href="javascript:switchTab('hotels')">Book Now hub</a></div></div></div>`:'')
@@ -2497,10 +2997,36 @@ function fabInstall() {
   window.adjustTravellers = adjustTravellers;
   window.closeModal     = closeModal;
   window.openApiModal   = openApiModal;
+  window.detectAffiliatePartner = detectAffiliatePartner;
+  window.trackAffiliateClick = trackAffiliateClick;
+  window.onFxChange     = onFxChange;
+  window.copySOSAddr    = copySOSAddr;
+  window.openPackModal  = openPackModal;
+  window.closePackModal = closePackModal;
+  window.togglePackItem = togglePackItem;
+  window.resetPacking   = resetPacking;
 } // close window.onload
 
 </script>
 <!-- ── FLOATING ACTION BUTTON ── -->
+<!-- ── PACK MODAL ── -->
+<div class="pack-modal" id="packModal">
+  <div class="pack-header">
+    <div class="pack-title">🎒 Packing List</div>
+    <button class="pack-close" onclick="closePackModal()">✕</button>
+  </div>
+  <div class="pack-body" id="packBody">
+    <div class="pack-spinner" id="packSpinner">
+      <div class="pack-spin"></div>
+      <div class="pack-spin-text">Building your packing list...</div>
+    </div>
+  </div>
+  <div class="pack-footer" id="packFooter" style="display:none">
+    <div class="pack-progress" id="packProgress">0 / 0 packed</div>
+    <button class="pack-reset" onclick="resetPacking()">Reset</button>
+  </div>
+</div>
+
 <div class="fab-backdrop" id="fabBackdrop" onclick="closeFab()"></div>
 <div class="fab-wrap" id="fabWrap">
   <div class="fab-actions" id="fabActions">
