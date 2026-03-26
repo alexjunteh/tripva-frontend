@@ -40,17 +40,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* ─── APP SHELL ─── */
 #app{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.tab-content{display:none;flex:1;overflow:hidden;flex-direction:column;animation:fadeIn .15s ease}
+.tab-content{display:none;flex:1;overflow:hidden;flex-direction:column;animation:fadeIn .22s cubic-bezier(.25,.1,.25,1)}
 .tab-content.active{display:flex}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── BOTTOM NAV - 5 TABS, iOS pill style ─── */
 .bottom-nav{display:flex;background:rgba(8,8,13,.97);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:1px solid var(--border);padding:6px 4px calc(6px + var(--safe-b));flex-shrink:0;z-index:100}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:600;min-height:48px;background:none;border:none;position:relative;transition:color .2s;padding:4px 2px;border-radius:14px}
 .nav-btn.active{color:var(--accent2)}
-.nav-btn.active::before{content:'';position:absolute;inset:2px 8px;background:rgba(124,106,247,.15);border-radius:12px}
+.nav-btn.active::before{content:'';position:absolute;inset:2px 8px;background:rgba(124,106,247,.12);border-radius:12px}
+.nav-btn.active::after{content:'';position:absolute;top:3px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--accent2);border-radius:2px;opacity:.9}
 .nav-icon{font-size:22px;line-height:1;position:relative;z-index:1;transition:transform .2s}
-.nav-btn.active .nav-icon{transform:scale(1.1)}
+.nav-btn.active .nav-icon{transform:scale(1.12) translateY(-1px)}
 .nav-lbl{position:relative;z-index:1;letter-spacing:.1px}
 .nav-badge{position:absolute;top:2px;right:10px;background:var(--red);color:#fff;font-size:9px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center;z-index:2}
 
@@ -135,7 +136,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* Stats row */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 14px 4px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 10px;text-align:center}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08)}
 .stat-num{font-size:22px;font-weight:800;color:var(--accent2);letter-spacing:-.5px}
 .stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
 .focus-card,.ops-time-card,.ops-card,.ops-todo,.ops-row{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.045));backdrop-filter:blur(16px) saturate(135%);-webkit-backdrop-filter:blur(16px) saturate(135%);border:1px solid rgba(255,255,255,.10);box-shadow:0 12px 28px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.08)}
@@ -486,7 +487,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .budget-hero-lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
 .budget-hero-num{font-size:38px;font-weight:800;color:var(--accent2);letter-spacing:-1px}
 .budget-hero-sub{font-size:12px;color:var(--muted);margin-top:5px}
-.budget-row{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:7px}
+.budget-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .budget-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
 .budget-info{flex:1;min-width:0}
 .budget-label{font-size:13px;font-weight:700}
@@ -604,10 +605,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-tc-misc{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5}
 
 /* ─── CURRENCY CONVERTER ─── */
-.fx-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;flex-shrink:0}
-.fx-bar-lbl{font-size:12px;color:var(--muted);font-weight:600}
-.fx-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text);position:relative}
-.fx-select{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:16px}
+.fx-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;flex-shrink:0;gap:10px}
+.fx-bar-lbl{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap;flex-shrink:0}
+.fx-chips-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.fx-chips-row::-webkit-scrollbar{display:none}
+.fx-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);white-space:nowrap;flex-shrink:0;transition:all .15s}
+.fx-chip.active{background:rgba(124,106,247,.2);border-color:rgba(124,106,247,.5);color:var(--accent2)}
+.fx-chip:active{transform:scale(.93)}
 .budget-converted{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500;text-align:right}
 
 /* ─── SOS TAB ─── */
@@ -618,7 +622,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .sos-sub{font-size:13px;color:rgba(255,255,255,.6);font-weight:600}
 .sos-location{font-size:14px;font-weight:800;color:rgba(255,255,255,.85);margin-top:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 12px}
 .sos-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.sos-card{display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(220,38,38,.12);border:2px solid rgba(220,38,38,.35);border-radius:18px;padding:16px 10px;text-decoration:none;min-height:100px;transition:all .15s;gap:4px}
+.sos-card{display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(220,38,38,.12);border:2px solid rgba(220,38,38,.35);border-radius:18px;padding:18px 12px;text-decoration:none;min-height:120px;transition:transform .12s ease,background .12s ease;gap:4px}
 .sos-card:active{background:rgba(220,38,38,.25);transform:scale(.96)}
 .sos-card.police{border-color:rgba(59,130,246,.5);background:rgba(59,130,246,.1)}
 .sos-card.police:active{background:rgba(59,130,246,.25)}
@@ -879,19 +883,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="sub-title">💰 Budget</div>
   </div>
   <div class="fx-bar">
-    <div class="fx-bar-lbl">Convert to:</div>
-    <div class="fx-pill">
-      💱 <span id="fxSelectedLabel">USD</span> ▾
-      <select class="fx-select" id="fxSelect" onchange="onFxChange(this.value)">
-        <option value="USD">USD – US Dollar</option>
-        <option value="EUR">EUR – Euro</option>
-        <option value="GBP">GBP – British Pound</option>
-        <option value="AUD">AUD – Australian Dollar</option>
-        <option value="MYR">MYR – Malaysian Ringgit</option>
-        <option value="SGD">SGD – Singapore Dollar</option>
-        <option value="JPY">JPY – Japanese Yen</option>
-        <option value="THB">THB – Thai Baht</option>
-      </select>
+    <div class="fx-bar-lbl">💱 Convert to</div>
+    <div class="fx-chips-row" id="fxChipsRow">
+      <button class="fx-chip active" data-cur="USD" onclick="onFxChange('USD')">USD</button>
+      <button class="fx-chip" data-cur="MYR" onclick="onFxChange('MYR')">MYR</button>
+      <button class="fx-chip" data-cur="EUR" onclick="onFxChange('EUR')">EUR</button>
+      <button class="fx-chip" data-cur="GBP" onclick="onFxChange('GBP')">GBP</button>
+      <button class="fx-chip" data-cur="AUD" onclick="onFxChange('AUD')">AUD</button>
+      <button class="fx-chip" data-cur="SGD" onclick="onFxChange('SGD')">SGD</button>
+      <button class="fx-chip" data-cur="JPY" onclick="onFxChange('JPY')">JPY</button>
+      <button class="fx-chip" data-cur="THB" onclick="onFxChange('THB')">THB</button>
     </div>
   </div>
   <div class="budget-scroll" id="budgetScroll">
@@ -986,9 +987,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <!-- ── BOTTOM NAV (5 tabs) ── -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-plan" onclick="switchTab('plan')"><span class="nav-icon">🧭</span><span class="nav-lbl">Live</span></button>
-  <button class="nav-btn" id="nav-trip" onclick="switchTab('trip')"><span class="nav-icon">🗺️</span><span class="nav-lbl">Trip</span></button>
   <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></button>
-  <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></button>
   <button class="nav-btn" id="nav-budget" onclick="openMoreTab('budget')"><span class="nav-icon">💰</span><span class="nav-lbl">Budget</span></button>
   <button class="nav-btn sos-nav" id="nav-sos" onclick="switchTab('sos')"><span class="nav-icon">🆘</span><span class="nav-lbl">SOS</span></button>
   <button class="nav-btn" id="nav-more" onclick="openMore()"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></button>
@@ -1025,15 +1024,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="more-handle-row"><div class="more-handle"></div></div>
     <div class="more-title">More</div>
     <div class="more-grid">
+      <div class="more-item" onclick="closeMore();switchTab('trip')">
+        <div class="more-item-icon">🗺️</div>
+        <div class="more-item-label">Map View</div>
+        <div class="more-item-sub">Route + overview</div>
+      </div>
+      <div class="more-item" onclick="closeMore();switchTab('tickets')">
+        <div class="more-item-icon">🎟️</div>
+        <div class="more-item-label">Tickets</div>
+        <div class="more-item-sub">Saved passes</div>
+      </div>
       <div class="more-item" onclick="openMoreTab('hotels')">
         <div class="more-item-icon">🏨</div>
         <div class="more-item-label">Book Now</div>
-        <div class="more-item-sub">Trains + hotel links</div>
-      </div>
-      <div class="more-item" onclick="openMoreTab('budget')">
-        <div class="more-item-icon">💰</div>
-        <div class="more-item-label">Budget</div>
-        <div class="more-item-sub">Cost breakdown</div>
+        <div class="more-item-sub">Hotels + trains</div>
       </div>
       <div class="more-item" onclick="openMoreTab('tips')">
         <div class="more-item-icon">💡</div>
@@ -1043,14 +1047,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="more-item" onclick="closeMore();openPlanner()">
         <div class="more-item-icon">✨</div>
         <div class="more-item-label">New Trip</div>
-        <div class="more-item-sub">AI trip planner</div>
+        <div class="more-item-sub">AI planner</div>
       </div>
       <div class="more-item" onclick="closeMore();shareTripLink()">
         <div class="more-item-icon">🔗</div>
         <div class="more-item-label">Share</div>
-        <div class="more-item-sub">Copy share link</div>
+        <div class="more-item-sub">Copy link</div>
       </div>
-
     </div>
     <div class="more-divider"></div>
     <div class="more-action-row">
@@ -1290,7 +1293,11 @@ function convertAmount(amountStr, fromCur, toCur) {
 function onFxChange(val) {
   fxHomeCurrency = val;
   localStorage.setItem('roam_home_currency', val);
-  document.getElementById('fxSelectedLabel').textContent = val;
+  // Sync chip active states
+  document.querySelectorAll('.fx-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cur === val);
+  });
+  const il = document.getElementById('fxSelectInline'); if(il) il.value = val;
   updateBudgetConversions();
 }
 
@@ -1313,8 +1320,11 @@ function updateBudgetConversions() {
 function initFxBar() {
   const sel = document.getElementById('fxSelect');
   if (!sel) return;
-  sel.value = fxHomeCurrency;
-  document.getElementById('fxSelectedLabel').textContent = fxHomeCurrency;
+  // init chip strip
+  document.querySelectorAll('.fx-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cur === fxHomeCurrency);
+  });
+  const il = document.getElementById('fxSelectInline'); if(il) il.value = fxHomeCurrency;
   fxSourceCurrency = detectSourceCurrency(plan?.trip?.destination || '');
   loadFxRates().then(() => updateBudgetConversions());
 }
@@ -2072,24 +2082,7 @@ function populateDashboard(p) {
       <div class="budget-hero-lbl">Confirmed spend</div>
       <div class="budget-hero-num">≈ RM ${Math.round(paidTotal).toLocaleString()}</div>
       <div class="budget-hero-sub">Pending ≈ RM ${Math.round(pendingTotal).toLocaleString()} · Total ≈ RM ${Math.round(paidTotal+pendingTotal).toLocaleString()}</div>
-      <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);font-weight:600">
-        💱 Convert to:
-        <select id="fxSelectInline" onchange="onFxChange(this.value)" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:4px 8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">
-          <option value="USD">USD 🇺🇸</option>
-          <option value="EUR">EUR 🇪🇺</option>
-          <option value="GBP">GBP 🇬🇧</option>
-          <option value="AUD">AUD 🇦🇺</option>
-          <option value="MYR">MYR 🇲🇾</option>
-          <option value="SGD">SGD 🇸🇬</option>
-          <option value="JPY">JPY 🇯🇵</option>
-          <option value="THB">THB 🇹🇭</option>
-          <option value="KRW">KRW 🇰🇷</option>
-          <option value="CNY">CNY 🇨🇳</option>
-        </select>
-      </div>
     </div>`;
-    // sync inline select to current preference
-    requestAnimationFrame(()=>{const s=document.getElementById('fxSelectInline');if(s)s.value=fxHomeCurrency;});
     function addBudgetSection(items, label, cssClass) {
       if(!items.length) return;
       const hdr=document.createElement('div');
