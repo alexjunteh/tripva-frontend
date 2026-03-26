@@ -2496,15 +2496,20 @@ function renderLiveOps(){
   // Set hero image
   const titleLow = (day.title||'').toLowerCase();
   let heroImg = '';
-  // For travel days (X → Y), prioritise destination (Y)
-  const arrowParts = titleLow.split(/→|to /);
-  const destPart = arrowParts.length > 1 ? arrowParts[arrowParts.length-1].trim() : titleLow;
-  for(const [city, url] of Object.entries(CITY_IMGS)){
-    if(destPart.includes(city)){ heroImg=url; break; }
-  }
-  if(!heroImg){
+  // 1. Use day.heroSeed directly (most reliable)
+  if(day.heroSeed && CITY_IMGS[day.heroSeed.toLowerCase()]){
+    heroImg = CITY_IMGS[day.heroSeed.toLowerCase()];
+  } else {
+    // 2. Fall back: title-based matching
+    const arrowParts = titleLow.split(/→|to /);
+    const destPart = arrowParts.length > 1 ? arrowParts[arrowParts.length-1].trim() : titleLow;
     for(const [city, url] of Object.entries(CITY_IMGS)){
-      if(titleLow.includes(city)){ heroImg=url; break; }
+      if(destPart.includes(city)){ heroImg=url; break; }
+    }
+    if(!heroImg){
+      for(const [city, url] of Object.entries(CITY_IMGS)){
+        if(titleLow.includes(city)){ heroImg=url; break; }
+      }
     }
   }
 
