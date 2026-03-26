@@ -22,7 +22,7 @@ body{background:#08080f;color:#f0f0f8;font-family:-apple-system,BlinkMacSystemFo
 .days-scroll{overflow-x:auto;padding:0 16px 10px;display:flex;gap:8px;scrollbar-width:none}
 .days-scroll::-webkit-scrollbar{display:none}
 .day-pill{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:default;background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);white-space:nowrap}
-.day-pill.active{background:linear-gradient(135deg,#7c5dfa,#818cf8);color:#fff}
+.day-pill.active{background:rgba(124,93,250,.25);border:1px solid rgba(124,93,250,.5);color:#c4b5fd}
 .day-pill .cnt{font-size:10px;opacity:.7}
 
 /* day cards */
@@ -42,7 +42,7 @@ body{background:#08080f;color:#f0f0f8;font-family:-apple-system,BlinkMacSystemFo
 .tl-item:last-child{border-bottom:none}
 .tl-time{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);width:36px;flex-shrink:0;padding-top:1px}
 .tl-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
-.tl-dot.activity{background:#7c5dfa}
+.tl-dot.activity{background:#818cf8}
 .tl-dot.food{background:#f59e0b}
 .tl-dot.transport{background:#3b82f6}
 .tl-dot.hotel{background:#10b981}
@@ -53,12 +53,11 @@ body{background:#08080f;color:#f0f0f8;font-family:-apple-system,BlinkMacSystemFo
 /* nav */
 .nav{position:absolute;bottom:0;left:0;right:0;height:72px;background:rgba(8,8,15,.95);border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:flex-start;padding:8px 0 0;backdrop-filter:blur(20px)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:default;padding:0 4px}
-.nav-icon{font-size:20px;line-height:1}
-.nav-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.2px}
-.nav-btn.active .nav-icon{filter:none}
+.nav-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.2px;margin-top:1px}
 .nav-btn.active .nav-lbl{color:#818cf8}
 .nav-btn.active::after{content:'';display:block;width:20px;height:2px;background:linear-gradient(90deg,#7c5dfa,#818cf8);border-radius:1px;position:absolute;bottom:0}
 .nav-btn{position:relative}
+.nav-btn svg{display:block}
 </style>
 </head>
 <body>
@@ -139,7 +138,7 @@ body{background:#08080f;color:#f0f0f8;font-family:-apple-system,BlinkMacSystemFo
 
   <!-- Day 3 -->
   <div class="day-card">
-    <div class="dc-hero" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=220&fit=crop&sat=-20')">
+    <div class="dc-hero" style="background-image:url('https://images.unsplash.com/photo-1431274172761-fcdab704f359?w=600&h=220&fit=crop')">
       <div class="dc-hero-overlay"></div>
       <div class="dc-hero-label">
         <div>
@@ -203,11 +202,26 @@ body{background:#08080f;color:#f0f0f8;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- Bottom nav -->
 <nav class="nav">
-  <div class="nav-btn"><span class="nav-icon">🧭</span><span class="nav-lbl">Live</span></div>
-  <div class="nav-btn active"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></div>
-  <div class="nav-btn"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></div>
-  <div class="nav-btn"><span class="nav-icon">💰</span><span class="nav-lbl">Budget</span></div>
-  <div class="nav-btn"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></div>
+  <div class="nav-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg>
+    <span class="nav-lbl">Live</span>
+  </div>
+  <div class="nav-btn active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    <span class="nav-lbl" style="color:#818cf8">Days</span>
+  </div>
+  <div class="nav-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.8" stroke-linecap="round"><path d="M2 9a2 2 0 012-2h16a2 2 0 012 2v1a1 1 0 010 2v1a2 2 0 01-2 2H4a2 2 0 01-2-2v-1a1 1 0 010-2V9z"/><path d="M9 9v6M15 9v6"/></svg>
+    <span class="nav-lbl">Tickets</span>
+  </div>
+  <div class="nav-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v2M12 16v2M9.5 9.5C9.5 8.1 10.6 7 12 7s2.5 1.1 2.5 2.5c0 2.5-5 2.5-5 5H17"/></svg>
+    <span class="nav-lbl">Budget</span>
+  </div>
+  <div class="nav-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="12" r="1.5" fill="rgba(255,255,255,.35)"/><circle cx="12" cy="12" r="1.5" fill="rgba(255,255,255,.35)"/><circle cx="19" cy="12" r="1.5" fill="rgba(255,255,255,.35)"/></svg>
+    <span class="nav-lbl">More</span>
+  </div>
 </nav>
 
 </body>
