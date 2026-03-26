@@ -1932,7 +1932,12 @@ function populateDashboard(p) {
     if(t.days) document.getElementById('statDays').textContent=t.days;
     if(t.people) document.getElementById('statPeople').textContent=t.people;
     if(t.budget){const _bi=p.budget||[];const _bt=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_bt>0?('~RM '+Math.round(_bt).toLocaleString()):'—';}
-    const heroImg=t.imageUrl||( t.heroSeed?`https://picsum.photos/seed/${t.heroSeed}/900/500`:null);
+    const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
+    const heroImg=t.imageUrl||CITY_IMGS[_tripSeed]||(()=>{
+      for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
+      if(_tripSeed) return `https://loremflickr.com/900/500/${encodeURIComponent(_tripSeed.replace(/-/g,' '))}`;
+      return null;
+    })();
     if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
   }
 
@@ -1957,7 +1962,14 @@ function populateDashboard(p) {
     const list=document.getElementById('daysList');
     list.innerHTML='';
     (p.days||[]).forEach((d,i) => {
-      const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||i}/900/500`;
+      const seed=(d.heroSeed||'').toLowerCase();
+      const imgUrl=d.imageUrl||(CITY_IMGS[seed])||(()=>{
+        // Try to match seed against city names
+        for(const [city,url] of Object.entries(CITY_IMGS)){if(seed.includes(city)||city.includes(seed.split('-')[0]))return url;}
+        // Fallback: loremflickr with the heroSeed as keyword (destination-relevant)
+        const kw=encodeURIComponent((d.heroSeed||'travel,city').replace(/-/g,' '));
+        return `https://loremflickr.com/900/500/${kw}`;
+      })();
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
@@ -2291,21 +2303,105 @@ function renderLiveOps(){
     const clipped = parts.slice(0,2).join(' · ');
     return clipped.length > 84 ? clipped.slice(0,81) + '…' : clipped;
   };
-  // City hero images (Unsplash)
+  // City hero images (Unsplash — curated, 70+ cities)
   const CITY_IMGS={
-    'riomaggiore':'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=800&h=500&fit=crop',
-    'cinque terre':'https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=800&h=500&fit=crop',
-    'varenna':'https://images.unsplash.com/photo-1553451166-232112bda6f6?w=800&h=500&fit=crop',
-    'como':'https://images.unsplash.com/photo-1553451166-232112bda6f6?w=800&h=500&fit=crop',
-    'lucerne':'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=800&h=500&fit=crop',
-    'luzern':'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=800&h=500&fit=crop',
-    'grindelwald':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=500&fit=crop',
-    'venice':'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&h=500&fit=crop',
-    'venezia':'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&h=500&fit=crop',
-    'florence':'https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=800&h=500&fit=crop',
-    'firenze':'https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=800&h=500&fit=crop',
-    'rome':'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&h=500&fit=crop',
-    'roma':'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&h=500&fit=crop'
+    // Italy
+    'riomaggiore':'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&h=500&fit=crop',
+    'cinque terre':'https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=900&h=500&fit=crop',
+    'varenna':'https://images.unsplash.com/photo-1553451166-232112bda6f6?w=900&h=500&fit=crop',
+    'como':'https://images.unsplash.com/photo-1553451166-232112bda6f6?w=900&h=500&fit=crop',
+    'venice':'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=900&h=500&fit=crop',
+    'venezia':'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=900&h=500&fit=crop',
+    'florence':'https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=900&h=500&fit=crop',
+    'firenze':'https://images.unsplash.com/photo-1543429258-0e0509204cf4?w=900&h=500&fit=crop',
+    'rome':'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=900&h=500&fit=crop',
+    'roma':'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=900&h=500&fit=crop',
+    'amalfi':'https://images.unsplash.com/photo-1533606688076-b6e3c6f4c17f?w=900&h=500&fit=crop',
+    'positano':'https://images.unsplash.com/photo-1533606688076-b6e3c6f4c17f?w=900&h=500&fit=crop',
+    'milan':'https://images.unsplash.com/photo-1520175480921-4edfa2983e0f?w=900&h=500&fit=crop',
+    'naples':'https://images.unsplash.com/photo-1554995207-c18c203602cb?w=900&h=500&fit=crop',
+    // Switzerland
+    'lucerne':'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=900&h=500&fit=crop',
+    'luzern':'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=900&h=500&fit=crop',
+    'grindelwald':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
+    'interlaken':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
+    'zurich':'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=900&h=500&fit=crop',
+    'geneva':'https://images.unsplash.com/photo-1531986362435-16b427eb9c26?w=900&h=500&fit=crop',
+    'zermatt':'https://images.unsplash.com/photo-1531986362435-16b427eb9c26?w=900&h=500&fit=crop',
+    // France
+    'paris':'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900&h=500&fit=crop',
+    'nice':'https://images.unsplash.com/photo-1567789884554-0b844b597180?w=900&h=500&fit=crop',
+    'lyon':'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=900&h=500&fit=crop',
+    // Netherlands
+    'amsterdam':'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=900&h=500&fit=crop',
+    // Spain
+    'barcelona':'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=900&h=500&fit=crop',
+    'madrid':'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=900&h=500&fit=crop',
+    'seville':'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=900&h=500&fit=crop',
+    'granada':'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=900&h=500&fit=crop',
+    // UK
+    'london':'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=900&h=500&fit=crop',
+    'edinburgh':'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?w=900&h=500&fit=crop',
+    // Germany
+    'berlin':'https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?w=900&h=500&fit=crop',
+    'munich':'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop',
+    'bavaria':'https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?w=900&h=500&fit=crop',
+    // Greece
+    'santorini':'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&h=500&fit=crop',
+    'mykonos':'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&h=500&fit=crop',
+    'athens':'https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&h=500&fit=crop',
+    // Portugal
+    'lisbon':'https://images.unsplash.com/photo-1548707309-dcebeab9ea9b?w=900&h=500&fit=crop',
+    'porto':'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=900&h=500&fit=crop',
+    // Japan
+    'tokyo':'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&h=500&fit=crop',
+    'kyoto':'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=900&h=500&fit=crop',
+    'osaka':'https://images.unsplash.com/photo-1589452271712-64b8a66c7b71?w=900&h=500&fit=crop',
+    'hiroshima':'https://images.unsplash.com/photo-1576675784201-0e142b423952?w=900&h=500&fit=crop',
+    'nara':'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=900&h=500&fit=crop',
+    // Southeast Asia
+    'bangkok':'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=900&h=500&fit=crop',
+    'chiang mai':'https://images.unsplash.com/photo-1512553045499-70c8e6d52671?w=900&h=500&fit=crop',
+    'phuket':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
+    'bali':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
+    'ubud':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
+    'seminyak':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
+    'singapore':'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=900&h=500&fit=crop',
+    'kuala lumpur':'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=900&h=500&fit=crop',
+    'penang':'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=900&h=500&fit=crop',
+    'hanoi':'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=900&h=500&fit=crop',
+    'ho chi minh':'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=900&h=500&fit=crop',
+    'saigon':'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=900&h=500&fit=crop',
+    'siem reap':'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&h=500&fit=crop',
+    'angkor':'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&h=500&fit=crop',
+    // Korea
+    'seoul':'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=900&h=500&fit=crop',
+    'busan':'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=900&h=500&fit=crop',
+    // Middle East
+    'dubai':'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&h=500&fit=crop',
+    'abu dhabi':'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&h=500&fit=crop',
+    'istanbul':'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=900&h=500&fit=crop',
+    // Americas
+    'new york':'https://images.unsplash.com/photo-1490644658840-3f2e3f8c5625?w=900&h=500&fit=crop',
+    'nyc':'https://images.unsplash.com/photo-1490644658840-3f2e3f8c5625?w=900&h=500&fit=crop',
+    'los angeles':'https://images.unsplash.com/photo-1580655653885-65763b2597d0?w=900&h=500&fit=crop',
+    'san francisco':'https://images.unsplash.com/photo-1541964411055-2aa861ee8b54?w=900&h=500&fit=crop',
+    'miami':'https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?w=900&h=500&fit=crop',
+    'cancun':'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=900&h=500&fit=crop',
+    'mexico city':'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=900&h=500&fit=crop',
+    'rio de janeiro':'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=900&h=500&fit=crop',
+    'rio':'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=900&h=500&fit=crop',
+    // Africa / Pacific
+    'cape town':'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=900&h=500&fit=crop',
+    'marrakech':'https://images.unsplash.com/photo-1539020140153-e479b8db9e0e?w=900&h=500&fit=crop',
+    'sydney':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
+    'melbourne':'https://images.unsplash.com/photo-1545044846-351ba102b6d5?w=900&h=500&fit=crop',
+    'auckland':'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=900&h=500&fit=crop',
+    // India
+    'mumbai':'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=900&h=500&fit=crop',
+    'delhi':'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=900&h=500&fit=crop',
+    'goa':'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=900&h=500&fit=crop',
+    'jaipur':'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=900&h=500&fit=crop',
   };
   const info=getTripDateInfo();
   if(el('opsCurrentTime')) el('opsCurrentTime').textContent = info.timeStr;
