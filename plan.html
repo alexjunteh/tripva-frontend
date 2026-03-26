@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>Plan your trip — Roam</title>
+<style>
+:root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:#7c6af7;--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-size:20px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;transition:color .15s}
+.nav-back:hover{color:var(--text)}
+.wrap{max-width:540px;margin:0 auto;padding:32px 20px 80px}
+.page-title{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:36px}
+.form-section{margin-bottom:20px}
+.form-label{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px;display:block}
+.form-input{width:100%;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:inherit;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(149,184,255,.1)}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-travelers{display:flex;align-items:center;gap:14px;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:10px 16px}
+.form-travelers span{font-size:20px;font-weight:900;min-width:24px;text-align:center}
+.trav-btn{background:rgba(255,255,255,.08);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:background .15s}
+.trav-btn:active{background:rgba(149,184,255,.2)}
+.trav-lbl{font-size:13px;color:rgba(255,255,255,.45);margin-left:4px}
+.interests{display:flex;flex-wrap:wrap;gap:8px}
+.chip-int{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;user-select:none}
+.chip-int.sel{background:rgba(124,106,247,.2);border-color:var(--accent);color:#fff}
+.form-submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:#0a0a0f;cursor:pointer;letter-spacing:-.2px;transition:transform .15s ease,box-shadow .15s;margin-top:8px;box-shadow:0 4px 20px rgba(124,106,247,.25)}
+.form-submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,106,247,.35)}
+.form-submit-btn:active{transform:scale(.97)}
+.form-submit-btn:disabled{opacity:.4;cursor:not-allowed}
+/* Generation screen */
+.gen-screen{display:none;flex-direction:column;gap:16px;padding:20px 0 40px}
+.gen-hero{text-align:center;padding:16px 0}
+.gen-dest{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px}
+.gen-dates{font-size:13px;color:rgba(255,255,255,.5);font-weight:600}
+.gen-progress-bar{height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.gen-progress-fill{height:100%;background:linear-gradient(90deg,#7c6af7,#95b8ff);border-radius:4px;transition:width .4s ease;width:0%}
+.gen-log{display:flex;flex-direction:column;gap:6px}
+.gen-log-item{font-size:13px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:8px}
+.gen-log-item.done{color:rgba(255,255,255,.85)}
+.gen-log-item.active{color:#95b8ff}
+.gen-log-icon{font-size:14px;width:18px;flex-shrink:0}
+.gen-days{display:flex;flex-direction:column;gap:8px}
+.gen-day-card{background:#1a1a28;border:1.5px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .25s}
+.gen-day-card.ready{border-color:rgba(124,106,247,.4);background:rgba(124,106,247,.1)}
+.gen-day-num{font-size:11px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:.5px;width:36px}
+.gen-day-title{flex:1;font-size:14px;font-weight:700;color:rgba(255,255,255,.6)}
+.gen-day-card.ready .gen-day-title{color:#fff}
+.gen-day-status{font-size:16px}
+.gen-done-cta{text-align:center;padding-top:16px}
+.gen-done-title{font-size:22px;font-weight:900;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,30,.98);border:1px solid var(--border);border-radius:14px;padding:11px 18px;font-size:13px;font-weight:700;z-index:700;opacity:0;transition:all .28s cubic-bezier(.25,.1,.25,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+<script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+<nav>
+  <a class="nav-back" href="index.html">← Roam</a>
+  <a class="nav-logo" href="index.html">Roam</a>
+  <span style="width:60px"></span>
+</nav>
+
+<div class="wrap">
+  <div class="plan-form" id="planForm">
+    <h1 class="page-title">Plan your trip ✨</h1>
+    <p class="page-sub">Describe where you're going — AI builds the full itinerary in seconds.</p>
+
+    <div class="form-section">
+      <label class="form-label">Where to?</label>
+      <input class="form-input" id="f-dest" type="text" placeholder="e.g. Japan, Italy + Switzerland" autocomplete="off">
+    </div>
+    <div class="form-section">
+      <label class="form-label">When?</label>
+      <div class="form-row2">
+        <div>
+          <label class="form-label" style="margin-bottom:6px">Start</label>
+          <input class="form-input" id="f-start" type="date">
+        </div>
+        <div>
+          <label class="form-label" style="margin-bottom:6px">End</label>
+          <input class="form-input" id="f-end" type="date">
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <label class="form-label">Travellers</label>
+      <div class="form-travelers">
+        <button class="trav-btn" onclick="adjTrav(-1)">−</button>
+        <span id="f-trav">2</span>
+        <button class="trav-btn" onclick="adjTrav(1)">+</button>
+        <div class="trav-lbl" id="f-trav-lbl">people</div>
+      </div>
+    </div>
+    <div class="form-section">
+      <label class="form-label">Budget (total trip)</label>
+      <input class="form-input" id="f-budget" type="text" placeholder="e.g. RM 15000 or $3000" autocomplete="off">
+    </div>
+    <div class="form-section">
+      <label class="form-label">Travel style</label>
+      <input class="form-input" id="f-style" type="text" placeholder="e.g. romantic couple, family with kids, solo backpacker" autocomplete="off">
+    </div>
+    <div class="form-section">
+      <label class="form-label">Interests</label>
+      <div class="interests" id="f-interests">
+        <div class="chip-int sel" data-v="food">🍜 Food</div>
+        <div class="chip-int sel" data-v="trains">🚆 Trains</div>
+        <div class="chip-int" data-v="hiking">🥾 Hiking</div>
+        <div class="chip-int sel" data-v="history">🏛️ History</div>
+        <div class="chip-int" data-v="beaches">🏖️ Beaches</div>
+        <div class="chip-int" data-v="alpine views">🏔️ Alpine</div>
+        <div class="chip-int" data-v="museums">🖼️ Museums</div>
+        <div class="chip-int" data-v="nightlife">🍷 Nightlife</div>
+        <div class="chip-int" data-v="shopping">🛍️ Shopping</div>
+        <div class="chip-int" data-v="photography">📸 Photos</div>
+      </div>
+    </div>
+    <div class="form-section">
+      <label class="form-label">Home city (departure)</label>
+      <input class="form-input" id="f-home" type="text" placeholder="e.g. Kuala Lumpur, London, Sydney" autocomplete="off">
+    </div>
+    <button class="form-submit-btn" id="submitBtn" onclick="submitTrip()">Generate my trip ✨</button>
+  </div>
+
+  <div class="gen-screen" id="genScreen">
+    <div class="gen-hero">
+      <div class="gen-dest" id="genDest">Building your trip…</div>
+      <div class="gen-dates" id="genDates"></div>
+    </div>
+    <div class="gen-progress-bar"><div class="gen-progress-fill" id="genFill"></div></div>
+    <div class="gen-log" id="genLog"></div>
+    <div class="gen-days" id="genDays"></div>
+    <div class="gen-done-cta" id="genCta" style="display:none">
+      <div class="gen-done-title">🎉 Trip ready!</div>
+      <button class="form-submit-btn" onclick="openGeneratedTrip()">Open Dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BACKEND = 'https://tripai-backend.vercel.app';
+let travellers = 2;
+
+// Pre-fill from URL params
+document.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(location.search);
+  if (p.get('dest')) document.getElementById('f-dest').value = p.get('dest');
+  if (p.get('start')) document.getElementById('f-start').value = p.get('start');
+  if (p.get('end')) document.getElementById('f-end').value = p.get('end');
+});
+
+function adjTrav(d) {
+  travellers = Math.max(1, Math.min(12, travellers + d));
+  document.getElementById('f-trav').textContent = travellers;
+  document.getElementById('f-trav-lbl').textContent = travellers === 1 ? 'person' : 'people';
+}
+document.getElementById('f-interests').addEventListener('click', e => {
+  const c = e.target.closest('.chip-int'); if (c) c.classList.toggle('sel');
+});
+function showToast(msg, dur) {
+  const t = document.getElementById('toast'); t.innerHTML = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur || 3000);
+}
+function setProgress(pct) { document.getElementById('genFill').style.width = pct + '%'; }
+function addLog(icon, text, cls) {
+  const el = document.createElement('div');
+  el.className = 'gen-log-item ' + (cls||'');
+  el.innerHTML = `<span class="gen-log-icon">${icon}</span><span>${text}</span>`;
+  document.getElementById('genLog').appendChild(el); return el;
+}
+
+async function submitTrip() {
+  const dest = document.getElementById('f-dest').value.trim();
+  const start = document.getElementById('f-start').value;
+  const end = document.getElementById('f-end').value;
+  const budget = document.getElementById('f-budget').value.trim();
+  const style = document.getElementById('f-style').value.trim() || 'traveller';
+  const home = document.getElementById('f-home').value.trim() || 'home city';
+  const interests = [...document.querySelectorAll('.chip-int.sel')].map(el => el.dataset.v);
+
+  if (!dest) { showToast('⚠️ Where are you going?'); return; }
+  if (!start || !end) { showToast('⚠️ Pick your travel dates'); return; }
+  if (!budget) { showToast('⚠️ Enter your budget'); return; }
+  if (!interests.length) { showToast('⚠️ Pick at least one interest'); return; }
+
+  document.getElementById('planForm').style.display = 'none';
+  const gs = document.getElementById('genScreen');
+  gs.style.display = 'flex'; gs.style.flexDirection = 'column';
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('genDest').textContent = dest;
+  document.getElementById('genDates').textContent = start + ' → ' + end;
+
+  let buffer = '', tripState = null, totalDays = 0, completedDays = 0;
+  const logRoute = addLog('⏳', 'Designing your route...', 'active');
+
+  const _t60 = setTimeout(() => showToast('⏱️ Still building — just a moment more...', 5000), 60000);
+  const _t120 = setTimeout(() => {
+    document.getElementById('genCta').style.display = 'block';
+    document.getElementById('genCta').innerHTML = '<button class="form-submit-btn" onclick="location.reload()">⚠️ Timed out — Retry →</button>';
+  }, 120000);
+
+  try {
+    const resp = await fetch(BACKEND + '/api/plan?stream=true', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ destination:dest, startDate:start, endDate:end, travelers:travellers, budget, style, interests, homeCity:home })
+    });
+    if (!resp.ok) throw new Error('Backend error ' + resp.status);
+
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    while (true) {
+      const {done, value} = await reader.read(); if (done) break;
+      buffer += dec.decode(value, {stream:true});
+      const parts = buffer.split('\n\n'); buffer = parts.pop();
+      for (const part of parts) {
+        for (const line of part.split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const evt = JSON.parse(line.slice(6));
+            if (evt.type === 'skeleton' && evt.data) {
+              const trip = evt.data.rawPlan?.trip;
+              if (trip?.name) document.getElementById('genDest').textContent = trip.name;
+              if (trip?.startDate) document.getElementById('genDates').textContent = trip.startDate + ' → ' + (trip.endDate||'');
+              totalDays = evt.data.rawPlan?.days?.length || 0;
+              logRoute.className = 'gen-log-item done'; logRoute.querySelector('.gen-log-icon').textContent = '✓';
+              addLog('✓', 'Hotels & budget planned', 'done'); setProgress(15);
+              (evt.data.rawPlan?.days||[]).forEach(d => {
+                const c = document.createElement('div'); c.className = 'gen-day-card'; c.id = 'gen-day-'+d.day;
+                c.innerHTML = `<span class="gen-day-num">DAY ${d.day}</span><span class="gen-day-title">${d.title||''}</span><span class="gen-day-status">⏳</span>`;
+                document.getElementById('genDays').appendChild(c);
+              });
+            }
+            if (evt.type === 'day' && evt.data) {
+              completedDays++;
+              const c = document.getElementById('gen-day-'+evt.data.day);
+              if (c) {
+                c.classList.add('ready'); c.querySelector('.gen-day-status').textContent = '✓';
+                const acts = (evt.data.timeline||[]).filter(t => t.type !== 'transport').length;
+                c.querySelector('.gen-day-title').textContent = (evt.data.title||'') + (acts ? ' · '+acts+' stops' : '');
+              }
+              document.querySelectorAll('.gen-log-item.active').forEach(el => {el.className='gen-log-item done';el.querySelector('.gen-log-icon').textContent='✓';});
+              setProgress(15 + Math.round((completedDays/Math.max(totalDays,1))*75));
+            }
+            if (evt.type === 'done' && evt.data) tripState = evt.data;
+          } catch(e) {}
+        }
+      }
+    }
+    if (!tripState?.rawPlan) throw new Error('No plan data received');
+    setProgress(100); clearTimeout(_t60); clearTimeout(_t120);
+    let shareUrl = null;
+    try {
+      const sr = await fetch(BACKEND+'/api/save', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:tripState.rawPlan})});
+      if (sr.ok) { const d = await sr.json(); shareUrl = d.url; }
+    } catch(e) {}
+    localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
+    window._generatedShareUrl = shareUrl;
+    document.getElementById('genCta').style.display = 'block';
+    setTimeout(openGeneratedTrip, 800);
+  } catch(err) {
+    clearTimeout(_t60); clearTimeout(_t120);
+    document.getElementById('planForm').style.display = 'block';
+    document.getElementById('genScreen').style.display = 'none';
+    document.getElementById('genLog').innerHTML = '';
+    document.getElementById('genDays').innerHTML = '';
+    document.getElementById('genFill').style.width = '0%';
+    showToast('⚠️ ' + err.message, 4000);
+  }
+}
+function openGeneratedTrip() {
+  const su = window._generatedShareUrl;
+  if (su) { try { const id = new URL(su).searchParams.get('id'); if (id) { location.href='trip.html?id='+id; return; } } catch(e) {} }
+  location.href = 'trip.html';
+}
+</script>
+</body>
+</html>
