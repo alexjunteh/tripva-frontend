@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#08080f;color:#f0f0f8;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;width:375px}
+
+/* status bar */
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 24px;font-size:13px;font-weight:700}
+.sb-time{font-size:15px}
+.sb-icons{display:flex;gap:6px;align-items:center;font-size:12px}
+
+/* header */
+.hdr{padding:0 16px 14px;display:flex;align-items:center;justify-content:space-between}
+.trip-name{font-size:18px;font-weight:900;letter-spacing:-.5px}
+.trip-dates{font-size:12px;color:rgba(255,255,255,.45);margin-top:2px;font-weight:500}
+.hdr-btn{background:rgba(255,255,255,.07);border:none;color:rgba(255,255,255,.6);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:default}
+
+/* days scroll */
+.days-scroll{overflow-x:auto;padding:0 16px 10px;display:flex;gap:8px;scrollbar-width:none}
+.days-scroll::-webkit-scrollbar{display:none}
+.day-pill{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:default;background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);white-space:nowrap}
+.day-pill.active{background:linear-gradient(135deg,#7c5dfa,#818cf8);color:#fff}
+.day-pill .cnt{font-size:10px;opacity:.7}
+
+/* day cards */
+.cards{overflow-y:auto;height:calc(100vh - 44px - 72px - 58px - 52px);padding:0 16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none}
+.cards::-webkit-scrollbar{display:none}
+
+.day-card{background:#0f0f1a;border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;flex-shrink:0}
+.dc-hero{height:110px;background-size:cover;background-position:center;position:relative}
+.dc-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,15,.9),transparent 50%)}
+.dc-hero-label{position:absolute;bottom:10px;left:14px;right:14px;display:flex;align-items:flex-end;justify-content:space-between}
+.dc-title{font-size:15px;font-weight:900;letter-spacing:-.3px;line-height:1.2}
+.dc-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.dc-badge{background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border-radius:10px;padding:4px 9px;font-size:11px;font-weight:700;flex-shrink:0}
+
+.dc-timeline{padding:10px 14px 12px}
+.tl-item{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.tl-item:last-child{border-bottom:none}
+.tl-time{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);width:36px;flex-shrink:0;padding-top:1px}
+.tl-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.tl-dot.activity{background:#7c5dfa}
+.tl-dot.food{background:#f59e0b}
+.tl-dot.transport{background:#3b82f6}
+.tl-dot.hotel{background:#10b981}
+.tl-body{flex:1;min-width:0}
+.tl-ttl{font-size:12px;font-weight:700;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-detail{font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* nav */
+.nav{position:absolute;bottom:0;left:0;right:0;height:72px;background:rgba(8,8,15,.95);border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:flex-start;padding:8px 0 0;backdrop-filter:blur(20px)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:default;padding:0 4px}
+.nav-icon{font-size:20px;line-height:1}
+.nav-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.2px}
+.nav-btn.active .nav-icon{filter:none}
+.nav-btn.active .nav-lbl{color:#818cf8}
+.nav-btn.active::after{content:'';display:block;width:20px;height:2px;background:linear-gradient(90deg,#7c5dfa,#818cf8);border-radius:1px;position:absolute;bottom:0}
+.nav-btn{position:relative}
+</style>
+</head>
+<body>
+
+<!-- Status bar -->
+<div class="sb">
+  <span class="sb-time">9:41</span>
+  <div class="sb-icons">
+    <span>▲▲▲</span>
+    <span>WiFi</span>
+    <span>🔋</span>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="hdr">
+  <div>
+    <div class="trip-name">🗼 Paris + Amsterdam</div>
+    <div class="trip-dates">Mar 26 – Apr 1 · 2 people</div>
+  </div>
+  <button class="hdr-btn">Edit</button>
+</div>
+
+<!-- Day pills -->
+<div class="days-scroll">
+  <div class="day-pill">Day 1 <span class="cnt">4 events</span></div>
+  <div class="day-pill active">Day 2 · Today <span class="cnt">5 events</span></div>
+  <div class="day-pill">Day 3 <span class="cnt">5 events</span></div>
+  <div class="day-pill">Day 4 <span class="cnt">5 events</span></div>
+  <div class="day-pill">Day 5 <span class="cnt">6 events</span></div>
+  <div class="day-pill">Day 6 <span class="cnt">6 events</span></div>
+  <div class="day-pill">Day 7 <span class="cnt">4 events</span></div>
+</div>
+
+<!-- Day cards -->
+<div class="cards">
+
+  <!-- Day 2 — TODAY (highlighted) -->
+  <div class="day-card" style="border-color:rgba(124,93,250,.3)">
+    <div class="dc-hero" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=220&fit=crop')">
+      <div class="dc-hero-overlay"></div>
+      <div class="dc-hero-label">
+        <div>
+          <div class="dc-title">🗼 Iconic Paris</div>
+          <div class="dc-sub">Eiffel Tower, Champs-Élysées</div>
+        </div>
+        <div class="dc-badge" style="background:rgba(124,93,250,.4);color:#c4b5fd">TODAY</div>
+      </div>
+    </div>
+    <div class="dc-timeline">
+      <div class="tl-item">
+        <span class="tl-time">08:30</span>
+        <div class="tl-dot food"></div>
+        <div class="tl-body"><div class="tl-ttl">Breakfast at Café de Flore</div><div class="tl-detail">Croissant + café au lait €14 · Saint-Germain</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">10:00</span>
+        <div class="tl-dot activity"></div>
+        <div class="tl-body"><div class="tl-ttl">Eiffel Tower Summit</div><div class="tl-detail">Pre-booked €29 · 30min queue saved</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">13:00</span>
+        <div class="tl-dot food"></div>
+        <div class="tl-body"><div class="tl-ttl">Lunch at Les Ombres</div><div class="tl-detail">Rooftop with Eiffel Tower view · €35</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">15:00</span>
+        <div class="tl-dot activity"></div>
+        <div class="tl-body"><div class="tl-ttl">Arc de Triomphe</div><div class="tl-detail">360° views · €13 · Champs-Élysées walk</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">19:00</span>
+        <div class="tl-dot activity"></div>
+        <div class="tl-body"><div class="tl-ttl">Seine River Cruise</div><div class="tl-detail">Bateaux Parisiens · €17 · 1 hour</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-card">
+    <div class="dc-hero" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=220&fit=crop&sat=-20')">
+      <div class="dc-hero-overlay"></div>
+      <div class="dc-hero-label">
+        <div>
+          <div class="dc-title">🖼️ Art & Culture</div>
+          <div class="dc-sub">Louvre, Marais district</div>
+        </div>
+        <div class="dc-badge">5 events</div>
+      </div>
+    </div>
+    <div class="dc-timeline">
+      <div class="tl-item">
+        <span class="tl-time">09:00</span>
+        <div class="tl-dot activity"></div>
+        <div class="tl-body"><div class="tl-ttl">Louvre Museum</div><div class="tl-detail">Timed entry €17 · Mona Lisa, Winged Victory</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">13:00</span>
+        <div class="tl-dot food"></div>
+        <div class="tl-body"><div class="tl-ttl">L'As du Fallafel — Marais</div><div class="tl-detail">Best falafel in Paris · €8–12, cash only</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">15:00</span>
+        <div class="tl-dot activity"></div>
+        <div class="tl-body"><div class="tl-ttl">Le Marais walk</div><div class="tl-detail">Place des Vosges · boutiques · galleries</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5 — Amsterdam -->
+  <div class="day-card">
+    <div class="dc-hero" style="background-image:url('https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=600&h=220&fit=crop')">
+      <div class="dc-hero-overlay"></div>
+      <div class="dc-hero-label">
+        <div>
+          <div class="dc-title">🚄 Paris → Amsterdam</div>
+          <div class="dc-sub">Thalys · 3h20 · Canal evening</div>
+        </div>
+        <div class="dc-badge">6 events</div>
+      </div>
+    </div>
+    <div class="dc-timeline">
+      <div class="tl-item">
+        <span class="tl-time">10:13</span>
+        <div class="tl-dot transport"></div>
+        <div class="tl-body"><div class="tl-ttl">Thalys Paris-Nord → Amsterdam</div><div class="tl-detail">High-speed · 3h20 · pre-booked €69</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">15:00</span>
+        <div class="tl-dot hotel"></div>
+        <div class="tl-body"><div class="tl-ttl">Check in — Hotel V Nesplein</div><div class="tl-detail">Design hotel · city centre · €130/night</div></div>
+      </div>
+      <div class="tl-item">
+        <span class="tl-time">16:00</span>
+        <div class="tl-dot activity"></div>
+        <div class="tl-body"><div class="tl-ttl">First canal walk</div><div class="tl-detail">Prinsengracht · 9 Streets · boutiques</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom nav -->
+<nav class="nav">
+  <div class="nav-btn"><span class="nav-icon">🧭</span><span class="nav-lbl">Live</span></div>
+  <div class="nav-btn active"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></div>
+  <div class="nav-btn"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></div>
+  <div class="nav-btn"><span class="nav-icon">💰</span><span class="nav-lbl">Budget</span></div>
+  <div class="nav-btn"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></div>
+</nav>
+
+</body>
+</html>
