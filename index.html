@@ -7,790 +7,1005 @@
 <meta http-equiv="Expires" content="0">
 <link rel="canonical" href="https://futuriztaos.github.io/trip-planner/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#faf8f4">
-<meta name="description" content="Roam — AI trip planning in 30 seconds. Describe where you want to go. Roam builds your complete day-by-day itinerary with hotels, restaurants, and real-time travel alerts.">
-<meta property="og:title" content="Roam — Your next adventure, planned in 30 seconds.">
-<meta property="og:description" content="Describe where you want to go. Roam's AI builds your complete trip — day by day, hotel by hotel, moment by moment. Free to start.">
+<meta name="theme-color" content="#f7f3ee">
+<meta name="description" content="Roam — premium AI travel planning. Describe your trip and receive a complete day-by-day itinerary with hotels, restaurants, trains, and everything you'd otherwise miss.">
+<meta property="og:title" content="Roam — The world is yours to plan.">
+<meta property="og:description" content="Describe your trip. Roam builds a complete day-by-day itinerary — hotels, restaurants, trains, and everything you'd otherwise miss. Free to start.">
 <meta property="og:image" content="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&h=630&fit=crop&q=80">
 <meta property="og:url" content="https://futuriztaos.github.io/trip-planner/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<title>Roam — AI Trip Planner · Your Adventure in 30 Seconds</title>
+<title>Roam — AI Trip Planning · The world is yours to plan.</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://tripai-backend.vercel.app">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 <style>
-/* ─── RESET & BASE ─────────────────────────────────────────────────────────── */
+
+/* ── RESET ──────────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
-  background:#faf8f4;
-  color:#1a1614;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-  line-height:1.6;
+  background:#f7f3ee;
+  color:#1c1612;
+  font-family:'DM Sans',system-ui,sans-serif;
+  font-weight:300;
+  line-height:1.75;
   overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 
-/* ─── TOKENS ──────────────────────────────────────────────────────────────── */
+/* ── TOKENS ─────────────────────────────────────────────────────────────── */
 :root{
-  --cream:#faf8f4;
-  --cream2:#f4f0ea;
-  --white:#ffffff;
-  --charcoal:#1a1614;
-  --charcoal2:#2d2520;
-  --muted:#7a6f68;
-  --muted2:#5a4f49;
-  --amber:#d4763b;
-  --amber-dark:#b85f28;
-  --amber-light:#e8956a;
-  --navy:#0e1a2e;
-  --navy2:#162236;
-  --border:#e6ddd4;
-  --border2:#d4c8bc;
-  --serif:'Playfair Display',Georgia,serif;
-  --r:12px;
+  --bg:#f7f3ee;
+  --text:#1c1612;
+  --muted:#7a6f66;
+  --gold:#b8963e;
+  --deep:#0f1a14;
+  --surface:#ede8e2;
+  --white:#fffcf8;
+  --body:#4a433c;
+  --serif:'Cormorant Garant',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
 }
 
-/* ─── NAV ─────────────────────────────────────────────────────────────────── */
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 32px;height:64px;
+  padding:0 40px;height:68px;
   background:transparent;
-  transition:background .3s ease, box-shadow .3s ease;
+  transition:all 0.4s ease;
 }
 nav.scrolled{
-  background:#ffffff;
-  box-shadow:0 1px 0 var(--border),0 4px 20px rgba(26,22,20,.06);
+  background:var(--white);
+  box-shadow:0 1px 0 rgba(0,0,0,.08);
 }
 .nav-logo{
   font-family:var(--serif);
   font-style:italic;
-  font-size:22px;font-weight:700;
+  font-size:26px;
+  font-weight:600;
+  letter-spacing:1px;
   color:#ffffff;
-  transition:color .3s ease;
+  transition:color 0.4s ease;
 }
-nav.scrolled .nav-logo{color:var(--charcoal)}
+nav.scrolled .nav-logo{color:var(--text)}
 .nav-links{
-  display:flex;gap:32px;align-items:center;
+  display:flex;gap:36px;align-items:center;
+  position:absolute;left:50%;transform:translateX(-50%);
 }
 .nav-links a{
-  font-size:14px;color:rgba(255,255,255,.85);font-weight:500;
-  transition:color .2s;
-  letter-spacing:.1px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:400;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.85);
+  transition:color 0.3s;
 }
-nav.scrolled .nav-links a{color:var(--muted2)}
+nav.scrolled .nav-links a{color:var(--muted)}
 .nav-links a:hover{color:#ffffff}
-nav.scrolled .nav-links a:hover{color:var(--charcoal)}
+nav.scrolled .nav-links a:hover{color:var(--text)}
 .nav-cta{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--amber);color:#fff;
-  padding:9px 20px;border-radius:8px;
-  font-size:13px;font-weight:700;letter-spacing:.2px;
-  transition:background .2s,transform .15s;
-  white-space:nowrap;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,.5);
+  padding:8px 20px;
+  transition:all 0.3s;
 }
-.nav-cta:hover{background:var(--amber-dark);transform:translateY(-1px)}
-@media(max-width:700px){
-  .nav-links{display:none}
-  nav{padding:0 20px}
-  .nav-logo{font-size:20px}
+nav.scrolled .nav-cta{
+  color:var(--gold);
+  border-color:var(--gold);
 }
+.nav-cta:hover{background:rgba(255,255,255,.12)}
+nav.scrolled .nav-cta:hover{background:var(--gold);color:var(--white)}
 
-/* ─── HERO ────────────────────────────────────────────────────────────────── */
+/* ── HERO ────────────────────────────────────────────────────────────────── */
 .hero{
   position:relative;
-  height:100vh;min-height:600px;
-  display:flex;flex-direction:column;justify-content:flex-end;
+  height:100vh;
+  min-height:600px;
   overflow:hidden;
 }
 .hero-bg{
   position:absolute;inset:0;z-index:0;
-  background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&h=900&fit=crop&q=80');
+  background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&h=900&fit=crop&q=85');
   background-size:cover;background-position:center;
 }
 .hero-overlay{
   position:absolute;inset:0;z-index:1;
-  background:linear-gradient(to bottom,
-    rgba(0,0,0,0.0) 0%,
-    rgba(0,0,0,0.05) 30%,
-    rgba(0,0,0,0.35) 60%,
-    rgba(0,0,0,0.65) 100%);
+  background:linear-gradient(to top,rgba(15,26,20,.85) 0%,rgba(15,26,20,.2) 50%,transparent 100%);
 }
 .hero-inner{
-  position:relative;z-index:2;
-  padding:0 48px 60px;
-  max-width:800px;
+  position:absolute;
+  bottom:10%;left:6%;
+  z-index:2;
+  max-width:620px;
+  animation:heroReveal 0.8s ease both;
+}
+@keyframes heroReveal{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
 }
 .hero-eyebrow{
-  display:inline-block;
-  font-size:11px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:rgba(255,255,255,.9);
-  margin-bottom:16px;
-  background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.25);
-  border-radius:999px;padding:5px 14px;
-  backdrop-filter:blur(8px);
+  font-family:var(--sans);
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:#ffffff;
+  opacity:0.7;
+  margin-bottom:20px;
+  display:block;
 }
 .hero h1{
   font-family:var(--serif);
-  font-size:clamp(38px,6vw,72px);
-  font-weight:800;line-height:1.1;
+  font-size:clamp(52px,9vw,110px);
+  font-weight:600;
+  line-height:0.92;
+  letter-spacing:-2px;
   color:#ffffff;
   margin-bottom:20px;
-  letter-spacing:-0.5px;
 }
+.hero h1 em{font-style:italic;display:block}
+.hero h1 span{font-style:normal;display:block}
 .hero-sub{
-  font-size:clamp(15px,2vw,18px);
-  color:rgba(255,255,255,.82);
-  line-height:1.65;
-  max-width:500px;
-  margin-bottom:32px;
+  font-family:var(--sans);
+  font-size:20px;
+  font-weight:300;
+  line-height:1.6;
+  color:rgba(255,255,255,.75);
+  max-width:480px;
+  margin-top:20px;
 }
 .hero-ctas{
-  display:flex;flex-wrap:wrap;gap:12px;
-  margin-bottom:32px;
+  display:flex;
+  gap:16px;
+  margin-top:36px;
+  flex-wrap:wrap;
 }
-.btn-glass{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.15);
-  border:1px solid rgba(255,255,255,.35);
+.btn-gold{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  background:var(--gold);
   color:#ffffff;
-  padding:13px 26px;border-radius:10px;
-  font-size:15px;font-weight:600;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  transition:background .2s,transform .15s;
+  padding:14px 32px;
+  border-radius:3px;
+  transition:opacity 0.2s,transform 0.15s;
+  display:inline-block;
+  white-space:nowrap;
 }
-.btn-glass:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
-.btn-glass-primary{
-  background:var(--amber);
-  border-color:var(--amber);
-  font-weight:700;
+.btn-gold:hover{opacity:0.88;transform:translateY(-1px)}
+.btn-outline-white{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.5);
+  color:#ffffff;
+  padding:14px 32px;
+  border-radius:3px;
+  transition:background 0.2s,transform 0.15s;
+  display:inline-block;
+  white-space:nowrap;
 }
-.btn-glass-primary:hover{background:var(--amber-dark);border-color:var(--amber-dark);transform:translateY(-2px)}
+.btn-outline-white:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
 .hero-trust{
-  display:flex;align-items:center;gap:8px;
-  font-size:13px;color:rgba(255,255,255,.75);
-  font-weight:500;
-}
-.hero-trust .stars{color:#facc15;letter-spacing:2px;font-size:12px}
-@media(max-width:700px){
-  .hero{height:85vh}
-  .hero-inner{padding:0 20px 44px}
-  .hero h1{font-size:clamp(32px,8vw,48px)}
+  margin-top:24px;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  color:#ffffff;
+  opacity:0.55;
 }
 
-/* ─── SECTION COMMONS ─────────────────────────────────────────────────────── */
-section{padding:88px 20px}
-.section-inner{max-width:1100px;margin:0 auto}
-.section-label{
-  display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--amber);margin-bottom:14px;
+/* ── FADE IN (scroll) ───────────────────────────────────────────────────── */
+.fade-in{
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.6s ease,transform 0.6s ease;
 }
-h2.section-h2{
-  font-family:var(--serif);
-  font-size:clamp(30px,5vw,52px);font-weight:800;
-  line-height:1.15;color:var(--charcoal);margin-bottom:16px;
-  letter-spacing:-0.5px;
-}
-h2.section-h2.light{color:#ffffff}
-.section-sub{font-size:clamp(15px,2vw,17px);color:var(--muted2);line-height:1.7;max-width:520px}
-.section-sub.light{color:rgba(255,255,255,.72)}
-@media(max-width:700px){section{padding:64px 16px}}
-
-/* ─── FADE IN ─────────────────────────────────────────────────────────────── */
-.fade-in{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
 
-/* ─── PAIN SECTION ────────────────────────────────────────────────────────── */
-.pain-section{background:var(--cream)}
-.pain-section .section-inner{text-align:center}
-.pain-section h2.section-h2{margin:0 auto 14px}
-.pain-section .section-sub{margin:0 auto 52px}
-.pain-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
-  margin-bottom:56px;text-align:left;
-}
-.pain-card{
-  background:#ffffff;
-  border:1px solid var(--border);
-  border-radius:16px;padding:32px 28px;
-  transition:border-color .25s,transform .25s,box-shadow .25s;
-}
-.pain-card:hover{border-color:var(--amber-light);transform:translateY(-4px);box-shadow:0 12px 40px rgba(212,118,59,.1)}
-.pain-icon{font-size:28px;margin-bottom:16px}
-.pain-title{
-  font-family:var(--serif);
-  font-size:18px;font-weight:700;color:var(--charcoal);
-  margin-bottom:12px;line-height:1.3;
-}
-.pain-body{font-size:14px;color:var(--muted2);line-height:1.75}
-.pain-hook{
-  font-family:var(--serif);
-  font-size:clamp(22px,3.5vw,36px);font-weight:700;
-  color:var(--charcoal);letter-spacing:-0.3px;
-  margin-bottom:36px;line-height:1.3;
-}
-@media(max-width:900px){.pain-grid{grid-template-columns:1fr}}
-@media(min-width:601px) and (max-width:900px){.pain-grid{grid-template-columns:1fr 1fr}}
-
-/* ─── HOW IT WORKS ────────────────────────────────────────────────────────── */
-.how-section{background:var(--white)}
-.how-header{margin-bottom:56px}
-.how-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
-  position:relative;
-}
-.how-grid::before{
-  content:'';position:absolute;top:32px;left:16.6%;right:16.6%;
-  height:1px;background:var(--border2);
+/* ── SECTION LABEL ──────────────────────────────────────────────────────── */
+.section-label{
+  font-family:var(--sans);
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold);
   display:block;
+  margin-bottom:18px;
 }
-.how-step{
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;gap:16px;padding:0 24px;
+
+/* ── S-H2 (section headings) ────────────────────────────────────────────── */
+h2.s-h2{
+  font-family:var(--serif);
+  font-size:clamp(36px,5vw,64px);
+  font-weight:600;
+  line-height:1.0;
+  color:var(--text);
 }
-.step-icon{
-  width:64px;height:64px;border-radius:50%;
-  background:var(--cream);border:2px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;
-  position:relative;z-index:1;
-  flex-shrink:0;
+h2.s-h2.white{color:#ffffff}
+h2.s-h2 em{font-style:italic}
+
+/* ── SECTION 2 — PAIN ───────────────────────────────────────────────────── */
+.pain-section{
+  background:var(--bg);
+  padding:120px 20px;
+}
+.pain-inner{
+  max-width:700px;
+  margin:0 auto;
+  text-align:center;
+}
+.pain-section h2.s-h2{margin-bottom:32px}
+.pain-body{
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:300;
+  line-height:1.75;
+  color:var(--muted);
+  margin-bottom:24px;
+}
+.pain-close{
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:300;
+  color:var(--muted);
+}
+
+/* ── SECTION 3 — HOW IT WORKS ───────────────────────────────────────────── */
+.how-section{
+  background:var(--deep);
+  padding:120px 20px;
+}
+.how-inner{
+  max-width:1100px;
+  margin:0 auto;
+}
+.how-header{margin-bottom:72px}
+.how-header .s-h2{margin-bottom:16px}
+.how-subtitle{
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:300;
+  color:rgba(255,252,248,.6);
+  line-height:1.7;
+  max-width:480px;
+}
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:64px;
+}
+.step{display:flex;flex-direction:column}
+.step-num{
+  font-family:var(--serif);
+  font-size:72px;
+  font-weight:600;
+  color:var(--gold);
+  line-height:1;
+  margin-bottom:20px;
 }
 .step-title{
   font-family:var(--serif);
-  font-size:19px;font-weight:700;color:var(--charcoal);letter-spacing:-0.2px;
+  font-size:24px;
+  font-weight:600;
+  color:#ffffff;
+  margin-bottom:12px;
+  line-height:1.2;
 }
-.step-body{font-size:14px;color:var(--muted2);line-height:1.75}
-@media(max-width:700px){
-  .how-grid{grid-template-columns:1fr;gap:40px}
-  .how-grid::before{display:none}
+.step-body{
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:300;
+  color:rgba(255,252,248,.65);
+  line-height:1.75;
 }
 
-/* ─── DEMO SECTION ────────────────────────────────────────────────────────── */
+/* ── SECTION 4 — DEMO ───────────────────────────────────────────────────── */
 .demo-section{
-  background:var(--navy);
-  text-align:center;
+  background:var(--bg);
+  padding:120px 20px;
 }
-.demo-section .section-inner{display:flex;flex-direction:column;align-items:center}
-.demo-section .section-label{color:var(--amber-light)}
-.demo-section h2.section-h2,.demo-section .section-sub{text-align:center;margin:0 auto}
-.demo-section .section-sub{margin-bottom:44px}
+.demo-inner{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.demo-header{
+  text-align:center;
+  margin-bottom:60px;
+}
+.demo-header .s-h2{margin-bottom:16px}
+.demo-sub{
+  font-family:var(--sans);
+  font-size:17px;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:480px;
+  margin:0 auto;
+}
 .phone-wrap{
-  position:relative;width:100%;max-width:360px;margin:0 auto 36px;
+  width:100%;max-width:360px;margin:0 auto 48px;
 }
 .phone-frame{
-  background:#111827;border-radius:36px;
-  border:2px solid rgba(255,255,255,.1);
-  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(212,118,59,.12);
-  overflow:hidden;aspect-ratio:9/19;
+  background:#111827;
+  border-radius:36px;
+  border:2px solid rgba(28,22,18,.1);
+  box-shadow:0 40px 80px rgba(28,22,18,.15),0 8px 24px rgba(28,22,18,.08);
+  overflow:hidden;
+  aspect-ratio:9/19;
   position:relative;
-}
-.phone-frame iframe{
-  width:100%;height:100%;border:none;display:block;
 }
 .phone-notch{
   position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:110px;height:26px;background:#111827;border-radius:0 0 16px 16px;
-  z-index:2;
+  width:110px;height:26px;background:#111827;border-radius:0 0 16px 16px;z-index:2;
 }
-.feature-chips{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+.phone-frame iframe{width:100%;height:100%;border:none;display:block}
+.demo-chips{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  align-items:center;
 }
-.chip{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:999px;padding:8px 18px;
-  font-size:13px;font-weight:600;color:rgba(255,255,255,.8);
-  transition:background .2s,border-color .2s;
+.demo-chip{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:300;
+  color:var(--body);
+  padding:0 24px;
+  border-right:1px solid rgba(28,22,18,.12);
+  line-height:1.4;
 }
-.chip:hover{background:rgba(212,118,59,.15);border-color:rgba(212,118,59,.4)}
+.demo-chip:last-child{border-right:none}
 
-/* ─── TESTIMONIALS ────────────────────────────────────────────────────────── */
-.testi-section{background:var(--cream);text-align:center}
-.testi-section .section-inner{display:flex;flex-direction:column;align-items:center}
-.testi-section h2.section-h2{margin:0 auto 56px}
-.testi-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:48px;width:100%;
-  text-align:left;
+/* ── SECTION 5 — TESTIMONIALS ───────────────────────────────────────────── */
+.testi-section{
+  background:var(--deep);
+  padding:120px 20px;
 }
-.testi-card{
-  display:flex;flex-direction:column;gap:16px;
-  position:relative;
+.testi-inner{
+  max-width:1200px;
+  margin:0 auto;
+}
+.testi-header{margin-bottom:80px}
+.testi-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:64px;
+}
+.testi-item{
+  display:flex;
+  flex-direction:column;
 }
 .testi-mark{
   font-family:var(--serif);
-  font-size:72px;line-height:1;color:var(--border2);
-  font-weight:800;
-  position:absolute;top:-16px;left:-4px;
+  font-style:italic;
+  font-size:120px;
+  line-height:0.6;
+  color:var(--gold);
+  opacity:0.3;
+  margin-bottom:20px;
   user-select:none;
 }
 .testi-quote{
   font-family:var(--serif);
-  font-size:16px;font-style:italic;
-  color:var(--charcoal2);line-height:1.75;
-  padding-top:40px;
+  font-style:italic;
+  font-size:22px;
+  font-weight:400;
+  color:#ffffff;
+  line-height:1.5;
+  margin-bottom:24px;
+  flex:1;
 }
-.testi-author{
-  font-size:13px;font-weight:700;color:var(--amber);
-  letter-spacing:.2px;
+.testi-attr{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  color:rgba(255,252,248,.5);
+  text-transform:uppercase;
 }
-.testi-divider{
-  width:40px;height:2px;background:var(--amber);
-  margin-top:4px;
-}
-@media(max-width:900px){.testi-grid{grid-template-columns:1fr;gap:40px}}
-@media(min-width:601px) and (max-width:900px){.testi-grid{grid-template-columns:1fr 1fr;gap:36px}}
 
-/* ─── PRICING ─────────────────────────────────────────────────────────────── */
-.pricing-section{background:var(--white);text-align:center}
-.pricing-section .section-inner{display:flex;flex-direction:column;align-items:center}
-.pricing-section h2.section-h2{margin:0 auto 12px}
-.pricing-section .section-sub{margin:0 auto 52px}
+/* ── SECTION 6 — PRICING ────────────────────────────────────────────────── */
+.pricing-section{
+  background:var(--bg);
+  padding:120px 20px;
+  text-align:center;
+}
+.pricing-inner{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.pricing-header{margin-bottom:8px}
+.pricing-header .s-h2{margin-bottom:12px}
+.pricing-sub{
+  font-family:var(--sans);
+  font-size:16px;
+  font-weight:300;
+  color:var(--muted);
+  margin-bottom:60px;
+}
 .price-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:920px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  width:100%;
+  max-width:960px;
   align-items:start;
 }
 .price-card{
-  background:var(--cream);border:1px solid var(--border);
-  border-radius:20px;padding:32px 28px;text-align:left;
-  position:relative;transition:border-color .25s,transform .25s,box-shadow .25s;
+  background:var(--white);
+  border:1px solid rgba(28,22,18,.1);
+  border-radius:4px;
+  padding:40px 32px;
+  text-align:left;
+  position:relative;
 }
-.price-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,22,20,.07)}
-.price-card.featured{
-  background:#fff;
-  border-color:var(--amber);
-  box-shadow:0 0 0 1px var(--amber),0 16px 48px rgba(212,118,59,.15);
+.price-card-pro{
+  background:var(--deep);
+  border-color:transparent;
 }
-.price-card.featured:hover{transform:translateY(-4px);box-shadow:0 0 0 1px var(--amber),0 20px 60px rgba(212,118,59,.18)}
-.popular-badge{
-  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
-  background:var(--amber);
-  color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;
-  padding:5px 16px;border-radius:999px;text-transform:uppercase;white-space:nowrap;
+.price-badge{
+  font-family:var(--sans);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:block;
+  margin-bottom:16px;
 }
-.price-tier{
-  font-size:12px;font-weight:700;color:var(--muted);
-  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;
+.price-name{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  margin-bottom:12px;
 }
-.price-num{
+.price-card-pro .price-name{color:rgba(255,252,248,.5)}
+.price-amount{
   font-family:var(--serif);
-  font-size:44px;font-weight:800;color:var(--charcoal);
-  letter-spacing:-1px;line-height:1;
+  font-size:56px;
+  font-weight:600;
+  color:var(--text);
+  line-height:1;
+  letter-spacing:-1px;
+  display:inline;
 }
-.price-num span{font-size:16px;font-weight:400;color:var(--muted);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
-.price-cadence{font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:12px}
-.price-desc{font-size:13px;color:var(--muted2);line-height:1.6;margin-bottom:20px}
-.price-sep{height:1px;background:var(--border);margin-bottom:20px}
-.price-features{display:flex;flex-direction:column;gap:11px;margin-bottom:28px}
-.pf{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--charcoal2);line-height:1.5}
-.pf-y{color:var(--amber);font-weight:700;flex-shrink:0;margin-top:1px;font-size:14px}
-.pf-n{color:var(--border2);font-weight:700;flex-shrink:0;margin-top:1px;font-size:14px}
+.price-card-pro .price-amount{color:#ffffff}
+.price-per{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--muted);
+}
+.price-card-pro .price-per{color:rgba(255,252,248,.5)}
+.price-cadence{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:300;
+  color:var(--muted);
+  margin-top:6px;
+  margin-bottom:28px;
+}
+.price-card-pro .price-cadence{color:rgba(255,252,248,.45)}
+.price-divider{
+  height:1px;
+  background:rgba(28,22,18,.08);
+  margin-bottom:24px;
+}
+.price-card-pro .price-divider{background:rgba(255,252,248,.1)}
+.price-features{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:32px;
+}
+.price-feature{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--body);
+  padding:9px 0;
+  border-bottom:1px solid rgba(28,22,18,.07);
+}
+.price-feature:last-child{border-bottom:none}
+.price-card-pro .price-feature{
+  color:rgba(255,252,248,.7);
+  border-bottom-color:rgba(255,252,248,.08);
+}
 .price-btn{
-  display:block;text-align:center;padding:13px;border-radius:10px;
-  font-size:14px;font-weight:700;letter-spacing:.2px;
-  transition:background .2s,transform .15s,box-shadow .2s;
+  display:block;
+  text-align:center;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 24px;
+  border-radius:3px;
+  transition:all 0.2s;
 }
-.price-btn-free{
-  background:var(--cream2);color:var(--charcoal2);
-  border:1px solid var(--border2);
+.price-btn-outline{
+  border:1px solid rgba(28,22,18,.2);
+  color:var(--text);
 }
-.price-btn-free:hover{background:var(--border);transform:translateY(-1px)}
-.price-btn-pro{
-  background:var(--amber);color:#fff;
-  box-shadow:0 4px 20px rgba(212,118,59,.35);
+.price-btn-outline:hover{border-color:var(--text);background:rgba(28,22,18,.04)}
+.price-btn-gold{
+  background:var(--gold);
+  color:#ffffff;
 }
-.price-btn-pro:hover{background:var(--amber-dark);transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,118,59,.45)}
-.price-btn-biz{
-  background:var(--cream2);color:var(--charcoal2);
-  border:1px solid var(--border2);
-}
-.price-btn-biz:hover{background:var(--border);transform:translateY(-1px)}
-.pricing-footnote{font-size:12px;color:var(--muted);margin-top:28px;letter-spacing:.1px}
-@media(max-width:900px){.price-grid{grid-template-columns:1fr;max-width:420px}}
+.price-btn-gold:hover{opacity:0.88}
 
-/* ─── FINAL CTA ───────────────────────────────────────────────────────────── */
+/* ── SECTION 7 — FINAL CTA ──────────────────────────────────────────────── */
 .final-cta{
-  position:relative;overflow:hidden;text-align:center;
-  padding:100px 20px;
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  padding:140px 20px;
 }
 .final-cta-bg{
   position:absolute;inset:0;z-index:0;
-  background-image:url('https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1600&h=700&fit=crop&q=80');
+  background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&h=800&fit=crop&q=85');
   background-size:cover;background-position:center;
 }
 .final-cta-overlay{
   position:absolute;inset:0;z-index:1;
-  background:rgba(14,26,46,.72);
+  background:rgba(15,26,20,.65);
 }
-.final-cta .section-inner{
+.final-cta-inner{
   position:relative;z-index:2;
+  max-width:900px;
+  margin:0 auto;
   display:flex;flex-direction:column;align-items:center;
 }
-.final-cta h2.section-h2{margin:0 auto 16px;text-align:center}
-.final-cta .section-sub{text-align:center;margin:0 auto 36px}
-.btn-amber-large{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--amber);color:#fff;
-  padding:16px 40px;border-radius:10px;
-  font-size:16px;font-weight:700;letter-spacing:.1px;
-  transition:background .2s,transform .15s,box-shadow .2s;
-  box-shadow:0 4px 24px rgba(212,118,59,.5);
-}
-.btn-amber-large:hover{background:var(--amber-dark);transform:translateY(-2px);box-shadow:0 8px 36px rgba(212,118,59,.55)}
+.final-cta .s-h2{margin-bottom:28px}
 .final-trust{
-  font-size:13px;color:rgba(255,255,255,.6);
-  margin-top:20px;letter-spacing:.2px;
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:400;
+  color:rgba(255,255,255,.45);
+  margin-top:20px;
+  letter-spacing:0.5px;
 }
-.final-trust span{color:rgba(255,255,255,.3);margin:0 8px}
 
-/* ─── WAITLIST ────────────────────────────────────────────────────────────── */
+/* ── EMAIL / WAITLIST ───────────────────────────────────────────────────── */
 .waitlist{
-  background:var(--cream2);
-  border-top:1px solid var(--border);
-  padding:72px 20px;text-align:center;
+  background:var(--bg);
+  border-top:1px solid rgba(28,22,18,.08);
+  padding:80px 20px;
+  text-align:center;
 }
 .waitlist-inner{max-width:480px;margin:0 auto}
-.waitlist-eyebrow{
-  display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--amber);margin-bottom:16px;
-}
 .waitlist h3{
   font-family:var(--serif);
-  font-size:clamp(22px,3vw,30px);font-weight:700;
-  margin-bottom:10px;color:var(--charcoal);letter-spacing:-0.3px;
+  font-style:italic;
+  font-size:clamp(24px,3vw,34px);
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:12px;
+  line-height:1.2;
 }
-.waitlist p{font-size:14px;color:var(--muted2);line-height:1.65}
-.waitlist-form{
-  display:flex;gap:8px;margin-top:24px;
+.waitlist p{
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.65;
+  margin-bottom:28px;
 }
+.waitlist-form{display:flex;gap:8px}
 .waitlist-input{
-  flex:1;background:#ffffff;
-  border:1px solid var(--border2);
-  border-radius:10px;padding:13px 16px;
-  color:var(--charcoal);font-size:14px;
-  outline:none;transition:border-color .2s,box-shadow .2s;
+  flex:1;
+  background:var(--white);
+  border:1px solid rgba(28,22,18,.15);
+  padding:13px 16px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+  border-radius:3px;
 }
 .waitlist-input::placeholder{color:var(--muted)}
-.waitlist-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(212,118,59,.1)}
+.waitlist-input:focus{border-color:var(--gold)}
 .waitlist-btn{
-  background:var(--amber);color:#fff;border:none;cursor:pointer;
-  padding:13px 22px;border-radius:10px;font-size:14px;font-weight:700;
-  white-space:nowrap;transition:background .2s,transform .15s;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  background:var(--gold);
+  color:#ffffff;
+  border:none;
+  cursor:pointer;
+  padding:13px 22px;
+  border-radius:3px;
+  white-space:nowrap;
+  transition:opacity 0.2s;
 }
-.waitlist-btn:hover{background:var(--amber-dark);transform:translateY(-1px)}
-.waitlist-btn:disabled{opacity:.6;cursor:default}
+.waitlist-btn:hover{opacity:0.88}
+.waitlist-btn:disabled{opacity:0.5;cursor:default}
+.waitlist-note{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  color:var(--muted);
+  margin-top:12px;
+  margin-bottom:0;
+}
 .success-msg{
-  display:none;margin-top:18px;font-size:14px;font-weight:700;
-  color:var(--amber);font-family:var(--serif);font-style:italic;
-}
-@media(max-width:500px){
-  .waitlist-form{flex-direction:column}
-  .waitlist-btn{width:100%}
+  display:none;
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:17px;
+  color:var(--gold);
+  margin-top:20px;
 }
 
-/* ─── FOOTER ──────────────────────────────────────────────────────────────── */
+/* ── FOOTER ─────────────────────────────────────────────────────────────── */
 footer{
-  background:var(--cream);border-top:1px solid var(--border);
-  padding:44px 20px;
+  background:var(--bg);
+  border-top:1px solid rgba(28,22,18,.08);
+  padding:48px 20px;
 }
 .footer-inner{
   max-width:1100px;margin:0 auto;
-  display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
 }
 .footer-logo{
-  font-family:var(--serif);font-style:italic;
-  font-size:20px;font-weight:700;color:var(--charcoal);
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:1px;
+  color:var(--text);
 }
 .footer-links{
-  display:flex;flex-wrap:wrap;gap:24px;justify-content:center;
+  display:flex;flex-wrap:wrap;gap:28px;justify-content:center;
 }
-.footer-links a{font-size:14px;color:var(--muted2);transition:color .2s}
-.footer-links a:hover{color:var(--charcoal)}
+.footer-links a{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--muted);
+  transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--text)}
 .footer-legal{
   display:flex;flex-wrap:wrap;gap:20px;justify-content:center;
 }
-.footer-legal a{font-size:12px;color:var(--muted);transition:color .2s}
-.footer-legal a:hover{color:var(--muted2)}
-.footer-copy{font-size:12px;color:var(--muted)}
+.footer-legal a{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  color:var(--muted);
+  transition:color 0.2s;
+}
+.footer-legal a:hover{color:var(--text)}
+.footer-copy{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  color:var(--muted);
+}
 
-/* ─── TOAST ───────────────────────────────────────────────────────────────── */
+/* ── TOAST ──────────────────────────────────────────────────────────────── */
 .toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
-  background:var(--charcoal);border-radius:10px;
-  padding:12px 22px;font-size:14px;font-weight:600;color:#fff;
-  z-index:999;transition:transform .3s ease;pointer-events:none;
-  white-space:nowrap;
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--deep);border-radius:3px;
+  padding:12px 22px;
+  font-family:var(--sans);font-size:14px;font-weight:400;color:#fff;
+  z-index:999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;
 }
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-/* ─── PWA BANNER ──────────────────────────────────────────────────────────── */
+/* ── PWA BANNER ─────────────────────────────────────────────────────────── */
 .pwa-banner{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:var(--white);border-top:1px solid var(--border);
+  background:var(--white);border-top:1px solid rgba(28,22,18,.1);
   padding:14px 20px;display:flex;align-items:center;gap:12px;
   transform:translateY(100%);transition:transform .35s ease;
-  box-shadow:0 -4px 20px rgba(26,22,20,.08);
+  box-shadow:0 -4px 20px rgba(28,22,18,.07);
 }
 .pwa-banner.show{transform:translateY(0)}
 .pwa-install-btn{
-  background:var(--amber);color:#fff;border:none;cursor:pointer;
-  padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;
+  font-family:var(--sans);font-size:13px;font-weight:400;
+  background:var(--gold);color:#fff;border:none;cursor:pointer;
+  padding:9px 18px;border-radius:3px;white-space:nowrap;
 }
 .pwa-dismiss{
   background:none;border:none;color:var(--muted);cursor:pointer;
   font-size:22px;padding:4px 8px;line-height:1;
 }
+
+/* ── MOBILE ─────────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  nav{padding:0 20px;height:60px}
+  .nav-links{display:none}
+  .nav-logo{font-size:22px}
+
+  .hero-inner{
+    bottom:8%;
+    left:0;right:0;
+    padding:0 24px;
+    max-width:100%;
+    text-align:center;
+  }
+  .hero h1{font-size:48px;letter-spacing:-1px}
+  .hero-sub{font-size:16px;margin:16px auto 0}
+  .hero-ctas{justify-content:center}
+  .hero-trust{text-align:center}
+
+  .pain-section{padding:72px 24px}
+
+  .how-section{padding:80px 20px}
+  .steps-grid{grid-template-columns:1fr;gap:48px}
+
+  .demo-section{padding:80px 20px}
+  .demo-chips{flex-direction:column;align-items:center;gap:0}
+  .demo-chip{
+    border-right:none;
+    border-bottom:1px solid rgba(28,22,18,.1);
+    padding:10px 0;
+    width:100%;text-align:center;
+  }
+  .demo-chip:last-child{border-bottom:none}
+
+  .testi-section{padding:80px 20px}
+  .testi-grid{grid-template-columns:1fr;gap:0}
+  .testi-item{
+    padding-bottom:48px;
+    margin-bottom:48px;
+    border-bottom:1px solid rgba(184,150,62,.25);
+  }
+  .testi-item:last-child{padding-bottom:0;margin-bottom:0;border-bottom:none}
+
+  .pricing-section{padding:80px 20px}
+  .price-grid{grid-template-columns:1fr;max-width:420px}
+
+  .final-cta{padding:100px 20px}
+  .waitlist-form{flex-direction:column}
+  .waitlist-btn{width:100%}
+}
+
+@media(min-width:701px) and (max-width:1024px){
+  .steps-grid{gap:36px}
+  .testi-grid{gap:40px}
+  .price-grid{grid-template-columns:1fr;max-width:440px}
+  nav{padding:0 24px}
+}
+
 </style>
 </head>
 <body>
 
-<!-- ─── NAV ───────────────────────────────────────────────────────────────── -->
+<!-- NAV -->
 <nav id="mainNav">
   <div class="nav-logo">Roam</div>
   <div class="nav-links">
+    <a href="#about">About</a>
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
   </div>
-  <a class="nav-cta" href="plan.html">Try free →</a>
+  <a class="nav-cta" href="plan.html">Begin planning</a>
 </nav>
 
-<!-- ─── HERO ───────────────────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-inner">
-    <div class="hero-eyebrow">AI Travel Planning · Free</div>
-    <h1>Your next adventure,<br>planned in 30 seconds.</h1>
-    <p class="hero-sub">Describe where you want to go. Roam's AI builds your complete trip — day by day, hotel by hotel, moment by moment.</p>
+    <span class="hero-eyebrow">Roam — AI Travel Planning</span>
+    <h1><em>The world</em><span>is yours to plan.</span></h1>
+    <p class="hero-sub">Describe your trip. Roam builds a complete day-by-day itinerary — hotels, restaurants, trains, and everything you'd otherwise miss.</p>
     <div class="hero-ctas">
-      <a class="btn-glass btn-glass-primary" href="plan.html">Start planning free</a>
-      <a class="btn-glass" href="trip.html?demo=1" target="_blank">See a sample trip →</a>
+      <a class="btn-gold" href="plan.html">Begin planning — it's free</a>
+      <a class="btn-outline-white" href="trip.html?demo=1" target="_blank">See a sample trip</a>
     </div>
-    <div class="hero-trust">
-      <span class="stars">★★★★★</span>
-      <span><span id="tripCount">50</span>+ trips planned · No credit card needed</span>
-    </div>
+    <p class="hero-trust"><span id="tripCount">50</span>+ trips planned worldwide · No credit card required</p>
   </div>
 </section>
 
-<!-- ─── PAIN SECTION ───────────────────────────────────────────────────────── -->
-<section class="pain-section">
-  <div class="section-inner">
-    <div class="section-label">Sound familiar?</div>
-    <h2 class="section-h2 fade-in">We know that feeling.</h2>
-    <p class="section-sub fade-in">Planning a trip should be exciting. Somehow it became homework.</p>
-
-    <div class="pain-grid" style="margin-top:48px">
-      <div class="pain-card fade-in">
-        <div class="pain-icon">🗂️</div>
-        <div class="pain-title">Hours disappear into research</div>
-        <div class="pain-body">12 tabs. Flights here, hotels there, things-to-do somewhere else. A Sunday afternoon gone before you've booked anything.</div>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">📊</div>
-        <div class="pain-title">The itinerary that falls apart</div>
-        <div class="pain-body">Day one: perfect. Day two: the restaurant's closed, the train was full, and your beautiful spreadsheet is already out of date.</div>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">😰</div>
-        <div class="pain-title">The anxiety that follows you</div>
-        <div class="pain-body">That nagging feeling at the airport. Did I book the right hotel? Did I miss something obvious? Is there a better way?</div>
-      </div>
-    </div>
-
-    <div class="pain-hook fade-in">There's a better way.</div>
-    <div class="fade-in">
-      <a class="btn-amber-large" href="plan.html" style="margin:0 auto">
-        Plan my trip in 30 seconds →
-      </a>
-    </div>
+<!-- SECTION 2 — PAIN -->
+<section class="pain-section" id="about">
+  <div class="pain-inner">
+    <span class="section-label fade-in">The Problem</span>
+    <h2 class="s-h2 fade-in"><em>Planning a trip should feel<br>like the trip itself.</em></h2>
+    <p class="pain-body fade-in">Instead, it's a Sunday afternoon lost to 12 browser tabs, a spreadsheet that's out of date by Tuesday, and a low-grade anxiety that follows you through security — wondering what you might have missed.</p>
+    <p class="pain-close fade-in">That's the gap Roam was built to close.</p>
   </div>
 </section>
 
-<!-- ─── HOW IT WORKS ───────────────────────────────────────────────────────── -->
+<!-- SECTION 3 — HOW IT WORKS -->
 <section class="how-section" id="how">
-  <div class="section-inner">
+  <div class="how-inner">
     <div class="how-header fade-in">
-      <div class="section-label">How it works</div>
-      <h2 class="section-h2">Three steps to your perfect trip.</h2>
+      <span class="section-label">How Roam Works</span>
+      <h2 class="s-h2 white">Three steps to a perfect trip.</h2>
+      <p class="how-subtitle">No forms. No dropdowns. Just tell Roam about your trip.</p>
     </div>
-
-    <div class="how-grid">
-      <div class="how-step fade-in">
-        <div class="step-icon">🗺️</div>
-        <div class="step-title">Describe your dream</div>
-        <div class="step-body">Tell Roam where you want to go, when, and how you like to travel. Plain text. No forms.</div>
+    <div class="steps-grid">
+      <div class="step fade-in">
+        <div class="step-num">01</div>
+        <div class="step-title">Tell Roam your idea</div>
+        <p class="step-body">Type your destination, dates, and how you like to travel. Plain language — like telling a friend.</p>
       </div>
-      <div class="how-step fade-in">
-        <div class="step-icon">⚡</div>
-        <div class="step-title">AI builds your plan</div>
-        <div class="step-body">In 30 seconds, get a full day-by-day itinerary: hotels, restaurants, things to do, trains to book, local tips.</div>
+      <div class="step fade-in">
+        <div class="step-num">02</div>
+        <div class="step-title">AI builds your itinerary</div>
+        <p class="step-body">Hotels, restaurants, day plans, train connections, and what to book before it sells out. All in 30 seconds.</p>
       </div>
-      <div class="how-step fade-in">
-        <div class="step-icon">🧳</div>
+      <div class="step fade-in">
+        <div class="step-num">03</div>
         <div class="step-title">Travel with a co-pilot</div>
-        <div class="step-body">Your live dashboard updates as you travel. Weather. Booking alerts. What to do right now.</div>
+        <p class="step-body">Your live dashboard updates as you go. Today's weather, tonight's hotel, what to do right now.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── DEMO SECTION ────────────────────────────────────────────────────────── -->
+<!-- SECTION 4 — DEMO -->
 <section class="demo-section" id="demo">
-  <div class="section-inner">
-    <div class="section-label fade-in">See it live</div>
-    <h2 class="section-h2 light fade-in">See every day, every detail.</h2>
-    <p class="section-sub light fade-in">This is what your trip looks like inside Roam.</p>
-
+  <div class="demo-inner">
+    <div class="demo-header fade-in">
+      <span class="section-label">The Product</span>
+      <h2 class="s-h2">Every detail, beautifully organised.</h2>
+      <p class="demo-sub">This is your trip inside Roam. Live, interactive, and built around your day.</p>
+    </div>
     <div class="phone-wrap fade-in">
       <div class="phone-frame">
         <div class="phone-notch"></div>
         <iframe src="trip.html?demo=1" title="Roam trip demo" loading="lazy" scrolling="yes"></iframe>
       </div>
     </div>
-
-    <div class="feature-chips fade-in">
-      <div class="chip">📅 Day-by-day</div>
-      <div class="chip">🏨 Hotels</div>
-      <div class="chip">⚡ Alerts</div>
-      <div class="chip">🗺️ Routes</div>
+    <div class="demo-chips fade-in">
+      <span class="demo-chip">Day-by-day itinerary</span>
+      <span class="demo-chip">Hotel recommendations</span>
+      <span class="demo-chip">Booking alerts</span>
+      <span class="demo-chip">Route maps</span>
     </div>
   </div>
 </section>
 
-<!-- ─── TESTIMONIALS ───────────────────────────────────────────────────────── -->
+<!-- SECTION 5 — TESTIMONIALS -->
 <section class="testi-section">
-  <div class="section-inner">
-    <div class="section-label fade-in">Real travellers</div>
-    <h2 class="section-h2 fade-in">Trips people actually loved planning.</h2>
-
+  <div class="testi-inner">
+    <div class="testi-header fade-in">
+      <span class="section-label">What Travellers Say</span>
+    </div>
     <div class="testi-grid">
-      <div class="testi-card fade-in">
+      <div class="testi-item fade-in">
         <div class="testi-mark">"</div>
-        <div class="testi-quote">Planned my entire Tokyo trip in 47 seconds. It flagged Teamlab Borderless tickets sell out 2 weeks ahead — I'd have missed it completely.</div>
-        <div class="testi-divider"></div>
-        <div class="testi-author">Jamie L., Melbourne</div>
+        <p class="testi-quote">Planned my entire seven-day Tokyo trip in under a minute. It flagged Teamlab Borderless tickets were selling out two weeks early — I would have completely missed it.</p>
+        <p class="testi-attr">Jamie L., Melbourne</p>
       </div>
-      <div class="testi-card fade-in">
+      <div class="testi-item fade-in">
         <div class="testi-mark">"</div>
-        <div class="testi-quote">I used to lose a full Sunday to trip planning. Now I do it over coffee. The booking alerts have saved me twice already.</div>
-        <div class="testi-divider"></div>
-        <div class="testi-author">Sofia R., Barcelona</div>
+        <p class="testi-quote">I used to spend a full Sunday planning a trip. Now I do it over coffee. The booking alerts have already saved me twice.</p>
+        <p class="testi-attr">Sofia R., Barcelona</p>
       </div>
-      <div class="testi-card fade-in">
+      <div class="testi-item fade-in">
         <div class="testi-mark">"</div>
-        <div class="testi-quote">It built a 10-day Italy itinerary with every train, hotel, and museum timed perfectly. My travel agent couldn't have done this.</div>
-        <div class="testi-divider"></div>
-        <div class="testi-author">David K., Toronto</div>
+        <p class="testi-quote">It built a ten-day Italy itinerary with every train, hotel, and museum slot perfectly sequenced. My travel agent could not have done this.</p>
+        <p class="testi-attr">David K., Toronto</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── PRICING ─────────────────────────────────────────────────────────────── -->
+<!-- SECTION 6 — PRICING -->
 <section class="pricing-section" id="pricing">
-  <div class="section-inner">
-    <div class="section-label fade-in">Honest pricing</div>
-    <h2 class="section-h2 fade-in">Simple, honest pricing.</h2>
-    <p class="section-sub fade-in">Start free. Upgrade when your trips get serious.</p>
-
-    <div class="price-grid">
-      <div class="price-card fade-in">
-        <div class="price-tier">Free</div>
-        <div class="price-num">$0<span>/mo</span></div>
-        <div class="price-cadence">Forever free · no card needed</div>
-        <div class="price-desc">Perfect for your first Roam trip.</div>
-        <div class="price-sep"></div>
-        <div class="price-features">
-          <div class="pf"><span class="pf-y">✓</span><span>3 trip plans total</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Full day-by-day itinerary</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Shareable trip link</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Basic live dashboard</span></div>
-          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">AI booking alerts</span></div>
-          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Unlimited generation</span></div>
-        </div>
-        <a class="price-btn price-btn-free" href="plan.html">Start free</a>
-      </div>
-
-      <div class="price-card featured fade-in">
-        <div class="popular-badge">Most popular</div>
-        <div class="price-tier">Pro</div>
-        <div class="price-num">$12<span>/mo</span></div>
-        <div class="price-cadence">Billed monthly · cancel anytime</div>
-        <div class="price-desc">For frequent travellers who want everything.</div>
-        <div class="price-sep"></div>
-        <div class="price-features">
-          <div class="pf"><span class="pf-y">✓</span><span><strong style="color:var(--charcoal)">Unlimited</strong> AI trip generation</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>AI booking alerts &amp; reminders</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Live dashboard (real-time updates)</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Export itinerary as PDF</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Offline PWA access</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Multi-city trip builder</span></div>
-          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Team &amp; agency features</span></div>
-        </div>
-        <a class="price-btn price-btn-pro" href="plan.html">Get Pro — $12/mo</a>
-      </div>
-
-      <div class="price-card fade-in">
-        <div class="price-tier">Business</div>
-        <div class="price-num">$49<span>/mo</span></div>
-        <div class="price-cadence">Billed monthly · cancel anytime</div>
-        <div class="price-desc">For travel agencies, creators, and teams.</div>
-        <div class="price-sep"></div>
-        <div class="price-features">
-          <div class="pf"><span class="pf-y">✓</span><span>Everything in Pro</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Up to 10 team members</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>White-label branding</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>API access</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Bulk trip generation</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Dedicated support</span></div>
-        </div>
-        <a class="price-btn price-btn-biz" href="mailto:hello@getroam.app?subject=Business Plan">Contact us →</a>
-      </div>
+  <div class="pricing-inner">
+    <div class="pricing-header fade-in">
+      <span class="section-label">Pricing</span>
+      <h2 class="s-h2"><em>Start free. Travel further.</em></h2>
     </div>
-    <p class="pricing-footnote fade-in">🔒 Secure payments via Stripe &nbsp;·&nbsp; No hidden fees &nbsp;·&nbsp; Cancel anytime</p>
+    <p class="pricing-sub fade-in">No credit card required. Upgrade or cancel anytime.</p>
+    <div class="price-grid">
+
+      <!-- FREE -->
+      <div class="price-card fade-in">
+        <p class="price-name">Roam</p>
+        <div><span class="price-amount">$0</span></div>
+        <p class="price-cadence">Forever free</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">3 trip plans</div>
+          <div class="price-feature">Full itinerary</div>
+          <div class="price-feature">Shareable link</div>
+          <div class="price-feature">Basic dashboard</div>
+        </div>
+        <a class="price-btn price-btn-outline" href="plan.html">Start free</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card price-card-pro fade-in">
+        <span class="price-badge">Most Popular</span>
+        <p class="price-name">Pro</p>
+        <div><span class="price-amount">$12</span><span class="price-per">/mo</span></div>
+        <p class="price-cadence">Billed monthly · cancel anytime</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">Unlimited trips</div>
+          <div class="price-feature">AI booking alerts</div>
+          <div class="price-feature">Live dashboard</div>
+          <div class="price-feature">Export PDF</div>
+          <div class="price-feature">Priority support</div>
+        </div>
+        <a class="price-btn price-btn-gold" href="plan.html">Get Roam Pro</a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="price-card fade-in">
+        <p class="price-name">Business</p>
+        <div><span class="price-amount">$49</span><span class="price-per">/mo</span></div>
+        <p class="price-cadence">Per month · cancel anytime</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">Team trips</div>
+          <div class="price-feature">API access</div>
+          <div class="price-feature">Custom exports</div>
+          <div class="price-feature">Dedicated support</div>
+        </div>
+        <a class="price-btn price-btn-outline" href="mailto:hello@getroam.app?subject=Business Plan">Contact us</a>
+      </div>
+
+    </div>
   </div>
 </section>
 
-<!-- ─── FINAL CTA ────────────────────────────────────────────────────────────── -->
+<!-- SECTION 7 — FINAL CTA -->
 <section class="final-cta">
   <div class="final-cta-bg"></div>
   <div class="final-cta-overlay"></div>
-  <div class="section-inner">
-    <div class="section-label fade-in" style="color:var(--amber-light)">Ready?</div>
-    <h2 class="section-h2 light fade-in">Your next adventure<br>starts here.</h2>
-    <p class="section-sub light fade-in">No research. No tabs. No spreadsheet. Just describe your trip and watch the plan appear.</p>
-    <a class="btn-amber-large fade-in" href="plan.html">Plan my trip free →</a>
-    <p class="final-trust fade-in">
-      Free forever plan<span>·</span><span id="proofTrips">50</span>+ trips planned<span>·</span>No credit card · Works for any destination
-    </p>
+  <div class="final-cta-inner">
+    <span class="section-label fade-in">Ready to plan?</span>
+    <h2 class="s-h2 white fade-in"><em>Your next adventure<br>starts with one sentence.</em></h2>
+    <a class="btn-gold fade-in" href="plan.html" style="font-size:15px;padding:16px 40px;margin-top:8px">Begin planning — it's free</a>
+    <p class="final-trust fade-in"><span id="proofTrips">50</span>+ trips planned · Free forever plan · Works for any destination</p>
   </div>
 </section>
 
-<!-- ─── WAITLIST ─────────────────────────────────────────────────────────────── -->
+<!-- EMAIL -->
 <div class="waitlist" id="waitlist">
   <div class="waitlist-inner">
-    <div class="waitlist-eyebrow">Stay in the loop</div>
-    <h3>New features, straight to your inbox.</h3>
-    <p>Pro access, new destinations, and trip ideas — no spam, unsubscribe anytime.</p>
+    <h3>Stay in the loop</h3>
+    <p>New features, trip ideas, and destination guides — straight to your inbox.</p>
     <form id="emailForm" class="waitlist-form" action="https://formspree.io/f/xpwzkqdb" method="POST" onsubmit="handleEmail(event)">
       <input class="waitlist-input" type="email" name="email" placeholder="you@email.com" required>
-      <button class="waitlist-btn" type="submit" id="emailBtn">Join waitlist</button>
+      <button class="waitlist-btn" type="submit" id="emailBtn">Subscribe</button>
     </form>
-    <p style="margin-top:12px;font-size:12px;color:var(--muted)">🔒 No spam. Unsubscribe anytime.</p>
-    <div id="emailSuccess" class="success-msg">You're on the list. Wander well. ✈</div>
+    <p class="waitlist-note">No spam. Unsubscribe anytime.</p>
+    <div id="emailSuccess" class="success-msg">You're on the list. Wander well.</div>
   </div>
 </div>
 
-<!-- ─── FOOTER ───────────────────────────────────────────────────────────────── -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">Roam</div>
@@ -802,8 +1017,8 @@ footer{
     </div>
     <div class="footer-legal">
       <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="mailto:hello@getroam.app">Contact</a>
+      <a href="#">Terms</a>
+      <a href="mailto:hello@getroam.app">hello@getroam.app</a>
     </div>
     <div class="footer-copy">© 2026 Futurizta · getroam.app</div>
   </div>
@@ -812,11 +1027,11 @@ footer{
 <div class="toast" id="toast"></div>
 <div class="pwa-banner" id="pwaBanner">
   <div style="flex:1">
-    <div style="font-size:14px;font-weight:700;color:var(--charcoal)">📱 Add Roam to home screen</div>
-    <div style="font-size:12px;color:var(--muted);margin-top:2px">Instant access, works offline</div>
+    <div style="font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--text)">Add Roam to home screen</div>
+    <div style="font-size:12px;font-weight:300;font-family:'DM Sans',sans-serif;color:var(--muted);margin-top:2px">Instant access, works offline</div>
   </div>
   <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
-  <button class="pwa-dismiss" id="pwaDismissBtn">×</button>
+  <button class="pwa-dismiss" id="pwaDismissBtn">&#215;</button>
 </div>
 
 <script>
@@ -824,7 +1039,7 @@ footer{
 (function(){
   var nav = document.getElementById('mainNav');
   function onScroll(){
-    if(window.scrollY > 50){ nav.classList.add('scrolled'); }
+    if(window.scrollY > 80){ nav.classList.add('scrolled'); }
     else{ nav.classList.remove('scrolled'); }
   }
   window.addEventListener('scroll', onScroll, {passive:true});
@@ -860,7 +1075,7 @@ function handleEmail(e) {
     document.getElementById('emailSuccess').style.display = 'block';
   })
   .catch(function(){
-    btn.textContent = 'Join waitlist';
+    btn.textContent = 'Subscribe';
     btn.disabled = false;
   });
 }
@@ -879,7 +1094,7 @@ function handleEmail(e) {
         obs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, {threshold:0.12});
   for(var j=0;j<els.length;j++){ obs.observe(els[j]); }
 })();
 
