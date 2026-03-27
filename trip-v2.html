@@ -700,7 +700,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 <!-- ── 1. LIVE OPS ── -->
 <div id="tab-plan" class="tab-content active">
-  <div class="ops-scroll v2-scroll" id="opsScroll">
+  <div class="v2-scroll" id="opsScroll">
 
     <!-- EMPTY STATE -->
     <div id="liveEmptyState" class="empty-state" style="display:none;padding:60px 20px">
@@ -717,6 +717,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="v2-hero-title" id="liveHeroLocation">—</div>
         <div class="v2-hero-hook" id="liveHeroHook">Adventure awaits 🗺️</div>
         <div class="v2-hero-time" id="liveHeroTime">—</div>
+        <div id="liveHeroDate" style="display:none"></div>
       </div>
     </div>
 
@@ -2400,8 +2401,8 @@ function populateDashboard(p) {
     actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="openTicket(${JSON.stringify(tktTitle)})">View ticket →</button>`
       + (tktPdfUrl ? `<a class="next-tkt-btn" href="${tktPdfUrl}" target="_blank">📄 Open PDF</a>` : '');
   }
-  document.getElementById('saveBar').style.display='flex';
-  renderLiveOps();
+  if(document.getElementById('saveBar')) document.getElementById('saveBar').style.display='flex';
+  try{renderLiveOps();}catch(e){console.warn("[v2] renderLiveOps:",e);}
   try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
 }
 
@@ -2452,6 +2453,8 @@ function renderLiveOps(){
   const fmtCountdown=(d)=>{if(d<=0)return'now';if(d<60)return`${d}min`;const h=Math.floor(d/60),m=d%60;return m?`${h}h ${m}m`:`${h}h`;};
   if(!plan||!plan.days)return;
   const el=id=>document.getElementById(id);
+  // Hide empty state — we have data
+  try{ const es=document.getElementById('liveEmptyState'); if(es) es.style.display='none'; }catch(e){}
 
   // ── TIMEZONE (destination-aware) ──
   const TZ_MAP={'paris':'Europe/Paris','amsterdam':'Europe/Amsterdam','london':'Europe/London','rome':'Europe/Rome','barcelona':'Europe/Madrid','berlin':'Europe/Berlin','madrid':'Europe/Madrid','lisbon':'Europe/Lisbon','vienna':'Europe/Vienna','prague':'Europe/Prague','amsterdam':'Europe/Amsterdam','tokyo':'Asia/Tokyo','osaka':'Asia/Tokyo','kyoto':'Asia/Tokyo','new york':'America/New_York','los angeles':'America/Los_Angeles','chicago':'America/Chicago','san francisco':'America/Los_Angeles','bangkok':'Asia/Bangkok','singapore':'Asia/Singapore','kuala lumpur':'Asia/Kuala_Lumpur','penang':'Asia/Kuala_Lumpur','dubai':'Asia/Dubai','sydney':'Australia/Sydney','melbourne':'Australia/Sydney','bali':'Asia/Makassar','seoul':'Asia/Seoul','hong kong':'Asia/Hong_Kong','taipei':'Asia/Taipei','beijing':'Asia/Shanghai','shanghai':'Asia/Shanghai'};
@@ -2635,7 +2638,7 @@ function renderLiveOps(){
   }
 
   // ── TOMORROW (show after 18:00 or day done) ──
-  const showTmr=localHour>=18||afterDay;
+  const showTmr=localHour>=18||afterDay||(localHour<10&&nextDay!=null); // morning prep OR evening prep OR day done
   if(el('liveTomorrowSection')){
     el('liveTomorrowSection').style.display=(showTmr&&nextDay)?'':'none';
     if(showTmr&&nextDay&&el('liveTomorrowCard')){
@@ -2925,7 +2928,13 @@ function exportHtml() {
    ═══════════════════════════════════════ */
 
 /* Scroll container */
-.v2-scroll { padding-bottom: 80px; }
+.v2-scroll {
+  padding-bottom: 80px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  background: var(--bg, #0a0a0f);
+}
 
 /* HERO */
 .v2-hero {
@@ -3047,12 +3056,13 @@ function exportHtml() {
   line-height: 1.4;
 }
 .v2-leave-row {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 8px;
   padding: 10px 0 0;
   border-top: 1px solid rgba(52,211,153,.12);
 }
+.v2-leave-row.show { display: flex; }
 .v2-leave-label {
   font-size: 11px;
   text-transform: uppercase;
@@ -3245,7 +3255,7 @@ function loadFromHash() {
       + (tktPdfUrl ? `<a class="next-tkt-btn" href="${tktPdfUrl}" target="_blank">📄 Open PDF</a>` : '');
   }
   document.getElementById('saveBar').style.display='flex';
-  renderLiveOps();
+  try{renderLiveOps();}catch(e){console.warn("[v2] renderLiveOps:",e);}
   try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
   document.getElementById('saveBar').style.display='flex';
     setTimeout(()=>switchTab('trip'),400);
