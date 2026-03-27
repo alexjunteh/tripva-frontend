@@ -1889,8 +1889,10 @@ function openTicket(tktTitle) {
     void _tabEl.offsetHeight; // force reflow to restart animation
   }
   if (document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
-  // Re-render Live tab when activated (ensures it always shows fresh data)
+  // Re-render Live tab when activated
   if (name === 'plan' && plan) { try { renderLiveOps(); } catch(e) {} }
+  // Invalidate Leaflet map when Trip tab activated (fixes blank map on first show)
+  if (name === 'trip') { setTimeout(() => { try { if(window._routeMap) window._routeMap.invalidateSize(); } catch(e){} }, 50); }
 }
 function openMore() {
   document.getElementById('moreOverlay').classList.add('open');
@@ -3288,7 +3290,7 @@ function initRouteMap(){
   const stops = (plan?.mapStops||[]).filter(s => !homeCity || !(s.name||'').toLowerCase().includes(homeCity));
   const route=plan?.mapRoute||[];
   if(!stops.length) return;
-  const map=L.map('routeMap',{zoomControl:false,attributionControl:false}).setView([45.5,10],6);
+  const map=window._routeMap=L.map('routeMap',{zoomControl:false,attributionControl:false}).setView([45.5,10],6);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
   if(route.length>1){
     L.polyline(route.map(r=>[r.lat,r.lng]),{color:'#95b8ff',weight:3,opacity:.7,dashArray:'6 4'}).addTo(map);
