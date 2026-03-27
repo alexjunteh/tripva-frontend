@@ -6,610 +6,648 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <link rel="canonical" href="https://futuriztaos.github.io/trip-planner/">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#08080f">
-<meta name="description" content="Roam — Describe your trip. AI builds your full itinerary in 30 seconds.">
-<meta property="og:title" content="Roam — AI Trip Planner">
-<meta property="og:description" content="Describe your dream trip. AI builds a full day-by-day itinerary in seconds.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a12">
+<meta name="description" content="Roam — Trip planning takes 8 hours. Ours takes 30 seconds. AI builds your full day-by-day itinerary with hotels, restaurants, and real-time alerts.">
+<meta property="og:title" content="Roam — Trip planning takes 8 hours. Ours takes 30 seconds.">
+<meta property="og:description" content="Describe your trip. Roam's AI builds a complete day-by-day itinerary with hotels, restaurants, bookings, and real-time travel alerts. No research. No tabs. No stress.">
 <meta property="og:image" content="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=630&fit=crop">
 <meta property="og:url" content="https://futuriztaos.github.io/trip-planner/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<title>Roam — AI Trip Planner</title>
+<title>Roam — AI Trip Planner · 30-Second Itineraries</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://tripai-backend.vercel.app">
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 <style>
-/* ─── TOKENS ─────────────────────────────────────────────────────────────── */
+/* ─── RESET & BASE ─────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:#0a0a12;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ─── TOKENS ──────────────────────────────────────────────────────────────── */
 :root{
-  --bg:#08080f;
-  --bg2:#0d0d18;
+  --bg:#0a0a12;
+  --bg-dark:#050508;
+  --bg2:#0f0f1c;
   --surface:rgba(255,255,255,.04);
   --surface2:rgba(255,255,255,.07);
-  --border:rgba(255,255,255,.07);
-  --border2:rgba(255,255,255,.12);
+  --border:rgba(255,255,255,.08);
+  --border2:rgba(255,255,255,.14);
   --text:#f0f0f8;
   --muted:rgba(240,240,248,.45);
-  --muted2:rgba(240,240,248,.62);
-  --accent:#a78bfa;
-  --accent2:#818cf8;
-  --blue:#93c5fd;
+  --muted2:rgba(240,240,248,.65);
+  --purple:#7c6af7;
+  --purple-light:#a78bfa;
+  --purple-glow:rgba(124,106,247,.25);
+  --indigo:#818cf8;
   --green:#6ee7b7;
-  --r:16px;
+  --r:12px;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* ─── USP STRIP ──────────────────────────────────────────────────────────── */
-.usp-strip{position:relative;z-index:1;padding:0 clamp(16px,4vw,40px) 64px}
-.usp-inner{max-width:1200px;margin:0 auto}
-.usp-lead{font-size:clamp(17px,2vw,22px);color:rgba(255,255,255,.55);text-align:center;margin-bottom:40px;line-height:1.65;font-weight:400}
-.usp-lead strong{color:#fff;font-weight:800}
-.usp-items{display:flex;align-items:center;justify-content:center;gap:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden}
-@media(max-width:600px){.usp-items{flex-direction:column}.usp-div{width:100%;height:1px;background:rgba(255,255,255,.07)}}
-.usp-item{flex:1;padding:28px 24px;text-align:center}
-.usp-div{width:1px;height:60px;background:rgba(255,255,255,.07);flex-shrink:0}
-@media(max-width:600px){.usp-div{width:100%;height:1px}}
-.usp-num{font-size:clamp(32px,4vw,48px);font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,#a78bfa,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:8px}
-.usp-lbl{font-size:13px;color:rgba(255,255,255,.5);line-height:1.4;font-weight:500}
+/* ─── NAV ─────────────────────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:60px;
+  background:rgba(10,10,18,.85);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-size:20px;font-weight:900;letter-spacing:-0.5px;
+  background:linear-gradient(135deg,#fff 30%,var(--purple-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.nav-links{
+  display:flex;gap:28px;align-items:center;
+}
+.nav-links a{
+  font-size:14px;color:var(--muted2);font-weight:500;
+  transition:color .2s;
+}
+.nav-links a:hover{color:#fff}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:#fff;
+  padding:8px 18px;border-radius:8px;
+  font-size:13px;font-weight:700;letter-spacing:.2px;
+  transition:background .2s,transform .15s;
+  white-space:nowrap;
+}
+.nav-cta:hover{background:#6b59e8;transform:translateY(-1px)}
+@media(max-width:600px){
+  .nav-links{display:none}
+  nav{padding:0 16px}
+}
 
-/* ─── GRAIN OVERLAY ──────────────────────────────────────────────────────── */
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.025;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:200px 200px}
+/* ─── HERO ────────────────────────────────────────────────────────────────── */
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:100px 20px 80px;
+  overflow:hidden;
+}
+/* Animated CSS mesh gradient */
+.hero-mesh{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(124,106,247,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(129,140,248,.25) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(167,139,250,.15) 0%, transparent 50%),
+    #0a0a12;
+  animation:meshPulse 8s ease-in-out infinite alternate;
+}
+@keyframes meshPulse{
+  0%{
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(124,106,247,.35) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 70%, rgba(129,140,248,.25) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 90%, rgba(167,139,250,.15) 0%, transparent 50%),
+      #0a0a12;
+  }
+  100%{
+    background:
+      radial-gradient(ellipse 70% 55% at 30% 40%, rgba(124,106,247,.4) 0%, transparent 60%),
+      radial-gradient(ellipse 65% 55% at 70% 60%, rgba(129,140,248,.3) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 45% 85%, rgba(167,139,250,.2) 0%, transparent 50%),
+      #0a0a12;
+  }
+}
+.hero-inner{position:relative;z-index:1;max-width:780px;margin:0 auto}
+.trust-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.3);
+  border-radius:999px;padding:6px 14px;
+  font-size:13px;font-weight:600;color:var(--purple-light);
+  margin-bottom:24px;
+  letter-spacing:.1px;
+}
+.trust-badge .stars{color:#facc15;letter-spacing:1px;font-size:11px}
+.hero h1{
+  font-size:clamp(36px,7vw,80px);
+  font-weight:900;letter-spacing:-2px;line-height:1.06;
+  color:#fff;margin-bottom:20px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--purple-light),var(--indigo));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-sub{
+  font-size:clamp(15px,2.2vw,19px);color:var(--muted2);
+  line-height:1.65;max-width:560px;margin:0 auto 36px;
+}
+.hero-ctas{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:16px;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--purple);color:#fff;
+  padding:14px 28px;border-radius:10px;
+  font-size:15px;font-weight:700;letter-spacing:.1px;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 4px 24px rgba(124,106,247,.4);
+}
+.btn-primary:hover{background:#6b59e8;transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,106,247,.5)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.07);color:#fff;
+  padding:14px 28px;border-radius:10px;
+  font-size:15px;font-weight:600;letter-spacing:.1px;
+  border:1px solid var(--border2);
+  transition:background .2s,transform .15s;
+}
+.btn-secondary:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.hero-nudge{
+  font-size:13px;color:var(--muted);letter-spacing:.2px;
+}
+.hero-scroll{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-size:11px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;
+  animation:bounce 2s ease-in-out infinite;
+}
+.hero-scroll svg{opacity:.4}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+@media(max-width:600px){
+  .hero{padding:90px 16px 80px}
+  .hero h1{letter-spacing:-1.5px}
+}
 
-/* ─── ANIMATED MESH BG ───────────────────────────────────────────────────── */
-.mesh{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.mesh-blob{position:absolute;border-radius:50%;filter:blur(80px);animation:blobMove 12s ease-in-out infinite alternate}
-.mesh-blob:nth-child(1){width:600px;height:600px;top:-100px;left:-100px;background:radial-gradient(circle,rgba(124,93,250,.15),transparent 70%);animation-duration:14s}
-.mesh-blob:nth-child(2){width:500px;height:500px;top:20%;right:-150px;background:radial-gradient(circle,rgba(99,163,255,.1),transparent 70%);animation-duration:18s;animation-delay:-6s}
-.mesh-blob:nth-child(3){width:400px;height:400px;bottom:10%;left:30%;background:radial-gradient(circle,rgba(167,139,250,.08),transparent 70%);animation-duration:16s;animation-delay:-3s}
-@keyframes blobMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(40px,30px) scale(1.08)}}
+/* ─── SECTION COMMONS ─────────────────────────────────────────────────────── */
+section{padding:80px 20px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--purple-light);margin-bottom:12px;
+}
+h2.section-h2{
+  font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-1.5px;
+  line-height:1.1;color:#fff;margin-bottom:16px;
+}
+.section-sub{font-size:clamp(15px,2vw,18px);color:var(--muted2);line-height:1.65;max-width:540px}
+@media(max-width:600px){section{padding:64px 16px}}
 
-/* ─── NAV ────────────────────────────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;display:flex;align-items:center;padding:0 clamp(16px,4vw,40px);background:#0d0d1c;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(167,139,250,.2);box-shadow:0 2px 32px rgba(0,0,0,.6)}
-.nav-inner{max-width:1200px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-size:19px;font-weight:900;letter-spacing:-.6px;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-links{display:flex;align-items:center;gap:4px}
-.nav-link{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:8px;transition:color .15s,background .15s;letter-spacing:-.1px}
-.nav-link:hover{color:var(--text);background:var(--surface)}
-.nav-cta{background:var(--text);color:#08080f;border:none;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;letter-spacing:-.2px;transition:opacity .15s,transform .15s}
-.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
-.nav-cta:active{transform:scale(.95)}
-@media(max-width:480px){.nav-link{font-size:12px;padding:6px 8px}.nav-cta{padding:7px 14px;font-size:12px}}
+/* ─── FADE IN ─────────────────────────────────────────────────────────────── */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
 
-/* ─── HERO ───────────────────────────────────────────────────────────────── */
-.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:0 clamp(16px,4vw,40px) 0}
-.hero-inner{max-width:1200px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:80px;padding:100px 0 80px}
-@media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:60px;padding:90px 0 60px;text-align:center}}
+/* ─── PAIN SECTION ────────────────────────────────────────────────────────── */
+.pain-section{
+  background:var(--bg-dark);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.pain-section .section-inner{text-align:center}
+.pain-section h2.section-h2{margin:0 auto 12px}
+.pain-section .section-sub{margin:0 auto 48px}
+.pain-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:48px;
+}
+.pain-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;padding:28px 24px;
+  text-align:left;
+  transition:border-color .25s,transform .25s;
+}
+.pain-card:hover{border-color:rgba(124,106,247,.35);transform:translateY(-3px)}
+.pain-icon{font-size:28px;margin-bottom:14px}
+.pain-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.3px}
+.pain-body{font-size:14px;color:var(--muted2);line-height:1.7}
+.pain-hook{
+  font-size:clamp(18px,3vw,26px);font-weight:800;color:#fff;
+  letter-spacing:-.5px;margin-bottom:32px;line-height:1.3;
+}
+.pain-hook span{color:var(--purple-light)}
+@media(max-width:900px){.pain-grid{grid-template-columns:1fr}}
+@media(min-width:601px) and (max-width:900px){.pain-grid{grid-template-columns:1fr 1fr}}
 
-/* badge */
-.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:20px;padding:5px 12px 5px 8px;font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.1px;margin-bottom:28px;cursor:default}
-.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+/* ─── DEMO SECTION ────────────────────────────────────────────────────────── */
+.demo-section{background:var(--bg2);text-align:center}
+.demo-section .section-inner{display:flex;flex-direction:column;align-items:center}
+.demo-section h2.section-h2,.demo-section .section-sub{text-align:center;margin:0 auto}
+.demo-section .section-sub{margin-bottom:40px}
+.phone-wrap{
+  position:relative;width:100%;max-width:380px;margin:0 auto 32px;
+}
+.phone-frame{
+  background:#111;border-radius:36px;
+  border:2px solid rgba(255,255,255,.12);
+  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(124,106,247,.15);
+  overflow:hidden;aspect-ratio:9/19;
+  position:relative;
+}
+.phone-frame iframe{
+  width:100%;height:100%;border:none;display:block;
+}
+.phone-notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:28px;background:#111;border-radius:0 0 18px 18px;
+  z-index:2;
+}
+.feature-chips{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.25);
+  border-radius:999px;padding:8px 16px;
+  font-size:13px;font-weight:600;color:var(--purple-light);
+}
 
-/* headline */
-.hero h1{font-size:clamp(42px,6vw,72px);font-weight:900;letter-spacing:-3px;line-height:1.02;margin-bottom:22px;color:#fff}
-.hero h1 .grad{background:linear-gradient(135deg,var(--accent) 0%,var(--blue) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{font-size:clamp(15px,1.8vw,18px);color:var(--muted2);line-height:1.72;max-width:420px;margin-bottom:36px;font-weight:400}
-@media(max-width:900px){.hero-sub{margin-left:auto;margin-right:auto}}
+/* ─── HOW IT WORKS ────────────────────────────────────────────────────────── */
+.how-section{background:var(--bg)}
+.how-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px;
+}
+.how-step{
+  display:flex;flex-direction:column;gap:14px;
+}
+.step-num{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--indigo));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 4px 16px rgba(124,106,247,.4);
+}
+.step-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
+.step-body{font-size:14px;color:var(--muted2);line-height:1.7}
+.step-connector{
+  display:none;
+}
+@media(max-width:900px){.how-grid{grid-template-columns:1fr;gap:28px}}
 
-/* CTAs */
-.hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-@media(max-width:900px){.hero-actions{justify-content:center}}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--text);color:#08080f;border:none;padding:14px 26px;border-radius:22px;font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;letter-spacing:-.3px;transition:opacity .18s,transform .18s;box-shadow:0 0 0 1px rgba(255,255,255,.15),0 8px 32px rgba(0,0,0,.3)}
-.btn-primary:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,255,255,.2),0 12px 40px rgba(0,0,0,.4)}
-.btn-primary:active{transform:scale(.97)}
-.btn-secondary{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--muted2);text-decoration:none;padding:10px 4px;letter-spacing:-.1px;transition:color .15s}
-.btn-secondary:hover{color:var(--text)}
-.btn-secondary svg{transition:transform .18s}
-.btn-secondary:hover svg{transform:translateX(3px)}
+/* ─── TESTIMONIALS ────────────────────────────────────────────────────────── */
+.testi-section{background:var(--bg-dark);text-align:center}
+.testi-section .section-inner{display:flex;flex-direction:column;align-items:center}
+.testi-section h2.section-h2{margin:0 auto 48px}
+.testi-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;
+}
+.testi-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:28px 24px;text-align:left;
+  transition:border-color .25s,transform .25s;
+}
+.testi-card:hover{border-color:rgba(124,106,247,.3);transform:translateY(-3px)}
+.testi-stars{color:#facc15;font-size:13px;letter-spacing:2px;margin-bottom:14px}
+.testi-quote{
+  font-size:15px;color:#e8e8f5;line-height:1.7;margin-bottom:18px;
+  font-style:italic;
+}
+.testi-author{
+  font-size:13px;font-weight:700;color:var(--purple-light);
+}
+@media(max-width:900px){.testi-grid{grid-template-columns:1fr}}
+@media(min-width:601px) and (max-width:900px){.testi-grid{grid-template-columns:1fr 1fr}}
 
-/* social proof */
-.hero-proof{margin-top:40px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-@media(max-width:900px){.hero-proof{justify-content:center}}
-.proof-avatars{display:flex;align-items:center}
-.proof-avatar{width:28px;height:28px;border-radius:50%;border:2px solid var(--bg);margin-left:-8px;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;overflow:hidden;flex-shrink:0}
-.proof-avatar:first-child{margin-left:0}
-.proof-avatar img{width:100%;height:100%;object-fit:cover}
-.proof-text{font-size:13px;color:var(--muted2);font-weight:500}
-.proof-text strong{color:var(--text);font-weight:700}
-.proof-divider{width:1px;height:20px;background:var(--border2)}
-.proof-stars{color:#fbbf24;font-size:13px;letter-spacing:1px}
+/* ─── PRICING ─────────────────────────────────────────────────────────────── */
+.pricing-section{background:var(--bg);text-align:center}
+.pricing-section .section-inner{display:flex;flex-direction:column;align-items:center}
+.pricing-section h2.section-h2{margin:0 auto 12px}
+.pricing-section .section-sub{margin:0 auto 48px}
+.price-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:900px;
+  align-items:start;
+}
+.price-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:28px 24px;text-align:left;
+  position:relative;transition:border-color .25s,transform .25s;
+}
+.price-card:hover{border-color:var(--border2);transform:translateY(-3px)}
+.price-card.featured{
+  background:linear-gradient(160deg,rgba(124,106,247,.12),rgba(129,140,248,.06));
+  border-color:rgba(124,106,247,.5);
+  box-shadow:0 0 40px rgba(124,106,247,.15);
+}
+.popular-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--purple),var(--indigo));
+  color:#fff;font-size:11px;font-weight:800;letter-spacing:.8px;
+  padding:4px 14px;border-radius:999px;text-transform:uppercase;white-space:nowrap;
+}
+.price-tier{font-size:13px;font-weight:700;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.price-num{font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1}
+.price-num span{font-size:16px;font-weight:500;color:var(--muted2)}
+.price-cadence{font-size:12px;color:var(--muted);margin-top:4px;margin-bottom:10px}
+.price-desc{font-size:13px;color:var(--muted2);line-height:1.55;margin-bottom:18px}
+.price-sep{height:1px;background:var(--border);margin-bottom:18px}
+.price-features{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.pf{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text);line-height:1.45}
+.pf-y{color:#6ee7b7;font-weight:700;flex-shrink:0;margin-top:1px}
+.pf-n{color:var(--muted);font-weight:700;flex-shrink:0;margin-top:1px}
+.price-btn{
+  display:block;text-align:center;padding:12px;border-radius:10px;
+  font-size:14px;font-weight:700;letter-spacing:.2px;
+  transition:background .2s,transform .15s;
+}
+.price-btn-free{background:var(--surface2);color:#fff;border:1px solid var(--border2)}
+.price-btn-free:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+.price-btn-pro{
+  background:linear-gradient(135deg,var(--purple),var(--indigo));color:#fff;
+  box-shadow:0 4px 20px rgba(124,106,247,.4);
+}
+.price-btn-pro:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,106,247,.5)}
+.price-btn-biz{background:var(--surface2);color:#fff;border:1px solid var(--border2)}
+.price-btn-biz:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+.pricing-footnote{font-size:12px;color:var(--muted);margin-top:24px;letter-spacing:.1px}
+@media(max-width:900px){.price-grid{grid-template-columns:1fr;max-width:400px}}
 
-/* ─── PHONE MOCKUP ───────────────────────────────────────────────────────── */
-.hero-visual{display:flex;justify-content:center;align-items:center;position:relative}
-@media(max-width:900px){.hero-visual{margin-top:-8px}}
-.phone-scene{perspective:1200px;display:flex;justify-content:center}
-.phone-3d{transform:rotateY(-12deg) rotateX(4deg);transform-style:preserve-3d;transition:transform .5s ease;animation:phoneFloat 6s ease-in-out infinite}
-.phone-scene:hover .phone-3d{transform:rotateY(-6deg) rotateX(2deg)}
-@keyframes phoneFloat{0%,100%{transform:rotateY(-12deg) rotateX(4deg) translateY(0)}50%{transform:rotateY(-12deg) rotateX(4deg) translateY(-12px)}}
-.phone{width:260px;height:530px;background:#0c0c18;border:1.5px solid rgba(255,255,255,.28);border-radius:38px;overflow:hidden;position:relative;box-shadow:0 60px 100px rgba(0,0,0,.7),0 20px 40px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06),inset 0 1px 0 rgba(255,255,255,.15),inset 0 -1px 0 rgba(255,255,255,.04),-30px 20px 60px rgba(124,93,250,.2),0 0 60px rgba(124,93,250,.08)}
-.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:26px;background:#0c0c18;border-bottom-left-radius:18px;border-bottom-right-radius:18px;z-index:10}
-.phone-side-btn{position:absolute;right:-3px;top:100px;width:3px;height:40px;background:rgba(255,255,255,.12);border-radius:2px}
-.phone iframe{width:375px;height:765px;border:none;transform:scale(.693);transform-origin:top left;pointer-events:none}
-@media(max-width:900px){.phone{width:220px;height:448px}.phone iframe{width:375px;height:763px;transform:scale(.587);transform-origin:top left}}
-/* glow under phone */
-.phone-shadow{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);width:200px;height:40px;background:rgba(124,93,250,.25);filter:blur(24px);border-radius:50%;pointer-events:none}
-/* floating cards */
-.float-chip{position:absolute;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 12px;font-size:11px;font-weight:700;color:rgba(255,255,255,.75);white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:chipFloat 8s ease-in-out infinite}
-.float-chip:nth-child(1){top:15%;left:-80px;animation-delay:0s;animation-duration:9s}
-.float-chip:nth-child(2){top:55%;right:-70px;animation-delay:-3s;animation-duration:10s}
-.float-chip:nth-child(3){bottom:20%;left:-60px;animation-delay:-5s;animation-duration:8s}
-@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@media(max-width:900px){.float-chip{display:none}}
+/* ─── FINAL CTA ───────────────────────────────────────────────────────────── */
+.final-cta{
+  background:var(--bg-dark);text-align:center;
+  border-top:1px solid var(--border);position:relative;overflow:hidden;
+}
+.final-cta-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse, rgba(124,106,247,.2) 0%, transparent 70%);
+  pointer-events:none;
+}
+.final-cta .section-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.final-cta h2.section-h2{margin:0 auto 16px;text-align:center}
+.final-cta .section-sub{text-align:center;margin:0 auto 36px}
+.final-cta-trust{
+  font-size:13px;color:var(--muted);margin-top:18px;letter-spacing:.2px;
+}
+.final-cta-trust span{color:rgba(255,255,255,.35)}
 
-/* ─── STATS STRIP ────────────────────────────────────────────────────────── */
-.stats-strip{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 clamp(16px,4vw,40px)}
-.stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-@media(max-width:600px){.stats-inner{grid-template-columns:repeat(2,1fr)}}
-.stat-item{padding:20px 16px;text-align:center;border-right:1px solid var(--border)}
-.stat-item:last-child{border-right:none}
-@media(max-width:600px){.stat-item:nth-child(2){border-right:none}.stat-item:nth-child(3){border-top:1px solid var(--border)}.stat-item:nth-child(4){border-top:1px solid var(--border);border-right:none}}
-.stat-val{font-size:clamp(26px,3vw,36px);font-weight:900;letter-spacing:-1.5px;color:#fff;display:block}
-.stat-lbl{font-size:13px;color:var(--muted);margin-top:4px;font-weight:500}
-
-/* ─── SECTIONS ───────────────────────────────────────────────────────────── */
-.section{position:relative;z-index:1;padding:72px clamp(16px,4vw,40px)}
-.section-inner{max-width:1200px;margin:0 auto}
-.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-.eyebrow::before{content:'';width:16px;height:1px;background:var(--accent);opacity:.6}
-h2.section-title{font-size:clamp(26px,3.5vw,42px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:12px;color:#fff}
-.section-desc{font-size:clamp(14px,1.5vw,16px);color:var(--muted2);line-height:1.75;max-width:520px}
-
-/* ─── HOW IT WORKS ───────────────────────────────────────────────────────── */
-.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-top:36px}
-@media(max-width:640px){.steps-grid{grid-template-columns:1fr}}
-.step{padding:24px 24px;background:var(--bg);position:relative}
-.step-n{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--accent);opacity:.6;margin-bottom:12px}
-.step-icon{width:40px;height:40px;border-radius:12px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
-.step-title{font-size:16px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px;color:#fff}
-.step-desc{font-size:13px;color:var(--muted2);line-height:1.7}
-
-/* ─── FEATURES ───────────────────────────────────────────────────────────── */
-.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:36px}
-@media(max-width:640px){.feat-grid{grid-template-columns:1fr}}
-.feat{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px 22px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s}
-.feat:hover{border-color:var(--border2);transform:translateY(-3px)}
-.feat.featured{background:linear-gradient(135deg,rgba(124,93,250,.09),rgba(99,163,255,.04));border-color:rgba(167,139,250,.2)}
-.feat::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);pointer-events:none}
-.feat-icon-box{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;background:var(--surface2);border:1px solid var(--border2)}
-.feat-title{font-size:17px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px;color:#fff}
-.feat-desc{font-size:13px;color:var(--muted2);line-height:1.72}
-.feat-tag{display:inline-flex;align-items:center;gap:4px;margin-top:16px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.3px;text-transform:uppercase;opacity:.75}
-
-/* ─── SHOWCASE ───────────────────────────────────────────────────────────── */
-.showcase{position:relative;z-index:1;padding:0 clamp(16px,4vw,40px) 100px}
-.showcase-inner{max-width:1200px;margin:0 auto}
-.showcase-phones{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin-top:64px}
-@media(max-width:767px){.showcase-phones{gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;padding:0 20px 10px;scrollbar-width:none}.showcase-phones::-webkit-scrollbar{display:none}.sc-phone{flex-shrink:0}}
-.sc-phone{background:#0c0c18;border:1.5px solid rgba(255,255,255,.2);border-radius:32px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);flex-shrink:0;transition:transform .3s}
-.sc-phone:hover{transform:translateY(-8px)}
-.sc-phone.center{border-color:rgba(167,139,250,.3);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(124,93,250,.1)}
-.sc-phone.side{opacity:.7;transform:scale(.9) translateY(20px)}
-.sc-phone.side:hover{opacity:.9;transform:scale(.9) translateY(12px)}
-.sc-phone.center{width:240px}
-.sc-phone.side{width:200px;opacity:.8;transform:scale(.93) translateY(20px)}
-.sc-phone.side:hover{opacity:1;transform:scale(.93) translateY(12px)}
-@media(max-width:640px){.sc-phone.side{display:none}.sc-phone.center{width:240px}}
-.sc-labels{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin-top:16px}
-.sc-label{font-size:11px;font-weight:700;color:var(--muted);text-align:center;letter-spacing:.5px;text-transform:uppercase;width:240px;flex-shrink:0}
-.sc-label.side{width:180px;opacity:.5}
-@media(max-width:640px){.sc-label.side{display:none}}
-
-/* ─── STATIC PHONE SCREENSHOTS ─────────────────────────────────────────── */
-.static-phone{display:flex;flex-direction:column;overflow:hidden}
-.sp-header{padding:9px 12px 7px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0}
-.sp-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0}
-.sp-hero{position:relative;background-size:cover;background-position:center;height:120px;flex-shrink:0}
-.sp-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,15,.88),transparent 55%)}
-.sp-hero-txt{position:absolute;bottom:10px;left:12px;font-size:13px;font-weight:900;letter-spacing:-.3px}
-.sp-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.06);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
-.sp-tile{background:#0c0c18;padding:7px 10px}
-.sp-tile-val{font-size:12px;font-weight:800;letter-spacing:-.3px}
-.sp-tile-lbl{font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.sp-rows{display:flex;flex-direction:column;padding:4px 12px;gap:0;overflow:hidden}
-.sp-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.sp-row:last-child{border-bottom:none}
-.sp-time{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);width:30px;flex-shrink:0}
-.sp-dot2{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.sp-dot2.act{background:#818cf8}.sp-dot2.food{background:#f59e0b}.sp-dot2.trans{background:#3b82f6}
-.sp-lbl{color:rgba(255,255,255,.7);font-weight:600;font-size:11px;letter-spacing:-.1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-
-/* ─── PRICING ────────────────────────────────────────────────────────────── */
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px}
-@media(max-width:760px){.pricing-grid{grid-template-columns:1fr;max-width:360px;margin:64px auto 0}}
-.price-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
-.price-card:hover{transform:translateY(-4px)}
-.price-card.featured{background:linear-gradient(160deg,rgba(124,93,250,.1),rgba(8,8,15,.95));border-color:rgba(167,139,250,.35)}
-.price-card.featured::before{content:'Most popular';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),var(--blue));color:#08080f;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:3px 14px;border-radius:20px;white-space:nowrap}
-.price-tier{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-.price-num{font-size:44px;font-weight:900;letter-spacing:-2.5px;line-height:1;color:#fff}
-.price-num span{font-size:16px;font-weight:500;color:var(--muted);letter-spacing:0;vertical-align:super;font-size:14px}
-.price-cadence{font-size:12px;color:var(--muted);margin:6px 0 20px;font-weight:400}
-.price-desc{font-size:13px;color:var(--muted2);line-height:1.6;margin-bottom:24px;min-height:40px}
-.price-sep{height:1px;background:var(--border);margin-bottom:20px}
-.price-features{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;flex:1}
-.pf{font-size:13px;display:flex;align-items:flex-start;gap:10px;color:var(--muted2);line-height:1.4}
-.pf-y{color:#6ee7b7;flex-shrink:0;font-weight:700;font-size:14px}
-.pf-n{color:rgba(255,255,255,.15);flex-shrink:0;font-size:14px}
-.price-btn{display:block;text-align:center;padding:13px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:all .15s;letter-spacing:-.2px}
-.price-btn-free{background:var(--surface2);color:var(--muted2);border:1px solid var(--border2)}
-.price-btn-free:hover{background:rgba(255,255,255,.1);color:#fff}
-.price-btn-pro{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800}
-.price-btn-pro:hover{opacity:.9;box-shadow:0 4px 20px rgba(124,93,250,.3);transform:translateY(-1px)}
-.price-btn-biz{background:var(--surface2);color:var(--muted2);border:1px solid rgba(167,139,250,.2)}
-.price-btn-biz:hover{border-color:var(--accent);color:#fff}
-
-/* ─── TESTIMONIALS ──────────────────────────────────────────────────────── */
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
-@media(max-width:700px){.testi-grid{grid-template-columns:1fr}}
-.testi{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:14px;transition:border-color .2s,transform .2s}
-.testi:hover{border-color:var(--border2);transform:translateY(-2px)}
-.testi-stars{color:#fbbf24;font-size:13px;letter-spacing:2px}
-.testi-quote{font-size:13px;color:rgba(255,255,255,.72);line-height:1.72;flex:1}
-.testi-author{display:flex;align-items:center;gap:10px;margin-top:4px}
-.testi-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0}
-.testi-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.2px}
-.testi-dest{font-size:11px;color:var(--muted);margin-top:1px;font-weight:500}
-
-/* ─── FINAL CTA ──────────────────────────────────────────────────────────── */
-.cta-section{position:relative;z-index:1;padding:120px clamp(16px,4vw,40px);text-align:center;overflow:hidden}
-.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(124,93,250,.12),transparent 70%);pointer-events:none}
-.cta-section h2{font-size:clamp(32px,5vw,60px);font-weight:900;letter-spacing:-2.5px;line-height:1.06;color:#fff;margin-bottom:20px;position:relative;z-index:1}
-.cta-section p{font-size:16px;color:var(--muted2);max-width:400px;margin:0 auto 40px;line-height:1.7;position:relative;z-index:1}
-.cta-section .btn-primary{position:relative;z-index:1;font-size:16px;padding:16px 32px}
-
-/* ─── WAITLIST ───────────────────────────────────────────────────────────── */
-.waitlist{position:relative;z-index:1;padding:72px clamp(16px,4vw,40px);border-top:1px solid var(--border);text-align:center}
-.waitlist-form{display:flex;gap:10px;max-width:380px;margin:28px auto 0;flex-wrap:wrap;justify-content:center}
-.waitlist-input{flex:1;min-width:200px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:14px;padding:13px 16px;font-size:14px;color:#fff;outline:none;font-family:inherit;transition:border-color .2s,box-shadow .2s}
-.waitlist-input:focus{border-color:rgba(167,139,250,.5);box-shadow:0 0 0 3px rgba(167,139,250,.1)}
+/* ─── WAITLIST ────────────────────────────────────────────────────────────── */
+.waitlist{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:64px 20px;text-align:center;
+}
+.waitlist-eyebrow{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--purple-light);margin-bottom:14px;
+}
+.waitlist h3{
+  font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-.8px;
+  margin-bottom:10px;color:#fff;
+}
+.waitlist p{font-size:14px;color:var(--muted2);line-height:1.65}
+.waitlist-form{
+  display:flex;gap:8px;margin-top:24px;
+}
+.waitlist-input{
+  flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 16px;color:#fff;font-size:14px;
+  outline:none;transition:border-color .2s;
+}
 .waitlist-input::placeholder{color:var(--muted)}
-.waitlist-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:13px 22px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s,transform .15s}
-.waitlist-btn:hover{opacity:.9;transform:translateY(-1px)}
+.waitlist-input:focus{border-color:var(--purple)}
+.waitlist-btn{
+  background:var(--purple);color:#fff;border:none;cursor:pointer;
+  padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;
+  white-space:nowrap;transition:background .2s,transform .15s;
+}
+.waitlist-btn:hover{background:#6b59e8;transform:translateY(-1px)}
+.waitlist-btn:disabled{opacity:.6;cursor:default}
+.waitlist-inner{max-width:480px;margin:0 auto}
+@media(max-width:500px){
+  .waitlist-form{flex-direction:column}
+  .waitlist-btn{width:100%}
+}
 
-/* ─── FOOTER ─────────────────────────────────────────────────────────────── */
-footer{position:relative;z-index:1;padding:32px clamp(16px,4vw,40px);border-top:1px solid var(--border)}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.footer-logo{font-size:16px;font-weight:900;letter-spacing:-.4px;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.footer-links{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s;font-weight:500}
-.footer-links a:hover{color:var(--text)}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.2)}
+/* ─── FOOTER ──────────────────────────────────────────────────────────────── */
+footer{
+  background:var(--bg);border-top:1px solid var(--border);
+  padding:40px 20px;
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
+}
+.footer-logo{
+  font-size:18px;font-weight:900;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#fff 30%,var(--purple-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.footer-links{
+  display:flex;flex-wrap:wrap;gap:20px;justify-content:center;
+}
+.footer-links a{font-size:14px;color:var(--muted2);transition:color .2s}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:12px;color:var(--muted)}
 
-/* ─── UTILS ──────────────────────────────────────────────────────────────── */
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,30,.98);border:1px solid var(--border2);border-radius:14px;padding:11px 18px;font-size:13px;font-weight:700;z-index:700;opacity:0;transition:all .28s cubic-bezier(.25,.1,.25,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(20px)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.pwa-banner{position:fixed;bottom:0;left:0;right:0;z-index:800;background:rgba(14,14,22,.97);border-top:1px solid rgba(167,139,250,.2);backdrop-filter:blur(20px);padding:14px 20px 20px;display:flex;align-items:center;gap:12px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)}
+/* ─── TOAST ───────────────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:#1a1a2e;border:1px solid var(--border2);border-radius:10px;
+  padding:12px 20px;font-size:14px;font-weight:600;color:#fff;
+  z-index:999;transition:transform .3s ease;pointer-events:none;
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ─── PWA BANNER ──────────────────────────────────────────────────────────── */
+.pwa-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:#13132a;border-top:1px solid var(--border2);
+  padding:12px 20px;display:flex;align-items:center;gap:12px;
+  transform:translateY(100%);transition:transform .35s ease;
+}
 .pwa-banner.show{transform:translateY(0)}
-.pwa-install-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
-.pwa-dismiss{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;line-height:1}
+.pwa-install-btn{
+  background:var(--purple);color:#fff;border:none;cursor:pointer;
+  padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;
+}
+.pwa-dismiss{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:20px;padding:4px 8px;line-height:1;
+}
 </style>
 </head>
 <body>
 
-<!-- animated mesh v2 -->
-<div class="mesh">
-  <div class="mesh-blob"></div>
-  <div class="mesh-blob"></div>
-  <div class="mesh-blob"></div>
-</div>
-
-<!-- NAV -->
+<!-- ─── NAV ───────────────────────────────────────────────────────────────── -->
 <nav>
-  <div class="nav-inner">
-    <div class="nav-logo">Roam</div>
-    <div class="nav-links">
-      <a class="nav-link" href="#how">How it works</a>
-      <a class="nav-link" href="#pricing">Pricing</a>
-      <a class="nav-cta" href="plan.html">Try free →</a>
-    </div>
+  <div class="nav-logo">Roam</div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
   </div>
+  <a class="nav-cta" href="plan.html">Try free →</a>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
+<!-- ─── HERO ───────────────────────────────────────────────────────────────── -->
+<section class="hero" id="home">
+  <div class="hero-mesh"></div>
   <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-badge">
-        <div class="badge-dot"></div>
-        AI-powered trip planning
-      </div>
-      <h1>AI plans it.<br><span class="grad">You just show up.</span></h1>
-      <p class="hero-sub">Describe your trip. Roam builds a complete day-by-day itinerary with real restaurants, train times, booking links, and budget tracking — in 30 seconds.</p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="plan.html">
-          Try it — it's free
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a class="btn-secondary" href="trip.html?demo=1" target="_blank">
-          See a sample trip
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 11L11 2M11 2H5M11 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-      <div class="hero-proof">
-        <div class="proof-avatars">
-          <div class="proof-avatar" style="background:linear-gradient(135deg,#f97316,#ef4444)">🧑</div>
-          <div class="proof-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">👩</div>
-          <div class="proof-avatar" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">🧔</div>
-          <div class="proof-avatar" style="background:linear-gradient(135deg,#10b981,#14b8a6)">👧</div>
-          <div class="proof-avatar" style="background:linear-gradient(135deg,#f59e0b,#84cc16)">🧑</div>
-        </div>
-        <span class="proof-text"><strong id="tripCount">50+</strong> trips planned</span>
-        <div class="proof-divider"></div>
-        <span class="proof-stars">★★★★★</span>
-        <span class="proof-text" style="font-size:12px">Free to start</span>
-      </div>
+    <div class="trust-badge">
+      <span class="stars">★★★★★</span>
+      <span><span id="tripCount">50</span>+ trips planned · Join free</span>
     </div>
-    <div class="hero-right">
-      <div class="hero-visual">
-        <div class="phone-scene">
-          <div class="phone-3d">
-            <div class="float-chip">🗼 Paris · 7 days</div>
-            <div class="float-chip">🏯 Kyoto · 10 days</div>
-            <div class="float-chip">🛵 Amalfi · 5 days</div>
-            <div class="phone">
-              <div class="phone-notch"></div>
-              <div class="phone-side-btn"></div>
-              <iframe src="demo-frame.html" loading="lazy" tabindex="-1" title="Roam trip preview"></iframe>
-            </div>
-            <div class="phone-shadow"></div>
-          </div>
-        </div>
-      </div>
+    <h1>Trip planning takes <em>8 hours.</em><br>Ours takes 30 seconds.</h1>
+    <p class="hero-sub">Describe your trip. Roam's AI builds a complete day-by-day itinerary with hotels, restaurants, bookings, and real-time travel alerts. No research. No tabs. No stress.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="plan.html">
+        Plan my trip free →
+      </a>
+      <a class="btn-secondary" href="trip.html?demo=1" target="_blank">
+        See it in action ↗
+      </a>
     </div>
+    <p class="hero-nudge">No credit card. Works for any destination.</p>
+  </div>
+  <div class="hero-scroll">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M4 9l4 4 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
 </section>
 
-<!-- STATS STRIP -->
-<div class="stats-strip">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <span class="stat-val" id="proofTrips">50+</span>
-      <span class="stat-lbl">Trips planned</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-val">30s</span>
-      <span class="stat-lbl">vs 8hrs of research</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-val">5★</span>
-      <span class="stat-lbl">Avg user rating</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-val">$0</span>
-      <span class="stat-lbl">To get started</span>
-    </div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<!-- USP BENEFIT STRIP -->
-<section class="usp-strip">
-  <div class="usp-inner">
-    <p class="usp-lead">Travellers spend <strong>8+ hours</strong> planning a trip.<br>Roam does it in <strong>30 seconds.</strong></p>
-    <div class="usp-items">
-      <div class="usp-item">
-        <div class="usp-num">30s</div>
-        <div class="usp-lbl">Full itinerary — not just a list</div>
-      </div>
-      <div class="usp-div"></div>
-      <div class="usp-item">
-        <div class="usp-num">1</div>
-        <div class="usp-lbl">App for itinerary, budget, tickets & SOS</div>
-      </div>
-      <div class="usp-div"></div>
-      <div class="usp-item">
-        <div class="usp-num">$0</div>
-        <div class="usp-lbl">No credit card to get started</div>
-      </div>
-      <div class="usp-div"></div>
-      <div class="usp-item">
-        <div class="usp-num">50+</div>
-        <div class="usp-lbl">Countries with real local tips</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="how" class="section">
+<!-- ─── PAIN SECTION ───────────────────────────────────────────────────────── -->
+<section class="pain-section">
   <div class="section-inner">
-    <div class="eyebrow">How it works</div>
-    <h2 class="section-title">From idea to itinerary<br>in 30 seconds</h2>
-    <p class="section-desc" style="margin-top:4px">No more switching between 12 tabs. No more spreadsheets. Just describe your trip — Roam handles every detail.</p>
-    <div class="steps-grid">
-      <div class="step">
-        <div class="step-n">01</div>
-        <div class="step-icon">📝</div>
-        <div class="step-title">Describe your trip</div>
-        <div class="step-desc">Destination, dates, budget, travel style. As much or as little as you know — Roam handles the rest.</div>
+    <div class="section-label">Sound familiar?</div>
+    <h2 class="section-h2 fade-in">You've been here before.</h2>
+    <p class="section-sub fade-in">The hours of research. The tabs. The spreadsheet nobody uses by day two.</p>
+
+    <div class="pain-grid" style="margin-top:40px">
+      <div class="pain-card fade-in">
+        <div class="pain-icon">🗂️</div>
+        <div class="pain-title">12 browser tabs for one trip</div>
+        <div class="pain-body">Flights here, hotels there, things to do somewhere else. You've closed and reopened the same tab three times. And you still haven't booked anything.</div>
       </div>
-      <div class="step">
-        <div class="step-n">02</div>
-        <div class="step-icon">🤖</div>
-        <div class="step-title">Watch AI build it</div>
-        <div class="step-desc">Claude AI designs your day-by-day plan live — real venues, transport times, booking links, and local tips.</div>
+      <div class="pain-card fade-in">
+        <div class="pain-icon">📊</div>
+        <div class="pain-title">The spreadsheet nobody updates</div>
+        <div class="pain-body">You built a beautiful itinerary. Then the train was full, the restaurant closed, and you stopped using it on day two. Three hours of planning, wasted.</div>
       </div>
-      <div class="step">
-        <div class="step-n">03</div>
-        <div class="step-icon">✈️</div>
-        <div class="step-title">Travel with it</div>
-        <div class="step-desc">Get a shareable link. Install as a PWA. Your full trip — offline, always accessible, always in your pocket.</div>
+      <div class="pain-card fade-in">
+        <div class="pain-icon">😰</div>
+        <div class="pain-title">The booking anxiety never stops</div>
+        <div class="pain-body">You're on the plane wondering if you booked the wrong hotel. Or forgot the museum tickets. Or missed something obvious. Every trip starts with dread.</div>
+      </div>
+    </div>
+
+    <div class="pain-hook fade-in">
+      Then you type one message to Roam.<br>
+      And in <span>30 seconds</span>, it's done.
+    </div>
+    <div class="fade-in">
+      <a class="btn-primary" href="plan.html" style="margin:0 auto;font-size:16px;padding:16px 32px">
+        Build my trip now — it's free
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRODUCT DEMO ────────────────────────────────────────────────────────── -->
+<section class="demo-section" id="demo">
+  <div class="section-inner">
+    <div class="section-label fade-in">See it live</div>
+    <h2 class="section-h2 fade-in">Watch it work.</h2>
+    <p class="section-sub fade-in">From one sentence to a complete trip dashboard — 30 seconds.</p>
+
+    <div class="phone-wrap fade-in">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <iframe src="trip.html?demo=1" title="Roam trip demo" loading="lazy" scrolling="yes"></iframe>
+      </div>
+    </div>
+
+    <div class="feature-chips fade-in">
+      <div class="chip">📅 Day-by-day plan</div>
+      <div class="chip">🏨 Hotels picked</div>
+      <div class="chip">⚡ Booking alerts</div>
+      <div class="chip">🗺️ Route map</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ───────────────────────────────────────────────────────── -->
+<section class="how-section" id="how">
+  <div class="section-inner">
+    <div class="section-label fade-in">Simple by design</div>
+    <h2 class="section-h2 fade-in">Three steps. Zero effort.</h2>
+
+    <div class="how-grid">
+      <div class="how-step fade-in">
+        <div class="step-num">1</div>
+        <div class="step-title">Tell Roam where you're going</div>
+        <div class="step-body">Type your destination, dates, and budget. Takes 10 seconds. No forms. No dropdowns. Just describe your trip like you'd tell a friend.</div>
+      </div>
+      <div class="how-step fade-in">
+        <div class="step-num">2</div>
+        <div class="step-title">AI builds your complete trip</div>
+        <div class="step-body">Hotels, restaurants, activities, train times, urgent bookings — all in one plan. Roam knows what to book early so you don't miss anything.</div>
+      </div>
+      <div class="how-step fade-in">
+        <div class="step-num">3</div>
+        <div class="step-title">Travel with confidence</div>
+        <div class="step-body">Your live dashboard adapts as your trip progresses. Real-time alerts, updated schedules, everything you need — exactly when you need it.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="section" style="padding-top:0">
+<!-- ─── TESTIMONIALS ───────────────────────────────────────────────────────── -->
+<section class="testi-section">
   <div class="section-inner">
-    <div class="eyebrow">Why Roam wins</div>
-    <h2 class="section-title">Not just a list —<br>a full trip command centre.</h2>
-    <p class="section-desc">Other tools give you bullet points. Roam gives you a living dashboard you carry in your pocket — budget, tickets, emergency info, and hour-by-hour plans. Everything a travel agent would give you, for free.</p>
-    <div class="feat-grid">
-      <div class="feat featured">
-        <div class="feat-icon-box">🧠</div>
-        <div class="feat-title">Stop wasting 8 hours on Google</div>
-        <div class="feat-desc">Claude AI replaces days of research — specific restaurant names, exact train times, skip-the-queue tips, and crowd-avoiding secrets. The insider knowledge that used to cost $500 from a travel agent.</div>
-        <div class="feat-tag">↗ Core feature</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon-box">💰</div>
-        <div class="feat-title">Never blow your budget</div>
-        <div class="feat-desc">See exactly what's booked vs still pending. Live currency conversion in 10 currencies — know what you're actually spending before you tap your card.</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon-box">🎒</div>
-        <div class="feat-title">Never forget your passport</div>
-        <div class="feat-desc">One tap generates a personalised packing list based on your destination, weather, and activities. Check off as you pack — no more last-minute panic.</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon-box">🆘</div>
-        <div class="feat-title">Help when things go wrong</div>
-        <div class="feat-desc">Every trip has a tap-to-call emergency card — police, ambulance, tourist helpline for your destination. Works fully offline when you need it most.</div>
-      </div>
-    </div>
-  </div>
-</section>
+    <div class="section-label fade-in">Real results</div>
+    <h2 class="section-h2 fade-in">Real trips. Real results.</h2>
 
-<!-- SHOWCASE -->
-<div class="showcase">
-  <div class="showcase-inner">
-    <div style="text-align:center">
-      <div class="eyebrow" style="justify-content:center">Live product</div>
-      <h2 class="section-title" style="text-align:center">See every screen</h2>
-      <p class="section-desc" style="margin:0 auto">Real destinations. Real data. No loading.</p>
-    </div>
-    <div class="showcase-phones">
-      <div class="sc-phone side static-phone">
-        <div class="sp-header"><div class="sp-dot"></div><span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6)">📅 Days</span></div>
-        <div class="sp-hero" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=130&fit=crop')">
-          <div class="sp-hero-overlay"></div><div class="sp-hero-txt">🗼 Iconic Paris</div>
-        </div>
-        <div class="sp-rows">
-          <div class="sp-row"><span class="sp-time">08:30</span><span class="sp-dot2 food"></span><span class="sp-lbl">Café de Flore breakfast</span></div>
-          <div class="sp-row"><span class="sp-time">10:00</span><span class="sp-dot2 act"></span><span class="sp-lbl">Eiffel Tower summit</span></div>
-          <div class="sp-row"><span class="sp-time">15:00</span><span class="sp-dot2 act"></span><span class="sp-lbl">Arc de Triomphe</span></div>
-          <div class="sp-row"><span class="sp-time">19:00</span><span class="sp-dot2 act"></span><span class="sp-lbl">Seine River Cruise</span></div>
-        </div>
-      </div>
-      <div class="sc-phone center static-phone">
-        <div class="sp-header"><div class="sp-dot"></div><span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6)">🧭 Live dashboard</span></div>
-        <div class="sp-hero" style="background-image:url('https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=400&h=160&fit=crop');height:150px">
-          <div class="sp-hero-overlay"></div>
-          <div class="sp-hero-txt" style="font-size:16px">🚲 Amsterdam · Day 5</div>
-          <div style="position:absolute;bottom:10px;left:12px;font-size:10px;color:rgba(255,255,255,.55)">Today · Hotel V Nesplein</div>
-        </div>
-        <div style="padding:10px 12px 9px;background:rgba(124,93,250,.1);border-bottom:1px solid rgba(255,255,255,.06)">
-          <div style="font-size:9px;font-weight:800;letter-spacing:.8px;color:#a78bfa;text-transform:uppercase">Next Move</div>
-          <div style="font-size:13px;font-weight:900;margin-top:2px;letter-spacing:-.3px">Anne Frank House</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px">09:00 · Pre-booked ✅ · 90 min</div>
-        </div>
-        <div class="sp-tiles">
-          <div class="sp-tile"><div class="sp-tile-val">Thu 26</div><div class="sp-tile-lbl">Local date</div></div>
-          <div class="sp-tile"><div class="sp-tile-val">☁️ 16°</div><div class="sp-tile-lbl">Weather</div></div>
-          <div class="sp-tile"><div class="sp-tile-val">🚇 Tram</div><div class="sp-tile-lbl">Transport</div></div>
-          <div class="sp-tile"><div class="sp-tile-val">🏨 V</div><div class="sp-tile-lbl">Hotel</div></div>
-        </div>
-        <div class="sp-rows">
-          <div class="sp-row"><span class="sp-time">09:00</span><span class="sp-dot2 act"></span><span class="sp-lbl">Anne Frank House</span></div>
-          <div class="sp-row"><span class="sp-time">13:00</span><span class="sp-dot2 food"></span><span class="sp-lbl">Café 't Smalle lunch</span></div>
-          <div class="sp-row"><span class="sp-time">15:00</span><span class="sp-dot2 act"></span><span class="sp-lbl">Rijksmuseum</span></div>
-        </div>
-      </div>
-      <div class="sc-phone side static-phone">
-        <div class="sp-header"><div class="sp-dot"></div><span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.6)">💰 Budget</span></div>
-        <div style="padding:12px 12px 8px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0">
-          <div style="font-size:9px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.8px">Total trip cost</div>
-          <div style="font-size:24px;font-weight:900;letter-spacing:-1.5px;color:#fff;margin-top:2px">$1,840</div>
-          <div style="display:flex;gap:10px;margin-top:6px">
-            <span style="font-size:10px;color:#6ee7b7;font-weight:700">✓ $1,430 booked</span>
-            <span style="font-size:10px;color:#f59e0b;font-weight:700">⏳ $410 pending</span>
-          </div>
-        </div>
-        <div class="sp-rows">
-          <div class="sp-row"><span style="font-size:13px;flex-shrink:0">✈️</span><span class="sp-lbl">Flights</span><span style="font-size:10px;font-weight:700;color:#6ee7b7;flex-shrink:0">$800 ✓</span></div>
-          <div class="sp-row"><span style="font-size:13px;flex-shrink:0">🏨</span><span class="sp-lbl">Hotels 6 nights</span><span style="font-size:10px;font-weight:700;color:#6ee7b7;flex-shrink:0">$630 ✓</span></div>
-          <div class="sp-row"><span style="font-size:13px;flex-shrink:0">🚄</span><span class="sp-lbl">Thalys train</span><span style="font-size:10px;font-weight:700;color:#6ee7b7;flex-shrink:0">$130 ✓</span></div>
-          <div class="sp-row"><span style="font-size:13px;flex-shrink:0">🎫</span><span class="sp-lbl">Eiffel + Louvre</span><span style="font-size:10px;font-weight:700;color:#f59e0b;flex-shrink:0">$86 ⏳</span></div>
-          <div class="sp-row"><span style="font-size:13px;flex-shrink:0">🍽️</span><span class="sp-lbl">Restaurants</span><span style="font-size:10px;font-weight:700;color:#f59e0b;flex-shrink:0">$324 ⏳</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="sc-labels">
-      <div class="sc-label side">📅 Days view</div>
-      <div class="sc-label">🧭 Live dashboard</div>
-      <div class="sc-label side">💰 Budget tracker</div>
-    </div>
-    <div style="text-align:center;margin-top:28px">
-      <a href="trip.html?demo=1" target="_blank" class="btn-secondary" style="font-size:14px">Open full interactive demo ↗</a>
-    </div>
-  </div>
-</div>
-
-<!-- TESTIMONIALS -->
-<section class="section" style="padding-top:0">
-  <div class="section-inner">
-    <div class="eyebrow">What travellers say</div>
-    <h2 class="section-title">Built for real trips</h2>
     <div class="testi-grid">
-      <div class="testi">
+      <div class="testi-card fade-in">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Generated my entire Tokyo trip in under a minute. Every restaurant it picked was genuinely great — not the tourist traps you find on Google."</p>
-        <div class="testi-author">
-          <img class="testi-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=72&h=72&fit=crop&crop=face" alt="Sarah">
-          <div><div class="testi-name">Sarah K.</div><div class="testi-dest">Tokyo · 10 days</div></div>
-        </div>
+        <div class="testi-quote">"Planned my entire 7-day Tokyo trip in under a minute. It flagged the Teamlab Borderless tickets sold out 2 weeks in advance — I'd have completely missed it."</div>
+        <div class="testi-author">Jamie L. · Melbourne</div>
       </div>
-      <div class="testi">
+      <div class="testi-card fade-in">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Roam flagged I hadn't booked the Colosseum 3 days before my Rome trip. Queue without a ticket is 2 hours. It literally saved my holiday."</p>
-        <div class="testi-author">
-          <img class="testi-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=72&h=72&fit=crop&crop=face" alt="Marcus">
-          <div><div class="testi-name">Marcus T.</div><div class="testi-dest">Rome · 5 days</div></div>
-        </div>
+        <div class="testi-quote">"I used to spend a full Sunday planning a trip. Now I do it during my coffee break. The booking alerts alone are worth it — I've saved money twice already."</div>
+        <div class="testi-author">Sofia R. · Barcelona</div>
       </div>
-      <div class="testi">
+      <div class="testi-card fade-in">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Last-minute Bali trip, booked the flight Friday, Roam had a full 7-day plan by Saturday morning. The packing list saved me from forgetting my adapter."</p>
-        <div class="testi-author">
-          <img class="testi-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=72&h=72&fit=crop&crop=face" alt="Priya">
-          <div><div class="testi-name">Priya M.</div><div class="testi-dest">Bali · 7 days</div></div>
-        </div>
+        <div class="testi-quote">"It built a 10-day Italy plan with every train connection, hotel, and museum slot perfectly sequenced. My travel agent literally couldn't do this as well."</div>
+        <div class="testi-author">David K. · Toronto</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-
-
-  <section id="pricing" class="section">
+<!-- ─── PRICING ─────────────────────────────────────────────────────────────── -->
+<section class="pricing-section" id="pricing">
   <div class="section-inner">
-    <div class="eyebrow">Pricing</div>
-    <h2 class="section-title">Simple, honest pricing</h2>
-    <p class="section-desc">Start free. No credit card. Upgrade when you need more.</p>
-    <div class="pricing-grid">
-      <div class="price-card">
+    <div class="section-label fade-in">No surprises</div>
+    <h2 class="section-h2 fade-in">Start free. Upgrade when you're ready.</h2>
+    <p class="section-sub fade-in">No credit card required to start. Upgrade or cancel anytime.</p>
+
+    <div class="price-grid">
+      <div class="price-card fade-in">
         <div class="price-tier">Free</div>
         <div class="price-num">$0<span>/mo</span></div>
-        <div class="price-cadence">Forever free</div>
-        <div class="price-desc">Perfect for your next trip.</div>
+        <div class="price-cadence">Forever free · no card needed</div>
+        <div class="price-desc">Perfect for your first Roam trip.</div>
         <div class="price-sep"></div>
         <div class="price-features">
-          <div class="pf"><span class="pf-y">✓</span><span>3 AI trips per month</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>3 trip plans total</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>Full day-by-day itinerary</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>Shareable trip link</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Budget tracker + currency</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Emergency SOS card</span></div>
-          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Save trips to account</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>Basic live dashboard</span></div>
+          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">AI booking alerts</span></div>
           <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Unlimited generation</span></div>
         </div>
         <a class="price-btn price-btn-free" href="plan.html">Start free</a>
       </div>
-      <div class="price-card featured">
+
+      <div class="price-card featured fade-in">
+        <div class="popular-badge">Most popular</div>
         <div class="price-tier">Pro</div>
         <div class="price-num">$12<span>/mo</span></div>
         <div class="price-cadence">Billed monthly · cancel anytime</div>
@@ -617,16 +655,17 @@ footer{position:relative;z-index:1;padding:32px clamp(16px,4vw,40px);border-top:
         <div class="price-sep"></div>
         <div class="price-features">
           <div class="pf"><span class="pf-y">✓</span><span><strong style="color:#fff">Unlimited</strong> AI trip generation</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Save trips to your account</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>AI packing list generator</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Offline trip access (PWA)</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>AI booking alerts &amp; reminders</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>Live dashboard (real-time updates)</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>Export itinerary as PDF</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>Offline PWA access</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>Multi-city trip builder</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Best hotel & flight deals</span></div>
-          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Team / agency features</span></div>
+          <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Team &amp; agency features</span></div>
         </div>
         <a class="price-btn price-btn-pro" href="plan.html">Get Pro — $12/mo</a>
       </div>
-      <div class="price-card">
+
+      <div class="price-card fade-in">
         <div class="price-tier">Business</div>
         <div class="price-num">$49<span>/mo</span></div>
         <div class="price-cadence">Billed monthly · cancel anytime</div>
@@ -643,37 +682,42 @@ footer{position:relative;z-index:1;padding:32px clamp(16px,4vw,40px);border-top:
         <a class="price-btn price-btn-biz" href="mailto:hello@getroam.app?subject=Business Plan">Contact us →</a>
       </div>
     </div>
-    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:24px;letter-spacing:.1px">🔒 Secure payments via Stripe &nbsp;·&nbsp; No hidden fees &nbsp;·&nbsp; Cancel anytime</p>
+    <p class="pricing-footnote fade-in">🔒 Secure payments via Stripe &nbsp;·&nbsp; No hidden fees &nbsp;·&nbsp; Cancel anytime</p>
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="cta-section">
-  <div class="cta-bg"></div>
-  <h2>Your next trip,<br>planned in <span style="background:linear-gradient(135deg,#a78bfa,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent">30 seconds.</span></h2>
-  <p>No account. No credit card. Just describe your trip and watch AI build it in real time.</p>
-  <a class="btn-primary" href="plan.html" style="font-size:16px;padding:16px 32px">
-    Plan my trip free
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8 3l4.5 4.5L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </a>
+<!-- ─── FINAL CTA ────────────────────────────────────────────────────────────── -->
+<section class="final-cta">
+  <div class="final-cta-glow"></div>
+  <div class="section-inner">
+    <div class="section-label fade-in">Ready?</div>
+    <h2 class="section-h2 fade-in">Your next adventure is<br>one message away.</h2>
+    <p class="section-sub fade-in">No research. No tabs. No spreadsheet. Just describe your trip and watch the plan appear.</p>
+    <a class="btn-primary fade-in" href="plan.html" style="font-size:16px;padding:16px 36px">
+      Plan my trip free →
+    </a>
+    <p class="final-cta-trust fade-in">
+      <span id="proofTrips">50</span>+ trips planned <span>·</span> Free forever plan <span>·</span> No credit card needed
+    </p>
+  </div>
 </section>
 
-<!-- WAITLIST -->
+<!-- ─── WAITLIST ─────────────────────────────────────────────────────────────── -->
 <div class="waitlist" id="waitlist">
-  <div style="max-width:480px;margin:0 auto">
-    <div class="eyebrow" style="justify-content:center;margin-bottom:16px">Early access</div>
-    <h3 style="font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-.8px;margin-bottom:10px;color:#fff">Stay in the loop</h3>
-    <p style="font-size:14px;color:var(--muted2);line-height:1.65">New features, destinations, and Pro access — straight to your inbox.</p>
+  <div class="waitlist-inner">
+    <div class="waitlist-eyebrow">Stay in the loop</div>
+    <h3>New features, straight to your inbox.</h3>
+    <p>Pro access, new destinations, and trip ideas — no spam, unsubscribe anytime.</p>
     <form id="emailForm" class="waitlist-form" action="https://formspree.io/f/xpwzkqdb" method="POST" onsubmit="handleEmail(event)">
       <input class="waitlist-input" type="email" name="email" placeholder="you@email.com" required>
       <button class="waitlist-btn" type="submit" id="emailBtn">Join waitlist</button>
     </form>
-    <p style="margin-top:8px;font-size:12px;color:var(--muted2);opacity:.7">🔒 No spam. Unsubscribe anytime.</p>
+    <p style="margin-top:10px;font-size:12px;color:var(--muted)">🔒 No spam. Unsubscribe anytime.</p>
     <div id="emailSuccess" style="display:none;margin-top:16px;font-size:14px;font-weight:700;color:var(--green)">✅ You're on the list!</div>
   </div>
 </div>
 
-<!-- FOOTER -->
+<!-- ─── FOOTER ───────────────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">Roam</div>
@@ -683,10 +727,10 @@ footer{position:relative;z-index:1;padding:32px clamp(16px,4vw,40px);border-top:
       <a href="#pricing">Pricing</a>
       <a href="trip.html?demo=1" target="_blank">Demo</a>
     </div>
-    <div class="footer-links" style="margin-top:12px;gap:16px">
-      <a href="#" style="font-size:12px;color:var(--muted2)">Privacy Policy</a>
-      <a href="#" style="font-size:12px;color:var(--muted2)">Terms</a>
-      <a href="mailto:hello@getroam.app" style="font-size:12px;color:var(--muted2)">Contact</a>
+    <div class="footer-links" style="gap:16px">
+      <a href="#" style="font-size:12px;color:var(--muted)">Privacy Policy</a>
+      <a href="#" style="font-size:12px;color:var(--muted)">Terms</a>
+      <a href="mailto:hello@getroam.app" style="font-size:12px;color:var(--muted)">Contact</a>
     </div>
     <div class="footer-copy">© 2026 Futurizta · getroam.app</div>
   </div>
@@ -694,7 +738,10 @@ footer{position:relative;z-index:1;padding:32px clamp(16px,4vw,40px);border-top:
 
 <div class="toast" id="toast"></div>
 <div class="pwa-banner" id="pwaBanner">
-  <div style="flex:1"><div style="font-size:14px;font-weight:700">📱 Add Roam to home screen</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Instant access, works offline</div></div>
+  <div style="flex:1">
+    <div style="font-size:14px;font-weight:700">📱 Add Roam to home screen</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:2px">Instant access, works offline</div>
+  </div>
   <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
   <button class="pwa-dismiss" id="pwaDismissBtn">×</button>
 </div>
@@ -702,37 +749,79 @@ footer{position:relative;z-index:1;padding:32px clamp(16px,4vw,40px);border-top:
 <script>
 // Live trip counter
 fetch('https://tripai-backend.vercel.app/api/stats')
-  .then(r=>r.json()).then(d=>{
-    const n = d.trips || 50;
-    const s = n>=100 ? Math.floor(n/10)*10+'+' : n+'+';
-    document.getElementById('tripCount').textContent = s;
-    document.getElementById('proofTrips').textContent = s;
-  }).catch(()=>{});
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var n = d.trips || 50;
+    var s = n >= 100 ? Math.floor(n/10)*10+'+' : n+'+';
+    var el1 = document.getElementById('tripCount');
+    var el2 = document.getElementById('proofTrips');
+    if(el1){ el1.textContent = s; }
+    if(el2){ el2.textContent = s; }
+  })
+  .catch(function(){});
 
+// Email / waitlist form
 function handleEmail(e) {
   e.preventDefault();
-  const btn = document.getElementById('emailBtn');
-  btn.textContent = '...'; btn.disabled = true;
-  fetch(e.target.action,{method:'POST',body:new FormData(e.target),headers:{Accept:'application/json'}})
-    .then(()=>{document.getElementById('emailForm').style.display='none';document.getElementById('emailSuccess').style.display='block';})
-    .catch(()=>{btn.textContent='Join waitlist';btn.disabled=false;});
+  var btn = document.getElementById('emailBtn');
+  btn.textContent = '...';
+  btn.disabled = true;
+  fetch(e.target.action, {
+    method: 'POST',
+    body: new FormData(e.target),
+    headers: { Accept: 'application/json' }
+  })
+  .then(function(){
+    document.getElementById('emailForm').style.display = 'none';
+    document.getElementById('emailSuccess').style.display = 'block';
+  })
+  .catch(function(){
+    btn.textContent = 'Join waitlist';
+    btn.disabled = false;
+  });
 }
 
-// PWA
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;
-  if(!sessionStorage.getItem('pwa_d')&&!matchMedia('(display-mode:standalone)').matches)
-    setTimeout(()=>document.getElementById('pwaBanner')?.classList.add('show'),3000);
+// Fade-in on scroll
+(function(){
+  var els = document.querySelectorAll('.fade-in');
+  if(!('IntersectionObserver' in window)){
+    for(var i=0;i<els.length;i++){ els[i].classList.add('visible'); }
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  for(var j=0;j<els.length;j++){ obs.observe(els[j]); }
+})();
+
+// PWA install banner
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  if(!sessionStorage.getItem('pwa_d') && !matchMedia('(display-mode:standalone)').matches){
+    setTimeout(function(){
+      var b = document.getElementById('pwaBanner');
+      if(b){ b.classList.add('show'); }
+    }, 3000);
+  }
 });
-document.getElementById('pwaInstallBtn')?.addEventListener('click',async()=>{
-  document.getElementById('pwaBanner').classList.remove('show');sessionStorage.setItem('pwa_d','1');
-  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;}
+document.getElementById('pwaInstallBtn').addEventListener('click', function(){
+  document.getElementById('pwaBanner').classList.remove('show');
+  sessionStorage.setItem('pwa_d','1');
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt = null; }
 });
-document.getElementById('pwaDismissBtn')?.addEventListener('click',()=>{
-  document.getElementById('pwaBanner').classList.remove('show');sessionStorage.setItem('pwa_d','1');
+document.getElementById('pwaDismissBtn').addEventListener('click', function(){
+  document.getElementById('pwaBanner').classList.remove('show');
+  sessionStorage.setItem('pwa_d','1');
 });
 
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
 </script>
 </body>
 </html>
