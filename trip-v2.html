@@ -810,16 +810,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 }
 .v2-urg-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 .v2-urg-body { flex: 1; min-width: 0; }
-.v2-urg-label { font-size: 13px; font-weight: 600; color: #f0f0f5; }
+.v2-urg-label { font-size: 13px; font-weight: 600; color: var(--text); }
 .v2-urg-note { font-size: 11px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.v2-urg-days { font-size: 11px; font-weight: 700; color: #f59e0b; flex-shrink: 0; padding-top: 2px; }
+.v2-urg-days { font-size: 11px; font-weight: 700; color: var(--amber); flex-shrink: 0; padding-top: 2px; }
 .v2-urg-btn {
   flex-shrink: 0;
   padding: 5px 10px;
   background: rgba(245,158,11,.15);
   border: 1px solid rgba(245,158,11,.3);
   border-radius: 8px;
-  color: #f59e0b;
+  color: var(--amber);
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;
@@ -839,13 +839,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #34d399;
+  color: var(--green);
   margin-bottom: 6px;
 }
 .v2-now-title {
   font-size: 20px;
   font-weight: 800;
-  color: #f0f0f5;
+  color: var(--text);
   line-height: 1.2;
   letter-spacing: -.2px;
 }
@@ -874,7 +874,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .v2-leave-time {
   font-size: 17px;
   font-weight: 800;
-  color: #34d399;
+  color: var(--green);
   flex: 1;
 }
 .v2-maps-btn {
@@ -883,7 +883,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   background: rgba(52,211,153,.1);
   border: 1px solid rgba(52,211,153,.25);
   border-radius: 10px;
-  color: #34d399;
+  color: var(--green);
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;
@@ -963,7 +963,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   border-radius: 14px;
   padding: 14px 16px;
 }
-.v2-tmr-title { font-size: 15px; font-weight: 700; color: #f0f0f5; }
+.v2-tmr-title { font-size: 15px; font-weight: 700; color: var(--text); }
 .v2-tmr-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .v2-tmr-wake {
   margin-top: 10px;
@@ -985,10 +985,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .5px;
-  color: #34d399;
+  color: var(--green);
   margin-bottom: 4px;
 }
-.v2-hotel-name { font-size: 14px; font-weight: 700; color: #f0f0f5; }
+.v2-hotel-name { font-size: 14px; font-weight: 700; color: var(--text); }
 .v2-hotel-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .v2-hotel-actions { margin-top: 8px; display: flex; gap: 8px; }
 
@@ -2823,7 +2823,7 @@ function renderLiveOps(){
   const timeline=day.timeline||[];
 
   // ── HERO ──
-  const heroImg=day.imageUrl||(CITY_IMGS[(day.heroSeed||'').toLowerCase()])||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
+  const heroImg=day.imageUrl||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
   if(el('liveHero'))el('liveHero').style.backgroundImage=`url('${heroImg}')`;
   if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`Day ${day.day} of ${totalDays}`;
   if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
