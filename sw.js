@@ -1,6 +1,6 @@
 // Service Worker — stale-while-revalidate for HTML, cache-first for static assets
-const CACHE_VERSION = 'roam-v13';
-const STATIC_CACHE = 'roam-static-v13';
+const CACHE_VERSION = 'roam-v14';
+const STATIC_CACHE = 'roam-static-v14';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
