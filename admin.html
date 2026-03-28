@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Roam · Command Center</title>
+<title>Tripva · Command Center</title>
 <style>
 :root{--bg:#080810;--surface:#0f0f1a;--surface2:#161625;--border:rgba(255,255,255,.08);--text:#f0f0f8;--muted:rgba(255,255,255,.4);--accent:#7c6af7;--accent2:#95b8ff;--green:#4ade80;--yellow:#fbbf24;--red:#f87171;--orange:#fb923c}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -74,7 +74,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </head>
 <body>
 <div id="authWall">
-  <div class="auth-logo">Roam <span>HQ</span></div>
+  <div class="auth-logo">Tripva <span>HQ</span></div>
   <div class="auth-sub">Command Center · Private Access</div>
   <input class="auth-input" type="password" id="authInput" placeholder="Password" autocomplete="current-password">
   <button class="auth-btn" id="authBtn">Enter →</button>
@@ -83,7 +83,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <div id="app">
   <div class="header">
-    <div class="header-logo">Roam <span>HQ</span></div>
+    <div class="header-logo">Tripva <span>HQ</span></div>
     <div class="header-badge">Command Center</div>
     <div class="header-right">
       <div class="header-time" id="headerTime">--:--</div>
@@ -342,7 +342,7 @@ function md2html(md){
 }
 
 // Roadmap
-const SHIPPED=['Backend API deployed to Vercel','Progressive SSE streaming (skeleton → day × N → done)','Landing page with trip generator','Trip dashboard — 6 tabs','Save + load trips via GitHub','PWA (installable, service worker)','OG tags, Plausible analytics, Formspree','Error handling + retry UI','Mobile audit — 390px responsive','Pricing page (Free/$12/$49)','Social proof counter','Planned by Roam badge','Multilingual (ZH/JA/KO/AR/TH/HI)','Itinerary validator (8 checks)','Fake ticket prevention','Budget status/category/icons','Hotel stars + rating display','Map filters home city','All onclick handlers fixed (global scope)','Save + load timeouts (10s/15s)','rawPlan schema fix on load'];
+const SHIPPED=['Backend API deployed to Vercel','Progressive SSE streaming (skeleton → day × N → done)','Landing page with trip generator','Trip dashboard — 6 tabs','Save + load trips via GitHub','PWA (installable, service worker)','OG tags, Plausible analytics, Formspree','Error handling + retry UI','Mobile audit — 390px responsive','Pricing page (Free/$12/$49)','Social proof counter','Planned by Tripva badge','Multilingual (ZH/JA/KO/AR/TH/HI)','Itinerary validator (8 checks)','Fake ticket prevention','Budget status/category/icons','Hotel stars + rating display','Map filters home city','All onclick handlers fixed (global scope)','Save + load timeouts (10s/15s)','rawPlan schema fix on load'];
 const BLOCKED=[
   {title:'Auth — magic link',reason:'Needs SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY',action:'Create Supabase project → share keys'},
   {title:'My Trips page',reason:'Blocked on Supabase',action:'Unblock Supabase first'},
@@ -352,7 +352,7 @@ const BLOCKED=[
   {title:'GetYourGuide affiliate ID',reason:'ROAM_GYG_ID is placeholder',action:'Sign up at partner.getyourguide.com'},
   {title:'Trainline affiliate ID',reason:'ROAM_TRAINLINE_ID is placeholder',action:'Sign up at thetrainline.com/affiliates'},
   {title:'Rentalcars affiliate ID',reason:'ROAM_RENTALCARS_ID is placeholder',action:'Sign up at rentalcars.com/affiliates'},
-  {title:'App rename from Roam',reason:'Conflicts with Roam Mobile (telecom)',action:'Choose: Farer / Vacaya / TripHQ / Vayra'},
+  {title:'App rename from Roam (legacy note)',reason:'Conflicts with Tripva Mobile (telecom)',action:'Choose: Farer / Vacaya / TripHQ / Vayra'},
 ];
 function renderRoadmap(){
   document.getElementById('shippedList').innerHTML=SHIPPED.map(s=>`<div class="blocked-item done"><div class="blocked-title">✅ ${s}</div></div>`).join('');

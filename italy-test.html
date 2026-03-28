@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Roam">
-<title>Roam — AI Trip Planner</title>
+<meta name="apple-mobile-web-app-title" content="Tripva">
+<title>Tripva — AI Trip Planner</title>
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
@@ -649,7 +649,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 <div id="splash">
   <div class="sp-logo">✈️</div>
-  <div class="sp-name">Roam</div>
+  <div class="sp-name">Tripva</div>
   <div class="sp-sub">AI Trip Planner</div>
 </div>
 
@@ -1139,8 +1139,8 @@ window.onload = () => {
   setTimeout(function() {
     try {
       localStorage.setItem('tripai_italy_plan', JSON.stringify(ITALY_PLAN));
-      if (!localStorage.getItem('tripai_plan') || localStorage.getItem('tripai_plan_v') === PLAN_V) {
-        localStorage.setItem('tripai_plan', JSON.stringify(ITALY_PLAN));
+      if (!localStorage.getItem('tripva_plan') || localStorage.getItem('tripai_plan_v') === PLAN_V) {
+        localStorage.setItem('tripva_plan', JSON.stringify(ITALY_PLAN));
       }
     } catch(e) { console.warn('[tripai] localStorage write failed (quota?)', e); }
   }, 0);
@@ -1511,7 +1511,7 @@ function populateDashboard(p) {
       }))
     );
     const urgent=[...derivedFromActivities, ...derivedFromSegments];
-    const dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
+    const dismissed=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');
     const activeUrgent=urgent.filter(u=>!dismissed.includes(u.label||''));
     if(activeUrgent.length) {
       const pendingWrap=document.createElement('div'); pendingWrap.className='booknow-segment pending';
@@ -1527,7 +1527,7 @@ function populateDashboard(p) {
         const when=extractWhen(u.label,u.note);
         const itemKey=esc(u.label||'').replace(/'/g,"\'");
         const c=document.createElement('div'); c.className='book-card priority'; c.id='bc-'+i;
-        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripai_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
+        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripva_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
         pendingWrap.appendChild(c);
       });
       scroll.appendChild(pendingWrap);
@@ -1745,7 +1745,7 @@ function populateDashboard(p) {
   }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
-  try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
+  try { localStorage.setItem('tripva_plan',JSON.stringify(p)); } catch(e){}
 }
 
 function getTripDateInfo(){
@@ -1963,7 +1963,7 @@ function renderLiveOps(){
     .filter(s=>s.type==='transport'&&s.bookingRequired===true&&s.bookingState!=='booked')
     .map(s=>({label:s.title||'Book transport',note:(s.detail||'').slice(0,120),url:s.bookingUrl||'https://www.trenitalia.com/en.html',_derived:true}))
   );
-  const _dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
+  const _dismissed=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');
   const urgent=[..._urgentActs,..._urgentSegs].filter(u=>!_dismissed.includes(u.label||''));
   const urgentPreview=urgent.slice(0,2).map(u=>{ const label=(u.label||'').toLowerCase(); let btn='Open →'; if(label.includes('hotel')||String(u.url||'').includes('agoda')) btn='Search Agoda →'; else if(label.includes('train')||label.includes('frecciarossa')) btn='Book train →'; else if(label.includes('ticket')||label.includes('uffizi')||label.includes('accademia')||label.includes('colosseum')||label.includes('vatican')) btn='Book tickets →'; else if(label.includes('flight')) btn='Book flight →'; return `<div class="ops-todo"><div class="ops-todo-icon">⏳</div><div class="ops-todo-main"><div class="ops-todo-title">${esc(u.label||'')}</div><div class="ops-todo-note">${esc(u.note||'')}</div><div class="ops-todo-actions"><a class="ops-mini-btn secondary" href="${u.url||'#'}" target="_blank">${btn}</a></div></div></div>`; });
   if(el('opsTodoList')) el('opsTodoList').innerHTML = [
@@ -2242,12 +2242,12 @@ function sheetNav(dir) {
 // ══════════════════════════════════════
 function openEditModal() { document.getElementById('editName').value=tripMeta.name||''; document.getElementById('editEmoji').value=tripMeta.emoji||''; document.getElementById('editDates').value=tripMeta.dates||''; document.getElementById('editPeople').value=tripMeta.people||''; document.getElementById('editBudget').value=tripMeta.budget||''; document.getElementById('editModal').classList.add('open'); }
 function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
-function restoreMeta() { if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripai_plan');
+function restoreMeta() { if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripva_plan');
   if(cached){
     try{plan=JSON.parse(cached);populateDashboard(plan);}
     catch(e){
       console.warn('[tripai] Corrupt plan in localStorage — clearing',e);
-      localStorage.removeItem('tripai_plan');
+      localStorage.removeItem('tripva_plan');
       plan=window._preloadPlan||null;
       if(plan) populateDashboard(plan);
       else renderLiveOps();
@@ -2527,7 +2527,7 @@ async function submitPlan() {
 
     // Success — load into dashboard
     updateProgress('🎉 Done!', 'Loading your dashboard…');
-    localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
+    localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
     plan = tripState.rawPlan;
     setTimeout(() => {
       closePlanner();

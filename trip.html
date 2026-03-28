@@ -9,14 +9,14 @@
 <meta name="apple-mobile-web-app-title" content="AI Trip Planner">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
-<title>Roam — Your Trip</title>
-<meta property="og:title" content="My Trip — Roam AI Planner">
-<meta property="og:description" content="View my AI-generated trip itinerary built with Roam.">
+<title>Tripva — Your Trip</title>
+<meta property="og:title" content="My Trip — Tripva AI Planner">
+<meta property="og:description" content="View my AI-generated trip itinerary built with Tripva.">
 <meta property="og:image" content="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=630&fit=crop">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="My Trip — Roam AI Planner">
-<meta name="twitter:description" content="View my AI-generated trip itinerary built with Roam.">
+<meta name="twitter:title" content="My Trip — Tripva AI Planner">
+<meta name="twitter:description" content="View my AI-generated trip itinerary built with Tripva.">
 <meta name="twitter:image" content="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=630&fit=crop">
 <link rel="manifest" href="manifest.json">
 <style>
@@ -1018,7 +1018,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 <div id="splash">
   <div class="sp-logo">✈️</div>
-  <div class="sp-name">Roam</div>
+  <div class="sp-name">Tripva</div>
   <div class="sp-sub">AI Travel Companion</div>
 </div>
 
@@ -1581,12 +1581,12 @@ const DEST_CURRENCY_MAP = {
 };
 
 let fxRates = null; // { USD:1, EUR:0.92, ... } keyed by target currency, base USD
-let fxHomeCurrency = localStorage.getItem('roam_home_currency') || 'USD';
+let fxHomeCurrency = localStorage.getItem('tripva_home_currency') || 'USD';
 let fxSourceCurrency = 'USD'; // detected from trip destination
 
 async function loadFxRates() {
-  const cached = localStorage.getItem('roam_fx_rates');
-  const ts = parseInt(localStorage.getItem('roam_fx_timestamp') || '0');
+  const cached = localStorage.getItem('tripva_fx_rates');
+  const ts = parseInt(localStorage.getItem('tripva_fx_timestamp') || '0');
   const now = Date.now();
   if (cached && (now - ts) < 3600000) {
     fxRates = JSON.parse(cached);
@@ -1596,8 +1596,8 @@ async function loadFxRates() {
     const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
     const d = await r.json();
     fxRates = d.rates;
-    localStorage.setItem('roam_fx_rates', JSON.stringify(fxRates));
-    localStorage.setItem('roam_fx_timestamp', String(now));
+    localStorage.setItem('tripva_fx_rates', JSON.stringify(fxRates));
+    localStorage.setItem('tripva_fx_timestamp', String(now));
   } catch(e) { fxRates = null; }
 }
 
@@ -1627,7 +1627,7 @@ function convertAmount(amountStr, fromCur, toCur) {
 
 function onFxChange(val) {
   fxHomeCurrency = val;
-  localStorage.setItem('roam_home_currency', val);
+  localStorage.setItem('tripva_home_currency', val);
   // Sync chip active states
   document.querySelectorAll('.fx-chip').forEach(c => {
     c.classList.toggle('active', c.dataset.cur === val);
@@ -1790,7 +1790,7 @@ let packingData = null;
 
 function getPackStorageKey() {
   const tripId = new URLSearchParams(location.search).get('id') || 'local';
-  return 'roam_packing_' + tripId;
+  return 'tripva_packing_' + tripId;
 }
 
 function loadPackingState() {
@@ -2081,7 +2081,7 @@ async function loadTripPlan() {
       } catch(e) { console.error('[Demo] populateDashboard error:', e); }
       try { renderLiveOps(); } catch(e) { console.error('[Demo] renderLiveOps error:', e); }
       try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
-      try { document.title = plan.trip.name + ' · Roam'; } catch(e) {}
+      try { document.title = plan.trip.name + ' · Tripva'; } catch(e) {}
     }, 0);
     // Double-safety: force Days tab after 600ms in case something fires late
     setTimeout(() => {
@@ -2105,7 +2105,7 @@ async function loadTripPlan() {
         if (data && data.rawPlan) {
           plan = data.rawPlan;
           tripMeta = plan.trip || {};
-          localStorage.setItem('tripai_plan', JSON.stringify(plan));
+          localStorage.setItem('tripva_plan', JSON.stringify(plan));
           populateDashboard(plan);
 
   // ── SYNC VALIDATOR — warn if segments and timeline drift ──
@@ -2127,7 +2127,7 @@ async function loadTripPlan() {
   })();
           renderLiveOps();
           switchTab('plan');
-          if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Roam';
+          if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Tripva';
           const banner = document.getElementById('restoredBanner');
           if (banner) { banner.textContent = '✅ Trip loaded from shared link'; banner.style.display = 'flex'; }
           showLoadingSpinner(false);
@@ -2142,7 +2142,7 @@ async function loadTripPlan() {
   }
 
   // Fallback: localStorage
-  const cached = localStorage.getItem('tripai_plan');
+  const cached = localStorage.getItem('tripva_plan');
   if (cached) {
     try {
       plan = JSON.parse(cached);
@@ -2516,7 +2516,7 @@ function populateDashboard(p) {
 
     // ── PENDING ACTIONS (top priority, orange accent) ──
     const urgent=(p.urgent||[]);
-    const dismissed=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');
+    const dismissed=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');
     const activeUrgent=urgent.filter(u=>!dismissed.includes(u.label||''));
     if(activeUrgent.length) {
       const pendingWrap=document.createElement('div'); pendingWrap.className='booknow-segment pending';
@@ -2532,7 +2532,7 @@ function populateDashboard(p) {
         const when=extractWhen(u.label,u.note);
         const itemKey=esc(u.label||'').replace(/'/g,"\'");
         const c=document.createElement('div'); c.className='book-card priority'; c.id='bc-'+i;
-        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank" onclick="trackAffiliateClick('${detectAffiliatePartner(u.url)}')">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripai_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripai_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
+        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank" onclick="trackAffiliateClick('${detectAffiliatePartner(u.url)}')">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripva_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
         pendingWrap.appendChild(c);
       });
       scroll.appendChild(pendingWrap);
@@ -2733,7 +2733,7 @@ function populateDashboard(p) {
   }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
-  try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
+  try { localStorage.setItem('tripva_plan',JSON.stringify(p)); } catch(e){}
 }
 
 function getTripDateInfo(){
@@ -3218,7 +3218,7 @@ function sheetNav(dir) {
 // ══════════════════════════════════════
 function openEditModal() { document.getElementById('editName').value=tripMeta.name||''; document.getElementById('editEmoji').value=tripMeta.emoji||''; document.getElementById('editDates').value=tripMeta.dates||''; document.getElementById('editPeople').value=tripMeta.people||''; document.getElementById('editBudget').value=tripMeta.budget||''; document.getElementById('editModal').classList.add('open'); }
 function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
-function restoreMeta() { if(window._demoMode) return; if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripai_plan'); if(cached){try{plan=JSON.parse(cached);populateDashboard(plan);}catch(e){}} else { renderLiveOps(); } }
+function restoreMeta() { if(window._demoMode) return; if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripva_plan'); if(cached){try{plan=JSON.parse(cached);populateDashboard(plan);}catch(e){}} else { renderLiveOps(); } }
 
 // ══════════════════════════════════════
 //  SHARE / EXPORT
@@ -3298,7 +3298,7 @@ function loadFromHash() {
   }
   document.getElementById('saveBar').style.display='flex';
   renderLiveOps();
-  try { localStorage.setItem('tripai_plan',JSON.stringify(p)); } catch(e){}
+  try { localStorage.setItem('tripva_plan',JSON.stringify(p)); } catch(e){}
   document.getElementById('saveBar').style.display='flex';
     setTimeout(()=>switchTab('trip'),400);
     showToast('✅ Trip loaded!');
@@ -3455,7 +3455,7 @@ async function submitPlan() {
 
     // Success — load into dashboard
     updateProgress('🎉 Done!', 'Loading your dashboard…');
-    localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
+    localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
     plan = tripState.rawPlan;
     setTimeout(() => {
       closePlanner();
@@ -3562,7 +3562,7 @@ function fabInstall() {
 
 // ── THEME TOGGLE ──
 (function(){
-  var THEME_KEY = 'roam-theme';
+  var THEME_KEY = 'tripva-theme';
   var html = document.documentElement;
   function applyTheme(theme){
     html.setAttribute('data-theme', theme);
@@ -3622,7 +3622,7 @@ function fabInstall() {
 
 
 <div style="text-align:center;padding:20px 0 32px;font-size:12px;color:rgba(255,255,255,.25)">
-  ✨ Planned by <a href="https://futuriztaos.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Roam</a> · AI Trip Planner
+  ✨ Planned by <a href="https://futuriztaos.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
 </div>
 </body>
 </html>
