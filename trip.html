@@ -535,6 +535,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .budget-bar-track{height:3px;background:var(--surface2);border-radius:2px;margin-top:6px}
 .budget-bar-fill{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 .budget-amount{font-size:14px;font-weight:800;color:var(--text);text-align:right;flex-shrink:0}
+.budget-context-panel,.stay-transparency-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 15px;margin-bottom:10px}
+.budget-context-head,.stay-transparency-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.budget-context-kicker,.stay-transparency-kicker{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.budget-context-total{font-size:24px;font-weight:900;letter-spacing:-.6px;margin-top:4px}
+.budget-context-note,.stay-transparency-note{font-size:11px;line-height:1.5;color:var(--muted);margin-top:8px}
+.budget-mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.budget-mini{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 11px;min-width:0}
+.budget-mini-lbl{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+.budget-mini-val{font-size:13px;font-weight:800;line-height:1.35;margin-top:4px;word-break:break-word}
+.stay-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.stay-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.35px;border:1px solid var(--border);background:var(--surface2);color:var(--text2)}
+.stay-pill.live{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.22);color:var(--green)}
+.stay-pill.fallback{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.22);color:var(--yellow)}
+.stay-pill.strategy{background:rgba(124,106,247,.12);border-color:rgba(124,106,247,.25);color:var(--accent2)}
+.stay-pill.soft{background:rgba(255,255,255,.04)}
+.book-card-budget{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.book-card-budget .budget-mini{margin:0}
+@media (max-width:360px){.budget-mini-grid,.book-card-budget{grid-template-columns:1fr}.budget-context-total{font-size:22px}}
 
 /* Tips */
 .tip-section{background:var(--surface);border:1px solid var(--border);border-radius:13px;margin-bottom:8px;overflow:hidden}
@@ -2510,6 +2528,8 @@ function populateDashboard(p) {
     const scroll=document.getElementById('hotelsScroll');
     document.getElementById('hotelsEmpty')?.remove();
     scroll.innerHTML='';
+    const stayTransparencyHtml=buildStayTransparencyCard(p);
+    if(stayTransparencyHtml) scroll.insertAdjacentHTML('beforeend', stayTransparencyHtml);
 
     const getHost=(url)=>{ try { return new URL(url).hostname.replace(/^www\./,''); } catch(e){ return ''; } };
     const extractWhen=(title,note)=>{ const s=`${title||''} ${note||''}`; const m=s.match(/(Mar\s+\d{1,2}(?:-\d{1,2})?,\s*2026|Mar\s+\d{1,2}(?:-\d{1,2})?|\d{1,2}:\d{2})/i); return m?m[1]:''; };
@@ -2562,7 +2582,15 @@ function populateDashboard(p) {
         const c=document.createElement('div'); c.className='book-card arrange-card';
         const starsStr = h.stars ? '⭐'.repeat(Math.min(h.stars,5)) : '';
         const ratingStr = h.rating ? `${h.rating}/10` : '';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">${btn}</a></div>`;
+        const stayStatus=compactStayStatus(h);
+        const nightlyText=h.estimatedNightlyTotal ? formatBudgetMoney(h.estimatedNightlyTotal, (p.budgetContext&&p.budgetContext.currency)||'USD') : (h.price||'—');
+        const totalText=h.estimatedStayTotal ? formatBudgetMoney(h.estimatedStayTotal, (p.budgetContext&&p.budgetContext.currency)||'USD') : '—';
+        const capText=h.stayBudgetCap ? formatBudgetMoney(h.stayBudgetCap, (p.budgetContext&&p.budgetContext.currency)||'USD') : '—';
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div>
+          ${stayStatus?`<div class="stay-pill-row"><span class="stay-pill ${stayStatus.sourceClass}">${stayStatus.sourceLabel}</span><span class="stay-pill strategy">${esc(stayStatus.strategyLabel)}</span>${h.pricingSourceType?`<span class="stay-pill soft">${esc(h.pricingSourceType)}</span>`:''}</div>`:''}
+          <div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div>
+          <div class="book-card-budget">${buildHotelBudgetMini('Nightly', nightlyText)}${buildHotelBudgetMini('Stay total', totalText)}${buildHotelBudgetMini('Stay cap', capText)}${buildHotelBudgetMini('Budget fit', h.stayBudgetStatus==='within-cap'?'Within cap':'Over cap')}</div>
+          <div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}${h.pricingProvider?`<span class="book-meta-chip">🧾 ${esc(h.pricingProvider)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">${btn}</a></div>`;
         arrangeWrap.appendChild(c);
       });
       scroll.appendChild(arrangeWrap);
@@ -2578,7 +2606,7 @@ function populateDashboard(p) {
     const pendingItems = (p.budget||[]).filter(b => !isBooked(b));
     const paidTotal=paidItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
     const pendingTotal=pendingItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
-    scroll.innerHTML=`<div class="budget-hero">
+    scroll.innerHTML=`${buildBudgetContextCard(p)}<div class="budget-hero">
       <div class="budget-hero-lbl">Confirmed spend</div>
       <div class="budget-hero-num">≈ RM ${Math.round(paidTotal).toLocaleString()}</div>
       <div class="budget-hero-sub">Pending ≈ RM ${Math.round(pendingTotal).toLocaleString()} · Total ≈ RM ${Math.round(paidTotal+pendingTotal).toLocaleString()}</div>
@@ -2776,6 +2804,101 @@ function parseBudgetToRM(str){
   const eur=grab(/€\s*([\d,]+(?:\.\d+)?)/i) || grab(/EUR\s*([\d,]+(?:\.\d+)?)/i);
   if(eur) return eur*4.7;
   return 0;
+}
+function formatBudgetMoney(value, currency='USD'){
+  const amount=Number(value||0);
+  if(!Number.isFinite(amount)) return '—';
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style:'currency',
+      currency,
+      maximumFractionDigits:amount % 1 === 0 ? 0 : 2,
+      minimumFractionDigits:amount % 1 === 0 ? 0 : 2,
+    }).format(amount);
+  } catch(e) {
+    return `${currency} ${amount.toFixed(amount % 1 === 0 ? 0 : 2)}`;
+  }
+}
+function stayStrategyLabel(strategy){
+  const map={
+    'keep-ai-hotel':'Hotel',
+    'cheaper-hotel-tier':'Cheaper hotel',
+    'apartment-style-stay':'Apartment-style',
+    'alternate-district-budget-hotel':'Alternate district',
+  };
+  return map[strategy] || 'Hotel';
+}
+function compactStayStatus(hotel){
+  if(!hotel) return null;
+  return {
+    sourceLabel: hotel.livePricing ? 'LIVE QUOTE' : 'ESTIMATE / FALLBACK',
+    sourceClass: hotel.livePricing ? 'live' : 'fallback',
+    strategyLabel: stayStrategyLabel(hotel.stayStrategy),
+  };
+}
+function renderBudgetMini(label, value){
+  return `<div class="budget-mini"><div class="budget-mini-lbl">${esc(label)}</div><div class="budget-mini-val">${esc(value || '—')}</div></div>`;
+}
+function buildBudgetContextCard(p){
+  const ctx=p&&p.budgetContext;
+  if(!ctx || !ctx.totalBudget) return '';
+  const hotels=p.hotels||[];
+  const liveCount=hotels.filter(h=>h&&h.livePricing).length;
+  const strategies=[...new Set(hotels.map(h=>stayStrategyLabel(h&&h.stayStrategy)).filter(Boolean))].join(' · ');
+  const staySource=liveCount ? `LIVE QUOTE on ${liveCount} stay${liveCount>1?'s':''}` : 'ESTIMATE / FALLBACK stay pricing';
+  const stayCap=ctx.stayTargets&&ctx.stayTargets.totalCap ? formatBudgetMoney(ctx.stayTargets.totalCap, ctx.currency) : '—';
+  return `
+    <div class="budget-context-panel">
+      <div class="budget-context-head">
+        <div>
+          <div class="budget-context-kicker">Trip budget context</div>
+          <div class="budget-context-total">${esc(formatBudgetMoney(ctx.totalBudget, ctx.currency))}</div>
+        </div>
+        <div class="stay-pill-row" style="justify-content:flex-end;margin-top:0"><span class="stay-pill ${liveCount?'live':'fallback'}">${staySource}</span></div>
+      </div>
+      <div class="budget-mini-grid">
+        ${renderBudgetMini('Per person', formatBudgetMoney(ctx.perPersonBudget, ctx.currency))}
+        ${renderBudgetMini('Per day', formatBudgetMoney(ctx.perDayBudget, ctx.currency))}
+        ${renderBudgetMini('Stay cap', stayCap)}
+        ${renderBudgetMini('Room plan', ctx.roomPlan&&ctx.roomPlan.summary || '—')}
+      </div>
+      <div class="budget-context-note">Source budget: ${esc(ctx.source || '—')}${strategies?` · Stay strategy: ${esc(strategies)}`:''}</div>
+    </div>`;
+}
+function buildStayTransparencyCard(p){
+  const ctx=p&&p.budgetContext;
+  const stay=p&&p.stayPlan;
+  if(!ctx && !stay) return '';
+  const live=Boolean(stay&&stay.livePricing);
+  const statusLabel=live ? 'LIVE QUOTE' : 'ESTIMATE / FALLBACK';
+  const nightly=stay&&stay.nightlyCap ? formatBudgetMoney(stay.nightlyCap, ctx&&ctx.currency || 'USD') : '—';
+  const stayCap=stay&&stay.stayBudgetCap ? formatBudgetMoney(stay.stayBudgetCap, ctx&&ctx.currency || 'USD') : '—';
+  const roomPlan=stay&&stay.roomPlan&&stay.roomPlan.summary || ctx&&ctx.roomPlan&&ctx.roomPlan.summary || '—';
+  const strategySummary=[...new Set((p.hotels||[]).map(h=>stayStrategyLabel(h&&h.stayStrategy)).filter(Boolean))].join(' · ');
+  const provider=stay&&stay.provider ? stay.provider : 'budget engine';
+  return `
+    <div class="stay-transparency-card">
+      <div class="stay-transparency-head">
+        <div>
+          <div class="stay-transparency-kicker">Stay pricing transparency</div>
+          <div class="budget-context-total" style="font-size:20px">${esc(stayCap)}</div>
+        </div>
+        <div class="stay-pill-row" style="justify-content:flex-end;margin-top:0"><span class="stay-pill ${live?'live':'fallback'}">${statusLabel}</span></div>
+      </div>
+      <div class="budget-mini-grid">
+        ${renderBudgetMini('Per night cap', nightly)}
+        ${renderBudgetMini('Room plan', roomPlan)}
+      </div>
+      <div class="stay-pill-row">
+        ${strategySummary?`<span class="stay-pill strategy">${esc(strategySummary)}</span>`:''}
+        ${stay&&stay.recommendedStayType?`<span class="stay-pill soft">${esc(stay.recommendedStayType)}</span>`:''}
+        <span class="stay-pill soft">Provider: ${esc(provider)}</span>
+      </div>
+      <div class="stay-transparency-note">${live ? 'Numbers include at least one live provider quote.' : 'Stay numbers are budget-safe estimates until a live provider quote lands.'}</div>
+    </div>`;
+}
+function buildHotelBudgetMini(label, value){
+  return `<div class="budget-mini"><div class="budget-mini-lbl">${esc(label)}</div><div class="budget-mini-val">${esc(value || '—')}</div></div>`;
 }
 function renderLiveOps(){
   const parseTimeMins=(t)=>{const m=String(t||'').match(/(\d{1,2}):(\d{2})/);return m?parseInt(m[1])*60+parseInt(m[2]):-1;};
