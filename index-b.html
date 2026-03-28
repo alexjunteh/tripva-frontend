@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<link rel="canonical" href="https://futuriztaos.github.io/trip-planner/">
+<link rel="canonical" href="https://futuriztaos.github.io/trip-planner/index-b.html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a12">
 <meta name="description" content="Roam — Trip planning takes 8 hours. Ours takes 30 seconds. AI builds your full day-by-day itinerary with hotels, restaurants, and real-time alerts.">
@@ -34,7 +34,7 @@ a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 
 /* ─── TOKENS ──────────────────────────────────────────────────────────────── */
-:root{
+[data-theme="dark"] {
   --bg:#0a0a12;
   --bg-dark:#050508;
   --bg2:#0f0f1c;
@@ -51,6 +51,30 @@ img{max-width:100%;display:block}
   --indigo:#818cf8;
   --green:#6ee7b7;
   --r:12px;
+}
+[data-theme="light"]{
+  --bg:#f7f3ee;
+  --text:#1c1612;
+  --muted:#5c5249;
+  --gold:#b8963e;
+  --deep:#0f1a14;
+  --surface:#ede8e2;
+  --white:#fffcf8;
+  --body:#4a433c;
+}
+.theme-toggle{
+  background:none;
+  border:1px solid currentColor;
+  opacity:0.6;
+  cursor:pointer;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:14px;
+  color:inherit;
+  transition:opacity 0.2s;
+  display:flex;
+  align-items:center;
+  gap:4px;
 }
 
 /* ─── NAV ─────────────────────────────────────────────────────────────────── */
@@ -481,7 +505,11 @@ footer{
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
   </div>
-  <a class="nav-cta" href="plan.html">Try free →</a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+      <span class="theme-icon-sun">☀</span>
+      <span class="theme-icon-moon">☽</span>
+    </button>
+      <a class="nav-cta" href="plan.html">Try free →</a>
 </nav>
 
 <!-- ─── HERO ───────────────────────────────────────────────────────────────── -->
@@ -556,7 +584,7 @@ footer{
     <div class="phone-wrap fade-in">
       <div class="phone-frame">
         <div class="phone-notch"></div>
-        <iframe src="trip.html?demo=1" title="Roam trip demo" loading="lazy" scrolling="yes"></iframe>
+        <iframe src="trip.html?demo=1&theme=dark" title="Roam trip demo" loading="lazy" scrolling="yes"></iframe>
       </div>
     </div>
 
@@ -822,6 +850,25 @@ document.getElementById('pwaDismissBtn').addEventListener('click', function(){
 });
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
+</script>
+<script>
+(function(){
+  var t=localStorage.getItem('roam-theme')||'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    localStorage.setItem('roam-theme',theme);
+    var btn=document.getElementById('themeToggle');
+    if(btn){btn.innerHTML=theme==='dark'?'☀':'☽';}
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    applyTheme(localStorage.getItem('roam-theme')||'dark');
+    var btn=document.getElementById('themeToggle');
+    if(btn)btn.addEventListener('click',function(){
+      applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+    });
+  });
+})();
 </script>
 </body>
 </html>
