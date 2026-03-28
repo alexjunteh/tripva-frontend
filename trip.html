@@ -2703,7 +2703,7 @@ function populateDashboard(p) {
       (d.timeline||[]).forEach(tl => {
         const det = (tl.detail||'').toLowerCase() + ' ' + (tl.title||'').toLowerCase();
         const isTransport = tl.type === 'transport' && /train|bus|flight|ferry|rail|thalys|frecciarossa|eurostar|rer|ice|tgv/i.test(det);
-        const isTicketed = /ticket|book|reserv|museum|gallery|entry|admission|pre-book|prebook/i.test(det);
+        const isTicketed = tl.type !== 'food' && tl.type !== 'hotel' && /ticket|pre-book|prebook|museum|gallery|entry fee|admission|timed entry|€\d|\$\d/i.test(det);
         if (isTransport || isTicketed) {
           const icon = tl.type === 'transport' ? '🚆' : '🎟️';
           const price = (tl.detail||'').match(/[€$£¥][\d,.]+|[\d,.]+\s*(?:EUR|USD|GBP|RM)/i);
