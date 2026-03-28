@@ -2070,6 +2070,27 @@ const CITY_IMGS={
     'vondelpark':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
 };
 
+// Alternate hero images per city — used to avoid duplicate images when multiple days share a seed
+const CITY_IMG_ALTS = {
+  'paris':['https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1549144511-f099e773c147?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=900&h=500&fit=crop'],
+  'rome':['https://images.unsplash.com/photo-1529260830199-42c24126f198?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1555992828-ca4dbe41d294?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=900&h=500&fit=crop'],
+  'roma':['https://images.unsplash.com/photo-1529260830199-42c24126f198?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1555992828-ca4dbe41d294?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=900&h=500&fit=crop'],
+  'florence':['https://images.unsplash.com/photo-1476362174823-3a23f4aa6d76?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=900&h=500&fit=crop'],
+  'firenze':['https://images.unsplash.com/photo-1476362174823-3a23f4aa6d76?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=900&h=500&fit=crop'],
+  'venice':['https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=900&h=500&fit=crop'],
+  'venezia':['https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=900&h=500&fit=crop'],
+  'amsterdam':['https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop'],
+  'tokyo':['https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=900&h=500&fit=crop'],
+  'bangkok':['https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=900&h=500&fit=crop'],
+  'bali':['https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&h=500&fit=crop'],
+  'london':['https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1529655683826-aba9b3e77383?w=900&h=500&fit=crop'],
+  'barcelona':['https://images.unsplash.com/photo-1583422409516-2895a77efded?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=900&h=500&fit=crop'],
+  'lucerne':['https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=900&h=500&fit=crop'],
+  'luzern':['https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=900&h=500&fit=crop'],
+};
+// Track used images per populateDashboard call to avoid duplicates
+let _usedDayImgs = new Set();
+
 async function loadTripPlan() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
@@ -2419,6 +2440,7 @@ async function extractAndBuild(userMsg, aiPlan) {
 // ══════════════════════════════════════
 function populateDashboard(p) {
   if (!p) return;
+  _usedDayImgs = new Set(); // Reset image tracking for fresh render
 
   // ── TRIP META ──
   if (p.trip) {
@@ -2445,9 +2467,12 @@ function populateDashboard(p) {
     const strip=document.getElementById('dayStrip');
     strip.innerHTML='';
     const today=getTripDateInfo().ymd;
+    // Find today's day index for default active pill (fall back to day 1)
+    let _todayPillIdx = (p.days||[]).findIndex(d => inferDayDate(d.day) === today);
+    if (_todayPillIdx < 0) _todayPillIdx = 0;
     (p.days||[]).forEach((d,i) => {
       const pill=document.createElement('div');
-      pill.className='day-pill'+(i===0?' active':'');
+      pill.className='day-pill'+(i===_todayPillIdx?' active':'');
       pill.id='dp-'+i;
       const isToday=inferDayDate(d.day)===today;
       if(isToday) pill.classList.add('today-pill');
@@ -2461,12 +2486,25 @@ function populateDashboard(p) {
     list.innerHTML='';
     (p.days||[]).forEach((d,i) => {
       const seed=(d.heroSeed||'').toLowerCase();
-      const imgUrl=d.imageUrl||(CITY_IMGS[seed])||(()=>{
-        // Try to match seed against city names
-        for(const [city,url] of Object.entries(CITY_IMGS)){if(seed.includes(city)||city.includes(seed.split('-')[0]))return url;}
-        // Fallback: loremflickr with the heroSeed as keyword (destination-relevant)
-        const kw=encodeURIComponent((d.heroSeed||'travel,city').replace(/-/g,' '));
-        return `https://loremflickr.com/900/500/${kw}`;
+      const imgUrl=d.imageUrl||(()=>{
+        // Try exact match first
+        let candidate=CITY_IMGS[seed];
+        if(!candidate){for(const [city,url] of Object.entries(CITY_IMGS)){if(seed.includes(city)||city.includes(seed.split('-')[0])){candidate=url;break;}}}
+        // If this image was already used by another day, try alternates
+        if(candidate && _usedDayImgs.has(candidate)){
+          const alts=CITY_IMG_ALTS[seed]||[];
+          // Also check parent city (e.g. seed='eiffel' → find 'paris' alts)
+          let cityAlts=alts;
+          if(!cityAlts.length){for(const [ck,cv] of Object.entries(CITY_IMG_ALTS)){if(seed.includes(ck)){cityAlts=cv;break;}}}
+          const unused=cityAlts.filter(u=>!_usedDayImgs.has(u));
+          if(unused.length) candidate=unused[0];
+        }
+        if(!candidate){
+          const kw=encodeURIComponent((d.heroSeed||'travel,city').replace(/-/g,' '));
+          candidate=`https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop&q=80&seed=${i}`;
+        }
+        _usedDayImgs.add(candidate);
+        return candidate;
       })();
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
@@ -2658,7 +2696,37 @@ function populateDashboard(p) {
   document.getElementById('nav-plan')?.querySelector('.nav-badge')?.remove();
 
   // ── TICKETS ──
-  if (p.tickets && p.tickets.length > 0) {
+  // Derive ticket-like items from timeline when p.tickets is empty
+  const _derivedTickets = [];
+  if ((!p.tickets || !p.tickets.length) && p.days && p.days.length) {
+    p.days.forEach(d => {
+      (d.timeline||[]).forEach(tl => {
+        const det = (tl.detail||'').toLowerCase() + ' ' + (tl.title||'').toLowerCase();
+        const isTransport = tl.type === 'transport' && /train|bus|flight|ferry|rail|thalys|frecciarossa|eurostar|rer|ice|tgv/i.test(det);
+        const isTicketed = /ticket|book|reserv|museum|gallery|entry|admission|pre-book|prebook/i.test(det);
+        if (isTransport || isTicketed) {
+          const icon = tl.type === 'transport' ? '🚆' : '🎟️';
+          const price = (tl.detail||'').match(/[€$£¥][\d,.]+|[\d,.]+\s*(?:EUR|USD|GBP|RM)/i);
+          _derivedTickets.push({
+            _derived: true,
+            day: d.day,
+            dayTitle: d.title,
+            date: d.date || formatDayDate(d.day),
+            icon: icon,
+            time: tl.time || '',
+            title: tl.title || '',
+            detail: tl.detail || '',
+            type: tl.type || 'activity',
+            price: price ? price[0] : '',
+            mapQuery: tl.mapQuery || ''
+          });
+        }
+      });
+    });
+  }
+  const _hasTickets = (p.tickets && p.tickets.length > 0);
+  const _hasDerived = _derivedTickets.length > 0;
+  if (_hasTickets || _hasDerived) {
     const scroll=document.getElementById('ticketsScroll');
     document.getElementById('ticketsEmpty')?.remove();
     scroll.innerHTML='<div class="tickets-intro">Tap to expand · Tap passenger to view ticket images</div>';
@@ -2729,7 +2797,48 @@ function populateDashboard(p) {
     });
   }
 
-  // ── NEXT TICKET DERIVATION ──
+
+  // ── DERIVED TICKETS (from timeline when p.tickets is empty) ──
+  if (_hasDerived && !_hasTickets) {
+    const scroll=document.getElementById('ticketsScroll');
+    document.getElementById('ticketsEmpty')?.remove();
+    scroll.innerHTML='<div class="tickets-intro" style="color:var(--muted);font-size:12px;padding:4px 0 8px">🔍 Tickets derived from your itinerary — book these for your trip</div>';
+
+    // Group by day
+    const byDay = {};
+    _derivedTickets.forEach(t => { (byDay[t.day] = byDay[t.day] || []).push(t); });
+
+    Object.keys(byDay).sort((a,b) => a-b).forEach(dayNum => {
+      const items = byDay[dayNum];
+      const dayHdr = document.createElement('div');
+      dayHdr.style.cssText = 'font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--accent2);padding:12px 0 6px;text-transform:uppercase';
+      dayHdr.textContent = `Day ${dayNum} · ${items[0].dayTitle || ''}`;
+      scroll.appendChild(dayHdr);
+
+      items.forEach((t, ti) => {
+        const card = document.createElement('div');
+        card.className = 'bp-card';
+        card.style.cssText = 'cursor:pointer';
+        const id = `dt-${dayNum}-${ti}`;
+        card.id = id;
+        card.innerHTML = `
+          <div class="bp-trigger" onclick="document.getElementById('${id}').classList.toggle('open')">
+            <div>
+              <div class="bp-route">${t.icon} ${esc(t.title)}</div>
+              <div class="bp-meta">${esc(t.date)} · ${esc(t.time)}${t.price ? ' · <span style="color:#4ade80;font-weight:700">' + esc(t.price) + '</span>' : ''}</div>
+            </div>
+            <span class="bp-chevron">▾</span>
+          </div>
+          <div class="bp-body" style="padding:12px 14px">
+            <div style="font-size:13px;line-height:1.6;color:var(--text2)">${esc(t.detail)}</div>
+            ${t.mapQuery ? '<a style="display:inline-block;margin-top:8px;font-size:12px;color:var(--accent2);font-weight:700" href="https://maps.google.com/?q=' + encodeURIComponent(t.mapQuery) + '" target="_blank">📍 Open in Maps</a>' : ''}
+          </div>`;
+        scroll.appendChild(card);
+      });
+    });
+  }
+
+    // ── NEXT TICKET DERIVATION ──
   const nowYmd = getTripDateInfo ? getTripDateInfo().ymd : new Date().toISOString().slice(0,10);
   const upcoming = (p.tickets||[]).filter(t => {
     // Parse ticket date: "Mar 23, 2026" or "2026-03-23" format
@@ -3341,7 +3450,7 @@ function sheetNav(dir) {
 // ══════════════════════════════════════
 function openEditModal() { document.getElementById('editName').value=tripMeta.name||''; document.getElementById('editEmoji').value=tripMeta.emoji||''; document.getElementById('editDates').value=tripMeta.dates||''; document.getElementById('editPeople').value=tripMeta.people||''; document.getElementById('editBudget').value=tripMeta.budget||''; document.getElementById('editModal').classList.add('open'); }
 function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
-function restoreMeta() { if(window._demoMode) return; if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripva_plan'); if(cached){try{plan=JSON.parse(cached);populateDashboard(plan);}catch(e){}} else { renderLiveOps(); } }
+function restoreMeta() { if(window._demoMode) return; if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripva_plan'); if(cached){try{plan=JSON.parse(cached);}catch(e){}} }
 
 // ══════════════════════════════════════
 //  SHARE / EXPORT
@@ -3389,6 +3498,47 @@ function loadFromHash() {
     if(data.plan){plan=data.plan;populateDashboard(plan);}
     if(data.msgs){msgs=data.msgs;const box=document.getElementById('chatMsgs');data.msgs.forEach(m=>{const el=document.createElement('div');el.className='msg '+(m.role==='assistant'?'ai':m.role);if(m.role==='assistant'||m.role==='ai'){el.innerHTML=`<div class="ai-ava">✈️</div><div class="bubble">${md(m.content)}</div><div class="msg-time">Restored</div>`;}else{el.innerHTML=`<div class="bubble">${esc(m.content)}</div><div class="msg-time">Restored</div>`;}box.appendChild(el);});}
     document.getElementById('restoredBanner').style.display='flex';
+  
+  // ── DERIVED TICKETS (from timeline when p.tickets is empty) ──
+  if (_hasDerived && !_hasTickets) {
+    const scroll=document.getElementById('ticketsScroll');
+    document.getElementById('ticketsEmpty')?.remove();
+    scroll.innerHTML='<div class="tickets-intro" style="color:var(--muted);font-size:12px;padding:4px 0 8px">🔍 Tickets derived from your itinerary — book these for your trip</div>';
+
+    // Group by day
+    const byDay = {};
+    _derivedTickets.forEach(t => { (byDay[t.day] = byDay[t.day] || []).push(t); });
+
+    Object.keys(byDay).sort((a,b) => a-b).forEach(dayNum => {
+      const items = byDay[dayNum];
+      const dayHdr = document.createElement('div');
+      dayHdr.style.cssText = 'font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--accent2);padding:12px 0 6px;text-transform:uppercase';
+      dayHdr.textContent = `Day ${dayNum} · ${items[0].dayTitle || ''}`;
+      scroll.appendChild(dayHdr);
+
+      items.forEach((t, ti) => {
+        const card = document.createElement('div');
+        card.className = 'bp-card';
+        card.style.cssText = 'cursor:pointer';
+        const id = `dt-${dayNum}-${ti}`;
+        card.id = id;
+        card.innerHTML = `
+          <div class="bp-trigger" onclick="document.getElementById('${id}').classList.toggle('open')">
+            <div>
+              <div class="bp-route">${t.icon} ${esc(t.title)}</div>
+              <div class="bp-meta">${esc(t.date)} · ${esc(t.time)}${t.price ? ' · <span style="color:#4ade80;font-weight:700">' + esc(t.price) + '</span>' : ''}</div>
+            </div>
+            <span class="bp-chevron">▾</span>
+          </div>
+          <div class="bp-body" style="padding:12px 14px">
+            <div style="font-size:13px;line-height:1.6;color:var(--text2)">${esc(t.detail)}</div>
+            ${t.mapQuery ? '<a style="display:inline-block;margin-top:8px;font-size:12px;color:var(--accent2);font-weight:700" href="https://maps.google.com/?q=' + encodeURIComponent(t.mapQuery) + '" target="_blank">📍 Open in Maps</a>' : ''}
+          </div>`;
+        scroll.appendChild(card);
+      });
+    });
+  }
+
     // ── NEXT TICKET DERIVATION ──
   const nowYmd = getTripDateInfo ? getTripDateInfo().ymd : new Date().toISOString().slice(0,10);
   const upcoming = (p.tickets||[]).filter(t => {
