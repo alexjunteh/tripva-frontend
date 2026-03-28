@@ -6,11 +6,8 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AI Trip Planner">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<title>TripAI - AI Travel Planner</title>
+<meta name="apple-mobile-web-app-title" content="Roam">
+<title>Roam — AI Trip Planner</title>
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
@@ -425,7 +422,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .bp-leg-stn{font-weight:700;font-size:12px}
 .bp-leg-arr{color:var(--muted);font-size:11px}
 .bp-leg-times{color:var(--accent2);font-size:11px;font-weight:700}
-.bp-pnr{background:rgba(52,211,153,.1);color:var(--green);padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800}
+.bp-pnr{background:rgba(52,211,153,.1);color:var(--green);padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;cursor:pointer;user-select:all;transition:background .15s}
+.bp-pnr:hover{background:rgba(52,211,153,.2)}
+.bp-pnr:active{background:rgba(52,211,153,.3)}
 .bp-pax-list{padding:8px 15px 10px;display:flex;flex-direction:column;gap:7px}
 .bp-pax-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .bp-pax-trigger{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;cursor:pointer}
@@ -502,7 +501,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .budget-label{font-size:13px;font-weight:700}
 .budget-note{font-size:11px;color:var(--muted);margin-top:1px}
 .budget-bar-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:6px}
-.budget-bar-fill{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.budget-bar-fill{height:3px;border-radius:2px;background:var(--accent);transition:width .5s ease}
+.budget-row.budget-booked .budget-bar-fill{background:var(--green)}
+.budget-row.budget-pending .budget-bar-fill{background:var(--yellow)}
 .budget-amount{font-size:14px;font-weight:800;color:var(--text);text-align:right;flex-shrink:0}
 
 /* Tips */
@@ -597,14 +598,59 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-ps-map-btn{display:inline-block;margin-top:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:.3px}
 .tl-ps-map-btn:active{background:rgba(255,255,255,.15)}
 .tl-ps-photo{width:100%;border-radius:8px;margin-bottom:8px;object-fit:cover;max-height:160px;display:block}
+
+/* ─── BOOK-META-CHIP (missing class) ─── */
+.book-meta-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600;color:rgba(255,255,255,.65)}
+.book-meta-chip.booked-chip{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:#34d399}
+
+/* ─── SKELETON SHIMMER ─── */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s infinite linear;border-radius:8px}
+
+/* ─── BUDGET PROGRESS BAR ENHANCEMENT ─── */
+.budget-progress-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:6px;overflow:hidden}
+.budget-progress-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.budget-progress-fill.paid{background:var(--green)}
+.budget-progress-fill.pending{background:var(--yellow)}
+
+/* ─── PRESS EFFECT ON BOOK BUTTONS ─── */
+.book-btn:active{transform:scale(0.97)}
+.modal-btn:active{transform:scale(0.97)}
+.es-btn:active{transform:scale(0.97)}
+
+/* ─── LIVE TAB MICRO-INTERACTIONS ─── */
+.live-tile{transition:transform .15s,box-shadow .15s}
+.live-tile:active{transform:scale(0.97)}
+.ops-todo:active{transform:scale(0.99)}
+
+/* ─── TODAY PILL HIGHLIGHT ─── */
+.today-pill .day-pill-num::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:var(--accent);border-radius:50%}
+.today-pill .day-pill-num{position:relative}
 </style>
+
+<!-- Leaflet loaded lazily on Trip tab -->
+<link rel="stylesheet" id="leafletCSS" href="" data-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script>
+(function(){
+  // Load Leaflet only when Trip tab opens
+  window._loadLeaflet = function() {
+    if (window._leafletLoaded) return;
+    window._leafletLoaded = true;
+    var css = document.getElementById('leafletCSS');
+    if (css) css.href = css.dataset.src;
+    var s = document.createElement('script');
+    s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    document.head.appendChild(s);
+  };
+})();
+</script>
 </head>
 <body>
 
 <div id="splash">
   <div class="sp-logo">✈️</div>
-  <div class="sp-name">Trip Live</div>
-  <div class="sp-sub">Live itinerary assistant</div>
+  <div class="sp-name">Roam</div>
+  <div class="sp-sub">AI Trip Planner</div>
 </div>
 
 <div id="app">
@@ -708,9 +754,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div id="restoredBanner" class="restored-banner" style="display:none">✅ Trip plan loaded from shared link</div>
     <div id="focusCard" class="focus-card" style="display:none"></div>
     <!-- ROUTE MAP -->
-    <div class="route-map-wrap" id="routeMapWrap">
+    <div class="route-map-wrap collapsed" id="routeMapWrap">
       <div id="routeMap" style="width:100%;height:220px;border-radius:16px;z-index:1;margin:0 14px;width:calc(100% - 28px)"></div>
-      <div class="route-map-toggle" id="routeMapToggle" onclick="toggleRouteMap()">🗺️ Route map</div>
+      <div class="route-map-toggle" id="routeMapToggle" onclick="toggleRouteMap()">🗺️ Show route map</div>
     </div>
     <div class="ov-section">
       <div class="ov-section-hdr">📅 Itinerary</div>
@@ -1147,7 +1193,7 @@ function openTicket(tktTitle) {
   }, 200);
 }
 function switchTab(name) {
-  if(name==='live' && plan) { setTimeout(renderLiveOps, 50); }
+  if((name==='live'||name==='plan') && plan) { setTimeout(renderLiveOps, 50); }
   if (name === '_more') { openMore(); return; }
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1368,6 +1414,8 @@ function populateDashboard(p) {
       pill.onclick=()=>{ document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); curDayIdx=i; const card=document.getElementById('dc-'+i); if(card) card.scrollIntoView({behavior:'smooth',block:'nearest'}); };
       strip.appendChild(pill);
     });
+    // Auto-scroll today's pill into view after render
+    setTimeout(()=>{const tp=document.querySelector('.today-pill');if(tp)tp.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});},300);
 
     // Day cards (compact summaries)
     const list=document.getElementById('daysList');
@@ -1522,10 +1570,18 @@ function populateDashboard(p) {
     const pendingItems=(p.budget||[]).filter(b=>!(/✅|Paid|BOOKED/i.test(b.note||'')||/✅|PAID|BOOKED/i.test(b.amount||'')));
     const paidTotal=paidItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
     const pendingTotal=pendingItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
+    const grandTotal=paidTotal+pendingTotal;
+    const paidPct=grandTotal>0?Math.round(paidTotal/grandTotal*100):0;
     scroll.innerHTML=`<div class="budget-hero">
       <div class="budget-hero-lbl">Confirmed spend</div>
       <div class="budget-hero-num">≈ RM ${Math.round(paidTotal).toLocaleString()}</div>
-      <div class="budget-hero-sub">Pending ≈ RM ${Math.round(pendingTotal).toLocaleString()} · Total ≈ RM ${Math.round(paidTotal+pendingTotal).toLocaleString()}</div>
+      <div class="budget-hero-sub">Pending ≈ RM ${Math.round(pendingTotal).toLocaleString()} · Total ≈ RM ${Math.round(grandTotal).toLocaleString()}</div>
+      <div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:5px"><span>Paid (${paidPct}%)</span><span>Pending (${100-paidPct}%)</span></div>
+        <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${paidPct}%;background:var(--green);border-radius:3px;transition:width .6s ease"></div>
+        </div>
+      </div>
     </div>`;
     function addBudgetSection(items, label, cssClass) {
       if(!items.length) return;
@@ -1613,7 +1669,7 @@ function populateDashboard(p) {
               <span class="bp-leg-stn">${esc(l.from||'')}${l.fromPlatform?' <span class="tl-platform">P'+esc(l.fromPlatform)+'</span>':''}</span>
               <span class="bp-leg-arr">→</span>
               <span class="bp-leg-stn">${esc(l.to||'')}${l.toPlatform?' <span class="tl-platform">P'+esc(l.toPlatform)+'</span>':''}</span>
-              ${l.pnr?`<span class="bp-pnr">PNR: ${esc(l.pnr)}</span>`:''}
+              ${l.pnr?`<span class="bp-pnr tappable-pnr" data-pnr="${esc(l.pnr)}" title="Tap to copy">PNR: ${esc(l.pnr)}</span>`:''}
             </div>
             <div class="bp-leg-times">${esc(l.fromTime||'')} → ${esc(l.toTime||'')}</div>
           </div>
@@ -1758,7 +1814,7 @@ function renderLiveOps(){
   const info=getTripDateInfo();
   if(el('opsCurrentTime')) el('opsCurrentTime').textContent = info.timeStr;
   // Refresh time every minute
-  if(!window._liveTimerSet){window._liveTimerSet=true;setInterval(()=>{if(plan&&document.getElementById('tab-live')&&document.getElementById('tab-live').classList.contains('active')){renderLiveOps();}else{const e=document.getElementById('opsCurrentTime');if(e&&plan){const i=getTripDateInfo();e.textContent=i.timeStr;}}},60000);}
+  if(!window._liveTimerSet){window._liveTimerSet=true;setInterval(()=>{if(plan&&document.getElementById('tab-plan')&&document.getElementById('tab-plan').classList.contains('active')){renderLiveOps();}else{const e=document.getElementById('opsCurrentTime');if(e&&plan){const i=getTripDateInfo();e.textContent=i.timeStr;}}},60000);}
   let currentIdx = plan.days.findIndex(d=>inferDayDate(d.day)===info.ymd);
   if(currentIdx<0){
     if(info.ymd < '2026-03-18') currentIdx = 0;
@@ -2238,7 +2294,7 @@ function loadFromHash() {
     document.getElementById('restoredBanner').style.display='flex';
     // ── NEXT TICKET DERIVATION ──
   const nowYmd = getTripDateInfo ? getTripDateInfo().ymd : new Date().toISOString().slice(0,10);
-  const upcoming = (p.tickets||[]).filter(t => {
+  const upcoming = (plan.tickets||[]).filter(t => {
     // Parse ticket date: "Mar 23, 2026" or "2026-03-23" format
     const raw = t.date||'';
     const m = raw.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/);
@@ -2293,36 +2349,64 @@ let routeMapInited=false;
 function toggleRouteMap(){
   const w=document.getElementById('routeMapWrap');
   w.classList.toggle('collapsed');
-  if(!w.classList.contains('collapsed') && !routeMapInited) initRouteMap();
+  if(!w.classList.contains('collapsed')){
+    if(window._loadLeaflet) window._loadLeaflet();
+    if(!routeMapInited) setTimeout(initRouteMap, 400);
+  }
   document.getElementById('routeMapToggle').textContent=w.classList.contains('collapsed')?'🗺️ Show route map':'🗺️ Hide map';
 }
 function initRouteMap(){
-  if(routeMapInited||typeof L==='undefined') return;
+  if(routeMapInited) return;
+  if(typeof L==='undefined'){
+    // Leaflet not loaded yet — load it then retry
+    if(window._loadLeaflet){ window._loadLeaflet(); }
+    setTimeout(initRouteMap, 800);
+    return;
+  }
   routeMapInited=true;
   const stops=plan?.mapStops||[];
   const route=plan?.mapRoute||[];
   if(!stops.length) return;
-  const map=L.map('routeMap',{zoomControl:false,attributionControl:false}).setView([45.5,10],6);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
-  if(route.length>1){
-    L.polyline(route.map(r=>[r.lat,r.lng]),{color:'#95b8ff',weight:3,opacity:.7,dashArray:'6 4'}).addTo(map);
-  }
-  stops.forEach((s,i)=>{
-    const icon=L.divIcon({
-      className:'route-marker',
-      html:'<div style="background:'+(s.type==='daytrip'?'#ffb24d':'#7c6af7')+';width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid rgba(255,255,255,.3);box-shadow:0 2px 8px rgba(0,0,0,.5)">'+s.emoji+'</div>',
-      iconSize:[28,28],iconAnchor:[14,14]
+  try {
+    const map=L.map('routeMap',{zoomControl:false,attributionControl:false}).setView([45.5,10],6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
+    if(route.length>1){
+      L.polyline(route.map(r=>[r.lat,r.lng]),{color:'#95b8ff',weight:3,opacity:.7,dashArray:'6 4'}).addTo(map);
+    }
+    stops.forEach((s,i)=>{
+      const icon=L.divIcon({
+        className:'route-marker',
+        html:'<div style="background:'+(s.type==='daytrip'?'#ffb24d':'#7c6af7')+';width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid rgba(255,255,255,.3);box-shadow:0 2px 8px rgba(0,0,0,.5)">'+s.emoji+'</div>',
+        iconSize:[28,28],iconAnchor:[14,14]
+      });
+      L.marker([s.lat,s.lng],{icon}).addTo(map)
+        .bindPopup('<div style="font-weight:700;font-size:13px">'+s.name+'</div><div style="font-size:11px;color:#666">Day '+s.day+(s.nights?' · '+s.nights+' nights':' · Day trip')+'</div>');
     });
-    L.marker([s.lat,s.lng],{icon}).addTo(map)
-      .bindPopup('<div style="font-weight:700;font-size:13px">'+s.name+'</div><div style="font-size:11px;color:#666">Day '+s.day+(s.nights?' · '+s.nights+' nights':' · Day trip')+'</div>');
-  });
-  map.fitBounds(L.latLngBounds(stops.map(s=>[s.lat,s.lng])),{padding:[40,40],maxZoom:7});
+    map.fitBounds(L.latLngBounds(stops.map(s=>[s.lat,s.lng])),{padding:[40,40],maxZoom:7});
+  } catch(e){ console.warn('Map init error:', e); routeMapInited=false; }
 }
-// Auto-init when Days tab opens
+// Load Leaflet + init map when Trip tab opens
 const _origSwitch=window.switchTab;
-window.switchTab=function(t){_origSwitch(t);if(t==='trip'&&!routeMapInited){setTimeout(initRouteMap,300);}};
-// Also init if trip tab is loaded during populateDashboard
-setTimeout(()=>{if(document.getElementById('tab-trip')&&document.getElementById('tab-trip').classList.contains('active')&&!routeMapInited)initRouteMap();},2000);
+window.switchTab=function(t){
+  _origSwitch(t);
+  if(t==='trip'){
+    if(window._loadLeaflet) window._loadLeaflet();
+    // Expand map if it has stops data
+    const w=document.getElementById('routeMapWrap');
+    if(w && plan?.mapStops?.length && w.classList.contains('collapsed')){
+      w.classList.remove('collapsed');
+      document.getElementById('routeMapToggle').textContent='🗺️ Hide map';
+    }
+    if(!routeMapInited) setTimeout(initRouteMap, 500);
+    // Scroll today pill into view
+    const todayPill=document.querySelector('.today-pill');
+    if(todayPill) todayPill.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  }
+  if(t==='days'){
+    const todayPill=document.querySelector('.today-pill');
+    if(todayPill) setTimeout(()=>todayPill.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}),200);
+  }
+};
 
 // ══════════════════════════════════════
 //  ROAM TRIP PLANNER — BACKEND WIRING
@@ -2350,6 +2434,24 @@ function adjustTravellers(delta) {
 document.getElementById('pln-interests').addEventListener('click', function(e) {
   const chip = e.target.closest('.planner-interest');
   if (chip) chip.classList.toggle('sel');
+});
+
+// Delegated tap-to-copy for PNR codes
+document.addEventListener('click', function(e) {
+  const pnrEl = e.target.closest('.tappable-pnr');
+  if (!pnrEl) return;
+  const code = pnrEl.dataset.pnr || pnrEl.textContent.replace('PNR: ','').trim();
+  if (!code) return;
+  const orig = pnrEl.textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => {
+      pnrEl.textContent = '✅ Copied!';
+      showToast('📋 PNR copied: ' + code);
+      setTimeout(() => { pnrEl.textContent = orig; }, 1800);
+    }).catch(() => showToast('PNR: ' + code));
+  } else {
+    showToast('PNR: ' + code);
+  }
 });
 
 async function submitPlan() {
