@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0f">
-<title>Plan your trip — Roam</title>
+<title>Plan your trip — Tripva</title>
 <style>
 :root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:#7c6af7;--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -62,8 +62,8 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 </head>
 <body>
 <nav>
-  <a class="nav-back" href="index.html">← Roam</a>
-  <a class="nav-logo" href="index.html">Roam</a>
+  <a class="nav-back" href="index.html">← Tripva</a>
+  <a class="nav-logo" href="index.html">Tripva</a>
   <span style="width:60px"></span>
 </nav>
 
@@ -261,7 +261,7 @@ async function submitTrip() {
       const sr = await fetch(BACKEND+'/api/save', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:tripState.rawPlan})});
       if (sr.ok) { const d = await sr.json(); shareUrl = d.url; }
     } catch(e) {}
-    localStorage.setItem('tripai_plan', JSON.stringify(tripState.rawPlan));
+    localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
     window._generatedShareUrl = shareUrl;
     document.getElementById('genCta').style.display = 'block';
     setTimeout(openGeneratedTrip, 800);
