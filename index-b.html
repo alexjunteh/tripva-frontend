@@ -24,8 +24,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
-  background:#0a0a12;
-  color:#fff;
+  background:var(--bg);
+  color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
   line-height:1.6;
   overflow-x:hidden;
@@ -54,13 +54,21 @@ img{max-width:100%;display:block}
 }
 [data-theme="light"]{
   --bg:#f7f3ee;
+  --bg-dark:#ede8e2;
+  --bg2:#f0ece6;
+  --surface:rgba(0,0,0,.04);
+  --surface2:rgba(0,0,0,.07);
+  --border:rgba(0,0,0,.08);
+  --border2:rgba(0,0,0,.14);
   --text:#1c1612;
-  --muted:#5c5249;
-  --gold:#b8963e;
-  --deep:#0f1a14;
-  --surface:#ede8e2;
-  --white:#fffcf8;
-  --body:#4a433c;
+  --muted:rgba(28,22,18,.45);
+  --muted2:rgba(28,22,18,.65);
+  --purple:#6b59e8;
+  --purple-light:#7c6af7;
+  --purple-glow:rgba(107,89,232,.2);
+  --indigo:#6366f1;
+  --green:#059669;
+  --r:12px;
 }
 .theme-toggle{
   background:none;
@@ -76,6 +84,9 @@ img{max-width:100%;display:block}
   align-items:center;
   gap:4px;
 }
+.theme-icon-sun,.theme-icon-moon{display:none}
+[data-theme="dark"] .theme-icon-sun{display:inline}
+[data-theme="light"] .theme-icon-moon{display:inline}
 
 /* ─── NAV ─────────────────────────────────────────────────────────────────── */
 nav{
@@ -86,11 +97,13 @@ nav{
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
 }
+[data-theme="light"] nav{background:rgba(247,243,238,.9);border-bottom-color:var(--border);}
 .nav-logo{
   font-size:20px;font-weight:900;letter-spacing:-0.5px;
   background:linear-gradient(135deg,#fff 30%,var(--purple-light));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
+[data-theme="light"] .nav-logo{background:linear-gradient(135deg,#1c1612 30%,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .nav-links{
   display:flex;gap:28px;align-items:center;
 }
@@ -159,7 +172,7 @@ nav{
 .hero h1{
   font-size:clamp(36px,7vw,80px);
   font-weight:900;letter-spacing:-2px;line-height:1.06;
-  color:#fff;margin-bottom:20px;
+  color:var(--text);margin-bottom:20px;
 }
 .hero h1 em{
   font-style:normal;
@@ -216,7 +229,7 @@ section{padding:80px 20px}
 }
 h2.section-h2{
   font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-1.5px;
-  line-height:1.1;color:#fff;margin-bottom:16px;
+  line-height:1.1;color:var(--text);margin-bottom:16px;
 }
 .section-sub{font-size:clamp(15px,2vw,18px);color:var(--muted2);line-height:1.65;max-width:540px}
 @media(max-width:600px){section{padding:64px 16px}}
@@ -240,13 +253,13 @@ h2.section-h2{
 .pain-card{
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.07);
-  border-radius:16px;padding:28px 24px;
+  border-radius:var(--r);padding:28px 24px;
   text-align:left;
   transition:border-color .25s,transform .25s;
 }
 .pain-card:hover{border-color:rgba(124,106,247,.35);transform:translateY(-3px)}
 .pain-icon{font-size:28px;margin-bottom:14px}
-.pain-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.3px}
+.pain-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-.3px}
 .pain-body{font-size:14px;color:var(--muted2);line-height:1.7}
 .pain-hook{
   font-size:clamp(18px,3vw,26px);font-weight:800;color:#fff;
@@ -304,7 +317,7 @@ h2.section-h2{
   font-size:16px;font-weight:900;color:#fff;flex-shrink:0;
   box-shadow:0 4px 16px rgba(124,106,247,.4);
 }
-.step-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
+.step-title{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.4px}
 .step-body{font-size:14px;color:var(--muted2);line-height:1.7}
 .step-connector{
   display:none;
@@ -321,13 +334,13 @@ h2.section-h2{
 .testi-card{
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;padding:28px 24px;text-align:left;
+  border-radius:var(--r);padding:28px 24px;text-align:left;
   transition:border-color .25s,transform .25s;
 }
 .testi-card:hover{border-color:rgba(124,106,247,.3);transform:translateY(-3px)}
 .testi-stars{color:#facc15;font-size:13px;letter-spacing:2px;margin-bottom:14px}
 .testi-quote{
-  font-size:15px;color:#e8e8f5;line-height:1.7;margin-bottom:18px;
+  font-size:15px;color:var(--text);line-height:1.7;margin-bottom:18px;
   font-style:italic;
 }
 .testi-author{
@@ -347,7 +360,7 @@ h2.section-h2{
 }
 .price-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:20px;padding:28px 24px;text-align:left;
+  border-radius:var(--r);padding:28px 24px;text-align:left;
   position:relative;transition:border-color .25s,transform .25s;
 }
 .price-card:hover{border-color:var(--border2);transform:translateY(-3px)}
@@ -363,7 +376,7 @@ h2.section-h2{
   padding:4px 14px;border-radius:999px;text-transform:uppercase;white-space:nowrap;
 }
 .price-tier{font-size:13px;font-weight:700;color:var(--muted2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
-.price-num{font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1}
+.price-num{font-size:42px;font-weight:900;color:var(--text);letter-spacing:-1px;line-height:1}
 .price-num span{font-size:16px;font-weight:500;color:var(--muted2)}
 .price-cadence{font-size:12px;color:var(--muted);margin-top:4px;margin-bottom:10px}
 .price-desc{font-size:13px;color:var(--muted2);line-height:1.55;margin-bottom:18px}
@@ -421,7 +434,7 @@ h2.section-h2{
 }
 .waitlist h3{
   font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-.8px;
-  margin-bottom:10px;color:#fff;
+  margin-bottom:10px;color:var(--text);
 }
 .waitlist p{font-size:14px;color:var(--muted2);line-height:1.65}
 .waitlist-form{
@@ -521,7 +534,7 @@ footer{
       <span><span id="tripCount">50</span>+ trips planned · Join free</span>
     </div>
     <h1>Trip planning takes <em>8 hours.</em><br>Ours takes 30 seconds.</h1>
-    <p class="hero-sub">Describe your trip. Tripva's AI builds a complete day-by-day itinerary with hotels, restaurants, bookings, and real-time travel alerts. No research. No tabs. No stress.</p>
+    <p class="hero-sub">Describe your trip. AI builds the complete itinerary — hotels, restaurants, bookings, and real-time alerts.</p>
     <div class="hero-ctas">
       <a class="btn-primary" href="plan.html">
         Plan my trip free →
@@ -582,9 +595,21 @@ footer{
     <p class="section-sub fade-in">From one sentence to a complete trip dashboard — 30 seconds.</p>
 
     <div class="phone-wrap fade-in">
-      <div class="phone-frame">
+      <div class="phone-frame" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0f0f1c 0%,#1a1a2e 100%);">
         <div class="phone-notch"></div>
-        <iframe src="trip.html?demo=1&theme=dark" title="Tripva trip demo" loading="lazy" scrolling="yes"></iframe>
+        <div style="text-align:center;padding:20px;margin-top:20px;">
+          <div style="font-size:48px;margin-bottom:16px;">✈️</div>
+          <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Paris + Amsterdam</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;">7 days · 2 cities · Full itinerary</div>
+          <div style="display:flex;flex-direction:column;gap:8px;text-align:left;padding:0 12px;">
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">📅 Day 1 — Arrival in Paris · Eiffel Tower sunset</div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">📅 Day 2 — Louvre · Montmartre · Seine cruise</div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">📅 Day 3 — Versailles day trip</div>
+            <div style="background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.3);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--purple-light);">⚡ Book Louvre tickets — sells out 2 weeks early</div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">🏨 Hôtel des Arts · Montmartre · ★★★★</div>
+          </div>
+          <a href="trip.html?demo=1" target="_blank" style="display:inline-block;margin-top:16px;background:var(--purple);color:#fff;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">See full demo →</a>
+        </div>
       </div>
     </div>
 
@@ -607,7 +632,7 @@ footer{
       <div class="how-step fade-in">
         <div class="step-num">1</div>
         <div class="step-title">Tell Tripva where you're going</div>
-        <div class="step-body">Type your destination, dates, and budget. Takes 10 seconds. No forms. No dropdowns. Just describe your trip like you'd tell a friend.</div>
+        <div class="step-body">Type your destination, dates, and budget. Takes 10 seconds. No research required. Just describe your trip like you'd tell a friend.</div>
       </div>
       <div class="how-step fade-in">
         <div class="step-num">2</div>
@@ -627,7 +652,7 @@ footer{
 <section class="testi-section">
   <div class="section-inner">
     <div class="section-label fade-in">Real results</div>
-    <h2 class="section-h2 fade-in">Real trips. Real results.</h2>
+    <h2 class="section-h2 fade-in">What travellers say</h2>
 
     <div class="testi-grid">
       <div class="testi-card fade-in">
@@ -685,7 +710,7 @@ footer{
           <div class="pf"><span class="pf-y">✓</span><span><strong style="color:#fff">Unlimited</strong> AI trip generation</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>AI booking alerts &amp; reminders</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>Live dashboard (real-time updates)</span></div>
-          <div class="pf"><span class="pf-y">✓</span><span>Export itinerary as PDF</span></div>
+          <div class="pf"><span class="pf-y">✓</span><span>AI packing list generator</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>Offline PWA access</span></div>
           <div class="pf"><span class="pf-y">✓</span><span>Multi-city trip builder</span></div>
           <div class="pf"><span class="pf-n">–</span><span style="color:var(--muted)">Team &amp; agency features</span></div>
@@ -751,7 +776,7 @@ footer{
     <div class="footer-logo">Tripva</div>
     <div class="footer-links">
       <a href="plan.html">Plan a trip</a>
-      <a href="#about">About</a>
+      <a href="#how">About</a>
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="trip.html?demo=1" target="_blank">Demo</a>
@@ -860,7 +885,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').ca
     document.documentElement.setAttribute('data-theme',theme);
     localStorage.setItem('tripva-theme',theme);
     var btn=document.getElementById('themeToggle');
-    if(btn){btn.innerHTML=theme==='dark'?'☀':'☽';}
+    /* icon visibility handled by CSS data-theme selectors */
   }
   document.addEventListener('DOMContentLoaded',function(){
     applyTheme(localStorage.getItem('tripva-theme')||'dark');
