@@ -2068,6 +2068,11 @@ const CITY_IMGS={
     'jordaan':'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop',
     'anne-frank':'https://images.unsplash.com/photo-1609010697446-11f2155278f0?w=900&h=500&fit=crop',
     'vondelpark':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
+    // Eastern Europe (added)
+    'prague':'https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=900&h=500&fit=crop',
+    'vienna':'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=900&h=500&fit=crop',
+    // Africa (added)
+    'cairo':'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=900&h=500&fit=crop',
 };
 
 // Alternate hero images per city — used to avoid duplicate images when multiple days share a seed
@@ -2088,6 +2093,24 @@ const CITY_IMG_ALTS = {
   'lucerne':['https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=900&h=500&fit=crop'],
   'luzern':['https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=900&h=500&fit=crop','https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=900&h=500&fit=crop'],
 };
+// Helper: get best image for a day card
+function getDayImage(day, idx) {
+  if (day.imageUrl) return day.imageUrl;
+  const seeds = [day.heroSeed, day.title, ''].map(s => (s||'').toLowerCase());
+  for (const seed of seeds) {
+    if (!seed) continue;
+    // Exact match
+    if (CITY_IMGS[seed]) return CITY_IMGS[seed];
+    // Partial match
+    for (const [key, url] of Object.entries(CITY_IMGS)) {
+      if (seed.includes(key) || key.includes(seed.split(/[-\s]/)[0])) return url;
+    }
+  }
+  // Final fallback: loremflickr with keyword
+  const keyword = (day.heroSeed || day.title || 'travel').replace(/-/g,' ');
+  return `https://loremflickr.com/900/400/${encodeURIComponent(keyword)}`;
+}
+
 // Track used images per populateDashboard call to avoid duplicates
 let _usedDayImgs = new Set();
 
@@ -2525,6 +2548,15 @@ function populateDashboard(p) {
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
     });
+
+    // Scroll active day pill into view
+    setTimeout(() => {
+      const activePill = document.querySelector('.day-pill.active');
+      if (activePill) activePill.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+    }, 100);
+    // Ensure first day card is visible, not the last
+    const firstCard = document.getElementById('dc-0');
+    if (firstCard) firstCard.scrollIntoView({behavior:'instant', block:'start'});
 
     // Itin list in overview
     const _itin=document.getElementById('itinList'); if(_itin) _itin.innerHTML=p.days.map((d,i)=>`
@@ -3352,7 +3384,7 @@ function getSpotPhoto(title, city) {
 }
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
-  const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||idx}/900/400`;
+  const imgUrl=getDayImage(d, idx);
   document.getElementById('sheetHero').style.backgroundImage=`url('${imgUrl}')`;
   document.getElementById('sheetBadge').textContent=`Day ${d.day} · ${formatDayDate(d.day)}`;
   document.getElementById('sheetTitle').textContent=(d.emoji||'📅')+' '+(d.title||'');
