@@ -227,11 +227,11 @@ async function submitTrip() {
     if (span) span.textContent = loadingTexts[loadIdx];
   }, 8000);
 
-  const _t60 = setTimeout(() => showToast('⏱️ Still building — just a moment more...', 5000), 60000);
+  const _t60 = setTimeout(() => showToast('⏱️ Still building — just a moment more...', 5000), 90000);
   const _t120 = setTimeout(() => {
     document.getElementById('genCta').style.display = 'block';
     document.getElementById('genCta').innerHTML = '<button class="form-submit-btn" onclick="location.reload()">⚠️ Timed out — Retry →</button>';
-  }, 120000);
+  }, 300000);
 
   try {
     const resp = await fetch(BACKEND + '/api/plan?stream=true', {
