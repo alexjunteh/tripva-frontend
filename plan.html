@@ -57,6 +57,8 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,30,.98);border:1px solid var(--border);border-radius:14px;padding:11px 18px;font-size:13px;font-weight:700;z-index:700;opacity:0;transition:all .28s cubic-bezier(.25,.1,.25,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes barPulse{0%,100%{opacity:1}50%{opacity:.4}}
+.gen-estimate{font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;text-align:center}
 </style>
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -134,6 +136,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
       <div class="gen-dates" id="genDates"></div>
     </div>
     <div class="gen-progress-bar"><div class="gen-progress-fill" id="genFill"></div></div>
+    <div class="gen-estimate" id="genEstimate">Usually takes 30–60 seconds</div>
     <div class="gen-log" id="genLog"></div>
     <div class="gen-days" id="genDays"></div>
     <div class="gen-done-cta" id="genCta" style="display:none">
@@ -201,6 +204,29 @@ async function submitTrip() {
   let buffer = '', tripState = null, totalDays = 0, completedDays = 0;
   const logRoute = addLog('⏳', 'Designing your route...', 'active');
 
+  // Fake initial progress to show activity
+  let fakeProgress = 0;
+  const fakeInterval = setInterval(() => {
+    fakeProgress = Math.min(fakeProgress + 1, 12);
+    setProgress(fakeProgress);
+  }, 5000);
+
+  // Cycle loading messages while waiting for skeleton
+  const loadingTexts = [
+    'Designing your route...',
+    'Researching hotels & restaurants...',
+    'Finding hidden gems...',
+    'Checking booking availability...',
+    'Building your daily plans...',
+    'Almost there — finalizing details...'
+  ];
+  let loadIdx = 0;
+  const loadInterval = setInterval(() => {
+    loadIdx = (loadIdx + 1) % loadingTexts.length;
+    const span = logRoute.querySelector('span:last-child');
+    if (span) span.textContent = loadingTexts[loadIdx];
+  }, 8000);
+
   const _t60 = setTimeout(() => showToast('⏱️ Still building — just a moment more...', 5000), 60000);
   const _t120 = setTimeout(() => {
     document.getElementById('genCta').style.display = 'block';
@@ -230,6 +256,9 @@ async function submitTrip() {
               if (trip?.name) document.getElementById('genDest').textContent = trip.name;
               if (trip?.startDate) document.getElementById('genDates').textContent = trip.startDate + ' → ' + (trip.endDate||'');
               totalDays = evt.data.rawPlan?.days?.length || 0;
+              clearInterval(fakeInterval); clearInterval(loadInterval);
+              const est = document.getElementById('genEstimate');
+              if (est) est.style.display = 'none';
               logRoute.className = 'gen-log-item done'; logRoute.querySelector('.gen-log-icon').textContent = '✓';
               addLog('✓', 'Hotels & budget planned', 'done'); setProgress(15);
               (evt.data.rawPlan?.days||[]).forEach(d => {
@@ -249,13 +278,17 @@ async function submitTrip() {
               document.querySelectorAll('.gen-log-item.active').forEach(el => {el.className='gen-log-item done';el.querySelector('.gen-log-icon').textContent='✓';});
               setProgress(15 + Math.round((completedDays/Math.max(totalDays,1))*75));
             }
+            if (evt.type === 'progress' && evt.message) {
+              const span = logRoute.querySelector('span:last-child');
+              if (span) span.textContent = evt.message;
+            }
             if (evt.type === 'done' && evt.data) tripState = evt.data;
           } catch(e) {}
         }
       }
     }
     if (!tripState?.rawPlan) throw new Error('No plan data received');
-    setProgress(100); clearTimeout(_t60); clearTimeout(_t120);
+    setProgress(100); clearTimeout(_t60); clearTimeout(_t120); clearInterval(fakeInterval); clearInterval(loadInterval);
     let shareUrl = null;
     try {
       const sr = await fetch(BACKEND+'/api/save', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:tripState.rawPlan})});
@@ -266,7 +299,7 @@ async function submitTrip() {
     document.getElementById('genCta').style.display = 'block';
     setTimeout(openGeneratedTrip, 800);
   } catch(err) {
-    clearTimeout(_t60); clearTimeout(_t120);
+    clearTimeout(_t60); clearTimeout(_t120); clearInterval(fakeInterval); clearInterval(loadInterval);
     document.getElementById('planForm').style.display = 'block';
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('genLog').innerHTML = '';
