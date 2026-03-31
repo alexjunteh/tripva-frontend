@@ -136,7 +136,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
       <div class="gen-dates" id="genDates"></div>
     </div>
     <div class="gen-progress-bar"><div class="gen-progress-fill" id="genFill"></div></div>
-    <div class="gen-estimate" id="genEstimate">Usually takes 15–30 seconds</div>
+    <div class="gen-estimate" id="genEstimate">Usually takes 1–2 minutes</div>
     <div class="gen-log" id="genLog"></div>
     <div class="gen-days" id="genDays"></div>
     <div class="gen-done-cta" id="genCta" style="display:none">
@@ -227,14 +227,14 @@ async function submitTrip() {
     if (span) span.textContent = loadingTexts[loadIdx];
   }, 8000);
 
-  const _t60 = setTimeout(() => showToast('⏱️ Still building — just a moment more...', 5000), 30000);
+  const _t60 = setTimeout(() => showToast('⏱️ Still building — just a moment more...', 5000), 60000);
   const _t120 = setTimeout(() => {
     document.getElementById('genCta').style.display = 'block';
     document.getElementById('genCta').innerHTML = '<button class="form-submit-btn" onclick="location.reload()">⚠️ Timed out — Retry →</button>';
-  }, 90000);
+  }, 180000);
 
   try {
-    const resp = await fetch(BACKEND + '/api/plan-fast?stream=true', {
+    const resp = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ destination:dest, startDate:start, endDate:end, travelers:travellers, budget, style, interests, homeCity:home })
     });
