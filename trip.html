@@ -1029,6 +1029,55 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 }
 .v2-quick-btn:active { background:var(--surface2); }
 
+/* ── INLINE EDIT SHEET ── */
+.edit-sheet-overlay {
+  position: fixed; inset: 0; z-index: 5000;
+  background: rgba(0,0,0,.6);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.edit-sheet {
+  background: var(--surface, #1a1a2e);
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  width: 100%; max-width: 480px;
+  max-height: 80vh; overflow-y: auto;
+}
+.edit-field { margin-bottom: 14px; }
+.edit-label { font-size: 12px; font-weight: 700; color: var(--muted2, rgba(255,255,255,.6)); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; display: block; }
+.edit-input, .edit-textarea, .edit-select {
+  width: 100%; background: var(--bg, #0a0a12); color: var(--text, #fff);
+  border: 1px solid var(--border, rgba(255,255,255,.1));
+  border-radius: 8px; padding: 10px 12px; font-size: 14px;
+  outline: none; font-family: inherit; box-sizing: border-box;
+}
+.edit-input:focus, .edit-textarea:focus, .edit-select:focus { border-color: var(--accent, #7c6af7); }
+.edit-textarea { min-height: 80px; resize: vertical; }
+.edit-actions { display: flex; gap: 10px; margin-top: 16px; }
+.edit-save-btn {
+  flex: 1; background: var(--accent, #7c6af7); color: #fff;
+  border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.edit-delete-btn {
+  background: rgba(239,68,68,.15); color: #ef4444;
+  border: 1px solid rgba(239,68,68,.3); border-radius: 10px; padding: 12px 16px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.edit-cancel-btn {
+  background: var(--surface2, rgba(255,255,255,.07)); color: var(--text, #fff);
+  border: 1px solid var(--border, rgba(255,255,255,.1)); border-radius: 10px; padding: 12px 16px; font-size: 14px; cursor: pointer;
+}
+.add-item-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 12px; margin-top: 12px;
+  background: var(--surface, rgba(255,255,255,.04));
+  border: 1px dashed var(--border2, rgba(255,255,255,.14));
+  border-radius: 10px; color: var(--muted2, rgba(255,255,255,.6));
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.add-item-btn:hover { background: rgba(124,106,247,.1); color: var(--accent, #7c6af7); }
+.tl-item { cursor: pointer; transition: background .15s; border-radius: 10px; padding: 4px; margin: -4px; }
+.tl-item:hover { background: rgba(124,106,247,.08); }
+
 </style>
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -3440,8 +3489,8 @@ function renderDaySheet(idx) {
   html+=(d.timeline||[]).map((tl,i)=>{
     const isLast=i===(d.timeline||[]).length-1;
     const typeClass=tl.type||'activity';
-    const mapLink=tl.mapQuery?`<a class="tl-map-btn" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank">📍 Map</a>`:'';
-    return `<div class="tl-item">
+    const mapLink=tl.mapQuery?`<a class="tl-map-btn" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank" onclick="event.stopPropagation()">📍 Map</a>`:'';
+    return `<div class="tl-item" onclick="openEditSheet(${idx},${i})" title="Tap to edit">
       <div class="tl-left"><div class="tl-time">${esc(tl.time||'')}</div></div>
       <div class="tl-dot-col">
         <div class="tl-dot ${typeClass}"></div>
@@ -3458,6 +3507,7 @@ function renderDaySheet(idx) {
       </div>
     </div>`;
   }).join('');
+  html+=`<button class="add-item-btn" onclick="openEditSheet(${idx},-1)">＋ Add item</button>`;
 
   // ── LOCAL TIPS ──
   if (d.localTips && d.localTips.length) {
@@ -3495,6 +3545,88 @@ function sheetNav(dir) {
   document.getElementById('dp-'+newIdx)?.classList.add('active');
   document.getElementById('dp-'+newIdx)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
+
+// ══════════════════════════════════════
+//  INLINE EDIT SHEET
+// ══════════════════════════════════════
+let _editDayIdx = -1, _editItemIdx = -1;
+
+function openEditSheet(dayIdx, itemIdx) {
+  _editDayIdx = dayIdx;
+  _editItemIdx = itemIdx;
+  const days = plan?.rawPlan?.days || plan?.days || [];
+  const day = days[dayIdx];
+  if (!day) return;
+
+  const isNew = itemIdx === -1;
+  const item = isNew ? null : (day.timeline || [])[itemIdx];
+
+  document.getElementById('editSheetTitle').textContent = isNew ? 'Add Item' : 'Edit Item';
+  document.getElementById('editTime').value = item?.time || '';
+  document.getElementById('editTitle').value = item?.title || '';
+  document.getElementById('editDetail').value = item?.detail || '';
+  document.getElementById('editType').value = item?.type || 'activity';
+  document.getElementById('editDeleteBtn').style.display = isNew ? 'none' : 'block';
+  document.getElementById('editOverlay').style.display = 'flex';
+}
+
+function closeEditSheet() {
+  document.getElementById('editOverlay').style.display = 'none';
+}
+
+function saveEditItem() {
+  const days = plan?.rawPlan?.days || plan?.days || [];
+  const day = days[_editDayIdx];
+  if (!day) return;
+  if (!day.timeline) day.timeline = [];
+
+  const item = {
+    time: document.getElementById('editTime').value || '12:00',
+    title: document.getElementById('editTitle').value || 'New item',
+    detail: document.getElementById('editDetail').value || '',
+    type: document.getElementById('editType').value || 'activity',
+    mapQuery: document.getElementById('editTitle').value || '',
+  };
+
+  if (_editItemIdx === -1) {
+    day.timeline.push(item);
+  } else {
+    day.timeline[_editItemIdx] = { ...day.timeline[_editItemIdx], ...item };
+  }
+
+  // Sort timeline by time
+  day.timeline.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+
+  savePlanToStorage();
+  closeEditSheet();
+  renderDaySheet(_editDayIdx);
+}
+
+function deleteEditItem() {
+  if (_editItemIdx < 0) return;
+  const days = plan?.rawPlan?.days || plan?.days || [];
+  const day = days[_editDayIdx];
+  if (!day || !day.timeline) return;
+
+  day.timeline.splice(_editItemIdx, 1);
+  savePlanToStorage();
+  closeEditSheet();
+  renderDaySheet(_editDayIdx);
+}
+
+function savePlanToStorage() {
+  try {
+    const data = plan?.rawPlan || plan;
+    localStorage.setItem('tripva_plan', JSON.stringify(data));
+  } catch(e) { console.error('[edit] save failed:', e); }
+}
+
+// Expose on window for onclick handlers
+window.openEditSheet = openEditSheet;
+window.closeEditSheet = closeEditSheet;
+window.saveEditItem = saveEditItem;
+window.deleteEditItem = deleteEditItem;
+window.savePlanToStorage = savePlanToStorage;
 
 // ══════════════════════════════════════
 //  TRIP EDIT
@@ -3963,6 +4095,41 @@ function fabInstall() {
 </div>
 <button class="fab-main" id="fabMain" onclick="toggleFab()">+</button>
 
+
+
+<div class="edit-sheet-overlay" id="editOverlay" style="display:none" onclick="if(event.target===this)closeEditSheet()">
+  <div class="edit-sheet">
+    <div style="font-size:16px;font-weight:800;margin-bottom:16px" id="editSheetTitle">Edit Item</div>
+    <div class="edit-field">
+      <label class="edit-label" for="editTime">Time</label>
+      <input class="edit-input" type="time" id="editTime">
+    </div>
+    <div class="edit-field">
+      <label class="edit-label" for="editTitle">Title</label>
+      <input class="edit-input" type="text" id="editTitle" placeholder="Activity title">
+    </div>
+    <div class="edit-field">
+      <label class="edit-label" for="editDetail">Details</label>
+      <textarea class="edit-textarea" id="editDetail" placeholder="Description, tips, prices..."></textarea>
+    </div>
+    <div class="edit-field">
+      <label class="edit-label" for="editType">Type</label>
+      <select class="edit-select" id="editType">
+        <option value="activity">🎯 Activity</option>
+        <option value="meal">🍽️ Meal</option>
+        <option value="food">🍜 Food</option>
+        <option value="transport">🚆 Transport</option>
+        <option value="hotel">🏨 Hotel</option>
+        <option value="logistics">📋 Logistics</option>
+      </select>
+    </div>
+    <div class="edit-actions">
+      <button class="edit-delete-btn" id="editDeleteBtn" onclick="deleteEditItem()">Delete</button>
+      <button class="edit-cancel-btn" onclick="closeEditSheet()">Cancel</button>
+      <button class="edit-save-btn" onclick="saveEditItem()">Save</button>
+    </div>
+  </div>
+</div>
 
 <div style="text-align:center;padding:20px 0 32px;font-size:12px;color:rgba(255,255,255,.25)">
   ✨ Planned by <a href="https://futuriztaos.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
