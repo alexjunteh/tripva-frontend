@@ -3243,15 +3243,16 @@ function renderLiveOps(){
   if(el('liveHeroTime'))el('liveHeroTime').textContent=`${timeStr} · ${DN[dateObj.getDay()]} ${MN[dateObj.getMonth()]} ${dateObj.getDate()}`;
 
   // ── TIMELINE ANALYSIS ──
+  const isTodayDay = day.date === ymd; // only mark done if this day IS today
   let currentItem=null,nextItem=null;
   const doneItems=[],pendingItems=[];
   for(let i=0;i<timeline.length;i++){
     const tm=parseTimeMins(timeline[i].time);
-    if(tm>=0&&tm<=nowMins){currentItem=timeline[i];doneItems.push(timeline[i]);}
+    if(isTodayDay&&tm>=0&&tm<=nowMins){currentItem=timeline[i];doneItems.push(timeline[i]);}
     else{if(!nextItem)nextItem=timeline[i];pendingItems.push(timeline[i]);}
   }
-  const beforeDay=timeline.length>0&&nowMins<parseTimeMins(timeline[0].time);
-  const afterDay=timeline.length>0&&!nextItem&&doneItems.length>0;
+  const beforeDay=isTodayDay&&timeline.length>0&&nowMins<parseTimeMins(timeline[0].time);
+  const afterDay=isTodayDay&&timeline.length>0&&!nextItem&&doneItems.length>0;
 
   // ── NOW CARD ──
   if(el('liveNowCard')){
@@ -3300,7 +3301,7 @@ function renderLiveOps(){
     const isOnTrack=afterDay||(remainItems===0||(remainItems*90<=remainMins));
     const dots=timeline.map(t=>{
       const tm=parseTimeMins(t.time);
-      const isDone=tm>=0&&tm<=nowMins&&!beforeDay;
+      const isDone=isTodayDay&&tm>=0&&tm<=nowMins&&!beforeDay;
       const isNow=t===currentItem;
       return`<div class="v2-dot ${isNow?'current':(isDone?'done':'todo')}" title="${esc(t.title||'')}"></div>`;
     }).join('');
@@ -3323,7 +3324,7 @@ function renderLiveOps(){
   if(el('liveTimeline')){
     el('liveTimeline').innerHTML=timeline.map(t=>{
       const tm=parseTimeMins(t.time);
-      const isDone=tm>=0&&tm<=nowMins&&!beforeDay;
+      const isDone=isTodayDay&&tm>=0&&tm<=nowMins&&!beforeDay;
       const isNow=t===currentItem;
       const icon=isDone?'✓':(isNow?'◉':'○');
       const cls=isNow?'now':(isDone?'done':'todo');
