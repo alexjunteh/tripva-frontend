@@ -4150,13 +4150,18 @@ async function sendAiEdit() {
     // Merge rawPlan properties to top-level plan (app reads plan.days, plan.trip, etc.)
     const rp = plan.rawPlan || plan;
 
-    // If trip dates changed, recalculate day.date fields from new startDate
-    if (rp.trip && rp.trip.startDate && rp.days) {
-      const startMs = new Date(rp.trip.startDate).getTime();
+    // Always recalculate day.date fields from new startDate
+    // (AI may update trip.startDate but leave day.date fields at old values)
+    if (rp.trip && rp.trip.startDate && rp.days && rp.days.length > 0) {
+      const newStart = rp.trip.startDate;
+      const oldStart = (plan.rawPlan || plan)?.trip?.startDate || '';
+      // Recalculate if startDate changed, or any day has a missing/old date
+      const startMs = new Date(newStart).getTime();
       rp.days = rp.days.map((day, i) => {
-        if (!day.date || day.date === '') {
-          const dayMs = startMs + i * 86400000;
-          day.date = new Date(dayMs).toISOString().slice(0, 10);
+        const expectedDate = new Date(startMs + i * 86400000).toISOString().slice(0, 10);
+        // Always update if startDate changed
+        if (newStart !== oldStart || !day.date || day.date === '') {
+          day.date = expectedDate;
         }
         return day;
       });
