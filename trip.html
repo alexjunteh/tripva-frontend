@@ -163,7 +163,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .trip-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
 /* Hero */
-.trip-hero{position:relative;overflow:hidden;padding:48px 20px 30px;text-align:center;background:var(--surface)}
+.trip-hero{position:relative;overflow:hidden;padding:56px 20px 30px;text-align:center;background:var(--surface)}
 .trip-hero-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.2;transition:opacity .5s}
 .trip-hero-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,transparent 60%)}
 .hero-edit-btn{position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:600;z-index:1}
@@ -649,6 +649,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .fab-wrap.open .fab-action:nth-child(2){transition-delay:50ms}
 .fab-wrap.open .fab-action:nth-child(3){transition-delay:100ms}
 .fab-wrap.open .fab-action:nth-child(4){transition-delay:150ms}
+.fab-wrap.open .fab-action:nth-child(5){transition-delay:200ms}
 
 .tl-tc{background:var(--surface2);border-radius:10px;padding:10px 12px;margin-top:6px;border:1px solid var(--border)}
 .tl-tc-status{font-size:11px;color:#4ade80;font-weight:700;margin-bottom:8px}
@@ -1156,7 +1157,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <div id="app">
 
 <!-- ── 1. LIVE OPS ── -->
-<div id="tab-plan" class="tab-content active">
+<div id="tab-plan" class="tab-content active" style="padding-top:env(safe-area-inset-top,0)">
   <div class="v2-scroll" id="opsScroll">
 
     <!-- EMPTY STATE -->
@@ -1629,10 +1630,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   </div>
 </div>
 
-<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
-  <span class="theme-icon-sun">☀</span>
-  <span class="theme-icon-moon">☽</span>
-</button>
+<!-- theme toggle moved to FAB menu -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -4212,6 +4210,26 @@ window.sendAiEdit = sendAiEdit;
   });
 })();
 
+
+window.toggleThemeMode = function() {
+  var html = document.documentElement;
+  var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('tripva-theme', next);
+  // Update FAB button labels
+  var btn = document.getElementById('themeFabBtn');
+  var lbl = document.getElementById('themeLabel');
+  if (btn) btn.textContent = next === 'dark' ? '☀' : '☽';
+  if (lbl) lbl.textContent = next === 'dark' ? '☀ Light mode' : '☽ Dark mode';
+};
+// Init theme label on load
+document.addEventListener('DOMContentLoaded', function() {
+  var t = document.documentElement.getAttribute('data-theme') || 'dark';
+  var btn = document.getElementById('themeFabBtn');
+  var lbl = document.getElementById('themeLabel');
+  if (btn) btn.textContent = t === 'dark' ? '☀' : '☽';
+  if (lbl) lbl.textContent = t === 'dark' ? '☀ Light mode' : '☽ Dark mode';
+});
 </script>
 <!-- ── FLOATING ACTION BUTTON ── -->
 <!-- ── PACK MODAL ── -->
@@ -4238,6 +4256,10 @@ window.sendAiEdit = sendAiEdit;
     <div class="fab-action">
       <div class="fab-action-label">✨ AI Edit</div>
       <div class="fab-action-btn" onclick="toggleFab();toggleAiChat()">🤖</div>
+    </div>
+    <div class="fab-action">
+      <div class="fab-action-label" id="themeLabel">☀ Light mode</div>
+      <div class="fab-action-btn" id="themeFabBtn" onclick="toggleFab();toggleThemeMode()">☀</div>
     </div>
     <div class="fab-action">
       <div class="fab-action-label">📱 Install</div>
