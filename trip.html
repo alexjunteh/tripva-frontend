@@ -3203,9 +3203,21 @@ function renderLiveOps(){
   // ── CURRENT DAY ──
   let currentIdx=plan.days.findIndex(d=>d.date===ymd);
   if(currentIdx<0){
-    if(ymd<=(plan.days[0]&&plan.days[0].date||''))currentIdx=0;
-    else if(ymd>=(plan.days[plan.days.length-1]&&plan.days[plan.days.length-1].date||''))currentIdx=plan.days.length-1;
-    else currentIdx=0;
+    const firstDate = plan.days[0]&&plan.days[0].date||'';
+    const lastDate  = plan.days[plan.days.length-1]&&plan.days[plan.days.length-1].date||'';
+    if(ymd<=firstDate) {
+      // Before trip starts → show Day 1
+      currentIdx=0;
+    } else if(ymd>lastDate) {
+      // After trip ends → show Day 1 (not last day — trip is over, this is demo/historical)
+      currentIdx=0;
+    } else {
+      // During trip but no exact date match → find closest day
+      currentIdx=0;
+      for(let i=0;i<plan.days.length-1;i++){
+        if((plan.days[i].date||'')<=ymd && ymd<=(plan.days[i+1].date||'')){currentIdx=i;break;}
+      }
+    }
   }
   const day=plan.days[currentIdx]||plan.days[0];
   const nextDay=plan.days[currentIdx+1];
