@@ -4160,11 +4160,32 @@ async function sendAiEdit() {
 
     savePlanToStorage();
 
-    thinkingMsg.textContent = '✅ Trip updated! Reloading...';
+    thinkingMsg.textContent = '✅ Saving changes...';
     thinkingMsg.classList.remove('thinking');
 
-    // Reload page to guarantee all tabs re-render from updated localStorage
-    setTimeout(() => { location.reload(); }, 800);
+    // Re-save to Gist so the shared URL reflects changes
+    try {
+      const saveRes = await fetch('https://tripai-backend.vercel.app/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: rp })
+      });
+      if (saveRes.ok) {
+        const saveData = await saveRes.json();
+        if (saveData.id) {
+          // Update URL to new Gist ID so reloads use the updated plan
+          const newUrl = location.pathname + '?id=' + saveData.id;
+          history.replaceState(null, '', newUrl);
+          thinkingMsg.textContent = '✅ Trip updated & saved!';
+        }
+      }
+    } catch(e) {
+      // Save failed, still reload from localStorage
+      thinkingMsg.textContent = '✅ Trip updated!';
+    }
+
+    // Reload page to show changes
+    setTimeout(() => { location.reload(); }, 600);
 
   } catch (err) {
     thinkingMsg.textContent = '❌ ' + (err.message || 'Something went wrong');

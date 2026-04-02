@@ -1,6 +1,6 @@
 // Service Worker — stale-while-revalidate for HTML, cache-first for static assets
-const CACHE_VERSION = 'tripva-v6';
-const STATIC_CACHE = 'tripva-static-v6';
+const CACHE_VERSION = 'tripva-v7';
+const STATIC_CACHE = 'tripva-static-v7';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
