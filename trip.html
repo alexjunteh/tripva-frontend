@@ -4135,12 +4135,26 @@ async function sendAiEdit() {
       plan.rawPlan = patched;
     }
 
+    // Merge rawPlan properties to top-level plan (app reads plan.days, plan.trip, etc.)
+    const rp = plan.rawPlan || plan;
+    if (rp.days) plan.days = rp.days;
+    if (rp.trip) plan.trip = rp.trip;
+    if (rp.hotels) plan.hotels = rp.hotels;
+    if (rp.budget) plan.budget = rp.budget;
+    if (rp.urgent) plan.urgent = rp.urgent;
+    if (rp.tickets) plan.tickets = rp.tickets;
+    if (rp.mapStops) plan.mapStops = rp.mapStops;
+    if (rp.mapRoute) plan.mapRoute = rp.mapRoute;
+
     savePlanToStorage();
 
-    thinkingMsg.textContent = '✅ Trip updated!';
+    thinkingMsg.textContent = '✅ Trip updated! Refreshing...';
     thinkingMsg.classList.remove('thinking');
 
-    populateDashboard(plan.rawPlan || plan);
+    // Re-render entire dashboard with updated data
+    populateDashboard(rp);
+    // Also re-render Live tab
+    try { renderLiveOps(); } catch(e) {}
 
   } catch (err) {
     thinkingMsg.textContent = '❌ ' + (err.message || 'Something went wrong');
