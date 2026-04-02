@@ -4148,13 +4148,11 @@ async function sendAiEdit() {
 
     savePlanToStorage();
 
-    thinkingMsg.textContent = '✅ Trip updated! Refreshing...';
+    thinkingMsg.textContent = '✅ Trip updated! Reloading...';
     thinkingMsg.classList.remove('thinking');
 
-    // Re-render entire dashboard with updated data
-    populateDashboard(rp);
-    // Also re-render Live tab
-    try { renderLiveOps(); } catch(e) {}
+    // Reload page to guarantee all tabs re-render from updated localStorage
+    setTimeout(() => { location.reload(); }, 800);
 
   } catch (err) {
     thinkingMsg.textContent = '❌ ' + (err.message || 'Something went wrong');
