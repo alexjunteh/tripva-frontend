@@ -4149,6 +4149,19 @@ async function sendAiEdit() {
 
     // Merge rawPlan properties to top-level plan (app reads plan.days, plan.trip, etc.)
     const rp = plan.rawPlan || plan;
+
+    // If trip dates changed, recalculate day.date fields from new startDate
+    if (rp.trip && rp.trip.startDate && rp.days) {
+      const startMs = new Date(rp.trip.startDate).getTime();
+      rp.days = rp.days.map((day, i) => {
+        if (!day.date || day.date === '') {
+          const dayMs = startMs + i * 86400000;
+          day.date = new Date(dayMs).toISOString().slice(0, 10);
+        }
+        return day;
+      });
+    }
+
     if (rp.days) plan.days = rp.days;
     if (rp.trip) plan.trip = rp.trip;
     if (rp.hotels) plan.hotels = rp.hotels;
