@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<title>My Trips — Tripva</title>
+<style>
+:root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:#7c6af7;--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-size:20px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px}
+.user-pill{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.user-email{color:rgba(255,255,255,.7);font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.signout-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;padding:4px 10px;border-radius:8px;transition:all .15s}
+.signout-btn:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+.wrap{max-width:560px;margin:0 auto;padding:32px 20px 80px}
+.page-title{font-size:clamp(26px,5vw,36px);font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:32px}
+.new-trip-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;text-decoration:none;margin-bottom:32px;transition:opacity .15s}
+.new-trip-btn:hover{opacity:.88}
+.trips-grid{display:flex;flex-direction:column;gap:14px}
+.trip-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:border-color .15s,background .15s;text-decoration:none;color:inherit}
+.trip-card:hover{border-color:rgba(149,184,255,.3);background:#15151f}
+.trip-card-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(149,184,255,.15),rgba(124,106,247,.15));border:1px solid rgba(149,184,255,.15);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.trip-card-body{flex:1;min-width:0}
+.trip-card-dest{font-size:16px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trip-card-dates{font-size:12px;color:var(--muted);margin-top:3px}
+.trip-card-arrow{font-size:18px;color:var(--muted);flex-shrink:0}
+.trip-del{background:none;border:none;color:rgba(255,80,80,.4);font-size:16px;cursor:pointer;padding:8px;border-radius:8px;transition:color .15s;flex-shrink:0}
+.trip-del:hover{color:rgba(255,80,80,.8)}
+.loading-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-icon{font-size:56px;margin-bottom:16px}
+.empty-title{font-size:20px;font-weight:800;margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.auth-gate{text-align:center;padding:60px 20px}
+.auth-gate-icon{font-size:56px;margin-bottom:16px}
+.auth-gate h2{font-size:22px;font-weight:900;margin-bottom:8px}
+.auth-gate p{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.auth-email-input{width:100%;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:inherit;transition:border-color .2s;margin-bottom:12px}
+.auth-email-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(149,184,255,.1)}
+.auth-submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;color:#fff;cursor:pointer;transition:opacity .15s}
+.auth-submit-btn:hover{opacity:.88}
+.auth-submit-btn:disabled{opacity:.4;cursor:not-allowed}
+.auth-sent{text-align:center;padding:20px 0}
+.auth-sent-icon{font-size:48px;margin-bottom:12px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:14px;padding:12px 22px;font-size:14px;font-weight:600;z-index:9999;transition:transform .3s ease;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-back" href="index.html">← Tripva</a>
+  <a class="nav-logo" href="index.html">Tripva</a>
+  <div id="userPillArea"></div>
+</nav>
+
+<div class="wrap">
+  <div id="mainContent">
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading…</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BACKEND = 'https://tripai-backend.vercel.app';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjkzNTcsImV4cCI6MjA5MDgwNTM1N30.SONh5djSuiUPAkwFuTPrYAxwiavP6lpvWQimljXl5hU';
+
+function getToken() { try { return JSON.parse(localStorage.getItem('tripva_session')||'null')?.access_token || null; } catch(e){return null;} }
+function getUser() { try { return JSON.parse(localStorage.getItem('tripva_user')||'null'); } catch(e){return null;} }
+function setSession(token, refreshToken, user) {
+  localStorage.setItem('tripva_session', JSON.stringify({access_token:token,refresh_token:refreshToken}));
+  localStorage.setItem('tripva_user', JSON.stringify(user));
+}
+function clearSession() { localStorage.removeItem('tripva_session'); localStorage.removeItem('tripva_user'); }
+
+function showToast(msg, ms=3000) {
+  const t = document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), ms);
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  try { return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); } catch(e){return d;}
+}
+
+function getDestEmoji(dest='') {
+  const d = dest.toLowerCase();
+  if (d.includes('japan')||d.includes('tokyo')||d.includes('osaka')) return '🇯🇵';
+  if (d.includes('italy')||d.includes('rome')||d.includes('milan')) return '🇮🇹';
+  if (d.includes('france')||d.includes('paris')) return '🇫🇷';
+  if (d.includes('bali')||d.includes('indonesia')) return '🇮🇩';
+  if (d.includes('thailand')||d.includes('bangkok')) return '🇹🇭';
+  if (d.includes('uk')||d.includes('london')) return '🇬🇧';
+  if (d.includes('usa')||d.includes('new york')||d.includes('los angeles')) return '🇺🇸';
+  if (d.includes('australia')||d.includes('sydney')) return '🇦🇺';
+  if (d.includes('spain')||d.includes('barcelona')) return '🇪🇸';
+  return '✈️';
+}
+
+async function deleteTrip(id, e) {
+  e.preventDefault(); e.stopPropagation();
+  if (!confirm('Delete this trip?')) return;
+  const token = getToken();
+  try {
+    await fetch(BACKEND+'/api/user/trips/'+id, {method:'DELETE',headers:{Authorization:'Bearer '+token}});
+    loadTrips();
+    showToast('Trip deleted');
+  } catch(e) { showToast('Failed to delete'); }
+}
+
+function renderTrips(trips) {
+  const main = document.getElementById('mainContent');
+  if (!trips.length) {
+    main.innerHTML = `
+      <h1 class="page-title">My Trips</h1>
+      <a class="new-trip-btn" href="plan.html">✨ Plan a new trip</a>
+      <div class="empty-state">
+        <div class="empty-icon">🗺️</div>
+        <div class="empty-title">No saved trips yet</div>
+        <p class="empty-sub">Plan your first trip and save it to your account to access it from any device.</p>
+        <a class="new-trip-btn" href="plan.html" style="display:inline-flex;margin:0 auto">Start planning →</a>
+      </div>`;
+    return;
+  }
+  const cards = trips.map(t => {
+    const url = t.share_url || ('trip.html?id='+(t.id||''));
+    return `<a class="trip-card" href="${url}">
+      <div class="trip-card-icon">${getDestEmoji(t.destination||t.title||'')}</div>
+      <div class="trip-card-body">
+        <div class="trip-card-dest">${t.title||t.destination||'Trip'}</div>
+        <div class="trip-card-dates">${formatDate(t.start_date)}${t.end_date?' – '+formatDate(t.end_date):''}</div>
+      </div>
+      <button class="trip-del" onclick="deleteTrip('${t.id}',event)" title="Delete">🗑</button>
+      <span class="trip-card-arrow">›</span>
+    </a>`;
+  }).join('');
+  main.innerHTML = `
+    <h1 class="page-title">My Trips</h1>
+    <p class="page-sub">${trips.length} saved trip${trips.length!==1?'s':''}</p>
+    <a class="new-trip-btn" href="plan.html">✨ Plan a new trip</a>
+    <div class="trips-grid">${cards}</div>`;
+}
+
+async function loadTrips() {
+  const token = getToken();
+  if (!token) { renderAuthGate(); return; }
+  document.getElementById('mainContent').innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Loading your trips…</p></div>';
+  try {
+    const r = await fetch(BACKEND+'/api/user/trips',{headers:{Authorization:'Bearer '+token}});
+    if (r.status===401) { clearSession(); renderAuthGate(); return; }
+    const trips = await r.json();
+    renderTrips(Array.isArray(trips)?trips:[]);
+    renderUserPill();
+  } catch(e) {
+    document.getElementById('mainContent').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Couldn\'t load trips</div><p class="empty-sub">Check your connection and try again.</p></div>';
+  }
+}
+
+function renderUserPill() {
+  const user = getUser();
+  if (!user) return;
+  document.getElementById('userPillArea').innerHTML = `<div class="user-pill"><span class="user-email">${user.email}</span><button class="signout-btn" onclick="signOut()">Sign out</button></div>`;
+}
+
+function signOut() {
+  clearSession();
+  location.reload();
+}
+
+function renderAuthGate() {
+  document.getElementById('mainContent').innerHTML = `
+    <div class="auth-gate">
+      <div class="auth-gate-icon">🔐</div>
+      <h2>Sign in to see your trips</h2>
+      <p>Enter your email and we'll send you a magic link — no password needed.</p>
+      <div id="authGateForm">
+        <input class="auth-email-input" type="email" id="gateEmail" placeholder="you@example.com" autocomplete="email">
+        <button class="auth-submit-btn" id="gateBtn" onclick="sendGateMagicLink()">Send magic link →</button>
+      </div>
+      <div id="authGateSent" style="display:none">
+        <div class="auth-sent">
+          <div class="auth-sent-icon">📬</div>
+          <h3 style="margin-bottom:8px">Check your email</h3>
+          <p style="color:rgba(255,255,255,.5);font-size:14px;line-height:1.6">We sent a magic link to <strong id="gateSentEmail"></strong>.<br>Click it to sign in and see your trips.</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function sendGateMagicLink() {
+  const email = document.getElementById('gateEmail')?.value?.trim();
+  if (!email||!email.includes('@')) { document.getElementById('gateEmail')?.focus(); return; }
+  const btn = document.getElementById('gateBtn');
+  btn.disabled=true; btn.textContent='Sending…';
+  try {
+    await fetch(BACKEND+'/api/user/magic-link',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,redirectTo:location.href})
+    });
+    document.getElementById('authGateForm').style.display='none';
+    document.getElementById('authGateSent').style.display='block';
+    document.getElementById('gateSentEmail').textContent=email;
+  } catch(e) {
+    btn.disabled=false; btn.textContent='Send magic link →';
+    showToast('Failed to send. Try again.');
+  }
+}
+
+// Handle magic link callback
+(function() {
+  const hash = location.hash;
+  if (hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.replace('#',''));
+    const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
+    if (access_token) {
+      fetch(BACKEND+'/api/user/me',{headers:{Authorization:'Bearer '+access_token}})
+        .then(r=>r.json())
+        .then(user=>{
+          if(user.id){
+            setSession(access_token, refresh_token, user);
+            history.replaceState(null,'',location.pathname);
+            loadTrips();
+          }
+        }).catch(()=>{});
+      return;
+    }
+  }
+  loadTrips();
+})();
+</script>
+</body>
+</html>
