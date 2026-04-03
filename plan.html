@@ -66,7 +66,9 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 <nav>
   <a class="nav-back" href="index.html">← Tripva</a>
   <a class="nav-logo" href="index.html">Tripva</a>
-  <span style="width:60px"></span>
+  <div id="authNavArea">
+    <a href="mytrips.html" style="font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:600;display:none" id="myTripsNavLink">My Trips</a>
+  </div>
 </nav>
 
 <div class="wrap">
@@ -310,9 +312,31 @@ async function submitTrip() {
 }
 function openGeneratedTrip() {
   const su = window._generatedShareUrl;
-  if (su) { try { const id = new URL(su).searchParams.get('id'); if (id) { location.href='trip.html?id='+id; return; } } catch(e) {} }
-  location.href = 'trip.html';
+  // Show save modal after generation (with short delay for UX)
+  setTimeout(() => checkAuthAndSave(su), 300);
 }
 </script>
+
+<!-- AUTH MODAL -->
+<div class="auth-modal-bg" id="authModalBg">
+  <div class="auth-modal">
+    <div id="authModalContent">
+      <h3>✈️ Save your trip</h3>
+      <p>Enter your email to save this trip to your account and access it from any device.</p>
+      <input class="auth-email-input" type="email" id="authEmailInput" placeholder="you@example.com" autocomplete="email">
+      <button class="auth-submit-btn" id="authSubmitBtn" onclick="sendMagicLink()">Send magic link →</button>
+      <span class="auth-skip" onclick="skipAuth()">Continue without saving</span>
+    </div>
+    <div id="authSentContent" style="display:none">
+      <div class="auth-sent">
+        <div class="auth-sent-icon">📬</div>
+        <h3 style="margin-bottom:8px">Check your email</h3>
+        <p>We sent a magic link to <strong id="authSentEmail"></strong>.<br>Click it to save your trip to your account.</p>
+        <span class="auth-skip" style="margin-top:16px;display:block" onclick="skipAuth()">I'll do it later</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
