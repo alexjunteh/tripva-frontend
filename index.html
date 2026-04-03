@@ -835,6 +835,50 @@ footer{
   nav{padding:0 24px}
 }
 
+
+/* ── AUTH MODAL ───────────────────────────────────────────────────── */
+.auth-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+.auth-modal-overlay.open{display:flex}
+.auth-modal{
+  background:var(--white);border-radius:16px;
+  padding:36px 32px;max-width:400px;width:calc(100% - 40px);
+  box-shadow:0 24px 64px rgba(0,0,0,.18);
+  font-family:var(--sans);
+}
+.auth-modal-title{
+  font-family:var(--serif);font-size:22px;font-weight:600;
+  color:var(--text);margin-bottom:6px;
+}
+.auth-modal-sub{
+  font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5;
+}
+.auth-modal-input{
+  width:100%;padding:12px 14px;border:1.5px solid var(--surface);
+  border-radius:8px;font-size:15px;font-family:var(--sans);
+  background:var(--bg);color:var(--text);outline:none;
+  transition:border-color 0.2s;margin-bottom:12px;
+}
+.auth-modal-input:focus{border-color:var(--gold)}
+.auth-modal-btn{
+  width:100%;padding:13px;background:var(--gold);color:#fff;
+  border:none;border-radius:8px;font-size:14px;font-weight:500;
+  font-family:var(--sans);letter-spacing:0.5px;text-transform:uppercase;
+  cursor:pointer;transition:opacity 0.2s;
+}
+.auth-modal-btn:hover{opacity:0.88}
+.auth-modal-btn:disabled{opacity:0.5;cursor:not-allowed}
+.auth-modal-close{
+  float:right;background:none;border:none;
+  font-size:20px;cursor:pointer;color:var(--muted);margin-top:-4px;
+}
+.auth-modal-note{font-size:12px;color:var(--muted);margin-top:12px;text-align:center}
+.auth-modal-success{text-align:center;padding:8px 0}
+.auth-modal-success .success-icon{font-size:40px;margin-bottom:12px}
+.auth-modal-success p{font-size:15px;color:var(--muted);line-height:1.6}
 </style>
 </head>
 <body>
@@ -846,6 +890,7 @@ footer{
     <a href="#about">About</a>
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
+    <a href="mytrips.html" id="navMyTrips" style="display:none">My Trips</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
@@ -1065,6 +1110,26 @@ footer{
   </div>
 </footer>
 
+
+<!-- AUTH MODAL -->
+<div class="auth-modal-overlay" id="authModal">
+  <div class="auth-modal">
+    <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Close">&#215;</button>
+    <div id="authModalForm">
+      <div class="auth-modal-title">✈ Save your trip</div>
+      <div class="auth-modal-sub">Enter your email to save this trip and access it anytime — free, no password needed.</div>
+      <input type="email" class="auth-modal-input" id="authEmail" placeholder="your@email.com" autocomplete="email">
+      <button class="auth-modal-btn" id="authSendBtn" onclick="sendMagicLink()">Send magic link</button>
+      <div class="auth-modal-note">We'll email you a one-click login link. No spam, ever.</div>
+    </div>
+    <div id="authModalSuccess" class="auth-modal-success" style="display:none">
+      <div class="success-icon">📬</div>
+      <div class="auth-modal-title" style="text-align:center">Check your email</div>
+      <p>We sent a magic link to <strong id="authEmailSent"></strong>.<br>Click it to log in and your trip will save automatically.</p>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div class="pwa-banner" id="pwaBanner">
   <div style="flex:1">
@@ -1181,6 +1246,73 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').ca
     });
   }
 })();
+
+// ── AUTH ──────────────────────────────────────────────────────────
+var BACKEND = 'https://tripai-backend.vercel.app';
+var SUPABASE_URL = 'https://alnzqqlwqwxknxaxtawh.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjkzNTcsImV4cCI6MjA5MDgwNTM1N30.SONh5djSuiUPAkwFuTPrYAxwiavP6lpvWQimljXl5hU';
+
+function getSession(){
+  try{ return JSON.parse(localStorage.getItem('tripva_session') || 'null'); }catch(e){ return null; }
+}
+function setSession(s){ localStorage.setItem('tripva_session',JSON.stringify(s)); }
+
+function checkAuthNav(){
+  var s = getSession();
+  var el = document.getElementById('navMyTrips');
+  if(el) el.style.display = s ? 'inline' : 'none';
+}
+
+function openAuthModal(){
+  document.getElementById('authModal').classList.add('open');
+  setTimeout(function(){ var el=document.getElementById('authEmail'); if(el) el.focus(); }, 200);
+}
+function closeAuthModal(){
+  document.getElementById('authModal').classList.remove('open');
+}
+
+function sendMagicLink(){
+  var email = (document.getElementById('authEmail').value||'').trim();
+  if(!email || !email.includes('@')){ alert('Please enter a valid email.'); return; }
+  var btn = document.getElementById('authSendBtn');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+  fetch(BACKEND+'/api/user/magic-link',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.error){ btn.textContent='Send magic link'; btn.disabled=false; alert(d.error); return; }
+    document.getElementById('authEmailSent').textContent = email;
+    document.getElementById('authModalForm').style.display = 'none';
+    document.getElementById('authModalSuccess').style.display = 'block';
+    // store pending email
+    localStorage.setItem('tripva_pending_email', email);
+  })
+  .catch(function(){
+    btn.textContent='Send magic link'; btn.disabled=false;
+    alert('Could not send link. Try again.');
+  });
+}
+
+// Check for auth callback hash (#access_token=...)
+(function(){
+  checkAuthNav();
+  var hash = window.location.hash;
+  if(hash && hash.includes('access_token=')){
+    var params = new URLSearchParams(hash.slice(1));
+    var session = {
+      access_token: params.get('access_token'),
+      refresh_token: params.get('refresh_token'),
+      expires_at: Date.now() + parseInt(params.get('expires_in')||'3600')*1000
+    };
+    setSession(session);
+    checkAuthNav();
+    history.replaceState(null,'',location.pathname+location.search);
+  }
+})();
+
 </script>
 </body>
 </html>
