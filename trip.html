@@ -1143,6 +1143,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 }
 .tl-item.just-edited { animation: editFlash 1.5s ease-out; }
 
+
+/* ── AUTH SAVE BTN ─────────────────────────────────────────── */
+.save-btn.auth-save{background:linear-gradient(135deg,#b8963e,#d4a84b);color:#fff}
+.save-btn.auth-save:hover{opacity:0.9}
 </style>
 <script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -1278,6 +1282,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div id="saveBar" class="save-bar" style="display:none">
       <button class="save-btn primary" onclick="shareTripLink()">🔗 Share</button>
       <button class="save-btn sec" onclick="exportHtml()">💾 Export</button>
+      <button class="save-btn auth-save" id="saveToAccountBtn" onclick="saveToAccount()">💾 Save</button>
     </div>
     <div style="height:8px"></div>
   </div>
@@ -4294,6 +4299,106 @@ document.addEventListener('DOMContentLoaded', function() {
   if (btn) btn.textContent = t === 'dark' ? '☀' : '☽';
   if (lbl) lbl.textContent = t === 'dark' ? '☀ Light mode' : '☽ Dark mode';
 });
+
+// ── TRIP AUTH / SAVE ────────────────────────────────────────────
+var TRIPVA_BACKEND = 'https://tripai-backend.vercel.app';
+
+function getTripvaSession(){
+  try{ return JSON.parse(localStorage.getItem('tripva_session')||'null'); }catch(e){ return null; }
+}
+
+function saveToAccount(){
+  var session = getTripvaSession();
+  if(!session || !session.access_token){
+    // Show auth modal
+    var modal = document.getElementById('tripAuthModal');
+    modal.style.display = 'flex';
+    setTimeout(function(){ var e=document.getElementById('tripAuthEmail'); if(e) e.focus(); }, 200);
+    return;
+  }
+  // Logged in — save trip
+  doSaveTrip(session.access_token);
+}
+
+function doSaveTrip(token){
+  var btn = document.getElementById('saveToAccountBtn');
+  if(btn){ btn.textContent = '⏳ Saving…'; btn.disabled = true; }
+
+  var tripId = new URLSearchParams(location.search).get('id') || null;
+  var dest = document.getElementById('heroDestTitle')?.textContent || 'Trip';
+  var gist = tripId;
+
+  fetch(TRIPVA_BACKEND+'/api/user/trips/save',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({
+      destination: dest,
+      title: dest,
+      gist_id: gist,
+      plan_data: null
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.error){
+      if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
+      // Token expired? clear and re-auth
+      if(d.error.includes('Invalid') || d.error.includes('expired')){
+        localStorage.removeItem('tripva_session');
+        saveToAccount();
+      }
+      return;
+    }
+    if(btn){ btn.textContent='✅ Saved'; btn.disabled=false; }
+    // Show toast
+    if(typeof showToast === 'function') showToast('Trip saved to your account ✅');
+  })
+  .catch(function(){
+    if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
+  });
+}
+
+function sendTripMagicLink(){
+  var email = (document.getElementById('tripAuthEmail').value||'').trim();
+  if(!email||!email.includes('@')){ alert('Enter a valid email.'); return; }
+  var btn = document.getElementById('tripAuthSendBtn');
+  btn.textContent='Sending…'; btn.disabled=true;
+  fetch(TRIPVA_BACKEND+'/api/user/magic-link',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.error){ btn.textContent='Send magic link'; btn.disabled=false; alert(d.error); return; }
+    document.getElementById('tripAuthEmailSent').textContent = email;
+    document.getElementById('tripAuthForm').style.display = 'none';
+    document.getElementById('tripAuthSuccess').style.display = 'block';
+    localStorage.setItem('tripva_pending_email', email);
+  })
+  .catch(function(){
+    btn.textContent='Send magic link'; btn.disabled=false;
+    alert('Could not send link. Try again.');
+  });
+}
+
+// Check for auth callback
+(function(){
+  var hash = window.location.hash;
+  if(hash && hash.includes('access_token=')){
+    var params = new URLSearchParams(hash.slice(1));
+    var session = {
+      access_token: params.get('access_token'),
+      refresh_token: params.get('refresh_token'),
+      expires_at: Date.now() + parseInt(params.get('expires_in')||'3600')*1000
+    };
+    localStorage.setItem('tripva_session', JSON.stringify(session));
+    history.replaceState(null,'',location.pathname+location.search);
+    // Auto-save if there's a pending trip
+    doSaveTrip(session.access_token);
+  }
+})();
+
 </script>
 <!-- ── FLOATING ACTION BUTTON ── -->
 <!-- ── PACK MODAL ── -->
@@ -4393,5 +4498,25 @@ document.addEventListener('DOMContentLoaded', function() {
 <div style="text-align:center;padding:20px 0 32px;font-size:12px;color:rgba(255,255,255,.25)">
   ✨ Planned by <a href="https://futuriztaos.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
 </div>
+
+<!-- AUTH SAVE MODAL -->
+<div style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center" id="tripAuthModal" class="auth-modal-trip-overlay">
+  <div style="background:#1a1624;border-radius:16px;padding:32px;max-width:380px;width:calc(100% - 32px);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 64px rgba(0,0,0,.4)">
+    <button onclick="document.getElementById('tripAuthModal').style.display='none'" style="float:right;background:none;border:none;color:#a89e96;font-size:20px;cursor:pointer;margin-top:-4px">&#215;</button>
+    <div id="tripAuthForm">
+      <div style="font-family:'Cormorant Garant',Georgia,serif;font-size:22px;font-weight:600;color:#f5f0e8;margin-bottom:6px">Save this trip</div>
+      <div style="font-size:13px;color:#a89e96;margin-bottom:20px;line-height:1.5">Enter your email to save this trip to your account — free, no password needed.</div>
+      <input type="email" id="tripAuthEmail" placeholder="your@email.com" autocomplete="email" style="width:100%;padding:12px 14px;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-size:15px;background:#0d0d16;color:#f5f0e8;outline:none;margin-bottom:12px;font-family:'DM Sans',sans-serif;box-sizing:border-box">
+      <button id="tripAuthSendBtn" onclick="sendTripMagicLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,#b8963e,#d4a84b);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer">Send magic link</button>
+      <div style="font-size:11px;color:#a89e96;margin-top:10px;text-align:center">One-click login via email. No spam.</div>
+    </div>
+    <div id="tripAuthSuccess" style="display:none;text-align:center;padding:8px 0">
+      <div style="font-size:40px;margin-bottom:12px">📬</div>
+      <div style="font-family:'Cormorant Garant',Georgia,serif;font-size:20px;font-weight:600;color:#f5f0e8;margin-bottom:8px">Check your email</div>
+      <div style="font-size:13px;color:#a89e96;line-height:1.6">Magic link sent to <strong id="tripAuthEmailSent" style="color:#f5f0e8"></strong>.<br>Click it to log in and view your saved trips.</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
