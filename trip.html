@@ -1148,7 +1148,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .save-btn.auth-save{background:linear-gradient(135deg,#b8963e,#d4a84b);color:#fff}
 .save-btn.auth-save:hover{opacity:0.9}
 </style>
-<script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
+<script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -3749,7 +3749,7 @@ function exportHtml() {
       ${(d.timeline||[]).map(tl=>`<div class="tl-row"><div class="tl-t">${esc2(tl.time||'')}</div><div class="tl-c"><div class="tl-n">${esc2(tl.title||'')}</div>${tl.detail?`<div class="tl-d">${esc2(tl.detail)}</div>`:''}</div></div>`).join('')}
     </div>`).join('');
   function esc2(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc2(t.name||'My Trip')}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;max-width:700px;margin:0 auto}.hero{background:linear-gradient(160deg,#1a1040,#0d0d1a);padding:48px 24px 36px;text-align:center}.hero-e{font-size:56px;margin-bottom:12px}.hero-t{font-size:26px;font-weight:800;margin-bottom:6px}.hero-d{font-size:13px;color:var(--muted)}.body{padding:20px}.day-section{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}h2{font-size:17px;font-weight:800;margin-bottom:4px;color:#a78bfa}.dsub{font-size:12px;color:var(--muted);margin-bottom:14px}.tl-row{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}.tl-row:last-child{border:none}.tl-t{font-size:11px;color:#a78bfa;font-weight:800;width:50px;flex-shrink:0;padding-top:2px}.tl-c{flex:1}.tl-n{font-size:13px;font-weight:700}.tl-d{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}.footer{text-align:center;padding:24px;font-size:12px;color:var(--muted)}</style></head><body><div class="hero"><div class="hero-e">${esc2(t.emoji||'✈️')}</div><div class="hero-t">${esc2(t.name||'My Trip')}</div><div class="hero-d">${esc2([t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · '))}</div></div><div class="body">${daysHtml||'<div class="day-section">No plan generated yet.</div>'}</div><div class="footer">Made with TripAI · futuriztaos.github.io/trip-planner</div></body></html>`;
+  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc2(t.name||'My Trip')}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;max-width:700px;margin:0 auto}.hero{background:linear-gradient(160deg,#1a1040,#0d0d1a);padding:48px 24px 36px;text-align:center}.hero-e{font-size:56px;margin-bottom:12px}.hero-t{font-size:26px;font-weight:800;margin-bottom:6px}.hero-d{font-size:13px;color:var(--muted)}.body{padding:20px}.day-section{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin-bottom:14px}h2{font-size:17px;font-weight:800;margin-bottom:4px;color:#a78bfa}.dsub{font-size:12px;color:var(--muted);margin-bottom:14px}.tl-row{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}.tl-row:last-child{border:none}.tl-t{font-size:11px;color:#a78bfa;font-weight:800;width:50px;flex-shrink:0;padding-top:2px}.tl-c{flex:1}.tl-n{font-size:13px;font-weight:700}.tl-d{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}.footer{text-align:center;padding:24px;font-size:12px;color:var(--muted)}</style></head><body><div class="hero"><div class="hero-e">${esc2(t.emoji||'✈️')}</div><div class="hero-t">${esc2(t.name||'My Trip')}</div><div class="hero-d">${esc2([t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · '))}</div></div><div class="body">${daysHtml||'<div class="day-section">No plan generated yet.</div>'}</div><div class="footer">Made with Tripva · tripva.app</div></body></html>`;
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([doc],{type:'text/html'})); a.download=(t.name||'my-trip').replace(/[^a-z0-9]/gi,'-').toLowerCase()+'.html'; a.click(); showToast('💾 Exported!');
 }
 
@@ -3925,10 +3925,10 @@ async function submitPlan() {
   const home = document.getElementById('pln-home').value.trim() || 'Malaysia';
   const interests = [...document.querySelectorAll('.planner-interest.sel')].map(el => el.dataset.v);
 
-  if (!dest) { alert('Where are you going?'); return; }
-  if (!start || !end) { alert('Pick your travel dates'); return; }
-  if (!budget) { alert('What\'s your budget?'); return; }
-  if (interests.length === 0) { alert('Pick at least one interest'); return; }
+  if (!dest) { showToast('⚠️ Where are you going?', 3000); return; }
+  if (!start || !end) { showToast('⚠️ Pick your travel dates', 3000); return; }
+  if (!budget) { showToast("⚠️ What's your budget?", 3000); return; }
+  if (interests.length === 0) { showToast('⚠️ Pick at least one interest', 3000); return; }
 
   // Show progress
   document.getElementById('plannerForm').classList.add('hide');
@@ -4002,7 +4002,7 @@ async function submitPlan() {
       });
       if (saveRes.ok) {
         const { id } = await saveRes.json();
-        window._lastShareUrl = `https://futuriztaos.github.io/trip-planner/trip.html?id=${id}`;
+        window._lastShareUrl = (location.origin + location.pathname.replace(/[^/]*$/, '') + 'trip.html?id=') + id;
       }
     } catch(e) { /* non-fatal */ }
 
@@ -4027,7 +4027,7 @@ async function submitPlan() {
     document.getElementById('plannerSubmitBtn').disabled = false;
     document.getElementById('plannerSubmitBtn').textContent = 'Generate Trip ✨';
     const _msg = err.name === 'AbortError' ? 'Trip generation timed out (2.5 min). Try a simpler trip or tap Generate again.' : err.message;
-    alert('⚠️ ' + _msg);
+    showToast('⚠️ ' + _msg, 4000);
   }
 }
 
@@ -4360,7 +4360,7 @@ function doSaveTrip(token){
 
 function sendTripMagicLink(){
   var email = (document.getElementById('tripAuthEmail').value||'').trim();
-  if(!email||!email.includes('@')){ alert('Enter a valid email.'); return; }
+  if(!email||!email.includes('@')){ showToast('⚠️ Enter a valid email', 3000); return; }
   var btn = document.getElementById('tripAuthSendBtn');
   btn.textContent='Sending…'; btn.disabled=true;
   fetch(TRIPVA_BACKEND+'/api/user/magic-link',{
@@ -4370,7 +4370,7 @@ function sendTripMagicLink(){
   })
   .then(function(r){ return r.json(); })
   .then(function(d){
-    if(d.error){ btn.textContent='Send magic link'; btn.disabled=false; alert(d.error); return; }
+    if(d.error){ btn.textContent='Send magic link'; btn.disabled=false; showToast('❌ ' + d.error, 3000); return; }
     document.getElementById('tripAuthEmailSent').textContent = email;
     document.getElementById('tripAuthForm').style.display = 'none';
     document.getElementById('tripAuthSuccess').style.display = 'block';
@@ -4378,7 +4378,7 @@ function sendTripMagicLink(){
   })
   .catch(function(){
     btn.textContent='Send magic link'; btn.disabled=false;
-    alert('Could not send link. Try again.');
+    showToast('❌ Could not send link. Try again.', 3000);
   });
 }
 
