@@ -2,91 +2,96 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080810">
 <title>Tripva · Command Center</title>
 <style>
 :root{--bg:#080810;--surface:#0f0f1a;--surface2:#161625;--border:rgba(255,255,255,.08);--text:#f0f0f8;--muted:rgba(255,255,255,.4);--accent:#7c6af7;--accent2:#95b8ff;--green:#4ade80;--yellow:#fbbf24;--red:#f87171;--orange:#fb923c}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
-#authWall{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:9999;padding:32px}
-.auth-logo{font-size:32px;font-weight:900;letter-spacing:-1px}.auth-logo span{color:var(--accent2)}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;min-height:100vh}
+#authWall{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999;padding:32px}
+.auth-logo{font-size:28px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .auth-sub{font-size:13px;color:var(--muted)}
-.auth-input{background:var(--surface2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-size:16px;padding:14px 18px;width:100%;max-width:340px;outline:none;text-align:center;letter-spacing:4px}
+.auth-input{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;color:var(--text);font-size:16px;padding:14px 18px;width:100%;max-width:320px;outline:none;text-align:center;letter-spacing:4px;transition:border-color .2s}
 .auth-input:focus{border-color:var(--accent)}
-.auth-btn{background:linear-gradient(135deg,var(--accent),#5b4fcf);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:15px;font-weight:800;cursor:pointer;width:100%;max-width:340px}
+.auth-btn{background:linear-gradient(135deg,var(--accent),#5b4fcf);color:#fff;border:none;border-radius:14px;padding:14px 32px;font-size:15px;font-weight:800;cursor:pointer;width:100%;max-width:320px}
 .auth-err{color:var(--red);font-size:13px;display:none}
 #app{display:none}
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);display:flex;align-items:center;gap:12px}
-.header-logo{font-size:18px;font-weight:900;letter-spacing:-.5px}.header-logo span{color:var(--accent2)}
-.header-badge{font-size:11px;font-weight:700;background:linear-gradient(135deg,var(--accent),#5b4fcf);color:#fff;padding:3px 10px;border-radius:20px}
+.header{background:rgba(8,8,16,.95);border-bottom:1px solid var(--border);padding:14px 20px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);display:flex;align-items:center;gap:12px}
+.header-logo{font-size:18px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-badge{font-size:10px;font-weight:800;letter-spacing:.5px;background:linear-gradient(135deg,var(--accent),#5b4fcf);color:#fff;padding:3px 10px;border-radius:20px;text-transform:uppercase}
 .header-right{margin-left:auto;display:flex;gap:10px;align-items:center}
 .header-time{font-size:12px;color:var(--muted);font-weight:600}
 .refresh-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
-.nav-tabs{display:flex;gap:4px;padding:12px 16px;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--border);scrollbar-width:none}
+.nav-tabs{display:flex;gap:4px;padding:10px 14px;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--border);scrollbar-width:none}
 .nav-tabs::-webkit-scrollbar{display:none}
-.nav-tab{flex-shrink:0;background:none;border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
-.nav-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.tab-panel{display:none;padding:16px}.tab-panel.active{display:block}
-.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
-@media(min-width:600px){.status-grid{grid-template-columns:repeat(4,1fr)}}
+.nav-tab{flex-shrink:0;background:none;border:1px solid transparent;color:var(--muted);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.nav-tab.active{background:var(--surface2);border-color:var(--border);color:var(--text)}
+.tab-panel{display:none;padding:16px 16px 80px}.tab-panel.active{display:block}
+.mw{max-width:700px;margin:0 auto}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+@media(min-width:540px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
 .stat-label{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.stat-val{font-size:24px;font-weight:900;letter-spacing:-1px}.stat-val.green{color:var(--green)}.stat-val.red{color:var(--red)}
+.stat-val{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.stat-val.green{color:var(--green)}.stat-val.red{color:var(--red)}.stat-val.yellow{color:var(--yellow)}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
-.section-title{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin:20px 0 10px}
-.links-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.link-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);transition:border-color .15s}
-.link-card:active{opacity:.8}.link-card:hover{border-color:var(--accent)}
-.link-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0}
-.link-info{flex:1;min-width:0}.link-title{font-size:14px;font-weight:800}
-.link-url{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.link-status{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;flex-shrink:0}
-.link-status.ok{background:rgba(74,222,128,.15);color:var(--green)}.link-status.warn{background:rgba(251,191,36,.15);color:var(--yellow)}
-.commit-list{display:flex;flex-direction:column;gap:6px}
-.commit-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.sec{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.row-body{flex:1;min-width:0}
+.row-title{font-size:13px;font-weight:700}
+.row-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:3px 8px;border-radius:7px;flex-shrink:0}
+.badge.g{background:rgba(74,222,128,.15);color:var(--green)}
+.badge.r{background:rgba(248,113,113,.15);color:var(--red)}
+.badge.y{background:rgba(251,191,36,.15);color:var(--yellow)}
+.link-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);margin-bottom:8px;transition:border-color .15s}
+.link-card:hover{border-color:rgba(149,184,255,.25)}
+.link-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.link-info{flex:1;min-width:0}
+.link-title{font-size:13px;font-weight:800}
+.link-url{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.commit-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:6px}
 .commit-sha{font-size:10px;font-family:monospace;color:var(--accent2);font-weight:700}
-.commit-msg{font-size:13px;font-weight:700;margin:3px 0;line-height:1.4}
+.commit-msg{font-size:13px;font-weight:700;margin:3px 0}
 .commit-meta{font-size:11px;color:var(--muted)}
 .commit-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-left:6px}
-.commit-tag.fix{background:rgba(248,113,113,.15);color:var(--red)}.commit-tag.feat{background:rgba(124,106,247,.15);color:var(--accent)}
-.blocked-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:14px;padding:13px 16px;margin-bottom:8px}
-.blocked-item.done{border-left-color:var(--green);opacity:.6}
-.blocked-title{font-size:13px;font-weight:800}.blocked-reason{font-size:12px;color:var(--muted);margin-top:4px}
-.doc-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.doc-tab{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
-.doc-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.doc-content{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;font-size:13px;line-height:1.7;color:rgba(255,255,255,.85);overflow-x:auto;max-height:70vh;overflow-y:auto}
-.doc-content h1{font-size:20px;font-weight:900;color:var(--accent2);margin-bottom:12px}
-.doc-content h2{font-size:15px;font-weight:800;color:var(--text);margin:18px 0 8px;border-bottom:1px solid var(--border);padding-bottom:6px}
-.doc-content h3{font-size:13px;font-weight:800;color:var(--accent2);margin:12px 0 6px}
-.doc-content p{margin-bottom:10px}.doc-content ul,.doc-content ol{padding-left:20px;margin-bottom:10px}
-.doc-content li{margin-bottom:4px}.doc-content strong{color:var(--text);font-weight:800}
-.doc-content code{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:1px 6px;font-family:monospace;font-size:12px}
-.doc-content table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
-.doc-content th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:800;color:var(--accent2);border-bottom:1px solid var(--border)}
-.doc-content td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
-.doc-content hr{border:none;border-top:1px solid var(--border);margin:16px 0}
-.audit-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
-.audit-title{font-size:13px;font-weight:700}.audit-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;flex-shrink:0}
-.badge.green{background:rgba(74,222,128,.15);color:var(--green)}.badge.red{background:rgba(248,113,113,.15);color:var(--red)}
+.commit-tag.fix{background:rgba(248,113,113,.15);color:var(--red)}
+.commit-tag.feat{background:rgba(124,106,247,.15);color:var(--accent)}
+.road-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:6px}
+.road-item.done{opacity:.5;border-left-color:var(--green)}
+.road-item.blocked{border-left-color:var(--orange)}
+.road-item.warn{border-left-color:var(--yellow)}
+.road-title{font-size:13px;font-weight:800}
+.road-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+.road-action{font-size:11px;color:var(--accent2);margin-top:4px;font-weight:600}
+.cost-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+.cost-tbl th{background:var(--surface2);padding:9px 12px;text-align:left;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.cost-tbl td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.cost-tbl tr:last-child td{border-bottom:none}
+.total-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.total-label{font-size:13px;font-weight:700;color:var(--muted)}
+.total-val{font-size:20px;font-weight:900;color:var(--green)}
+.info-box{background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:14px;padding:14px;font-size:13px;color:var(--green);line-height:1.6;margin-top:8px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(255,255,255,.1);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:14px;padding:12px 22px;font-size:13px;font-weight:700;z-index:9998;transition:transform .3s;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 <div id="authWall">
-  <div class="auth-logo">Tripva <span>HQ</span></div>
-  <div class="auth-sub">Command Center · Private Access</div>
+  <div class="auth-logo">Tripva HQ</div>
+  <div class="auth-sub">Command Center · Private</div>
   <input class="auth-input" type="password" id="authInput" placeholder="Password" autocomplete="current-password">
   <button class="auth-btn" id="authBtn">Enter →</button>
-  <div class="auth-err" id="authErr">Incorrect password</div>
+  <div class="auth-err" id="authErr">Wrong password</div>
 </div>
-
 <div id="app">
   <div class="header">
-    <div class="header-logo">Tripva <span>HQ</span></div>
+    <div class="header-logo">Tripva HQ</div>
     <div class="header-badge">Command Center</div>
     <div class="header-right">
-      <div class="header-time" id="headerTime">--:--</div>
+      <div class="header-time" id="hTime">--:--</div>
       <button class="refresh-btn" id="refreshBtn">↻</button>
     </div>
   </div>
@@ -94,286 +99,237 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <button class="nav-tab active" data-tab="overview">📊 Overview</button>
     <button class="nav-tab" data-tab="links">🔗 Links</button>
     <button class="nav-tab" data-tab="commits">📝 Commits</button>
-    <button class="nav-tab" data-tab="docs">📄 Docs</button>
     <button class="nav-tab" data-tab="roadmap">🗺️ Roadmap</button>
+    <button class="nav-tab" data-tab="costs">💰 Costs</button>
   </div>
 
   <!-- OVERVIEW -->
   <div class="tab-panel active" id="panel-overview">
-    <div class="status-grid">
-      <div class="stat-card"><div class="stat-label">Backend</div><div class="stat-val" id="statBackend">…</div><div class="stat-sub" id="statBackendSub">checking</div></div>
-      <div class="stat-card"><div class="stat-label">Trips Made</div><div class="stat-val green" id="statTrips">…</div><div class="stat-sub">total generated</div></div>
-      <div class="stat-card"><div class="stat-label">Frontend</div><div class="stat-val green">Live</div><div class="stat-sub">GitHub Pages</div></div>
-      <div class="stat-card"><div class="stat-label">Last Backend Deploy</div><div class="stat-val" id="statDeploy" style="font-size:16px">…</div><div class="stat-sub" id="statDeploySub">fetching</div></div>
+    <div class="mw">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">Backend API</div><div class="stat-val" id="sBE">…</div><div class="stat-sub" id="sBEsub">checking</div></div>
+        <div class="stat-card"><div class="stat-label">Trips Made</div><div class="stat-val green" id="sTrips">…</div><div class="stat-sub">all-time</div></div>
+        <div class="stat-card"><div class="stat-label">Supabase Auth</div><div class="stat-val" id="sAuth">…</div><div class="stat-sub" id="sAuthSub">checking</div></div>
+        <div class="stat-card"><div class="stat-label">Monthly Burn</div><div class="stat-val green">$0</div><div class="stat-sub">free tier</div></div>
+      </div>
+      <div class="sec">System Health</div>
+      <div id="healthList"><div class="row"><span style="font-size:16px">⏳</span><div class="row-body"><div class="row-title">Running…</div></div></div></div>
+      <div class="sec">Recent Commits</div>
+      <div id="recentMini"></div>
+      <div class="sec">Blockers</div>
+      <div id="overviewBlockers"></div>
     </div>
-    <div class="section-title">Health Checks</div>
-    <div id="healthChecks"><div class="audit-row"><div>⏳</div><div class="audit-title" style="margin-left:10px">Running…</div></div></div>
-    <div class="section-title">Recent Commits (Frontend)</div>
-    <div id="recentMini" class="commit-list"></div>
   </div>
 
   <!-- LINKS -->
   <div class="tab-panel" id="panel-links">
-    <div class="section-title">Product</div>
-    <div class="links-grid">
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/" target="_blank"><div class="link-icon">🌐</div><div class="link-info"><div class="link-title">Landing Page</div><div class="link-url">futuriztaos.github.io/trip-planner/</div></div><div class="link-status ok">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/trip.html?id=4817f593fdd942ce" target="_blank"><div class="link-icon">🗺️</div><div class="link-info"><div class="link-title">Demo Trip (Japan 8 days)</div><div class="link-url">trip.html?id=4817f593fdd942ce</div></div><div class="link-status ok">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/italy-test.html" target="_blank"><div class="link-icon">🇮🇹</div><div class="link-info"><div class="link-title">Alex Italy Trip</div><div class="link-url">italy-test.html</div></div><div class="link-status ok">Live</div></a>
-    </div>
-    <div class="section-title">API Endpoints</div>
-    <div class="links-grid">
-      <a class="link-card" href="https://tripai-backend.vercel.app/api/health" target="_blank"><div class="link-icon">💚</div><div class="link-info"><div class="link-title">GET /api/health</div><div class="link-url">tripai-backend.vercel.app</div></div><div class="link-status ok" id="healthBadge">Live</div></a>
-      <a class="link-card" href="https://tripai-backend.vercel.app/api/stats" target="_blank"><div class="link-icon">📊</div><div class="link-info"><div class="link-title">GET /api/stats</div><div class="link-url">Returns trip count</div></div><div class="link-status ok">Live</div></a>
-    </div>
-    <div class="section-title">GitHub</div>
-    <div class="links-grid">
-      <a class="link-card" href="https://github.com/FuturiztaOS/trip-planner" target="_blank"><div class="link-icon">📁</div><div class="link-info"><div class="link-title">Frontend Repo</div><div class="link-url">FuturiztaOS/trip-planner</div></div><div class="link-status ok">Public</div></a>
-      <a class="link-card" href="https://github.com/FuturiztaOS/tripai-backend" target="_blank"><div class="link-icon">⚙️</div><div class="link-info"><div class="link-title">Backend Repo</div><div class="link-url">FuturiztaOS/tripai-backend</div></div><div class="link-status ok">Public</div></a>
-    </div>
-    <div class="section-title">Affiliate Sign-ups (Pending)</div>
-    <div class="links-grid">
-      <a class="link-card" href="https://www.booking.com/affiliateprogram/" target="_blank"><div class="link-icon">🏨</div><div class="link-info"><div class="link-title">Booking.com</div><div class="link-url">4–6% hotel commission</div></div><div class="link-status warn">Sign up</div></a>
-      <a class="link-card" href="https://partner.getyourguide.com/" target="_blank"><div class="link-icon">🎯</div><div class="link-info"><div class="link-title">GetYourGuide</div><div class="link-url">8% activity commission</div></div><div class="link-status warn">Sign up</div></a>
-      <a class="link-card" href="https://www.thetrainline.com/affiliates" target="_blank"><div class="link-icon">🚆</div><div class="link-info"><div class="link-title">Trainline</div><div class="link-url">2–4% train commission</div></div><div class="link-status warn">Sign up</div></a>
-      <a class="link-card" href="https://www.rentalcars.com/affiliates/" target="_blank"><div class="link-icon">🚗</div><div class="link-info"><div class="link-title">Rentalcars</div><div class="link-url">5–8% car rental</div></div><div class="link-status warn">Sign up</div></a>
+    <div class="mw">
+      <div class="sec">Product</div>
+      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/" target="_blank"><div class="link-icon">🌐</div><div class="link-info"><div class="link-title">Landing Page</div><div class="link-url">futuriztaos.github.io/trip-planner/</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/plan.html" target="_blank"><div class="link-icon">✨</div><div class="link-info"><div class="link-title">Trip Generator</div><div class="link-url">plan.html</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/trip.html?id=2507ce159dae4b00" target="_blank"><div class="link-icon">🗺️</div><div class="link-info"><div class="link-title">Demo Trip (Paris + Amsterdam 7d)</div><div class="link-url">trip.html?id=2507ce159dae4b00</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/mytrips.html" target="_blank"><div class="link-icon">📋</div><div class="link-info"><div class="link-title">My Trips</div><div class="link-url">mytrips.html</div></div><div class="badge g">Live</div></a>
+      <div class="sec">Backend API</div>
+      <a class="link-card" href="https://tripai-backend.vercel.app/api/health" target="_blank"><div class="link-icon">💚</div><div class="link-info"><div class="link-title">GET /api/health</div><div class="link-url">tripai-backend.vercel.app</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://tripai-backend.vercel.app/api/stats" target="_blank"><div class="link-icon">📊</div><div class="link-info"><div class="link-title">GET /api/stats</div><div class="link-url">trip count</div></div><div class="badge g">Live</div></a>
+      <div class="sec">Infrastructure</div>
+      <a class="link-card" href="https://github.com/FuturiztaOS/trip-planner" target="_blank"><div class="link-icon">📁</div><div class="link-info"><div class="link-title">Frontend Repo</div><div class="link-url">github.com/FuturiztaOS/trip-planner</div></div><div class="badge g">Public</div></a>
+      <a class="link-card" href="https://github.com/FuturiztaOS/tripai-backend" target="_blank"><div class="link-icon">⚙️</div><div class="link-info"><div class="link-title">Backend Repo</div><div class="link-url">github.com/FuturiztaOS/tripai-backend</div></div><div class="badge g">Public</div></a>
+      <a class="link-card" href="https://supabase.com/dashboard/project/alnzqqlwqwxknxaxtawh" target="_blank"><div class="link-icon">🗄️</div><div class="link-info"><div class="link-title">Supabase Dashboard</div><div class="link-url">alnzqqlwqwxknxaxtawh — US East</div></div><div class="badge g">Active</div></a>
+      <a class="link-card" href="https://vercel.com" target="_blank"><div class="link-icon">▲</div><div class="link-info"><div class="link-title">Vercel</div><div class="link-url">tripai-backend project</div></div><div class="badge g">Deployed</div></a>
+      <a class="link-card" href="https://dash.cloudflare.com/" target="_blank"><div class="link-icon">🌤️</div><div class="link-info"><div class="link-title">Cloudflare (tripva.app)</div><div class="link-url">DNS setup needed</div></div><div class="badge y">Setup DNS</div></a>
+      <div class="sec">Affiliate Sign-ups (Pending)</div>
+      <a class="link-card" href="https://www.booking.com/affiliateprogram/" target="_blank"><div class="link-icon">🏨</div><div class="link-info"><div class="link-title">Booking.com</div><div class="link-url">4–6% hotel commission</div></div><div class="badge y">Sign up</div></a>
+      <a class="link-card" href="https://partner.getyourguide.com/" target="_blank"><div class="link-icon">🎯</div><div class="link-info"><div class="link-title">GetYourGuide</div><div class="link-url">8% activity commission</div></div><div class="badge y">Sign up</div></a>
+      <a class="link-card" href="https://www.thetrainline.com/affiliates" target="_blank"><div class="link-icon">🚆</div><div class="link-info"><div class="link-title">Trainline</div><div class="link-url">2–4% per ticket</div></div><div class="badge y">Sign up</div></a>
+      <a class="link-card" href="https://www.rentalcars.com/affiliates/" target="_blank"><div class="link-icon">🚗</div><div class="link-info"><div class="link-title">Rentalcars</div><div class="link-url">5–8% per rental</div></div><div class="badge y">Sign up</div></a>
     </div>
   </div>
 
   <!-- COMMITS -->
   <div class="tab-panel" id="panel-commits">
-    <div class="section-title">Frontend (trip-planner)</div>
-    <div id="commitsFE" class="commit-list">Loading…</div>
-    <div class="section-title">Backend (tripai-backend)</div>
-    <div id="commitsBE" class="commit-list">Loading…</div>
-  </div>
-
-  <!-- DOCS -->
-  <div class="tab-panel" id="panel-docs">
-    <div class="doc-nav" id="docNav">
-      <button class="doc-tab active" data-doc="pitch">📊 Pitch Deck</button>
-      <button class="doc-tab" data-doc="vc">💰 VC List</button>
-      <button class="doc-tab" data-doc="launch">🚀 Launch Plan</button>
-      <button class="doc-tab" data-doc="memory">🧠 Memory</button>
-      <button class="doc-tab" data-doc="heartbeat">⚡ Heartbeat</button>
+    <div class="mw">
+      <div class="sec">Frontend — trip-planner</div>
+      <div id="commitsFE">Loading…</div>
+      <div class="sec">Backend — tripai-backend</div>
+      <div id="commitsBE">Loading…</div>
     </div>
-    <div class="doc-content" id="docContent">Loading…</div>
   </div>
 
   <!-- ROADMAP -->
   <div class="tab-panel" id="panel-roadmap">
-    <div class="section-title">✅ Shipped (21 items)</div>
-    <div id="shippedList"></div>
-    <div class="section-title">🚫 Blocked — Needs Alex</div>
-    <div id="blockedList"></div>
+    <div class="mw">
+      <div class="sec">✅ Wave 1+2+4 — Shipped</div>
+      <div id="wShipped"></div>
+      <div class="sec">🔶 Wave 3 — Auth & Monetisation</div>
+      <div id="wWave3"></div>
+      <div class="sec">🚫 Blocked — Needs Alex</div>
+      <div id="wBlocked"></div>
+    </div>
+  </div>
+
+  <!-- COSTS -->
+  <div class="tab-panel" id="panel-costs">
+    <div class="mw">
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-val yellow">$15</div><div class="stat-sub">RM67 — domain</div></div>
+        <div class="stat-card"><div class="stat-label">Monthly Burn</div><div class="stat-val green">$0–5</div><div class="stat-sub">API usage only</div></div>
+        <div class="stat-card"><div class="stat-label">Dev Cost</div><div class="stat-val green">$0</div><div class="stat-sub">built by AI</div></div>
+      </div>
+      <div class="sec">One-Time Costs</div>
+      <table class="cost-tbl"><thead><tr><th>Item</th><th>Cost</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody><tr><td>tripva.app domain (Cloudflare)</td><td style="color:var(--yellow);font-weight:800">$15/yr</td><td>Apr 2026</td><td><span class="badge g">Paid ✅</span></td></tr></tbody></table>
+      <div class="sec">Monthly Recurring</div>
+      <table class="cost-tbl"><thead><tr><th>Service</th><th>Plan</th><th>Cost/mo</th><th>Free Tier Limit</th></tr></thead>
+      <tbody>
+        <tr><td>Vercel (backend)</td><td>Hobby</td><td style="color:var(--green);font-weight:800">$0</td><td>12 functions, 100GB bandwidth</td></tr>
+        <tr><td>Supabase (auth + DB)</td><td>Free</td><td style="color:var(--green);font-weight:800">$0</td><td>500MB DB, 50k MAU</td></tr>
+        <tr><td>GitHub Pages (frontend)</td><td>Free</td><td style="color:var(--green);font-weight:800">$0</td><td>1GB storage, 100GB/mo</td></tr>
+        <tr><td>Anthropic API (Claude)</td><td>Pay-per-use</td><td style="color:var(--yellow);font-weight:800">~$1–5</td><td>~$0.002 per trip generated</td></tr>
+        <tr><td>Resend (magic link emails)</td><td>Free</td><td style="color:var(--green);font-weight:800">$0</td><td>3,000 emails/mo</td></tr>
+        <tr><td>Zoho Mail (alex@tripva.app)</td><td>Free</td><td style="color:var(--green);font-weight:800">$0</td><td>1 user, 5GB</td></tr>
+      </tbody></table>
+      <div class="sec">Revenue Model (Affiliate — $0 cost)</div>
+      <table class="cost-tbl"><thead><tr><th>Partner</th><th>Commission</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>🏨 Booking.com</td><td>4–6% per hotel</td><td><span class="badge y">Sign up needed</span></td></tr>
+        <tr><td>🎯 GetYourGuide</td><td>8% per activity</td><td><span class="badge y">Sign up needed</span></td></tr>
+        <tr><td>🚆 Trainline</td><td>2–4% per train</td><td><span class="badge y">Sign up needed</span></td></tr>
+        <tr><td>🚗 Rentalcars</td><td>5–8% per rental</td><td><span class="badge y">Sign up needed</span></td></tr>
+      </tbody></table>
+      <div class="sec">Bottom Line</div>
+      <div class="total-row"><span class="total-label">Total invested to date</span><span class="total-val">$15 USD</span></div>
+      <div class="total-row"><span class="total-label">Monthly operating cost</span><span class="total-val">~$1–5 USD</span></div>
+      <div class="info-box">💡 One hotel booking at avg $150 = ~$7–9 commission = domain paid off in 2 bookings. First affiliate commission pays back everything.</div>
+    </div>
   </div>
 </div>
-
+<div class="toast" id="toast"></div>
 <script>
-const PASS='roam2026';
-const BACKEND='https://tripai-backend.vercel.app';
+const PASS='tripva2026';
+const BE='https://tripai-backend.vercel.app';
+const ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjkzNTcsImV4cCI6MjA5MDgwNTM1N30.SONh5djSuiUPAkwFuTPrYAxwiavP6lpvWQimljXl5hU';
 
-// Auth
-document.getElementById('authBtn').onclick=checkAuth;
-document.getElementById('authInput').addEventListener('keydown',e=>{ if(e.key==='Enter')checkAuth(); });
-function checkAuth(){
+document.getElementById('authBtn').onclick=auth;
+document.getElementById('authInput').addEventListener('keydown',e=>{if(e.key==='Enter')auth();});
+function auth(){
   if(document.getElementById('authInput').value===PASS){
     document.getElementById('authWall').style.display='none';
     document.getElementById('app').style.display='block';
     init();
-  } else {
-    const e=document.getElementById('authErr');
-    e.style.display='block';
+  }else{
+    const e=document.getElementById('authErr');e.style.display='block';
     setTimeout(()=>e.style.display='none',2000);
   }
 }
-
-// Tabs
+setInterval(()=>{document.getElementById('hTime').textContent=new Date().toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});},1000);
 document.getElementById('navTabs').addEventListener('click',e=>{
-  const btn=e.target.closest('.nav-tab');
-  if(!btn) return;
+  const btn=e.target.closest('.nav-tab');if(!btn)return;
   const tab=btn.dataset.tab;
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('panel-'+tab).classList.add('active');
-  if(tab==='commits') loadCommits();
-  if(tab==='docs') renderDoc(activeDoc);
-  if(tab==='roadmap') renderRoadmap();
+  btn.classList.add('active');document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='commits')loadCommits();
+  if(tab==='roadmap')renderRoadmap();
 });
-
-// Clock
-setInterval(()=>{ document.getElementById('headerTime').textContent=new Date().toUTCString().slice(17,22)+' UTC'; },1000);
 document.getElementById('refreshBtn').onclick=refreshAll;
+function showToast(m,ms=2500){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function timeAgo(d){const s=(Date.now()-new Date(d))/1000;if(s<60)return Math.round(s)+'s ago';if(s<3600)return Math.round(s/60)+'m ago';if(s<86400)return Math.round(s/3600)+'h ago';return Math.round(s/86400)+'d ago';}
 
-// Backend checks
-async function checkHealth(){
-  try{
-    const r=await fetch(BACKEND+'/api/health');
-    const d=await r.json();
-    const ok=d.status==='ok';
-    document.getElementById('statBackend').textContent=ok?'✅':'❌';
-    document.getElementById('statBackend').className='stat-val'+(ok?' green':' red');
-    document.getElementById('statBackendSub').textContent=ok?'Online':'Error';
-    document.getElementById('healthBadge').textContent=ok?'Online':'Down';
-    document.getElementById('healthBadge').className='link-status '+(ok?'ok':'warn');
-  }catch(e){
-    document.getElementById('statBackend').textContent='❌';
-    document.getElementById('statBackend').className='stat-val red';
-    document.getElementById('statBackendSub').textContent='Unreachable';
-  }
+async function checkBE(){
+  try{const r=await fetch(BE+'/api/health');const d=await r.json();const ok=d.status==='ok';
+  document.getElementById('sBE').textContent=ok?'✅ Online':'❌ Error';
+  document.getElementById('sBE').className='stat-val '+(ok?'green':'red');
+  document.getElementById('sBEsub').textContent=ok?'All good':'Check Vercel';}
+  catch(e){document.getElementById('sBE').textContent='❌ Down';document.getElementById('sBE').className='stat-val red';}
 }
 async function checkStats(){
-  try{
-    const r=await fetch(BACKEND+'/api/stats');
-    const d=await r.json();
-    document.getElementById('statTrips').textContent=d.trips||'?';
-  }catch(e){}
+  try{const r=await fetch(BE+'/api/stats');const d=await r.json();document.getElementById('sTrips').textContent=d.trips??'?';}
+  catch(e){}
+}
+async function checkAuth(){
+  try{const r=await fetch('https://alnzqqlwqwxknxaxtawh.supabase.co/auth/v1/health',{headers:{apikey:ANON}});
+  const d=await r.json();const ok=d.name==='GoTrue';
+  document.getElementById('sAuth').textContent=ok?'✅ Live':'❌ Error';
+  document.getElementById('sAuth').className='stat-val '+(ok?'green':'red');
+  document.getElementById('sAuthSub').textContent=ok?'Magic link ready':'Check Supabase';}
+  catch(e){document.getElementById('sAuth').textContent='❌';document.getElementById('sAuth').className='stat-val red';}
 }
 
-async function runHealthChecks(){
+async function runChecks(){
+  const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyOTM1NywiZXhwIjoyMDkwODA1MzU3fQ.ika7Yvat43O4DQMePIF9UCm4i6HBYebxKYpcu4Rgd8Y';
   const checks=[
-    {label:'Backend /api/health',url:BACKEND+'/api/health',fn:d=>d.status==='ok',note:'status ok'},
-    {label:'Backend /api/stats',url:BACKEND+'/api/stats',fn:d=>typeof d.trips==='number',note:'trips count'},
-    {label:'Landing page (index.html)',url:'https://futuriztaos.github.io/trip-planner/',html:true},
-    {label:'Trip dashboard (trip.html)',url:'https://futuriztaos.github.io/trip-planner/trip.html',html:true},
-    {label:'Service worker (sw.js)',url:'https://futuriztaos.github.io/trip-planner/sw.js',html:true},
-    {label:'Demo trip load',url:BACKEND+'/api/trip?id=4817f593fdd942ce',fn:d=>d?.rawPlan?.days?.length>0,note:'8 days'},
+    {label:'Backend /api/health',url:BE+'/api/health',fn:d=>d.status==='ok',note:'status ok'},
+    {label:'Backend /api/stats',url:BE+'/api/stats',fn:d=>typeof d.trips==='number',note:'trips count'},
+    {label:'Supabase Auth (GoTrue)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/auth/v1/health',fn:d=>d.name==='GoTrue',note:'GoTrue v2',h:{apikey:ANON}},
+    {label:'Supabase DB (trips table)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/rest/v1/trips?limit=0',ok2:[200,401],note:'table exists',h:{apikey:ANON,Authorization:'Bearer '+SKEY}},
+    {label:'Landing page',url:'https://futuriztaos.github.io/trip-planner/',html:true},
+    {label:'Plan generator (plan.html)',url:'https://futuriztaos.github.io/trip-planner/plan.html',html:true},
+    {label:'My Trips (mytrips.html)',url:'https://futuriztaos.github.io/trip-planner/mytrips.html',html:true},
+    {label:'Demo trip load',url:BE+'/api/trip?id=2507ce159dae4b00',fn:d=>!!(d?.rawPlan||d?.days),note:'plan loaded'},
   ];
-  const el=document.getElementById('healthChecks');
-  el.innerHTML='';
+  const el=document.getElementById('healthList');el.innerHTML='';
   await Promise.all(checks.map(async c=>{
     let ok=false,note='';
     try{
-      const r=await fetch(c.url,{cache:'no-store'});
-      if(c.html){ok=r.ok;note='HTTP '+r.status;}
-      else{const d=await r.json();ok=c.fn(d);note=ok?c.note:'Bad response';}
-    }catch(e){note=e.message;}
-    const row=document.createElement('div');
-    row.className='audit-row';
-    row.innerHTML=`<div style="font-size:16px">${ok?'✅':'❌'}</div><div style="flex:1;margin-left:10px"><div class="audit-title">${c.label}</div><div class="audit-sub">${note||''}</div></div><span class="badge ${ok?'green':'red'}">${ok?'OK':'FAIL'}</span>`;
+      const r=await fetch(c.url,{cache:'no-store',headers:c.h||{}});
+      const okSt=c.ok2?c.ok2.includes(r.status):r.ok;
+      if(c.html){ok=okSt;note='HTTP '+r.status;}
+      else{const d=await r.json();ok=c.fn(d);note=ok?c.note:'bad response';}
+    }catch(e){note='error';}
+    const row=document.createElement('div');row.className='row';
+    row.innerHTML=`<span style="font-size:16px">${ok?'✅':'❌'}</span><div class="row-body"><div class="row-title">${esc(c.label)}</div><div class="row-sub">${esc(note)}</div></div><span class="badge ${ok?'g':'r'}">${ok?'OK':'FAIL'}</span>`;
     el.appendChild(row);
   }));
 }
 
-// Commits
-async function fetchCommits(repo,n=8){
-  try{
-    const r=await fetch(`https://api.github.com/repos/FuturiztaOS/${repo}/commits?per_page=${n}`);
-    return r.ok?await r.json():[];
-  }catch(e){return[];}
+async function fetchCommits(repo,n=12){
+  try{const r=await fetch(`https://api.github.com/repos/FuturiztaOS/${repo}/commits?per_page=${n}`);return r.ok?await r.json():[];}
+  catch(e){return[];}
 }
-function renderCommits(commits,elId){
-  const el=document.getElementById(elId);
-  if(!commits.length){el.innerHTML='<div style="color:var(--muted);padding:12px;font-size:13px">No commits</div>';return;}
+function renderCommits(commits,id){
+  const el=document.getElementById(id);
+  if(!commits.length){el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:10px">No commits</div>';return;}
   el.innerHTML=commits.map(c=>{
-    const msg=c.commit.message.split('\n')[0];
-    const sha=c.sha.slice(0,7);
-    const ago=timeAgo(new Date(c.commit.author.date));
+    const msg=c.commit.message.split('\n')[0];const sha=c.sha.slice(0,7);const ago=timeAgo(c.commit.author.date);
     const tag=msg.startsWith('fix:')?'fix':msg.startsWith('feat:')?'feat':'';
-    const clean=msg.replace(/^(fix|feat|chore|docs|refactor):\s*/,'');
+    const clean=msg.replace(/^(fix|feat|chore|docs|refactor|style):\s*/,'');
     return `<div class="commit-item"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="commit-sha">${sha}</span>${tag?`<span class="commit-tag ${tag}">${tag}</span>`:''}</div><div class="commit-msg">${esc(clean)}</div><div class="commit-meta">${ago} · ${esc(c.commit.author.name)}</div></div>`;
   }).join('');
 }
 async function loadCommits(){
-  const[fe,be]=await Promise.all([fetchCommits('trip-planner',12),fetchCommits('tripai-backend',12)]);
-  renderCommits(fe,'commitsFE');
-  renderCommits(be,'commitsBE');
-  if(be.length){
-    document.getElementById('statDeploy').textContent=timeAgo(new Date(be[0].commit.author.date));
-    document.getElementById('statDeploySub').textContent=be[0].sha.slice(0,7)+' backend';
-  }
+  const[fe,be]=await Promise.all([fetchCommits('trip-planner'),fetchCommits('tripai-backend')]);
+  renderCommits(fe,'commitsFE');renderCommits(be,'commitsBE');
 }
 async function loadRecentMini(){
-  const commits=await fetchCommits('trip-planner',4);
-  renderCommits(commits,'recentMini');
-  if(commits.length){
-    document.getElementById('statDeploy').textContent=timeAgo(new Date(commits[0].commit.author.date));
-    document.getElementById('statDeploySub').textContent=commits[0].sha.slice(0,7)+' frontend';
-  }
+  const commits=await fetchCommits('trip-planner',4);renderCommits(commits,'recentMini');
 }
 
-// Docs
-const RAW='https://raw.githubusercontent.com/FuturiztaOS/trip-planner/main/docs';
-const DOCS={
-  pitch:{url:RAW+'/PITCH_DECK.md'},
-  vc:{url:RAW+'/VC_RESEARCH.md'},
-  launch:{url:RAW+'/LAUNCH_PLAN.md'},
-  memory:{url:RAW+'/MEMORY.md'},
-  heartbeat:{url:RAW+'/HEARTBEAT.md'},
-};
-const cache={};
-let activeDoc='pitch';
-document.getElementById('docNav').addEventListener('click',e=>{
-  const btn=e.target.closest('.doc-tab');
-  if(!btn) return;
-  activeDoc=btn.dataset.doc;
-  document.querySelectorAll('.doc-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderDoc(activeDoc);
-});
-function renderDoc(key){
-  const el=document.getElementById('docContent');
-  if(cache[key]){el.innerHTML=md2html(cache[key]);return;}
-  el.innerHTML='<div style="color:var(--muted);padding:20px;text-align:center">Loading…</div>';
-  fetch(DOCS[key].url)
-    .then(r=>r.ok?r.text():Promise.reject())
-    .then(t=>{cache[key]=t;el.innerHTML=md2html(t);})
-    .catch(()=>{el.innerHTML='<div style="color:var(--red);padding:20px;text-align:center">Not found on GitHub.<br><br>Run: push docs to <code>FuturiztaOS/trip-planner/docs/</code></div>';});
-}
-function md2html(md){
-  return md
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
-    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
-    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/^\|(.+)\|$/gm,l=>{
-      const cells=l.split('|').slice(1,-1);
-      if(cells.every(c=>/^[-: ]+$/.test(c))) return '';
-      return '<tr>'+cells.map(c=>`<td>${c.trim()}</td>`).join('')+'</tr>';
-    })
-    .replace(/((<tr>.*<\/tr>\n?)+)/g,s=>'<table>'+s+'</table>')
-    .replace(/^[-*] (.+)$/gm,'<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g,s=>'<ul>'+s+'</ul>')
-    .replace(/^---$/gm,'<hr>')
-    .replace(/\n\n/g,'</p><p>')
-    .replace(/^([^<\n].*)$/gm,'$1');
-}
-
-// Roadmap
-const SHIPPED=['Backend API deployed to Vercel','Progressive SSE streaming (skeleton → day × N → done)','Landing page with trip generator','Trip dashboard — 6 tabs','Save + load trips via GitHub','PWA (installable, service worker)','OG tags, Plausible analytics, Formspree','Error handling + retry UI','Mobile audit — 390px responsive','Pricing page (Free/$12/$49)','Social proof counter','Planned by Tripva badge','Multilingual (ZH/JA/KO/AR/TH/HI)','Itinerary validator (8 checks)','Fake ticket prevention','Budget status/category/icons','Hotel stars + rating display','Map filters home city','All onclick handlers fixed (global scope)','Save + load timeouts (10s/15s)','rawPlan schema fix on load'];
-const BLOCKED=[
-  {title:'Auth — magic link',reason:'Needs SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY',action:'Create Supabase project → share keys'},
-  {title:'My Trips page',reason:'Blocked on Supabase',action:'Unblock Supabase first'},
-  {title:'Stripe payments',reason:'Needs STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET',action:'Create Stripe account → share keys'},
-  {title:'Custom domain',reason:'Need to buy domain (farer.app / triphq.app)',action:'Buy domain → add CNAME'},
-  {title:'Booking.com affiliate ID',reason:'ROAM_BOOKING_ID is placeholder',action:'Sign up at booking.com/affiliateprogram'},
-  {title:'GetYourGuide affiliate ID',reason:'ROAM_GYG_ID is placeholder',action:'Sign up at partner.getyourguide.com'},
-  {title:'Trainline affiliate ID',reason:'ROAM_TRAINLINE_ID is placeholder',action:'Sign up at thetrainline.com/affiliates'},
-  {title:'Rentalcars affiliate ID',reason:'ROAM_RENTALCARS_ID is placeholder',action:'Sign up at rentalcars.com/affiliates'},
-  {title:'App rename from Roam (legacy note)',reason:'Conflicts with Tripva Mobile (telecom)',action:'Choose: Farer / Vacaya / TripHQ / Vayra'},
+const SHIPPED=['Progressive SSE streaming backend+frontend','Full generate→save→load flow','Landing page (OG tags, email capture, analytics)','Dynamic trip dashboard — 6 tabs','PWA (manifest, service worker)','Error+timeout UX (60s warning, retry)','Mobile responsive (390px audit)','Pricing page (Free/$12/$49)','Social proof counter + Planned by badge','My Trips page (Supabase auth + magic link)','Auth backend endpoints (/api/user/*)','tripva.app domain purchased'];
+const WAVE3=[
+  {t:'✅ Supabase project created',s:'alnzqqlwqwxknxaxtawh — US East',done:true},
+  {t:'✅ Auth endpoints deployed',s:'/api/user/magic-link, /api/user/me',done:true},
+  {t:'✅ My Trips page built',s:'mytrips.html — magic link auth gate + trip list',done:true},
+  {t:'⚠️ Run DB migration SQL',s:'Tables not created yet — trips will not save',a:'supabase.com/dashboard/project/alnzqqlwqwxknxaxtawh/sql',warn:true},
+  {t:'🚫 Stripe payments',s:'Needs STRIPE_SECRET_KEY',a:'Create Stripe account → share keys'},
 ];
+const BLOCKED=[
+  {t:'Run Supabase SQL migration',s:'Auth save will fail without tables',a:'Supabase → SQL Editor → paste migration.sql → Run'},
+  {t:'Wire tripva.app DNS to GitHub Pages',s:'Domain bought but not live yet',a:'Cloudflare → A records 185.199.108-111.153 + CNAME www'},
+  {t:'Stripe keys',s:'Payments blocked',a:'stripe.com → create → share STRIPE_SECRET_KEY'},
+  {t:'Affiliate sign-ups (4 platforms)',s:'All IDs are placeholders, no commissions yet',a:'Booking.com, GetYourGuide, Trainline, Rentalcars'},
+];
+
 function renderRoadmap(){
-  document.getElementById('shippedList').innerHTML=SHIPPED.map(s=>`<div class="blocked-item done"><div class="blocked-title">✅ ${s}</div></div>`).join('');
-  document.getElementById('blockedList').innerHTML=BLOCKED.map(b=>`<div class="blocked-item"><div class="blocked-title">🚫 ${b.title}</div><div class="blocked-reason">${b.reason}</div><div class="blocked-reason" style="color:var(--accent2);margin-top:4px">→ ${b.action}</div></div>`).join('');
+  document.getElementById('wShipped').innerHTML=SHIPPED.map(t=>`<div class="road-item done"><div class="road-title">✅ ${esc(t)}</div></div>`).join('');
+  document.getElementById('wWave3').innerHTML=WAVE3.map(b=>`<div class="road-item ${b.done?'done':b.warn?'warn':'blocked'}"><div class="road-title">${esc(b.t)}</div><div class="road-sub">${esc(b.s)}</div>${b.a?`<div class="road-action">→ ${esc(b.a)}</div>`:''}</div>`).join('');
+  document.getElementById('wBlocked').innerHTML=BLOCKED.map(b=>`<div class="road-item blocked"><div class="road-title">🚫 ${esc(b.t)}</div><div class="road-sub">${esc(b.s)}</div><div class="road-action">→ ${esc(b.a)}</div></div>`).join('');
+  document.getElementById('overviewBlockers').innerHTML=BLOCKED.slice(0,3).map(b=>`<div class="row"><span style="font-size:16px">🚫</span><div class="row-body"><div class="row-title">${esc(b.t)}</div><div class="row-sub">${esc(b.a)}</div></div></div>`).join('');
 }
 
-function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function timeAgo(d){
-  const s=(Date.now()-d.getTime())/1000;
-  if(s<60) return Math.round(s)+'s ago';
-  if(s<3600) return Math.round(s/60)+'m ago';
-  if(s<86400) return Math.round(s/3600)+'h ago';
-  return Math.round(s/86400)+'d ago';
-}
-
-async function refreshAll(){checkHealth();checkStats();runHealthChecks();loadRecentMini();}
-
-async function init(){
-  await Promise.all([checkHealth(),checkStats(),runHealthChecks(),loadRecentMini()]);
-  renderRoadmap();
-}
+async function refreshAll(){showToast('Refreshing…');await Promise.all([checkBE(),checkStats(),checkAuth(),runChecks(),loadRecentMini()]);showToast('✅ Done');}
+async function init(){renderRoadmap();await Promise.all([checkBE(),checkStats(),checkAuth(),runChecks(),loadRecentMini()]);}
 </script>
 </body>
 </html>
