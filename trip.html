@@ -65,7 +65,7 @@
 
 [data-theme="dark"] .theme-icon-sun{display:none;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;overflow:hidden}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;overflow:clip}
 
 /* ─── SPLASH ─── */
 #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:14px;transition:opacity .5s .2s}
@@ -76,7 +76,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 /* ─── APP SHELL ─── */
-#app{display:flex;flex-direction:column;height:100%;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100%;overflow:hidden;-webkit-overflow-scrolling:touch}
 .tab-content{display:none;flex:1;overflow:hidden;flex-direction:column;animation:fadeIn .22s cubic-bezier(.25,.1,.25,1)}
 .tab-content.active{display:flex}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
