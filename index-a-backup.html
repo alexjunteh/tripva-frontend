@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="canonical" href="https://futuriztaos.github.io/trip-planner/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f7f3ee">
+<meta name="description" content="Tripva — premium AI travel planning. Describe your trip and receive a complete day-by-day itinerary with hotels, restaurants, trains, and everything you'd otherwise miss.">
+<meta property="og:title" content="Tripva — The world is yours to plan.">
+<meta property="og:description" content="Describe your trip. Tripva builds a complete day-by-day itinerary — hotels, restaurants, trains, and everything you'd otherwise miss. Free to start.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&h=630&fit=crop&q=80">
+<meta property="og:url" content="https://futuriztaos.github.io/trip-planner/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<title>Tripva — AI Trip Planning · The world is yours to plan.</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://tripai-backend.vercel.app">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
+<style>
+
+/* ── RESET ──────────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:#1c1612;
+  font-family:'DM Sans',system-ui,sans-serif;
+  font-weight:300;
+  line-height:1.75;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ── TOKENS ─────────────────────────────────────────────────────────────── */
+:root{
+  --serif:'Cormorant Garant',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+/* LIGHT THEME */
+[data-theme="light"]{
+  --bg:#f7f3ee;
+  --text:#1c1612;
+  --muted:#5c5249;
+  --gold:#b8963e;
+  --deep:#0f1a14;
+  --surface:#ede8e2;
+  --white:#fffcf8;
+  --body:#4a433c;
+}
+/* DARK THEME */
+[data-theme="dark"]{
+  --bg:#0d0d16;
+  --text:#f5f0e8;
+  --muted:#a89e96;
+  --gold:#c9a96e;
+  --deep:#1a2a20;
+  --surface:#1a1624;
+  --white:#1a1624;
+  --body:#c8c0b8;
+}
+
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;height:68px;
+  background:transparent;
+  transition:all 0.4s ease;
+}
+nav.scrolled{
+  background:var(--white);
+  box-shadow:0 1px 0 rgba(0,0,0,.08);
+}
+.nav-logo{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:26px;
+  font-weight:600;
+  letter-spacing:1px;
+  color:#ffffff;
+  transition:color 0.4s ease;
+}
+nav.scrolled .nav-logo{color:var(--text)}
+.nav-links{
+  display:flex;gap:36px;align-items:center;
+  position:absolute;left:50%;transform:translateX(-50%);
+}
+.nav-links a{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:400;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.85);
+  transition:color 0.3s;
+}
+nav.scrolled .nav-links a{color:var(--muted)}
+.nav-links a:hover{color:#ffffff}
+nav.scrolled .nav-links a:hover{color:var(--text)}
+.nav-cta{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,.5);
+  padding:8px 20px;
+  transition:all 0.3s;
+}
+nav.scrolled .nav-cta{
+  color:var(--gold);
+  border-color:var(--gold);
+}
+.nav-cta:hover{background:rgba(255,255,255,.12)}
+nav.scrolled .nav-cta:hover{background:var(--gold);color:var(--white)}
+
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.hero{
+  position:relative;
+  height:100vh;
+  min-height:600px;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&h=900&fit=crop&q=85');
+  background-size:cover;background-position:center;
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to top,rgba(15,26,20,.85) 0%,rgba(15,26,20,.2) 50%,transparent 100%);
+}
+.hero-inner{
+  position:absolute;
+  bottom:10%;left:6%;
+  z-index:2;
+  max-width:620px;
+  animation:heroReveal 0.8s ease both;
+}
+@keyframes heroReveal{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.hero-eyebrow{
+  font-family:var(--sans);
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:#ffffff;
+  opacity:0.7;
+  margin-bottom:20px;
+  display:block;
+}
+.hero h1{
+  font-family:var(--serif);
+  font-size:clamp(52px,9vw,110px);
+  font-weight:600;
+  line-height:0.92;
+  letter-spacing:-2px;
+  color:#ffffff;
+  margin-bottom:20px;
+}
+.hero h1 em{font-style:italic;display:block}
+.hero h1 span{font-style:normal;display:block}
+.hero-sub{
+  font-family:var(--sans);
+  font-size:20px;
+  font-weight:300;
+  line-height:1.6;
+  color:rgba(255,255,255,.75);
+  max-width:480px;
+  margin-top:20px;
+}
+.hero-ctas{
+  display:flex;
+  gap:16px;
+  margin-top:36px;
+  flex-wrap:wrap;
+}
+.btn-gold{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  background:var(--gold);
+  color:#ffffff;
+  padding:14px 32px;
+  border-radius:3px;
+  transition:opacity 0.2s,transform 0.15s;
+  display:inline-block;
+  white-space:nowrap;
+}
+.btn-gold:hover{opacity:0.88;transform:translateY(-1px)}
+.btn-outline-white{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.5);
+  color:#ffffff;
+  padding:14px 32px;
+  border-radius:3px;
+  transition:background 0.2s,transform 0.15s;
+  display:inline-block;
+  white-space:nowrap;
+}
+.btn-outline-white:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+.hero-trust{
+  margin-top:24px;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  color:#ffffff;
+  opacity:0.55;
+}
+
+/* ── FADE IN (scroll) ───────────────────────────────────────────────────── */
+.fade-in{
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.6s ease,transform 0.6s ease;
+}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* ── SECTION LABEL ──────────────────────────────────────────────────────── */
+.section-label{
+  font-family:var(--sans);
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:block;
+  margin-bottom:18px;
+}
+
+/* ── S-H2 (section headings) ────────────────────────────────────────────── */
+h2.s-h2{
+  font-family:var(--serif);
+  font-size:clamp(36px,5vw,64px);
+  font-weight:600;
+  line-height:1.0;
+  color:inherit;
+}
+h2.s-h2.white{color:#ffffff}
+h2.s-h2 em{font-style:italic}
+
+/* ── SECTION 2 — PAIN ───────────────────────────────────────────────────── */
+.pain-section{
+  background:var(--bg);
+  padding:120px 20px;
+}
+.pain-inner{
+  max-width:700px;
+  margin:0 auto;
+  text-align:center;
+}
+.pain-section h2.s-h2{margin-bottom:32px}
+.pain-body{
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:300;
+  line-height:1.75;
+  color:var(--muted);
+  margin-bottom:24px;
+}
+.pain-close{
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:300;
+  color:var(--muted);
+}
+
+/* ── SECTION 3 — HOW IT WORKS ───────────────────────────────────────────── */
+.how-section{
+  background:var(--deep);
+  padding:120px 20px;
+  color:var(--white);
+}
+.how-inner{
+  max-width:1100px;
+  margin:0 auto;
+}
+.how-header{margin-bottom:72px}
+.how-header .s-h2{margin-bottom:16px}
+.how-subtitle{
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:300;
+  color:rgba(255,252,248,.6);
+  line-height:1.7;
+  max-width:480px;
+}
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:64px;
+}
+.step{display:flex;flex-direction:column}
+.step-num{
+  font-family:var(--serif);
+  font-size:72px;
+  font-weight:600;
+  color:var(--gold);
+  line-height:1;
+  margin-bottom:20px;
+}
+.step-title{
+  font-family:var(--serif);
+  font-size:24px;
+  font-weight:600;
+  color:#ffffff;
+  margin-bottom:12px;
+  line-height:1.2;
+}
+.step-body{
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:300;
+  color:rgba(255,252,248,.65);
+  line-height:1.75;
+}
+
+/* ── SECTION 4 — DEMO ───────────────────────────────────────────────────── */
+.demo-section{
+  background:var(--bg);
+  padding:120px 20px;
+}
+.demo-inner{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.demo-header{
+  text-align:center;
+  margin-bottom:60px;
+}
+.demo-header .s-h2{margin-bottom:16px}
+.demo-sub{
+  font-family:var(--sans);
+  font-size:17px;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.7;
+  max-width:480px;
+  margin:0 auto;
+}
+.phone-wrap{
+  width:100%;max-width:360px;margin:0 auto 48px;
+}
+.phone-frame{
+  background:#111827;
+  border-radius:36px;
+  border:2px solid rgba(28,22,18,.1);
+  box-shadow:0 40px 80px rgba(28,22,18,.15),0 8px 24px rgba(28,22,18,.08);
+  overflow:hidden;
+  aspect-ratio:9/19;
+  position:relative;
+}
+.phone-notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:110px;height:26px;background:#111827;border-radius:0 0 16px 16px;z-index:2;
+}
+.phone-frame iframe{width:100%;height:100%;border:none;display:block}
+.demo-chips{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.demo-chip{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:300;
+  color:var(--body);
+  padding:0 24px;
+  border-right:1px solid rgba(28,22,18,.12);
+  line-height:1.4;
+}
+.demo-chip:last-child{border-right:none}
+
+/* ── SECTION 5 — TESTIMONIALS ───────────────────────────────────────────── */
+.testi-section{
+  background:var(--deep);
+  padding:120px 20px;
+  color:var(--white);
+}
+.testi-inner{
+  max-width:1200px;
+  margin:0 auto;
+}
+.testi-header{margin-bottom:80px}
+.testi-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:64px;
+}
+.testi-item{
+  display:flex;
+  flex-direction:column;
+}
+.testi-mark{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:120px;
+  line-height:0.6;
+  color:var(--gold);
+  opacity:0.3;
+  margin-bottom:20px;
+  user-select:none;
+}
+.testi-quote{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:22px;
+  font-weight:400;
+  color:#ffffff;
+  line-height:1.5;
+  margin-bottom:24px;
+  flex:1;
+}
+.testi-attr{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  color:rgba(255,252,248,.5);
+  text-transform:uppercase;
+}
+
+/* ── SECTION 6 — PRICING ────────────────────────────────────────────────── */
+.pricing-section{
+  background:var(--bg);
+  padding:120px 20px;
+  text-align:center;
+}
+.pricing-inner{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.pricing-header{margin-bottom:8px}
+.pricing-header .s-h2{margin-bottom:12px}
+.pricing-sub{
+  font-family:var(--sans);
+  font-size:16px;
+  font-weight:300;
+  color:var(--muted);
+  margin-bottom:60px;
+}
+.price-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  width:100%;
+  max-width:960px;
+  align-items:start;
+}
+.price-card{
+  background:var(--white);
+  border:1px solid rgba(28,22,18,.1);
+  border-radius:4px;
+  padding:40px 32px;
+  text-align:left;
+  position:relative;
+}
+.price-card-pro{
+  background:var(--deep);
+  border-color:transparent;
+}
+.price-badge{
+  font-family:var(--sans);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:block;
+  margin-bottom:16px;
+}
+.price-name{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  margin-bottom:12px;
+}
+.price-card-pro .price-name{color:rgba(255,252,248,.5)}
+.price-amount{
+  font-family:var(--serif);
+  font-size:56px;
+  font-weight:600;
+  color:var(--text);
+  line-height:1;
+  letter-spacing:-1px;
+  display:inline;
+}
+.price-card-pro .price-amount{color:#ffffff}
+.price-per{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--muted);
+}
+.price-card-pro .price-per{color:rgba(255,252,248,.5)}
+.price-cadence{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:300;
+  color:var(--muted);
+  margin-top:6px;
+  margin-bottom:28px;
+}
+.price-card-pro .price-cadence{color:rgba(255,252,248,.45)}
+.price-divider{
+  height:1px;
+  background:rgba(28,22,18,.08);
+  margin-bottom:24px;
+}
+.price-card-pro .price-divider{background:rgba(255,252,248,.1)}
+.price-features{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:32px;
+}
+.price-feature{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--body);
+  padding:9px 0;
+  border-bottom:1px solid rgba(28,22,18,.07);
+}
+.price-feature:last-child{border-bottom:none}
+.price-card-pro .price-feature{
+  color:rgba(255,252,248,.7);
+  border-bottom-color:rgba(255,252,248,.08);
+}
+.price-btn{
+  display:block;
+  text-align:center;
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 24px;
+  border-radius:3px;
+  transition:all 0.2s;
+}
+.price-btn-outline{
+  border:1px solid rgba(28,22,18,.2);
+  color:var(--text);
+}
+.price-btn-outline:hover{border-color:var(--text);background:rgba(28,22,18,.04)}
+.price-btn-gold{
+  background:var(--gold);
+  color:#ffffff;
+}
+.price-btn-gold:hover{opacity:0.88}
+
+/* ── SECTION 7 — FINAL CTA ──────────────────────────────────────────────── */
+.final-cta{
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  padding:140px 20px;
+}
+.final-cta-bg{
+  position:absolute;inset:0;z-index:0;
+  background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&h=800&fit=crop&q=85');
+  background-size:cover;background-position:center;
+}
+.final-cta-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:rgba(15,26,20,.65);
+}
+.final-cta-inner{
+  position:relative;z-index:2;
+  max-width:900px;
+  margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;
+}
+.final-cta .s-h2{margin-bottom:28px}
+.final-trust{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:400;
+  color:rgba(255,255,255,.45);
+  margin-top:20px;
+  letter-spacing:0.5px;
+}
+
+/* ── EMAIL / WAITLIST ───────────────────────────────────────────────────── */
+.waitlist{
+  background:var(--bg);
+  border-top:1px solid rgba(28,22,18,.08);
+  padding:80px 20px;
+  text-align:center;
+}
+.waitlist-inner{max-width:480px;margin:0 auto}
+.waitlist h3{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:clamp(24px,3vw,34px);
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:12px;
+  line-height:1.2;
+}
+.waitlist p{
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.65;
+  margin-bottom:28px;
+}
+.waitlist-form{display:flex;gap:8px}
+.waitlist-input{
+  flex:1;
+  background:var(--white);
+  border:1px solid rgba(28,22,18,.15);
+  padding:13px 16px;
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+  border-radius:3px;
+}
+.waitlist-input::placeholder{color:var(--muted)}
+.waitlist-input:focus{border-color:var(--gold)}
+.waitlist-btn{
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  background:var(--gold);
+  color:#ffffff;
+  border:none;
+  cursor:pointer;
+  padding:13px 22px;
+  border-radius:3px;
+  white-space:nowrap;
+  transition:opacity 0.2s;
+}
+.waitlist-btn:hover{opacity:0.88}
+.waitlist-btn:disabled{opacity:0.5;cursor:default}
+.waitlist-note{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  color:var(--muted);
+  margin-top:12px;
+  margin-bottom:0;
+}
+.success-msg{
+  display:none;
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:17px;
+  color:var(--gold);
+  margin-top:20px;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────────────────── */
+footer{
+  background:var(--bg);
+  border-top:1px solid rgba(28,22,18,.08);
+  padding:48px 20px;
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
+}
+.footer-logo{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:1px;
+  color:var(--text);
+}
+.footer-links{
+  display:flex;flex-wrap:wrap;gap:28px;justify-content:center;
+}
+.footer-links a{
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:300;
+  color:var(--muted);
+  transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--text)}
+.footer-legal{
+  display:flex;flex-wrap:wrap;gap:20px;justify-content:center;
+}
+.footer-legal a{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  color:var(--muted);
+  transition:color 0.2s;
+}
+.footer-legal a:hover{color:var(--text)}
+.footer-copy{
+  font-family:var(--sans);
+  font-size:12px;
+  font-weight:300;
+  color:var(--muted);
+}
+
+/* ── TOAST ──────────────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--deep);border-radius:3px;
+  padding:12px 22px;
+  font-family:var(--sans);font-size:14px;font-weight:400;color:#fff;
+  z-index:999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── PWA BANNER ─────────────────────────────────────────────────────────── */
+.pwa-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:var(--white);border-top:1px solid rgba(28,22,18,.1);
+  padding:14px 20px;display:flex;align-items:center;gap:12px;
+  transform:translateY(100%);transition:transform .35s ease;
+  box-shadow:0 -4px 20px rgba(28,22,18,.07);
+}
+.pwa-banner.show{transform:translateY(0)}
+.pwa-install-btn{
+  font-family:var(--sans);font-size:13px;font-weight:400;
+  background:var(--gold);color:#fff;border:none;cursor:pointer;
+  padding:9px 18px;border-radius:3px;white-space:nowrap;
+}
+.pwa-dismiss{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:22px;padding:4px 8px;line-height:1;
+}
+
+/* ── THEME TOGGLE ───────────────────────────────────────────────────────── */
+.theme-toggle{
+  background:none;
+  border:1px solid currentColor;
+  opacity:0.6;
+  cursor:pointer;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:14px;
+  color:inherit;
+  transition:opacity 0.2s;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.theme-toggle:hover{opacity:1;}
+[data-theme="light"] .theme-icon-moon{display:none;}
+[data-theme="dark"] .theme-icon-sun{display:none;}
+
+/* ── MOBILE ─────────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  nav{padding:0 20px;height:60px}
+  .nav-links{display:none}
+  .nav-logo{font-size:22px}
+
+  .hero-inner{
+    bottom:8%;
+    left:0;right:0;
+    padding:0 24px;
+    max-width:100%;
+    text-align:center;
+  }
+  .hero h1{font-size:48px;letter-spacing:-1px}
+  .hero-sub{font-size:16px;margin:16px auto 0}
+  .hero-ctas{justify-content:center}
+  .hero-trust{text-align:center}
+
+  .pain-section{padding:72px 24px}
+
+  .how-section{padding:80px 20px}
+  .steps-grid{grid-template-columns:1fr;gap:48px}
+
+  .demo-section{padding:80px 20px}
+  .demo-chips{flex-direction:column;align-items:center;gap:0}
+  .demo-chip{
+    border-right:none;
+    border-bottom:1px solid rgba(28,22,18,.1);
+    padding:10px 0;
+    width:100%;text-align:center;
+  }
+  .demo-chip:last-child{border-bottom:none}
+
+  .testi-section{padding:80px 20px}
+  .testi-grid{grid-template-columns:1fr;gap:0}
+  .testi-item{
+    padding-bottom:48px;
+    margin-bottom:48px;
+    border-bottom:1px solid rgba(184,150,62,.25);
+  }
+  .testi-item:last-child{padding-bottom:0;margin-bottom:0;border-bottom:none}
+
+  .pricing-section{padding:80px 20px}
+  .price-grid{grid-template-columns:1fr;max-width:420px}
+
+  .final-cta{padding:100px 20px}
+  .waitlist-form{flex-direction:column}
+  .waitlist-btn{width:100%}
+}
+
+@media(min-width:701px) and (max-width:1024px){
+  .steps-grid{gap:36px}
+  .testi-grid{gap:40px}
+  .price-grid{grid-template-columns:1fr;max-width:440px}
+  nav{padding:0 24px}
+}
+
+
+/* ── AUTH MODAL ───────────────────────────────────────────────────── */
+.auth-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+.auth-modal-overlay.open{display:flex}
+.auth-modal{
+  background:var(--white);border-radius:16px;
+  padding:36px 32px;max-width:400px;width:calc(100% - 40px);
+  box-shadow:0 24px 64px rgba(0,0,0,.18);
+  font-family:var(--sans);
+}
+.auth-modal-title{
+  font-family:var(--serif);font-size:22px;font-weight:600;
+  color:var(--text);margin-bottom:6px;
+}
+.auth-modal-sub{
+  font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5;
+}
+.auth-modal-input{
+  width:100%;padding:12px 14px;border:1.5px solid var(--surface);
+  border-radius:8px;font-size:15px;font-family:var(--sans);
+  background:var(--bg);color:var(--text);outline:none;
+  transition:border-color 0.2s;margin-bottom:12px;
+}
+.auth-modal-input:focus{border-color:var(--gold)}
+.auth-modal-btn{
+  width:100%;padding:13px;background:var(--gold);color:#fff;
+  border:none;border-radius:8px;font-size:14px;font-weight:500;
+  font-family:var(--sans);letter-spacing:0.5px;text-transform:uppercase;
+  cursor:pointer;transition:opacity 0.2s;
+}
+.auth-modal-btn:hover{opacity:0.88}
+.auth-modal-btn:disabled{opacity:0.5;cursor:not-allowed}
+.auth-modal-close{
+  float:right;background:none;border:none;
+  font-size:20px;cursor:pointer;color:var(--muted);margin-top:-4px;
+}
+.auth-modal-note{font-size:12px;color:var(--muted);margin-top:12px;text-align:center}
+.auth-modal-success{text-align:center;padding:8px 0}
+.auth-modal-success .success-icon{font-size:40px;margin-bottom:12px}
+.auth-modal-success p{font-size:15px;color:var(--muted);line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">Tripva</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="mytrips.html" id="navMyTrips" style="display:none">My Trips</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+      <span class="theme-icon-sun">☀</span>
+      <span class="theme-icon-moon">☽</span>
+    </button>
+    <a class="nav-cta" href="plan.html">Begin planning</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <span class="hero-eyebrow">Tripva — AI Travel Planning</span>
+    <h1><em>The world</em><span>is yours to plan.</span></h1>
+    <p class="hero-sub">Describe your trip. Tripva builds a complete day-by-day itinerary — hotels, restaurants, trains, and everything you'd otherwise miss.</p>
+    <div class="hero-ctas">
+      <a class="btn-gold" href="plan.html">Begin planning — it's free</a>
+      <a class="btn-outline-white" href="trip.html?demo=1" target="_blank">See a sample trip</a>
+    </div>
+    <p class="hero-trust"><span id="tripCount">50</span>+ trips planned worldwide · No credit card required</p>
+  </div>
+</section>
+
+<!-- SECTION 2 — PAIN -->
+<section class="pain-section" id="about">
+  <div class="pain-inner">
+    <span class="section-label fade-in">The Problem</span>
+    <h2 class="s-h2 fade-in"><em>Planning a trip should feel<br>like the trip itself.</em></h2>
+    <p class="pain-body fade-in">Instead, it's a Sunday afternoon lost to 12 browser tabs, a spreadsheet that's out of date by Tuesday, and a low-grade anxiety that follows you through security — wondering what you might have missed.</p>
+    <p class="pain-close fade-in">That's the gap Tripva was built to close.</p>
+  </div>
+</section>
+
+<!-- SECTION 3 — HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="how-header fade-in">
+      <span class="section-label">How Tripva Works</span>
+      <h2 class="s-h2 white">Three steps to a perfect trip.</h2>
+      <p class="how-subtitle">No forms. No dropdowns. Just tell Tripva about your trip.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step fade-in">
+        <div class="step-num">01</div>
+        <div class="step-title">Tell Tripva your idea</div>
+        <p class="step-body">Type your destination, dates, and how you like to travel. Plain language — like telling a friend.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">02</div>
+        <div class="step-title">AI builds your itinerary</div>
+        <p class="step-body">Hotels, restaurants, day plans, train connections, and what to book before it sells out. All in 30 seconds.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">03</div>
+        <div class="step-title">Travel with a co-pilot</div>
+        <p class="step-body">Your live dashboard updates as you go. Today's weather, tonight's hotel, what to do right now.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 — DEMO -->
+<section class="demo-section" id="demo">
+  <div class="demo-inner">
+    <div class="demo-header fade-in">
+      <span class="section-label">The Product</span>
+      <h2 class="s-h2">Every detail, beautifully organised.</h2>
+      <p class="demo-sub">This is your trip inside Tripva. Live, interactive, and built around your day.</p>
+    </div>
+    <div class="phone-wrap fade-in">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <iframe src="trip.html?demo=1" title="Tripva trip demo" loading="lazy" scrolling="yes"></iframe>
+      </div>
+    </div>
+    <div class="demo-chips fade-in">
+      <span class="demo-chip">Day-by-day itinerary</span>
+      <span class="demo-chip">Hotel recommendations</span>
+      <span class="demo-chip">Booking alerts</span>
+      <span class="demo-chip">Route maps</span>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5 — TESTIMONIALS -->
+<section class="testi-section">
+  <div class="testi-inner">
+    <div class="testi-header fade-in">
+      <span class="section-label">What Travellers Say</span>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-item fade-in">
+        <div class="testi-mark">"</div>
+        <p class="testi-quote">Planned my entire seven-day Tokyo trip in under a minute. It flagged Teamlab Borderless tickets were selling out two weeks early — I would have completely missed it.</p>
+        <p class="testi-attr">Jamie L., Melbourne</p>
+      </div>
+      <div class="testi-item fade-in">
+        <div class="testi-mark">"</div>
+        <p class="testi-quote">I used to spend a full Sunday planning a trip. Now I do it over coffee. The booking alerts have already saved me twice.</p>
+        <p class="testi-attr">Sofia R., Barcelona</p>
+      </div>
+      <div class="testi-item fade-in">
+        <div class="testi-mark">"</div>
+        <p class="testi-quote">It built a ten-day Italy itinerary with every train, hotel, and museum slot perfectly sequenced. My travel agent could not have done this.</p>
+        <p class="testi-attr">David K., Toronto</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6 — PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-header fade-in">
+      <span class="section-label">Pricing</span>
+      <h2 class="s-h2"><em>Start free. Travel further.</em></h2>
+    </div>
+    <p class="pricing-sub fade-in">No credit card required. Upgrade or cancel anytime.</p>
+    <div class="price-grid">
+
+      <!-- FREE -->
+      <div class="price-card fade-in">
+        <p class="price-name">Tripva</p>
+        <div><span class="price-amount">$0</span></div>
+        <p class="price-cadence">Forever free</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">3 trip plans</div>
+          <div class="price-feature">Full itinerary</div>
+          <div class="price-feature">Shareable link</div>
+          <div class="price-feature">Basic dashboard</div>
+        </div>
+        <a class="price-btn price-btn-outline" href="plan.html">Start free</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card price-card-pro fade-in">
+        <span class="price-badge">Most Popular</span>
+        <p class="price-name">Pro</p>
+        <div><span class="price-amount">$12</span><span class="price-per">/mo</span></div>
+        <p class="price-cadence">Billed monthly · cancel anytime</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">Unlimited trips</div>
+          <div class="price-feature">AI booking alerts</div>
+          <div class="price-feature">Live dashboard</div>
+          <div class="price-feature">Export PDF</div>
+          <div class="price-feature">Priority support</div>
+        </div>
+        <a class="price-btn price-btn-gold" href="plan.html">Get Tripva Pro</a>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="price-card fade-in">
+        <p class="price-name">Business</p>
+        <div><span class="price-amount">$49</span><span class="price-per">/mo</span></div>
+        <p class="price-cadence">Per month · cancel anytime</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">Team trips</div>
+          <div class="price-feature">API access</div>
+          <div class="price-feature">Custom exports</div>
+          <div class="price-feature">Dedicated support</div>
+        </div>
+        <a class="price-btn price-btn-outline" href="mailto:hello@tripva.app?subject=Business Plan">Contact us</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7 — FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-bg"></div>
+  <div class="final-cta-overlay"></div>
+  <div class="final-cta-inner">
+    <span class="section-label fade-in">Ready to plan?</span>
+    <h2 class="s-h2 white fade-in"><em>Your next adventure<br>starts with one sentence.</em></h2>
+    <a class="btn-gold fade-in" href="plan.html" style="font-size:15px;padding:16px 40px;margin-top:8px">Begin planning — it's free</a>
+    <p class="final-trust fade-in"><span id="proofTrips">50</span>+ trips planned · Free forever plan · Works for any destination</p>
+  </div>
+</section>
+
+<!-- EMAIL -->
+<div class="waitlist" id="waitlist">
+  <div class="waitlist-inner">
+    <h3>Stay in the loop</h3>
+    <p>New features, trip ideas, and destination guides — straight to your inbox.</p>
+    <form id="emailForm" class="waitlist-form" action="https://formspree.io/f/xpwzkqdb" method="POST" onsubmit="handleEmail(event)">
+      <input class="waitlist-input" type="email" name="email" placeholder="you@email.com" required>
+      <button class="waitlist-btn" type="submit" id="emailBtn">Subscribe</button>
+    </form>
+    <p class="waitlist-note">No spam. Unsubscribe anytime.</p>
+    <div id="emailSuccess" class="success-msg">You're on the list. Wander well.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Tripva</div>
+    <div class="footer-links">
+      <a href="plan.html">Plan a trip</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="trip.html?demo=1" target="_blank">Demo</a>
+    </div>
+    <div class="footer-legal">
+      <a href="mailto:hello@tripva.app?subject=Privacy">Privacy Policy</a>
+      <a href="mailto:hello@tripva.app?subject=Terms">Terms</a>
+      <a href="mailto:hello@tripva.app">hello@tripva.app</a>
+    </div>
+    <div class="footer-copy">© 2026 Futurizta · tripva.app</div>
+  </div>
+</footer>
+
+
+<!-- AUTH MODAL -->
+<div class="auth-modal-overlay" id="authModal">
+  <div class="auth-modal">
+    <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Close">&#215;</button>
+    <div id="authModalForm">
+      <div class="auth-modal-title">✈ Save your trip</div>
+      <div class="auth-modal-sub">Enter your email to save this trip and access it anytime — free, no password needed.</div>
+      <input type="email" class="auth-modal-input" id="authEmail" placeholder="your@email.com" autocomplete="email">
+      <button class="auth-modal-btn" id="authSendBtn" onclick="sendMagicLink()">Send magic link</button>
+      <div class="auth-modal-note">We'll email you a one-click login link. No spam, ever.</div>
+    </div>
+    <div id="authModalSuccess" class="auth-modal-success" style="display:none">
+      <div class="success-icon">📬</div>
+      <div class="auth-modal-title" style="text-align:center">Check your email</div>
+      <p>We sent a magic link to <strong id="authEmailSent"></strong>.<br>Click it to log in and your trip will save automatically.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="pwa-banner" id="pwaBanner">
+  <div style="flex:1">
+    <div style="font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--text)">Add Tripva to home screen</div>
+    <div style="font-size:12px;font-weight:300;font-family:'DM Sans',sans-serif;color:var(--muted);margin-top:2px">Instant access, works offline</div>
+  </div>
+  <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+  <button class="pwa-dismiss" id="pwaDismissBtn">&#215;</button>
+</div>
+
+<script>
+// Nav scroll behaviour
+(function(){
+  var nav = document.getElementById('mainNav');
+  function onScroll(){
+    if(window.scrollY > 80){ nav.classList.add('scrolled'); }
+    else{ nav.classList.remove('scrolled'); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+// Live trip counter
+fetch('https://tripai-backend.vercel.app/api/stats')
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var n = d.trips || 50;
+    var s = n >= 100 ? Math.floor(n/10)*10+'+' : n+'+';
+    var el1 = document.getElementById('tripCount');
+    var el2 = document.getElementById('proofTrips');
+    if(el1){ el1.textContent = s; }
+    if(el2){ el2.textContent = s; }
+  })
+  .catch(function(){});
+
+// Email / waitlist form
+function handleEmail(e) {
+  e.preventDefault();
+  var btn = document.getElementById('emailBtn');
+  btn.textContent = '...';
+  btn.disabled = true;
+  fetch(e.target.action, {
+    method: 'POST',
+    body: new FormData(e.target),
+    headers: { Accept: 'application/json' }
+  })
+  .then(function(){
+    document.getElementById('emailForm').style.display = 'none';
+    document.getElementById('emailSuccess').style.display = 'block';
+  })
+  .catch(function(){
+    btn.textContent = 'Subscribe';
+    btn.disabled = false;
+  });
+}
+
+// Fade-in on scroll
+(function(){
+  var els = document.querySelectorAll('.fade-in');
+  if(!('IntersectionObserver' in window)){
+    for(var i=0;i<els.length;i++){ els[i].classList.add('visible'); }
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  for(var j=0;j<els.length;j++){ obs.observe(els[j]); }
+})();
+
+// PWA install banner
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  if(!sessionStorage.getItem('pwa_d') && !matchMedia('(display-mode:standalone)').matches){
+    setTimeout(function(){
+      var b = document.getElementById('pwaBanner');
+      if(b){ b.classList.add('show'); }
+    }, 3000);
+  }
+});
+document.getElementById('pwaInstallBtn').addEventListener('click', function(){
+  document.getElementById('pwaBanner').classList.remove('show');
+  sessionStorage.setItem('pwa_d','1');
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt = null; }
+});
+document.getElementById('pwaDismissBtn').addEventListener('click', function(){
+  document.getElementById('pwaBanner').classList.remove('show');
+  sessionStorage.setItem('pwa_d','1');
+});
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
+
+// ── THEME TOGGLE ──
+(function(){
+  var THEME_KEY = 'tripva-theme';
+  var html = document.documentElement;
+  function applyTheme(theme){
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+  }
+  var saved = localStorage.getItem(THEME_KEY) || 'light';
+  applyTheme(saved);
+  var toggle = document.getElementById('themeToggle');
+  if(toggle){
+    toggle.addEventListener('click', function(){
+      var current = html.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
+})();
+
+// ── AUTH ──────────────────────────────────────────────────────────
+var BACKEND = 'https://tripai-backend.vercel.app';
+var SUPABASE_URL = 'https://alnzqqlwqwxknxaxtawh.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjkzNTcsImV4cCI6MjA5MDgwNTM1N30.SONh5djSuiUPAkwFuTPrYAxwiavP6lpvWQimljXl5hU';
+
+function getSession(){
+  try{ return JSON.parse(localStorage.getItem('tripva_session') || 'null'); }catch(e){ return null; }
+}
+function setSession(s){ localStorage.setItem('tripva_session',JSON.stringify(s)); }
+
+function checkAuthNav(){
+  var s = getSession();
+  var el = document.getElementById('navMyTrips');
+  if(el) el.style.display = s ? 'inline' : 'none';
+}
+
+function openAuthModal(){
+  document.getElementById('authModal').classList.add('open');
+  setTimeout(function(){ var el=document.getElementById('authEmail'); if(el) el.focus(); }, 200);
+}
+function closeAuthModal(){
+  document.getElementById('authModal').classList.remove('open');
+}
+
+function sendMagicLink(){
+  var email = (document.getElementById('authEmail').value||'').trim();
+  if(!email || !email.includes('@')){ alert('Please enter a valid email.'); return; }
+  var btn = document.getElementById('authSendBtn');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+  fetch(BACKEND+'/api/user/magic-link',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.error){ btn.textContent='Send magic link'; btn.disabled=false; alert(d.error); return; }
+    document.getElementById('authEmailSent').textContent = email;
+    document.getElementById('authModalForm').style.display = 'none';
+    document.getElementById('authModalSuccess').style.display = 'block';
+    // store pending email
+    localStorage.setItem('tripva_pending_email', email);
+  })
+  .catch(function(){
+    btn.textContent='Send magic link'; btn.disabled=false;
+    alert('Could not send link. Try again.');
+  });
+}
+
+// Check for auth callback hash (#access_token=...)
+(function(){
+  checkAuthNav();
+  var hash = window.location.hash;
+  if(hash && hash.includes('access_token=')){
+    var params = new URLSearchParams(hash.slice(1));
+    var session = {
+      access_token: params.get('access_token'),
+      refresh_token: params.get('refresh_token'),
+      expires_at: Date.now() + parseInt(params.get('expires_in')||'3600')*1000
+    };
+    setSession(session);
+    checkAuthNav();
+    history.replaceState(null,'',location.pathname+location.search);
+  }
+})();
+
+</script>
+</body>
+</html>
