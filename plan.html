@@ -287,10 +287,22 @@ async function submitTrip() {
   }, 180000);
 
   try {
-    // Simple JSON response (no streaming)
+    const resp = await fetch(BACKEND + '/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        destination: dest, startDate: start, endDate: end,
+        travelers: travellers, budget, style, homeCity: home,
+        interests
+      })
+    });
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.message || 'Server error (' + resp.status + ')');
+    }
     const result = await resp.json();
     tripState = result.plan;
-    
+
     // Update UI with trip info
     if (tripState?.rawPlan?.trip) {
       const trip = tripState.rawPlan.trip;
@@ -309,12 +321,9 @@ async function submitTrip() {
         document.getElementById('genDays').appendChild(c);
       });
     }
-    if (!tripState?.rawPlan) throw new Error('No plan data received');
+    if (!tripState?.rawPlan) throw new Error('No trip plan received');
     setProgress(100); clearTimeout(_t60); clearTimeout(_t120); clearInterval(fakeInterval); clearInterval(loadInterval);
     let shareUrl = result.saved?.url || null;
-    // Already saved, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:tripState.rawPlan})});
-      if (sr.ok) { const d = await sr.json(); shareUrl = d.url; }
-    } catch(e) {}
     localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
     window._generatedShareUrl = shareUrl;
     document.getElementById('genCta').style.display = 'block';
