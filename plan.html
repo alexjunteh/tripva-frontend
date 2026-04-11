@@ -8,7 +8,7 @@
 <style>
 :root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:#7c6af7;--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI','Segoe UI Emoji','Apple Color Emoji',sans-serif;min-height:100vh}
 nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{font-size:20px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
 .nav-back{font-size:13px;color:var(--muted);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;transition:color .15s}
@@ -27,7 +27,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .trav-btn:active{background:rgba(149,184,255,.2)}
 .trav-lbl{font-size:13px;color:rgba(255,255,255,.45);margin-left:4px}
 .interests{display:flex;flex-wrap:wrap;gap:8px}
-.chip-int{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;user-select:none}
+.chip-int{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;user-select:none;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Apple Color Emoji",sans-serif}
 .chip-int.sel{background:rgba(124,106,247,.2);border-color:var(--accent);color:#fff}
 .form-submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:#0a0a0f;cursor:pointer;letter-spacing:-.2px;transition:transform .15s ease,box-shadow .15s;margin-top:8px;box-shadow:0 4px 20px rgba(124,106,247,.25)}
 .form-submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,106,247,.35)}
@@ -59,13 +59,64 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @keyframes barPulse{0%,100%{opacity:1}50%{opacity:.4}}
 .gen-estimate{font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;text-align:center}
+
+/* ─── AUTH MODAL ─────────────────────────────── */
+.auth-modal-bg{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  align-items:flex-end;justify-content:center;
+  padding:0;
+}
+.auth-modal-bg.open{display:flex}
+.auth-modal{
+  width:100%;max-width:480px;
+  background:#16162a;
+  border-radius:24px 24px 0 0;
+  padding:32px 24px 40px;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.auth-modal h3{
+  font-size:20px;font-weight:800;color:#fff;
+  margin-bottom:8px;
+}
+.auth-modal p{
+  font-size:14px;color:rgba(255,255,255,.6);
+  margin-bottom:20px;line-height:1.5;
+}
+.auth-email-input{
+  display:block;width:100%;
+  background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:16px;color:#fff;
+  margin-bottom:12px;
+  box-sizing:border-box;
+}
+.auth-email-input:focus{outline:none;border-color:var(--accent);}
+.auth-submit-btn{
+  display:block;width:100%;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:12px;
+  padding:15px;
+  font-size:16px;font-weight:700;
+  cursor:pointer;margin-bottom:16px;
+}
+.auth-skip{
+  display:block;text-align:center;
+  font-size:13px;color:rgba(255,255,255,.4);
+  cursor:pointer;padding:8px 0;
+}
+.auth-skip:hover{color:rgba(255,255,255,.7);}
+.auth-sent{text-align:center;padding:8px 0;}
+.auth-sent-icon{font-size:40px;margin-bottom:12px;}
 </style>
-<script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
+<script defer data-domain="tripva.app,tripva.app" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 <nav>
-  <a class="nav-back" href="index.html">← Tripva</a>
-  <a class="nav-logo" href="index.html">Tripva</a>
+  <a class="nav-back" href="/">← Tripva</a>
+  <a class="nav-logo" href="/">Tripva</a>
   <div id="authNavArea">
     <a href="mytrips.html" style="font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:600;display:none" id="myTripsNavLink">My Trips</a>
   </div>
@@ -108,21 +159,21 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
     </div>
     <div class="form-section">
       <label class="form-label">Travel style</label>
-      <input class="form-input" id="f-style" type="text" placeholder="e.g. romantic couple, family with kids, solo backpacker" autocomplete="off">
+      <input class="form-input" id="f-style" type="text" placeholder="e.g. romantic couple, solo backpacker" autocomplete="off">
     </div>
     <div class="form-section">
       <label class="form-label">Interests</label>
       <div class="interests" id="f-interests">
-        <div class="chip-int sel" data-v="food">🍜 Food</div>
-        <div class="chip-int sel" data-v="trains">🚆 Trains</div>
-        <div class="chip-int" data-v="hiking">🥾 Hiking</div>
-        <div class="chip-int sel" data-v="history">🏛️ History</div>
-        <div class="chip-int" data-v="beaches">🏖️ Beaches</div>
-        <div class="chip-int" data-v="alpine views">🏔️ Alpine</div>
-        <div class="chip-int" data-v="museums">🖼️ Museums</div>
-        <div class="chip-int" data-v="nightlife">🍷 Nightlife</div>
-        <div class="chip-int" data-v="shopping">🛍️ Shopping</div>
-        <div class="chip-int" data-v="photography">📸 Photos</div>
+        <div class="chip-int sel" data-v="food">Food</div>
+        <div class="chip-int sel" data-v="trains">Trains</div>
+        <div class="chip-int" data-v="hiking">Hiking</div>
+        <div class="chip-int sel" data-v="history">History</div>
+        <div class="chip-int" data-v="beaches">Beaches</div>
+        <div class="chip-int" data-v="alpine views">Alpine</div>
+        <div class="chip-int" data-v="museums">Museums</div>
+        <div class="chip-int" data-v="nightlife">Nightlife</div>
+        <div class="chip-int" data-v="shopping">Shopping</div>
+        <div class="chip-int" data-v="photography">Photos</div>
       </div>
     </div>
     <div class="form-section">
@@ -236,64 +287,32 @@ async function submitTrip() {
   }, 180000);
 
   try {
-    const resp = await fetch(BACKEND + '/api/plan?stream=true', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ destination:dest, startDate:start, endDate:end, travelers:travellers, budget, style, interests, homeCity:home })
-    });
-    if (!resp.ok) throw new Error('Backend error ' + resp.status);
-
-    const reader = resp.body.getReader();
-    const dec = new TextDecoder();
-    while (true) {
-      const {done, value} = await reader.read(); if (done) break;
-      buffer += dec.decode(value, {stream:true});
-      const parts = buffer.split('\n\n'); buffer = parts.pop();
-      for (const part of parts) {
-        for (const line of part.split('\n')) {
-          if (!line.startsWith('data: ')) continue;
-          try {
-            const evt = JSON.parse(line.slice(6));
-            if (evt.type === 'skeleton' && evt.data) {
-              const trip = evt.data.rawPlan?.trip;
-              if (trip?.name) document.getElementById('genDest').textContent = trip.name;
-              if (trip?.startDate) document.getElementById('genDates').textContent = trip.startDate + ' → ' + (trip.endDate||'');
-              totalDays = evt.data.rawPlan?.days?.length || 0;
-              clearInterval(fakeInterval); clearInterval(loadInterval);
-              const est = document.getElementById('genEstimate');
-              if (est) est.style.display = 'none';
-              logRoute.className = 'gen-log-item done'; logRoute.querySelector('.gen-log-icon').textContent = '✓';
-              addLog('✓', 'Hotels & budget planned', 'done'); setProgress(15);
-              (evt.data.rawPlan?.days||[]).forEach(d => {
-                const c = document.createElement('div'); c.className = 'gen-day-card'; c.id = 'gen-day-'+d.day;
-                c.innerHTML = `<span class="gen-day-num">DAY ${d.day}</span><span class="gen-day-title">${d.title||''}</span><span class="gen-day-status">⏳</span>`;
-                document.getElementById('genDays').appendChild(c);
-              });
-            }
-            if (evt.type === 'day' && evt.data) {
-              completedDays++;
-              const c = document.getElementById('gen-day-'+evt.data.day);
-              if (c) {
-                c.classList.add('ready'); c.querySelector('.gen-day-status').textContent = '✓';
-                const acts = (evt.data.timeline||[]).filter(t => t.type !== 'transport').length;
-                c.querySelector('.gen-day-title').textContent = (evt.data.title||'') + (acts ? ' · '+acts+' stops' : '');
-              }
-              document.querySelectorAll('.gen-log-item.active').forEach(el => {el.className='gen-log-item done';el.querySelector('.gen-log-icon').textContent='✓';});
-              setProgress(15 + Math.round((completedDays/Math.max(totalDays,1))*75));
-            }
-            if (evt.type === 'progress' && evt.message) {
-              const span = logRoute.querySelector('span:last-child');
-              if (span) span.textContent = evt.message;
-            }
-            if (evt.type === 'done' && evt.data) tripState = evt.data;
-          } catch(e) {}
-        }
-      }
+    // Simple JSON response (no streaming)
+    const result = await resp.json();
+    tripState = result.plan;
+    
+    // Update UI with trip info
+    if (tripState?.rawPlan?.trip) {
+      const trip = tripState.rawPlan.trip;
+      document.getElementById('genDest').textContent = trip.name;
+      document.getElementById('genDates').textContent = trip.startDate + ' → ' + (trip.endDate||'');
+      totalDays = tripState.rawPlan.days?.length || 0;
+      clearInterval(fakeInterval); clearInterval(loadInterval);
+      const est = document.getElementById('genEstimate');
+      if (est) est.style.display = 'none';
+      logRoute.className = 'gen-log-item done'; logRoute.querySelector('.gen-log-icon').textContent = '✓';
+      addLog('✓', 'Trip generated!', 'done'); setProgress(100);
+      (tripState.rawPlan.days||[]).forEach(d => {
+        const c = document.createElement('div'); c.className = 'gen-day-card ready'; c.id = 'gen-day-'+d.day;
+        const acts = (d.timeline||[]).filter(t => t.type !== 'transport').length;
+        c.innerHTML = '<span class="gen-day-num">DAY '+d.day+'</span><span class="gen-day-title">'+(d.title||'')+' · '+acts+' stops</span><span class="gen-day-status">✓</span>';
+        document.getElementById('genDays').appendChild(c);
+      });
     }
     if (!tripState?.rawPlan) throw new Error('No plan data received');
     setProgress(100); clearTimeout(_t60); clearTimeout(_t120); clearInterval(fakeInterval); clearInterval(loadInterval);
-    let shareUrl = null;
-    try {
-      const sr = await fetch(BACKEND+'/api/save', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:tripState.rawPlan})});
+    let shareUrl = result.saved?.url || null;
+    // Already saved, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:tripState.rawPlan})});
       if (sr.ok) { const d = await sr.json(); shareUrl = d.url; }
     } catch(e) {}
     localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
