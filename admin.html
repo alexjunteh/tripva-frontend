@@ -125,10 +125,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="tab-panel" id="panel-links">
     <div class="mw">
       <div class="sec">Product</div>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/" target="_blank"><div class="link-icon">🌐</div><div class="link-info"><div class="link-title">Landing Page</div><div class="link-url">futuriztaos.github.io/trip-planner/</div></div><div class="badge g">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/plan.html" target="_blank"><div class="link-icon">✨</div><div class="link-info"><div class="link-title">Trip Generator</div><div class="link-url">plan.html</div></div><div class="badge g">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/trip.html?id=2507ce159dae4b00" target="_blank"><div class="link-icon">🗺️</div><div class="link-info"><div class="link-title">Demo Trip (Paris + Amsterdam 7d)</div><div class="link-url">trip.html?id=2507ce159dae4b00</div></div><div class="badge g">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/mytrips.html" target="_blank"><div class="link-icon">📋</div><div class="link-info"><div class="link-title">My Trips</div><div class="link-url">mytrips.html</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://alexjunteh.github.io/trip-planner/" target="_blank"><div class="link-icon">🌐</div><div class="link-info"><div class="link-title">Landing Page</div><div class="link-url">alexjunteh.github.io/trip-planner/</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://alexjunteh.github.io/trip-planner/plan.html" target="_blank"><div class="link-icon">✨</div><div class="link-info"><div class="link-title">Trip Generator</div><div class="link-url">plan.html</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://alexjunteh.github.io/trip-planner/trip.html?id=2507ce159dae4b00" target="_blank"><div class="link-icon">🗺️</div><div class="link-info"><div class="link-title">Demo Trip (Paris + Amsterdam 7d)</div><div class="link-url">trip.html?id=2507ce159dae4b00</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://alexjunteh.github.io/trip-planner/mytrips.html" target="_blank"><div class="link-icon">📋</div><div class="link-info"><div class="link-title">My Trips</div><div class="link-url">mytrips.html</div></div><div class="badge g">Live</div></a>
       <div class="sec">Backend API</div>
       <a class="link-card" href="https://tripai-backend.vercel.app/api/health" target="_blank"><div class="link-icon">💚</div><div class="link-info"><div class="link-title">GET /api/health</div><div class="link-url">tripai-backend.vercel.app</div></div><div class="badge g">Live</div></a>
       <a class="link-card" href="https://tripai-backend.vercel.app/api/stats" target="_blank"><div class="link-icon">📊</div><div class="link-info"><div class="link-title">GET /api/stats</div><div class="link-url">trip count</div></div><div class="badge g">Live</div></a>
@@ -264,9 +264,9 @@ async function runChecks(){
     {label:'Backend /api/stats',url:BE+'/api/stats',fn:d=>typeof d.trips==='number',note:'trips count'},
     {label:'Supabase Auth (GoTrue)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/auth/v1/health',fn:d=>d.name==='GoTrue',note:'GoTrue v2',h:{apikey:ANON}},
     {label:'Supabase DB (trips table)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/rest/v1/trips?limit=0',ok2:[200,401],note:'table exists',h:{apikey:ANON,Authorization:'Bearer '+SKEY}},
-    {label:'Landing page',url:'https://futuriztaos.github.io/trip-planner/',html:true},
-    {label:'Plan generator (plan.html)',url:'https://futuriztaos.github.io/trip-planner/plan.html',html:true},
-    {label:'My Trips (mytrips.html)',url:'https://futuriztaos.github.io/trip-planner/mytrips.html',html:true},
+    {label:'Landing page',url:'https://alexjunteh.github.io/trip-planner/',html:true},
+    {label:'Plan generator (plan.html)',url:'https://alexjunteh.github.io/trip-planner/plan.html',html:true},
+    {label:'My Trips (mytrips.html)',url:'https://alexjunteh.github.io/trip-planner/mytrips.html',html:true},
     {label:'Demo trip load',url:BE+'/api/trip?id=2507ce159dae4b00',fn:d=>!!(d?.rawPlan||d?.days),note:'plan loaded'},
   ];
   const el=document.getElementById('healthList');el.innerHTML='';
