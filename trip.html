@@ -2043,7 +2043,8 @@ function resetPacking() {
 document.addEventListener("DOMContentLoaded", () => {
   const _splashMs = (new URLSearchParams(location.search).get('demo')==='1') ? 400 : 1300;
   setTimeout(() => document.getElementById('splash').classList.add('gone'), _splashMs);
-  loadTripPlan();
+  // Defer loadTripPlan so const declarations (CITY_IMGS etc.) are initialized first
+  setTimeout(loadTripPlan, 0);
   const firstMsgTimeEl = document.getElementById('firstMsgTime');
   if (firstMsgTimeEl) firstMsgTimeEl.textContent = fmtTime(new Date());
   updateStatus();
