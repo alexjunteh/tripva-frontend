@@ -2251,10 +2251,14 @@ async function loadTripPlan() {
   const savedPlan = localStorage.getItem("tripva_plan");
   if (savedPlan) {
     try {
-      const plan = JSON.parse(savedPlan);
+      plan = JSON.parse(savedPlan);
+      tripMeta = plan.trip || {};
       populateDashboard(plan);
+      renderLiveOps();
+      switchTab('plan');
+      showLoadingSpinner(false);
       return;
-    } catch(e) {}
+    } catch(e) { console.warn('localStorage plan parse failed:', e); }
   } {
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
