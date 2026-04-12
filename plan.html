@@ -340,8 +340,7 @@ async function submitTrip() {
 }
 function openGeneratedTrip() {
   const su = window._generatedShareUrl;
-  // Show save modal after generation (with short delay for UX)
-  setTimeout(() => checkAuthAndSave(su), 300);
+  window.location.href = "trip.html" + (su ? "?id=" + su : "");
 }
 </script>
 
