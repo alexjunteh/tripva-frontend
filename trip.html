@@ -2264,6 +2264,15 @@ function getDayImage(day, idx) {
 let _usedDayImgs = new Set();
 
 async function loadTripPlan() {
+  // Try to load from localStorage first
+  const savedPlan = localStorage.getItem("tripva_plan");
+  if (savedPlan) {
+    try {
+      const plan = JSON.parse(savedPlan);
+      populateDashboard(plan);
+      return;
+    } catch(e) {}
+  } {
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
 
