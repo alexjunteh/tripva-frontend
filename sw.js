@@ -102,7 +102,7 @@ self.addEventListener('fetch', e => {
   }
 
   // Static assets (icons) — cache-first
-  if (STATIC_ASSETS.some(a => url.pathname.includes(a.replace('/trip-planner', '')))) {
+  if (STATIC_ASSETS.some(a => url.pathname.includes(a))) {
     e.respondWith(
       caches.match(e.request).then(r => r || fetch(e.request))
     );
