@@ -287,11 +287,11 @@ async function submitTrip() {
   }, 180000);
 
   try {
-    // Use SSE streaming for real-time progress
+    // Direct JSON fetch (no SSE - more reliable through CDN)
     const controller = new AbortController();
     const fetchTimeout = setTimeout(() => controller.abort(), 180000);
 
-    const resp = await fetch(BACKEND + '/api/plan?stream=true', {
+    const resp = await fetch(BACKEND + '/api/plan', {
       signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -308,34 +308,22 @@ async function submitTrip() {
       throw new Error(errData.message || 'Server error (' + resp.status + ')');
     }
 
-    // Read SSE stream
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let result = null;
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        try {
-          const evt = JSON.parse(line.slice(6));
-          if (evt.type === 'progress' && evt.message) {
-            logRoute.querySelector('span:last-child').textContent = evt.message;
-          } else if (evt.type === 'done' && evt.data) {
-            result = evt.data;
-          } else if (evt.type === 'error') {
-            throw new Error(evt.message || 'Generation failed');
-          }
-        } catch(e) { if (e.message !== 'Generation failed') continue; else throw e; }
-      }
-    }
-    if (!result) throw new Error('No response received from server');
+    const result = await resp.json();
     tripState = result.plan || result;
+
+    // Save plan to get a shareable ID
+    let shareUrl = null;
+    try {
+      const saveResp = await fetch(BACKEND + '/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: tripState })
+      });
+      if (saveResp.ok) {
+        const saved = await saveResp.json();
+        shareUrl = saved.url || null;
+      }
+    } catch(e) { console.warn('Save failed:', e); }
 
     // Update UI with trip info
     if (tripState?.rawPlan?.trip) {
@@ -357,7 +345,7 @@ async function submitTrip() {
     }
     if (!tripState?.rawPlan) throw new Error('No trip plan received');
     setProgress(100); clearTimeout(_t60); clearTimeout(_t120); clearInterval(fakeInterval); clearInterval(loadInterval);
-    let shareUrl = result.saved?.url || null;
+    // shareUrl already set above
     localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
     window._generatedShareUrl = shareUrl;
     document.getElementById('genCta').style.display = 'block';
