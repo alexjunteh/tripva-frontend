@@ -287,7 +287,10 @@ async function submitTrip() {
   }, 180000);
 
   try {
+    const controller = new AbortController();
+    const fetchTimeout = setTimeout(() => controller.abort(), 120000);
     const resp = await fetch(BACKEND + '/api/plan', {
+      signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -296,6 +299,7 @@ async function submitTrip() {
         interests
       })
     });
+    clearTimeout(fetchTimeout);
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
       throw new Error(errData.message || 'Server error (' + resp.status + ')');
@@ -329,6 +333,11 @@ async function submitTrip() {
     document.getElementById('genCta').style.display = 'block';
     setTimeout(openGeneratedTrip, 800);
   } catch(err) {
+    clearTimeout(fetchTimeout);
+    if (err.name === 'AbortError') {
+      err = new Error('Request timed out. The server is taking too long. Please try again.');
+    }
+
     clearTimeout(_t60); clearTimeout(_t120); clearInterval(fakeInterval); clearInterval(loadInterval);
     document.getElementById('planForm').style.display = 'block';
     document.getElementById('genScreen').style.display = 'none';
@@ -339,7 +348,12 @@ async function submitTrip() {
   }
 }
 function openGeneratedTrip() {
-  const su = window._generatedShareUrl;
+  let su = window._generatedShareUrl;
+  // Extract just the ID if full URL was returned
+  if (su && su.includes('id=')) {
+    const match = su.match(/id=([a-zA-Z0-9]+)/);
+    if (match) su = match[1];
+  }
   window.location.href = "trip.html" + (su ? "?id=" + su : "");
 }
 </script>
