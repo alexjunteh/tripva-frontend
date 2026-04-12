@@ -287,9 +287,11 @@ async function submitTrip() {
   }, 180000);
 
   try {
+    // Use SSE streaming for real-time progress
     const controller = new AbortController();
-    const fetchTimeout = setTimeout(() => controller.abort(), 120000);
-    const resp = await fetch(BACKEND + '/api/plan', {
+    const fetchTimeout = setTimeout(() => controller.abort(), 180000);
+
+    const resp = await fetch(BACKEND + '/api/plan?stream=true', {
       signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -300,12 +302,40 @@ async function submitTrip() {
       })
     });
     clearTimeout(fetchTimeout);
+
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
       throw new Error(errData.message || 'Server error (' + resp.status + ')');
     }
-    const result = await resp.json();
-    tripState = result.plan;
+
+    // Read SSE stream
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let result = null;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const evt = JSON.parse(line.slice(6));
+          if (evt.type === 'progress' && evt.message) {
+            logRoute.querySelector('span:last-child').textContent = evt.message;
+          } else if (evt.type === 'done' && evt.data) {
+            result = evt.data;
+          } else if (evt.type === 'error') {
+            throw new Error(evt.message || 'Generation failed');
+          }
+        } catch(e) { if (e.message !== 'Generation failed') continue; else throw e; }
+      }
+    }
+    if (!result) throw new Error('No response received from server');
+    tripState = result.plan || result;
 
     // Update UI with trip info
     if (tripState?.rawPlan?.trip) {
