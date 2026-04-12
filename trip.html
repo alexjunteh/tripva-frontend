@@ -2042,9 +2042,11 @@ function resetPacking() {
 // ══════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
   const _splashMs = (new URLSearchParams(location.search).get('demo')==='1') ? 400 : 1300;
-  setTimeout(() => document.getElementById('splash').classList.add('gone'), _splashMs);
+  setTimeout(() => { try { document.getElementById('splash').classList.add('gone'); } catch(e){} }, _splashMs);
+  // Safety net: splash MUST disappear within 5s no matter what
+  setTimeout(() => { try { const s = document.getElementById('splash'); if (s) s.classList.add('gone'); } catch(e){} }, 5000);
   // Defer loadTripPlan so const declarations (CITY_IMGS etc.) are initialized first
-  setTimeout(loadTripPlan, 0);
+  setTimeout(() => { loadTripPlan().catch(e => { console.error('loadTripPlan fatal:', e); showLoadingSpinner(false); }); }, 0);
   const firstMsgTimeEl = document.getElementById('firstMsgTime');
   if (firstMsgTimeEl) firstMsgTimeEl.textContent = fmtTime(new Date());
   updateStatus();
@@ -2248,21 +2250,26 @@ function getDayImage(day, idx) {
 let _usedDayImgs = new Set();
 
 async function loadTripPlan() {
-  // Try to load from localStorage first
-  const savedPlan = localStorage.getItem("tripva_plan");
-  if (savedPlan) {
-    try {
-      plan = JSON.parse(savedPlan);
-      tripMeta = plan.trip || {};
-      populateDashboard(plan);
-      renderLiveOps();
-      switchTab('plan');
-      showLoadingSpinner(false);
-      return;
-    } catch(e) { console.warn('localStorage plan parse failed:', e); }
-  } {
+  // bulletproof: check URL params FIRST so ?id= always wins over stale localStorage
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
+  const isSharedLink = !!id;
+
+  // Only use localStorage shortcut when there's NO ?id= param (direct visit)
+  if (!isSharedLink) {
+    const savedPlan = localStorage.getItem("tripva_plan");
+    if (savedPlan) {
+      try {
+        plan = JSON.parse(savedPlan);
+        tripMeta = plan.trip || {};
+        populateDashboard(plan);
+        renderLiveOps();
+        switchTab('plan');
+        showLoadingSpinner(false);
+        return;
+      } catch(e) { console.warn('localStorage plan parse failed:', e); }
+    }
+  } {
 
   // ── DEMO MODE (?demo=1) — hardcoded trip, never fails ──────────────────
   if (params.get('demo') === '1') {
@@ -2302,22 +2309,27 @@ async function loadTripPlan() {
   }
 
   if (id) {
+    let fetchedData = null;
     try {
       showLoadingSpinner(true);
       const tripFetchCtrl = new AbortController();
-      const tripFetchTimeout = setTimeout(() => tripFetchCtrl.abort(), 15000); // 15s timeout
+      const tripFetchTimeout = setTimeout(() => tripFetchCtrl.abort(), 15000);
       const res = await fetch('https://tripai-backend.vercel.app/api/trip?id=' + encodeURIComponent(id), { signal: tripFetchCtrl.signal });
       clearTimeout(tripFetchTimeout);
       if (res.ok) {
         const data = await res.json();
-        if (data && data.rawPlan) {
-          plan = data.rawPlan;
-          tripMeta = plan.trip || {};
-          localStorage.setItem('tripva_plan', JSON.stringify(plan));
-          populateDashboard(plan);
+        if (data && data.rawPlan) fetchedData = data.rawPlan;
+      }
+    } catch(e) { console.warn('Backend fetch failed:', e); }
+
+    if (fetchedData) {
+      plan = fetchedData;
+      tripMeta = plan.trip || {};
+      try { localStorage.setItem('tripva_plan', JSON.stringify(plan)); } catch(e) {}
+      try { populateDashboard(plan); } catch(e) { console.error('populateDashboard error:', e); }
 
   // ── SYNC VALIDATOR — warn if segments and timeline drift ──
-  (function validateSync() {
+  try { (function validateSync() {
     const segs = (plan.segments||[]).filter(s=>s.bookingRequired);
     const days  = plan.days||[];
     const tlIdx = {};
@@ -2332,19 +2344,17 @@ async function loadTripPlan() {
       if (segBooked && tlPending)  console.warn('[SYNC DRIFT] '+s.id+': segment=booked but timeline shows ⏳');
       if (!segBooked && tlBooked)  console.warn('[SYNC DRIFT] '+s.id+': segment=pending but timeline shows ✅');
     });
-  })();
-          renderLiveOps();
-          switchTab('plan');
-          if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Tripva';
-          const banner = document.getElementById('restoredBanner');
-          if (banner) { banner.textContent = '✅ Trip loaded from shared link'; banner.style.display = 'flex'; }
-          showLoadingSpinner(false);
-          return;
-        }
-      }
-    } catch(e) { console.warn('Backend load failed:', e); }
+  })(); } catch(e) {}
+      try { renderLiveOps(); } catch(e) { console.error('renderLiveOps error:', e); }
+      switchTab('plan');
+      if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Tripva';
+      const banner = document.getElementById('restoredBanner');
+      if (banner) { banner.textContent = 'Trip loaded from shared link'; banner.style.display = 'flex'; }
+      showLoadingSpinner(false);
+      return;
+    }
+
     showLoadingSpinner(false);
-    // Plan not found for this id — show proper empty state
     showNoTripFound();
     return;
   }
