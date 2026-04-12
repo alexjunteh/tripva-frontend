@@ -1014,7 +1014,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .v2-quick-btn:active { background:var(--surface2); }
 
 </style>
-<script defer data-domain="futuriztaos.github.io" src="https://plausible.io/js/script.js"></script>
+<script defer data-domain="alexjunteh.github.io" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -3256,7 +3256,7 @@ function exportHtml() {
       ${(d.timeline||[]).map(tl=>`<div class="tl-row"><div class="tl-t">${esc2(tl.time||'')}</div><div class="tl-c"><div class="tl-n">${esc2(tl.title||'')}</div>${tl.detail?`<div class="tl-d">${esc2(tl.detail)}</div>`:''}</div></div>`).join('')}
     </div>`).join('');
   function esc2(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc2(t.name||'My Trip')}</title></head><body><div class="hero"><div class="hero-e">${esc2(t.emoji||'✈️')}</div><div class="hero-t">${esc2(t.name||'My Trip')}</div><div class="hero-d">${esc2([t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · '))}</div></div><div class="body">${daysHtml||'<div class="day-section">No plan generated yet.</div>'}</div><div class="footer">Made with TripAI · futuriztaos.github.io/trip-planner</div></body></html>`;
+  const doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc2(t.name||'My Trip')}</title></head><body><div class="hero"><div class="hero-e">${esc2(t.emoji||'✈️')}</div><div class="hero-t">${esc2(t.name||'My Trip')}</div><div class="hero-d">${esc2([t.dates,t.people&&t.people+' people',t.budget].filter(Boolean).join(' · '))}</div></div><div class="body">${daysHtml||'<div class="day-section">No plan generated yet.</div>'}</div><div class="footer">Made with TripAI · alexjunteh.github.io/trip-planner</div></body></html>`;
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([doc],{type:'text/html'})); a.download=(t.name||'my-trip').replace(/[^a-z0-9]/gi,'-').toLowerCase()+'.html'; a.click(); showToast('💾 Exported!');
 }
 
@@ -3451,7 +3451,7 @@ async function submitPlan() {
       });
       if (saveRes.ok) {
         const { id } = await saveRes.json();
-        window._lastShareUrl = `https://futuriztaos.github.io/trip-planner/trip.html?id=${id}`;
+        window._lastShareUrl = `https://alexjunteh.github.io/trip-planner/trip.html?id=${id}`;
       }
     } catch(e) { /* non-fatal */ }
 
@@ -3624,7 +3624,7 @@ function fabInstall() {
 
 
 <div style="text-align:center;padding:20px 0 32px;font-size:12px;color:rgba(255,255,255,.25)">
-  ✨ Planned by <a href="https://futuriztaos.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
+  ✨ Planned by <a href="https://alexjunteh.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
 </div>
 </body>
 </html>
