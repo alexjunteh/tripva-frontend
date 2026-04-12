@@ -2,7 +2,7 @@
   "name": "Tripva",
   "short_name": "Tripva",
   "description": "AI-powered travel planner with live itinerary, ticket wallet, and budget tracking",
-  "start_url": "/trip-planner/index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",

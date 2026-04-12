@@ -4,34 +4,34 @@ const STATIC_CACHE = 'tripva-static-v9';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
-  '/trip-planner/icons/icon-192.png',
-  '/trip-planner/icons/icon-512.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
   // Ticket files — cached for offline access
-  '/trip-planner/tickets/alex-accademia.jpg',
-  '/trip-planner/tickets/alex-grindelwald.jpg',
-  '/trip-planner/tickets/alex-uffizi.jpg',
-  '/trip-planner/tickets/alex-venice-ec31.jpg',
-  '/trip-planner/tickets/alex-venice-ir2017.jpg',
-  '/trip-planner/tickets/concert-venice-imusici.pdf',
-  '/trip-planner/tickets/doges-palace-fastrack.pdf',
-  '/trip-planner/tickets/ky-accademia.jpg',
-  '/trip-planner/tickets/ky-grindelwald.jpg',
-  '/trip-planner/tickets/ky-uffizi.jpg',
-  '/trip-planner/tickets/ky-venice-ec31.jpg',
-  '/trip-planner/tickets/ky-venice-ir2017.jpg',
-  '/trip-planner/tickets/vatican-1.jpg',
-  '/trip-planner/tickets/vatican-2.jpg',
-  '/trip-planner/tickets/vatican-3.jpg',
-  '/trip-planner/tickets/venice-florence-alex.jpg',
-  '/trip-planner/tickets/venice-florence-alex.pdf',
-  '/trip-planner/tickets/venice-florence-ky.jpg',
-  '/trip-planner/tickets/venice-florence-ky.pdf',
-  '/trip-planner/tickets/venice-overview.jpg',
+  '/tickets/alex-accademia.jpg',
+  '/tickets/alex-grindelwald.jpg',
+  '/tickets/alex-uffizi.jpg',
+  '/tickets/alex-venice-ec31.jpg',
+  '/tickets/alex-venice-ir2017.jpg',
+  '/tickets/concert-venice-imusici.pdf',
+  '/tickets/doges-palace-fastrack.pdf',
+  '/tickets/ky-accademia.jpg',
+  '/tickets/ky-grindelwald.jpg',
+  '/tickets/ky-uffizi.jpg',
+  '/tickets/ky-venice-ec31.jpg',
+  '/tickets/ky-venice-ir2017.jpg',
+  '/tickets/vatican-1.jpg',
+  '/tickets/vatican-2.jpg',
+  '/tickets/vatican-3.jpg',
+  '/tickets/venice-florence-alex.jpg',
+  '/tickets/venice-florence-alex.pdf',
+  '/tickets/venice-florence-ky.jpg',
+  '/tickets/venice-florence-ky.pdf',
+  '/tickets/venice-overview.jpg',
 ];
 
 // HTML files to pre-cache on install
 const HTML_ASSETS = [
-  '/trip-planner/italy-test.html',
+  '/italy-test.html',
 ];
 
 self.addEventListener('install', e => {
