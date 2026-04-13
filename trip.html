@@ -1946,7 +1946,7 @@ async function fetchPacking() {
   const p = plan?.trip || {};
   try {
     // api/packing removed (endpoint deleted)
-    const r = { ok: false };);
+    const r = { ok: false };
     if (!r.ok) throw new Error('API error '+r.status);
     packingData = await r.json();
     renderPackingList(packingData);
