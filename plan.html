@@ -13,7 +13,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .nav-logo{font-size:20px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
 .nav-back{font-size:13px;color:var(--muted);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;transition:color .15s}
 .nav-back:hover{color:var(--text)}
-.wrap{max-width:540px;margin:0 auto;padding:32px 20px 80px}
+.wrap{max-width:540px;margin:0 auto;padding:32px 20px 120px}.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:50;background:linear-gradient(to top,var(--bg) 80%,transparent);padding:20px 20px 28px;display:none}.sticky-cta.show{display:block}
 .page-title{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
 .page-sub{font-size:14px;color:var(--muted);margin-bottom:36px}
 .form-section{margin-bottom:20px}
@@ -169,6 +169,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
       <input class="form-input" id="f-home" type="text" placeholder="e.g. Kuala Lumpur, London, Sydney" autocomplete="off">
     </div>
     <button class="form-submit-btn" id="submitBtn">Generate my trip &#10024;</button>
+    <div class="sticky-cta" id="stickyCta"><button class="form-submit-btn" id="stickySubmit" style="margin-top:0;box-shadow:none">Generate my trip &#10024;</button></div>
   </div>
 
   <!-- Generation screen -->
@@ -244,6 +245,23 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('authSkip').onclick = skipAuth;
   document.getElementById('authSkip2').onclick = skipAuth;
   document.getElementById('genDoneBtn').onclick = openGeneratedTrip;
+  var submitBtn = document.getElementById('submitBtn');
+  var stickyCta = document.getElementById('stickyCta');
+  var scrollHint = document.getElementById('scrollHint');
+  if (submitBtn && stickyCta) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          stickyCta.classList.remove('show');
+          if (scrollHint) scrollHint.style.display = 'none';
+        } else {
+          stickyCta.classList.add('show');
+        }
+      });
+    }, { threshold: 0.1 });
+    io.observe(submitBtn);
+    document.getElementById('stickySubmit').onclick = function() { submitBtn.click(); };
+  }
 });
 
 function adjTrav(d) {
