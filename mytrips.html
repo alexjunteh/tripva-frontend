@@ -54,6 +54,7 @@ nav{
 .page-sub{font-size:14px;color:#a89e96;margin-bottom:32px}
 
 /* AUTH STATE */
+.auth-box-wrap{display:flex;align-items:center;justify-content:center;min-height:60vh;padding:20px 0}
 .auth-box{
   background:#1a1624;border:1px solid rgba(255,255,255,.06);
   border-radius:16px;padding:40px 32px;text-align:center;
@@ -200,6 +201,7 @@ nav{
 
   <!-- Auth section (shown when not logged in) -->
   <div id="authSection">
+    <div class="auth-box-wrap">
     <div class="auth-box">
       <div id="authFormBox">
         <div class="auth-box-title">Sign in to see your trips</div>
@@ -212,6 +214,7 @@ nav{
         <div class="check-email-title">Check your email</div>
         <div class="check-email-sub">We sent a magic link to <strong id="authEmailSent"></strong>.<br>Click it to log in and see your trips.</div>
       </div>
+    </div>
     </div>
   </div>
 
