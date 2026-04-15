@@ -17,7 +17,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .page-title{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
 .page-sub{font-size:14px;color:var(--muted);margin-bottom:36px}
 .form-section{margin-bottom:20px}
-.form-label{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px;display:block}
+.form-label{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:8px;display:block}
 .form-input{width:100%;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:inherit;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;appearance:none}
 .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(149,184,255,.1)}
 .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -25,10 +25,11 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .form-travelers span{font-size:20px;font-weight:900;min-width:24px;text-align:center}
 .trav-btn{background:rgba(255,255,255,.08);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:background .15s}
 .trav-btn:active{background:rgba(149,184,255,.2)}
-.trav-lbl{font-size:13px;color:rgba(255,255,255,.45);margin-left:4px}
+.trav-lbl{font-size:13px;color:rgba(255,255,255,.65);margin-left:4px}
 .interests{display:flex;flex-wrap:wrap;gap:8px}
 .chip-int{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;user-select:none;font-family:inherit}
 .chip-int.sel{background:rgba(124,106,247,.2);border-color:var(--accent);color:#fff}
+.interests-fade{height:32px;background:linear-gradient(to bottom,transparent,var(--bg));margin-top:-20px;pointer-events:none}
 .form-submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:#0a0a0f;cursor:pointer;letter-spacing:-.2px;transition:transform .15s ease,box-shadow .15s;margin-top:8px;box-shadow:0 4px 20px rgba(124,106,247,.25)}
 .form-submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,106,247,.35)}
 .form-submit-btn:active{transform:scale(.97)}
@@ -55,7 +56,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .gen-hotel-icon{font-size:18px;flex-shrink:0}
 .gen-hotel-info{flex:1;min-width:0}
 .gen-hotel-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gen-hotel-meta{font-size:12px;color:rgba(255,255,255,.45);margin-top:2px}
+.gen-hotel-meta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
 .gen-hotel-price{font-size:12px;font-weight:800;color:var(--accent);white-space:nowrap}
 
 /* Day cards */
@@ -77,7 +78,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 
 /* Log */
 .gen-log{display:flex;flex-direction:column;gap:6px;padding-top:4px}
-.gen-log-item{font-size:13px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:8px}
+.gen-log-item{font-size:13px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:8px}
 .gen-log-item.done{color:rgba(255,255,255,.75)}
 .gen-log-item.active{color:var(--accent)}
 .gen-log-icon{font-size:14px;width:18px;flex-shrink:0}
@@ -163,6 +164,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
         <div class="chip-int" data-v="shopping">Shopping</div>
         <div class="chip-int" data-v="photography">Photos</div>
       </div>
+      <div class="interests-fade"></div>
     </div>
     <div class="form-section">
       <label class="form-label">Home city (departure)</label>
