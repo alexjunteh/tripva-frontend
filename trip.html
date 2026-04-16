@@ -2298,7 +2298,7 @@ async function loadTripPlan() {
         populateDashboard(plan);
       } catch(e) { console.error('[Demo] populateDashboard error:', e); }
       try { renderLiveOps(); } catch(e) { console.error('[Demo] renderLiveOps error:', e); }
-      try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
+      try { switchTab('plan'); } catch(e) { console.error('[Demo] switchTab error:', e); }
       try { document.title = plan.trip.name + ' · Tripva'; } catch(e) {}
     }, 0);
     // Disable DEMO — real plan from localStorage runs synchronously after this block
@@ -4529,5 +4529,11 @@ function sendTripMagicLink(){
   </div>
 </div>
 
+  // Always restore from localStorage first (before DEMO fallback)
+  restoreMeta();
+
 </body>
 </html>
+  // Always restore from localStorage first (before DEMO blocks)
+  restoreMeta();
+
