@@ -2285,6 +2285,7 @@ async function loadTripPlan() {
     // Schedule AFTER restoreMeta runs (setTimeout 0 ensures correct order)
     // Each step wrapped in try/catch — switchTab ALWAYS fires even if populate throws
     setTimeout(() => {
+      if (!window._demoMode) return; // Skip DEMO if real plan exists in localStorage
       try {
         plan = DEMO_TRIP;
         tripMeta = plan.trip || {};
@@ -2294,7 +2295,9 @@ async function loadTripPlan() {
       try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
       try { document.title = plan.trip.name + ' · Tripva'; } catch(e) {}
     }, 0);
-    // Double-safety: force Days tab after 600ms in case something fires late
+    // Disable DEMO — real plan from localStorage runs synchronously after this block
+    window._demoMode = false;
+    // Double-safety: force Days tab after 600ms only if DEMO was re-enabled
     setTimeout(() => {
       if (window._demoMode && plan && plan.days) {
         switchTab('days');
