@@ -513,7 +513,7 @@ footer{
 <nav>
   <div class="nav-logo">Tripva</div>
   <div class="nav-links">
-    <a href="#about">How it works</a>
+    
     <a href="#pricing">Pricing</a>
   </div>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
@@ -542,9 +542,6 @@ footer{
       </a>
     </div>
     <p class="hero-nudge">No credit card. Works for any destination.</p>
-  </div>
-  <div class="hero-scroll">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M4 9l4 4 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
 </section>
 
@@ -775,7 +772,7 @@ footer{
     <div class="footer-links">
       <a href="plan.html">Plan a trip</a>
       <a href="#how">About</a>
-      <a href="#how">How it works</a>
+      
       <a href="#pricing">Pricing</a>
       <a href="trip.html?id=2507ce159dae4b00" target="_blank">Demo</a>
     </div>
@@ -804,7 +801,7 @@ fetch('https://tripai-backend.vercel.app/api/stats')
   .then(function(r){ return r.json(); })
   .then(function(d){
     var n = d.trips || 50;
-    var s = n >= 100 ? Math.floor(n/10)*10+'+' : n+'+';
+    var s = n >= 100 ? (Math.floor(n/10)*10) + '+' : String(n) + '+';
     var el1 = document.getElementById('tripCount');
     var el2 = document.getElementById('proofTrips');
     if(el1){ el1.textContent = s; }
