@@ -353,6 +353,10 @@ async function submitTrip() {
       throw new Error(err.message || 'Server error (' + response.status + ')');
     }
 
+    // Store events for buffered-SSE fallback (Cloudflare may buffer entire response)
+    window._planEvents = [];
+    let gotDone = false;
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -366,9 +370,22 @@ async function submitTrip() {
       for (const line of lines) {
         if (!line.startsWith('data: ')) continue;
         try {
-          const evt = JSON.parse(line.slice(6));
+          const raw = line.slice(6);
+          if (!raw || raw === '[object Object]') continue;
+          const evt = JSON.parse(raw);
+          window._planEvents.push(evt);
           handleSSEEvent(evt, logRoute, logDays);
+          if (evt.type === 'done' || evt.type === 'error') { gotDone = true; break; }
         } catch(e) { /* skip parse errors */ }
+      }
+      if (gotDone) break;
+    }
+
+    // If stream ended but no done event (Cloudflare buffered everything) — process stored events
+    if (!gotDone && window._planEvents.length > 0) {
+      for (const evt of window._planEvents) {
+        handleSSEEvent(evt, logRoute, logDays);
+        if (evt.type === 'done') break;
       }
     }
   } catch(err) {
