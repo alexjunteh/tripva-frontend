@@ -389,7 +389,7 @@ async function submitTrip() {
       }
     }
   } catch(err) {
-    clearTimeout(_t60); clearTimeout(_t120); clearTimeout(_tFail);
+    try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
     document.getElementById('planForm').style.display = 'block';
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('genLog').innerHTML = '';
@@ -418,14 +418,10 @@ function handleSSEEvent(evt, logRoute, logDays) {
   switch (evt.type) {
 
     case 'start':
-      // Show "Building your trip..." immediately when generation starts
-      document.getElementById('genDest').textContent = dest;
-      document.getElementById('genDates').textContent = start + ' \u2192 ' + end;
+      // genDest/genDates already set in submitTrip before SSE starts
       document.getElementById('genEstimate').textContent = 'Designing your route\u2026';
       setProgress(5);
-      // Add a "waiting for AI..." visual immediately
       addLog('\u23F3', 'AI is planning your trip\u2026', 'active');
-      logRoute = document.getElementById('genLog').lastElementChild;
       break;
 
     case 'skeleton': {
@@ -549,7 +545,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
     }
 
     case 'done': {
-      clearTimeout(_t60); clearTimeout(_t120); clearTimeout(_tFail);
+      try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
       setProgress(100);
       document.getElementById('genEstimate').textContent = '&#10024; Trip ready!';
       logDays.className = 'gen-log-item done';
@@ -569,7 +565,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
     }
 
     case 'error': {
-      clearTimeout(_t60); clearTimeout(_t120); clearTimeout(_tFail);
+      try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
       showToast('&#9888; ' + (evt.message || 'Generation failed'), 5000);
       document.getElementById('planForm').style.display = 'block';
       document.getElementById('genScreen').style.display = 'none';
