@@ -381,7 +381,7 @@ async function submitTrip() {
       if (gotDone) break;
     }
 
-    // If stream ended but no done event (Cloudflare buffered everything) — process stored events
+    // If stream ended but no done event (Cloudflare buffered) — process stored events
     if (!gotDone && window._planEvents.length > 0) {
       for (const evt of window._planEvents) {
         handleSSEEvent(evt, logRoute, logDays);
@@ -394,7 +394,23 @@ async function submitTrip() {
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('genLog').innerHTML = '';
     showToast('&#9888; ' + err.message, 4000);
+    return;
   }
+
+  // Force completion at 75s — ensures trip dashboard opens even if done event is buffered
+  setTimeout(() => {
+    if (document.getElementById('genScreen').style.display !== 'none') {
+      // Process any remaining buffered events
+      if (window._planEvents && window._planEvents.length > 0) {
+        for (const evt of window._planEvents) {
+          handleSSEEvent(evt, logRoute, logDays);
+          if (evt.type === 'done') break;
+        }
+      }
+      // Force open dashboard after brief delay
+      setTimeout(openGeneratedTrip, 500);
+    }
+  }, 75000);
 }
 
 // ── SSE event handler ──────────────────────────────────────────────────────
