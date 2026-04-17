@@ -60,41 +60,7 @@ img{max-width:100%;display:block}
   --shadow-elevated: 0 0 0 1px rgba(0,0,0,.08), 0 4px 12px -2px rgba(0,0,0,.14), 0 8px 24px rgba(0,0,0,.18);
   --shadow-purple: 0 0 0 1px rgba(124,106,247,.15), 0 4px 12px rgba(124,106,247,.25), 0 8px 24px rgba(124,106,247,.15);
 }
-[data-theme="light"]{
-  --bg:#f7f3ee;
-  --bg-dark:#ede8e2;
-  --bg2:#f0ece6;
-  --surface:rgba(0,0,0,.04);
-  --surface2:rgba(0,0,0,.07);
-  --border:rgba(0,0,0,.08);
-  --border2:rgba(0,0,0,.14);
-  --text:#1c1612;
-  --muted:rgba(28,22,18,.45);
-  --muted2:rgba(28,22,18,.65);
-  --purple:#7c6af7;
-  --purple-light:#a78bfa;
-  --purple-glow:rgba(124,106,247,.25);
-  --indigo:var(--purple);
-  --green:#059669;
-  --r:12px;
-}
-.theme-toggle{
-  background:none;
-  border:1px solid currentColor;
-  opacity:0.6;
-  cursor:pointer;
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:14px;
-  color:inherit;
-  transition:opacity 0.2s;
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
-.theme-icon-sun,.theme-icon-moon{display:none}
-[data-theme="dark"] .theme-icon-sun{display:inline}
-[data-theme="light"] .theme-icon-moon{display:inline}
+
 
 /* ─── NAV ─────────────────────────────────────────────────────────────────── */
 nav{
@@ -529,10 +495,8 @@ footer{
     
     <a href="#pricing">Pricing</a>
   </div>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
-      <span class="theme-icon-sun">☀</span>
-      <span class="theme-icon-moon">☽</span>
-    </button>
+  
+                </button>
       <a class="nav-cta" href="plan.html">Try free →</a>
 </nav>
 
