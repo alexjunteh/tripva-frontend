@@ -509,10 +509,7 @@ footer{
     
     <a href="#pricing">Pricing</a>
   </div>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle dark/light mode">
-      <span class="theme-icon-sun">☀</span>
-      <span class="theme-icon-moon">☽</span>
-    </button>
+  
       <a class="nav-cta" href="plan.html">Try free →</a>
 </nav>
 
@@ -865,9 +862,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').ca
 (function(){
   var t=localStorage.getItem('tripva-theme')||'dark';
   document.documentElement.setAttribute('data-theme',t);
-  function applyTheme(theme){
-    document.documentElement.setAttribute('data-theme',theme);
-    localStorage.setItem('tripva-theme',theme);
+      
     var btn=document.getElementById('themeToggle');
     /* icon visibility handled by CSS data-theme selectors */
   }
