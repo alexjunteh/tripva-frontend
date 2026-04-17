@@ -860,14 +860,14 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').ca
 </script>
 <script>
 (function(){
-  var t=localStorage.getItem('tripva-theme')||'dark';
+  var t=||'dark';
   document.documentElement.setAttribute('data-theme',t);
       
     var btn=document.getElementById('themeToggle');
     /* icon visibility handled by CSS data-theme selectors */
   }
   document.addEventListener('DOMContentLoaded',function(){
-    applyTheme(localStorage.getItem('tripva-theme')||'dark');
+    applyTheme(||'dark');
     var btn=document.getElementById('themeToggle');
     if(btn)btn.addEventListener('click',function(){
       applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
