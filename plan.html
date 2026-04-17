@@ -6,7 +6,18 @@
 <meta name="theme-color" content="#0a0a0f">
 <title>Plan your trip — Tripva</title>
 <style>
-:root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:#7c6af7;--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92)}
+:root{
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-2xl: 24px;
+  --r-full: 999px;
+  --shadow-card: 0 0 0 1px rgba(0,0,0,.06), 0 1px 2px -1px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.12);
+  --shadow-elevated: 0 0 0 1px rgba(0,0,0,.08), 0 4px 12px -2px rgba(0,0,0,.14), 0 8px 24px rgba(0,0,0,.18);
+  --shadow-purple: 0 0 0 1px rgba(124,106,247,.15), 0 4px 12px rgba(124,106,247,.25), 0 8px 24px rgba(124,106,247,.15);
+--bg:var(--bg);--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);--accent:#95b8ff;--purple:var(--purple);--muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92)
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-padding-bottom:100px}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI','Segoe UI Emoji','Apple Color Emoji',sans-serif;min-height:100vh}
@@ -30,10 +41,10 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px}
 .trav-btn:active{background:rgba(149,184,255,.2)}
 .trav-lbl{font-size:13px;color:rgba(255,255,255,.65);margin-left:4px}
 .interests{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
-.chip-int{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;user-select:none;font-family:inherit}
+.chip-int{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;transition: opacity .15s ease-out, transform .15s ease-out, color .15s ease-out, background-color .15s ease-out;user-select:none;font-family:inherit}
 .chip-int.sel{background:rgba(124,106,247,.2);border-color:var(--accent);color:#fff}.chip-int:hover{border-color:rgba(255,255,255,.3)}
 .interests-fade{height:32px;background:linear-gradient(to bottom,transparent,var(--bg));margin-top:8px;pointer-events:none}
-.form-submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:#0a0a0f;cursor:pointer;letter-spacing:-.2px;transition:transform .15s ease,box-shadow .15s;margin-top:8px;box-shadow:0 4px 20px rgba(124,106,247,.25)}
+.form-submit-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:var(--bg);cursor:pointer;letter-spacing:-.2px;transition:transform .15s ease,box-shadow .15s;margin-top:8px;box-shadow:0 4px 20px rgba(124,106,247,.25)}
 .form-submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,106,247,.35)}
 .form-submit-btn:active{transform:scale(.97)}
 .form-submit-btn:disabled{opacity:.4;cursor:not-allowed}
@@ -44,7 +55,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px}
 .gen-dest{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px;min-height:30px}
 .gen-dates{font-size:13px;color:rgba(255,255,255,.5);font-weight:600;min-height:20px}
 .gen-progress-bar{height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
-.gen-progress-fill{height:100%;background:linear-gradient(90deg,#7c6af7,#95b8ff);border-radius:4px;transition:width .4s ease;width:0%}
+.gen-progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),#95b8ff);border-radius:4px;transition:width .4s ease;width:0%}
 .gen-estimate{font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;text-align:center}
 
 /* Skeleton trip meta */
@@ -64,7 +75,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px}
 
 /* Day cards */
 .gen-days{display:flex;flex-direction:column;gap:8px}
-.gen-day-card{background:#1a1a28;border:1.5px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;transition:all .3s}
+.gen-day-card{background:#1a1a28;border:1.5px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;transition: opacity .3s ease-out, transform .3s ease-out, color .3s ease-out, background-color .3s ease-out}
 .gen-day-card.ready{border-color:rgba(124,106,247,.4);background:rgba(124,106,247,.08)}
 .gen-day-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .gen-day-num{font-size:11px;font-weight:800;color:rgba(255,255,255,.3);letter-spacing:.5px;width:36px;flex-shrink:0}
@@ -90,7 +101,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px}
 .gen-done-cta{text-align:center;padding-top:12px}
 
 /* Toast */
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,30,.98);border:1px solid var(--border);border-radius:14px;padding:11px 18px;font-size:13px;font-weight:700;z-index:700;opacity:0;transition:all .28s cubic-bezier(.25,.1,.25,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,30,.98);border:1px solid var(--border);border-radius:14px;padding:11px 18px;font-size:13px;font-weight:700;z-index:700;opacity:0;transition: opacity .28s, transform .28s, color .28s, background-color .28s cubic-bezier(.25,.1,.25,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* Auth modal */
