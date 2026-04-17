@@ -69,10 +69,10 @@ img{max-width:100%;display:block}
   --text:#1c1612;
   --muted:rgba(28,22,18,.45);
   --muted2:rgba(28,22,18,.65);
-  --purple:#6b59e8;
-  --purple-light:#5b4cd4;
-  --purple-glow:rgba(107,89,232,.2);
-  --indigo:#6366f1;
+  --purple:#7c6af7;
+  --purple-light:#a78bfa;
+  --purple-glow:rgba(124,106,247,.25);
+  --indigo:var(--purple);
   --green:#059669;
   --r:12px;
 }
@@ -126,7 +126,7 @@ nav{
   transition:background .2s,transform .15s;
   white-space:nowrap;
 }
-.nav-cta:hover{background:#6b59e8;transform:translateY(-1px)}
+.nav-cta:hover{background:var(--purple);transform:translateY(-1px)}
 @media(max-width:600px){
   .nav-links{display:none}
   nav{padding:0 16px}
@@ -186,7 +186,7 @@ nav{
   background:linear-gradient(135deg,var(--purple-light),var(--indigo));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.hero-sub{
+.hero-sub{color:rgba(255,255,255,.75);
   font-size:clamp(15px,2.2vw,19px);color:var(--muted2);
   line-height:1.65;max-width:560px;margin:0 auto 36px;
 }
@@ -201,7 +201,7 @@ nav{
   transition:background .2s,transform .15s,box-shadow .2s;
   box-shadow:0 4px 24px rgba(124,106,247,.4);
 }
-.btn-primary:hover{background:#6b59e8;transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,106,247,.5)}
+.btn-primary:hover{background:var(--purple);transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,106,247,.5)}
 .btn-secondary{
   display:inline-flex;align-items:center;gap:8px;
   background:transparent;color:rgba(255,255,255,.8);
@@ -272,7 +272,7 @@ h2.section-h2{
   font-size:clamp(18px,3vw,26px);font-weight:800;color:#fff;
   letter-spacing:-.5px;margin-bottom:32px;line-height:1.3;
 }
-.pain-hook span{color:var(--purple-light)}
+.pain-hook span{color:#c4b5fd}
 @media(max-width:900px){.pain-grid{grid-template-columns:1fr}}
 @media(min-width:601px) and (max-width:900px){.pain-grid{grid-template-columns:1fr 1fr}}
 
@@ -426,7 +426,7 @@ h2.section-h2{
 .final-cta-trust{
   font-size:13px;color:var(--muted);margin-top:18px;letter-spacing:.2px;
 }
-.final-cta-trust span{color:rgba(255,255,255,.35)}
+.final-cta-trust span{color:rgba(255,255,255,.55)}
 
 /* ─── WAITLIST ────────────────────────────────────────────────────────────── */
 .waitlist{
@@ -459,7 +459,7 @@ h2.section-h2{
   padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;
   white-space:nowrap;transition:background .2s,transform .15s;
 }
-.waitlist-btn:hover{background:#6b59e8;transform:translateY(-1px)}
+.waitlist-btn:hover{background:var(--purple);transform:translateY(-1px)}
 .waitlist-btn:disabled{opacity:.6;cursor:default}
 .waitlist-inner{max-width:480px;margin:0 auto}
 @media(max-width:500px){
