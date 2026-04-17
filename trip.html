@@ -2311,7 +2311,16 @@ async function loadTripPlan() {
     // NOTE: _demoMode stays true — cleared by restoreMeta guard or when a real plan loads
     setTimeout(() => {
       if (window._demoMode && plan && plan.days) {
-        switchTab('days');
+        // Directly switch to Days tab (more reliable than switchTab from setTimeout scope)
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        var daysBtn = document.getElementById('tab-days');
+        var daysContent = document.getElementById('days');
+        if (daysBtn) daysBtn.classList.add('active');
+        if (daysContent) daysContent.classList.add('active');
+        // Also scroll to day strip
+        var dayStrip = document.getElementById('dayStrip');
+        if (dayStrip) dayStrip.scrollIntoView({block:'start'});
       }
     }, 600);
     showLoadingSpinner(false);
