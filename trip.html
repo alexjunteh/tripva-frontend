@@ -93,9 +93,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 /* ─── BOTTOM NAV - 5 TABS, iOS pill style ─── */
 .bottom-nav{display:flex;background:var(--surface-alpha);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:1px solid var(--border);padding:6px 4px calc(6px + var(--safe-b));flex-shrink:0;z-index:100}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:600;min-height:48px;background:none;border:none;position:relative;transition:color .2s;padding:4px 2px;border-radius:14px}
-.nav-btn.active{color:var(--accent2)}
+.nav-btn.active{color:var(--purple)}
 .nav-btn.active::before{content:'';position:absolute;inset:2px 8px;background:rgba(124,106,247,.12);border-radius:12px}
-.nav-btn.active::after{content:'';position:absolute;top:3px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--accent2);border-radius:2px;opacity:.9}
+.nav-btn.active::after{content:'';position:absolute;top:3px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--purple);border-radius:2px;opacity:.9}
 .nav-icon{font-size:22px;line-height:1;position:relative;z-index:1;transition:transform .2s}
 .nav-btn.active .nav-icon{transform:scale(1.12) translateY(-1px)}
 .nav-lbl{position:relative;z-index:1;letter-spacing:.1px}
@@ -192,7 +192,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* ── LIVE TAB LIFESTYLE ── */
 .live-hero{position:relative;height:220px;border-radius:0 0 28px 28px;overflow:hidden;background:var(--surface);background-size:cover;background-position:center}
-.live-hero-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px 18px;background:linear-gradient(transparent,var(--surface-alpha))}
+.live-hero-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px 18px;background:linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.35) 50%, transparent 100%)}
 .live-hero-location{font-size:28px;font-weight:900;letter-spacing:-.8px;line-height:1.1}
 .live-hero-date{font-size:14px;color:var(--text2);margin-top:4px;font-weight:600}
 .live-chips{display:flex;gap:8px;padding:14px 16px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -284,11 +284,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 /* Day selector strip */
 .day-strip{padding:10px 12px;border-bottom:1px solid var(--border);overflow-x:auto;display:flex;gap:6px;scrollbar-width:none;flex-shrink:0;background:var(--bg)}
 .day-strip::-webkit-scrollbar{display:none}
-.day-pill{
-    will-change: transform;
-    background:var(--surface2);color:var(--text2);flex-shrink:0;padding:6px 10px;border-radius:16px;font-size:12px;font-weight:700;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition: opacity .2s ease-out, transform .2s ease-out, color .2s ease-out, background-color .2s ease-out;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:44px;overflow:hidden;text-overflow:ellipsis
-}
-.day-pill.active{background:var(--accent);border-color:var(--accent);color:var(--text)}
+.day-pill{height:44px;border-radius:999px;will-change:transform;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:opacity .2s ease-out,transform .2s ease-out,color .2s ease-out,background-color .2s ease-out;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;padding:0 10px;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700}
+.day-pill.active{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700;box-shadow:0 2px 12px rgba(124,106,247,.4)}
 .day-pill.today-pill{border-color:var(--green);color:var(--green)}
 .day-pill.today-pill.active{background:var(--green);border-color:var(--green);color:#000}
 .day-pill-num{font-size:18px;line-height:1.2}
@@ -788,6 +785,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   flex-direction: column;
   justify-content: flex-end;
   padding: 16px 18px 14px;
+  background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.35) 50%, transparent 100%);
 }
 .v2-hero-daycount {
   font-size: 11px;
