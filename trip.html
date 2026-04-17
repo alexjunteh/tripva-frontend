@@ -31,18 +31,12 @@ g="en" data-theme="dark">
 
   // [DEMO] fallback — only if no localStorage plan
 
-/* DARK THEME (default) */
-[data-theme="dark"]{
+/* BASE STYLES */
+
   --bg:var(--bg);--surface:#13131a;--surface2:#1c1c28;--border:rgba(255,255,255,.08);
   --accent:var(--purple);--accent2:var(--purple-light);--green:#34d399;
   --muted:rgba(255,255,255,.38);--text:rgba(255,255,255,.92);--surface-alpha:rgba(8,8,13,.97);--text2:rgba(255,255,255,.7);--amber:#f59e0b;--red:var(--error);--card:#16162a;
-}
-/* LIGHT THEME */
-[data-theme="light"]{
-  --bg:#f7f3ee;--surface:#ffffff;--surface2:#f0ebe4;--border:rgba(28,22,18,.1);
-  --accent:var(--purple);--accent2:var(--purple);--green:#059669;
-  --muted:rgba(28,22,18,.45);--text:#1c1612;--surface-alpha:rgba(247,243,238,.97);--text2:rgba(28,22,18,.7);--amber:#d97706;--red:#dc2626;--card:#ffffff;
-}
+
 /* ── THEME TOGGLE ── */
 .theme-toggle{position:fixed;top:12px;right:12px;z-index:500;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;padding:6px 10px;border-radius:20px;font-size:14px;display:flex;align-items:center;gap:4px;transition: opacity .2s ease-out, transform .2s ease-out, color .2s ease-out, background-color .2s ease-out;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
 .theme-toggle:hover{background:rgba(255,255,255,.18);}
