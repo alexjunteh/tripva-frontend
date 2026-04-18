@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('authSkip2').onclick = skipAuth;
   document.getElementById('genDoneBtn').onclick = openGeneratedTrip;
   var submitBtn = document.getElementById('submitBtn');
-  var stickyCta = document.getElementById('stickyCta');
+  var stickyCta = // REMOVED: stickyCta;
   var scrollHint = document.getElementById('scrollHint');
   if (submitBtn && stickyCta) {
     var io = new IntersectionObserver(function(entries) {
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, { threshold: 0.1 });
     io.observe(submitBtn);
-    document.getElementById('stickySubmit').onclick = function() { submitBtn.click(); };
+    
   }
 });
 
