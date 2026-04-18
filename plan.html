@@ -27,7 +27,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .nav-logo{font-size:20px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#7c6af7,#6d5ee0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
 .nav-back{font-size:13px;color:var(--muted);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;transition:color .15s}
 .nav-back:hover{color:var(--text)}
-.wrap{max-width:540px;margin:0 auto;padding:32px 20px 140px}@media(min-width:640px){.wrap{padding:48px 20px 140px}}.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:50;background:linear-gradient(to top,rgba(10,10,15,.95) 60%,transparent);padding:8px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));display:none;box-shadow:0 -4px 24px rgba(0,0,0,.4)}.sticky-cta.show{display:block}.sticky-cta .form-submit-btn{box-shadow:0 -4px 32px rgba(124,106,247,.4);font-size:17px}
+.wrap{max-width:540px;margin:0 auto;padding:32px 20px 140px}@media(min-width:640px){.wrap{padding:48px 20px 100px}}.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:50;background:linear-gradient(to top,rgba(10,10,15,.95) 60%,transparent);padding:8px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));display:none;box-shadow:0 -4px 24px rgba(0,0,0,.4)}.sticky-cta.show{display:block}.sticky-cta .form-submit-btn{box-shadow:0 -4px 32px rgba(124,106,247,.4);font-size:17px}
 .page-title{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
 .page-sub{font-size:15px;color:var(--muted);margin-bottom:36px}
 .form-section{margin-bottom:20px}
@@ -119,7 +119,10 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 .auth-skip:hover{color:rgba(255,255,255,.7)}
 </style>
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
-</head>
+<style>
+  .sticky-btn-wrap{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:14px 20px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,rgba(10,10,18,.97) 70%,transparent);pointer-events:none}
+  .sticky-btn-wrap .form-submit-btn{pointer-events:all;width:100%;background:linear-gradient(135deg,#7c6af7,#6d5ee0);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:-.2px}
+</style></head>
 <body>
 <nav>
   <a class="nav-back" href="/">&#8592; Tripva</a>
@@ -186,7 +189,9 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       <div class="interests-fade"></div>
     </div>
 
-    <button class="form-submit-btn" id="submitBtn">Generate my trip &#10024;</button>
+    <div class="sticky-btn-wrap">
+    <button class="form-submit-btn" id="submitBtn">Generate my trip &#10024;</button></div>
+
     
   </div>
 
