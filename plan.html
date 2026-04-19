@@ -407,8 +407,18 @@ async function submitTrip() {
     if (!gotDone && window._planEvents.length > 0) {
       for (const evt of window._planEvents) {
         handleSSEEvent(evt, logRoute, logDays);
-        if (evt.type === 'done') break;
+        if (evt.type === 'done') { gotDone = true; break; }
       }
+    }
+    // If stream completed but done event never fired at all, force redirect
+    if (!gotDone && window._planEvents.length > 0) {
+      console.warn('[plan] Stream ended without done event — forcing redirect');
+      const lastEvt = window._planEvents[window._planEvents.length - 1];
+      if (lastEvt && lastEvt.data) {
+        const planData = lastEvt.data.plan || lastEvt.data || {};
+        localStorage.setItem('tripva_plan', JSON.stringify(planData.rawPlan || planData));
+      }
+      setTimeout(openGeneratedTrip, 500);
     }
   } catch(err) {
     try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
@@ -419,7 +429,14 @@ async function submitTrip() {
     return;
   }
 
-  // Force completion at 75s — ensures trip dashboard opens even if done event is buffered
+  // Safety: if genScreen still showing after stream + 2s, open trip
+  setTimeout(() => {
+    if (document.getElementById('genScreen') && document.getElementById('genScreen').style.display !== 'none') {
+      openGeneratedTrip();
+    }
+  }, 2000);
+
+  // Force completion at 45s — ensures trip dashboard opens even if done event is buffered
   setTimeout(() => {
     if (document.getElementById('genScreen').style.display !== 'none') {
       // Process any remaining buffered events
@@ -432,7 +449,7 @@ async function submitTrip() {
       // Force open dashboard after brief delay
       setTimeout(openGeneratedTrip, 500);
     }
-  }, 75000);
+  }, 45000);
 }
 
 // ── SSE event handler ──────────────────────────────────────────────────────
