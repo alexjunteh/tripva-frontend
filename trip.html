@@ -1139,7 +1139,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
-<div style="position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:9999;background:#7c6af7;color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;box-shadow:0 2px 12px rgba(124,106,247,.5);pointer-events:none">DEMO MODE</div>
+
 
 <div id="splash">
   <div class="sp-logo">✈️</div>
@@ -2374,15 +2374,9 @@ async function loadTripPlan() {
     } catch(e) { console.warn('localStorage parse failed:', e); }
   }
 
-  // Fallback: empty state — show trip tab with Plan a trip link
+  // No trip found — redirect to plan.html
   showLoadingSpinner(false);
-  switchTab('trip');
-  document.getElementById('tripDates').textContent = 'No trip loaded';
-  const focusCard = document.getElementById('focusCard');
-  if (focusCard) {
-    focusCard.style.display = 'block';
-    focusCard.innerHTML = '<div style="text-align:center;padding:32px 16px"><div style="font-size:48px;margin-bottom:16px">🗺️</div><div style="font-size:18px;font-weight:800;margin-bottom:8px">No trip yet</div><div style="font-size:14px;color:rgba(255,255,255,.45);margin-bottom:20px">Plan your first trip to get started</div><a href="index.html" style="display:inline-block;background:linear-gradient(135deg,#95b8ff,#7c6af7);color:#0a0a0f;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:800;text-decoration:none">Plan a trip →</a></div>';
-  }
+  window.location.href = '/plan';
 }
 
 function showNoTripFound() {
