@@ -2308,7 +2308,9 @@ async function loadTripPlan() {
       if (res.ok) {
         const data = await res.json();
         if (data && data.rawPlan) {
-          plan = data.rawPlan;
+          // Unwrap double-nesting: backend wraps as { rawPlan: { rawPlan: {...} } }
+          const rawData = data.rawPlan;
+          plan = (rawData.rawPlan && rawData.rawPlan.days) ? rawData.rawPlan : rawData;
           tripMeta = plan.trip || {};
           localStorage.setItem('tripva_plan', JSON.stringify(plan));
           populateDashboard(plan);
@@ -2333,7 +2335,9 @@ async function loadTripPlan() {
   const cached = localStorage.getItem('tripva_plan');
   if (cached) {
     try {
-      plan = JSON.parse(cached);
+      const parsedPlan = JSON.parse(cached);
+      // Unwrap double-nesting if present
+      plan = (parsedPlan.rawPlan && parsedPlan.rawPlan.days) ? parsedPlan.rawPlan : parsedPlan;
       tripMeta = plan.trip || {};
       populateDashboard(plan);
       renderLiveOps();
