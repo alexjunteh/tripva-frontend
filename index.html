@@ -509,6 +509,143 @@ footer{
   background:none;border:none;color:var(--muted);cursor:pointer;
   font-size:20px;padding:4px 8px;line-height:1;
 }
+
+/* ─── ARCHETYPE GRID (new — DESIGN.md v2) ────────────────────────────────── */
+.arch-section{
+  background:linear-gradient(180deg, var(--bg) 0%, var(--bg-dark) 100%);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:72px 20px;
+}
+.arch-section .section-inner{text-align:center}
+.arch-section h2.section-h2{margin:0 auto 12px}
+.arch-section .section-sub{margin:0 auto 36px}
+.arch-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:18px;
+  margin-top:36px;
+}
+@media(max-width:900px){
+  .arch-grid{grid-template-columns:repeat(2, 1fr);gap:12px}
+}
+@media(max-width:480px){
+  .arch-grid{grid-template-columns:1fr;gap:12px}
+}
+.arch-tile{
+  position:relative;
+  display:block;
+  aspect-ratio: 4 / 3;
+  border-radius:20px;
+  overflow:hidden;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(.22,1,.36,1), border-color .25s ease, box-shadow .25s ease;
+  isolation:isolate;
+}
+.arch-tile:hover{
+  transform:translateY(-3px);
+  border-color:rgba(124,106,247,.5);
+  box-shadow:0 12px 32px rgba(0,0,0,.35), 0 0 0 1px rgba(124,106,247,.25);
+}
+.arch-tile:focus-visible{
+  outline:2px solid var(--purple);
+  outline-offset:3px;
+}
+.arch-tile-img{
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  z-index:0;
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
+}
+.arch-tile:hover .arch-tile-img{transform:scale(1.04)}
+.arch-tile-overlay{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(10,10,18,.1) 0%, rgba(10,10,18,.4) 45%, rgba(10,10,18,.9) 100%);
+  z-index:1;
+}
+.arch-tile-body{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:16px 18px 18px;
+  z-index:2;
+  text-align:left;
+}
+.arch-tile-kicker{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(240,240,248,.55);
+  margin-bottom:6px;
+}
+.arch-tile-title{
+  font-size:19px;
+  font-weight:800;
+  letter-spacing:-.4px;
+  color:#fff;
+  line-height:1.15;
+  margin-bottom:4px;
+}
+.arch-tile-sub{
+  font-size:13px;
+  font-weight:500;
+  color:rgba(240,240,248,.72);
+  line-height:1.4;
+}
+.arch-tile-arrow{
+  position:absolute; top:14px; right:14px;
+  width:32px; height:32px;
+  border-radius:50%;
+  background:rgba(10,10,18,.55);
+  backdrop-filter:blur(8px);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:15px; font-weight:700;
+  z-index:2;
+  opacity:0;
+  transform:translateX(-4px);
+  transition:opacity .25s ease, transform .25s ease;
+}
+.arch-tile:hover .arch-tile-arrow,
+.arch-tile:focus-visible .arch-tile-arrow{
+  opacity:1;
+  transform:translateX(0);
+}
+
+/* ─── PROOF & PRICE (merged testimonial + pricing shell) ─────────────────── */
+.proof-strip{
+  max-width:1100px;
+  margin:0 auto 48px;
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  padding:0 20px;
+}
+@media(max-width:900px){
+  .proof-strip{grid-template-columns:1fr;gap:10px;padding:0 16px}
+}
+.proof-quote{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px 22px;
+  text-align:left;
+}
+.proof-quote-text{
+  font-size:14px;
+  color:var(--muted2);
+  line-height:1.55;
+  margin-bottom:12px;
+  font-style:italic;
+}
+.proof-quote-author{
+  font-size:12px;
+  font-weight:700;
+  color:rgba(255,255,255,.78);
+  letter-spacing:.2px;
+}
 </style>
 </head>
 <body>
@@ -545,38 +682,73 @@ footer{
   </div>
 </section>
 
-<!-- ─── PAIN SECTION ───────────────────────────────────────────────────────── -->
-<section class="pain-section">
+<!-- ─── ARCHETYPE GRID (DESIGN.md v2 — tailored by traveler lifestyle) ────── -->
+<section class="arch-section" id="how">
   <div class="section-inner">
-    <div class="section-label">Sound familiar?</div>
-    <h2 class="section-h2 fade-in">You've been here before.</h2>
-    <p class="section-sub fade-in">The hours of research. The tabs. The spreadsheet nobody uses by day two.</p>
+    <div class="section-label fade-in">Tailored to how you travel</div>
+    <h2 class="section-h2 fade-in">Planning a…</h2>
+    <p class="section-sub fade-in">Pick your shape of trip. Tripva builds the plan around it — not a generic itinerary.</p>
 
-    <div class="pain-grid" style="margin-top:40px">
-      <div class="pain-card fade-in">
-        <div class="pain-icon">🗂️</div>
-        <div class="pain-title">12 browser tabs for one trip</div>
-        <div class="pain-body">Flights here, hotels there, things to do somewhere else. You've closed and reopened the same tab three times. And you still haven't booked anything.</div>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">📊</div>
-        <div class="pain-title">The spreadsheet nobody updates</div>
-        <div class="pain-body">You built a beautiful itinerary. Then the train was full, the restaurant closed, and you stopped using it on day two. Three hours of planning, wasted.</div>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">😰</div>
-        <div class="pain-title">The booking anxiety never stops</div>
-        <div class="pain-body">You're on the plane wondering if you booked the wrong hotel. Or forgot the museum tickets. Or missed something obvious. Every trip starts with dread.</div>
-      </div>
-    </div>
-
-    <div class="pain-hook fade-in">
-      Then you type one message to Tripva.<br>
-      And in <span>30 seconds</span>, it's done.
-    </div>
-    <div class="fade-in">
-      <a class="btn-primary" href="plan.html" style="margin:0 auto;font-size:16px;padding:16px 32px">
-        Build my trip now — it's free
+    <div class="arch-grid">
+      <a class="arch-tile fade-in" href="plan.html?archetype=solo" aria-label="Plan a solo trip">
+        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-solo-v1/800/600')"></div>
+        <div class="arch-tile-overlay"></div>
+        <div class="arch-tile-arrow" aria-hidden="true">→</div>
+        <div class="arch-tile-body">
+          <div class="arch-tile-kicker">For one</div>
+          <div class="arch-tile-title">Solo trip</div>
+          <div class="arch-tile-sub">Safe, flexible, conversation-ready days.</div>
+        </div>
+      </a>
+      <a class="arch-tile fade-in" href="plan.html?archetype=couple" aria-label="Plan a couple's trip">
+        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-couple-v1/800/600')"></div>
+        <div class="arch-tile-overlay"></div>
+        <div class="arch-tile-arrow" aria-hidden="true">→</div>
+        <div class="arch-tile-body">
+          <div class="arch-tile-kicker">For two</div>
+          <div class="arch-tile-title">Couple's weekend</div>
+          <div class="arch-tile-sub">Sunset views, dinners to remember, one-bed stays.</div>
+        </div>
+      </a>
+      <a class="arch-tile fade-in" href="plan.html?archetype=family" aria-label="Plan a family vacation">
+        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-family-v1/800/600')"></div>
+        <div class="arch-tile-overlay"></div>
+        <div class="arch-tile-arrow" aria-hidden="true">→</div>
+        <div class="arch-tile-body">
+          <div class="arch-tile-kicker">With kids</div>
+          <div class="arch-tile-title">Family vacation</div>
+          <div class="arch-tile-sub">Kid-friendly pacing, nap windows, stroller routes.</div>
+        </div>
+      </a>
+      <a class="arch-tile fade-in" href="plan.html?archetype=friends" aria-label="Plan a friend group trip">
+        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-friends-v1/800/600')"></div>
+        <div class="arch-tile-overlay"></div>
+        <div class="arch-tile-arrow" aria-hidden="true">→</div>
+        <div class="arch-tile-body">
+          <div class="arch-tile-kicker">Group of 3–12</div>
+          <div class="arch-tile-title">Friend group</div>
+          <div class="arch-tile-sub">Shared rentals, vote-ready itinerary, split expenses.</div>
+        </div>
+      </a>
+      <a class="arch-tile fade-in" href="plan.html?archetype=adventure" aria-label="Plan an adventure trip">
+        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-adventure-v1/800/600')"></div>
+        <div class="arch-tile-overlay"></div>
+        <div class="arch-tile-arrow" aria-hidden="true">→</div>
+        <div class="arch-tile-body">
+          <div class="arch-tile-kicker">Outdoors-first</div>
+          <div class="arch-tile-title">Adventure</div>
+          <div class="arch-tile-sub">Trail windows, gear lists, weather-aware pacing.</div>
+        </div>
+      </a>
+      <a class="arch-tile fade-in" href="plan.html?archetype=nomad" aria-label="Plan a slow-travel or digital nomad trip">
+        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-nomad-v1/800/600')"></div>
+        <div class="arch-tile-overlay"></div>
+        <div class="arch-tile-arrow" aria-hidden="true">→</div>
+        <div class="arch-tile-body">
+          <div class="arch-tile-kicker">2+ weeks</div>
+          <div class="arch-tile-title">Slow travel</div>
+          <div class="arch-tile-sub">Coworking, wifi, weekly rhythm. One base, deeper roots.</div>
+        </div>
       </a>
     </div>
   </div>
@@ -617,62 +789,28 @@ footer{
   </div>
 </section>
 
-<!-- ─── HOW IT WORKS ───────────────────────────────────────────────────────── -->
-<section class="how-section" id="how">
-  <div class="section-inner">
-    <div class="section-label fade-in">Simple by design</div>
-    <h2 class="section-h2 fade-in">Three steps. Zero effort.</h2>
-
-    <div class="how-grid">
-      <div class="how-step fade-in">
-        <div class="step-num">1</div>
-        <div class="step-title">Tell Tripva where you're going</div>
-        <div class="step-body">Type your destination, dates, and budget. Takes 10 seconds. No research required. Just describe your trip like you'd tell a friend.</div>
-      </div>
-      <div class="how-step fade-in">
-        <div class="step-num">2</div>
-        <div class="step-title">AI builds your complete trip</div>
-        <div class="step-body">Hotels, restaurants, activities, train times, urgent bookings — all in one plan. Tripva knows what to book early so you don't miss anything.</div>
-      </div>
-      <div class="how-step fade-in">
-        <div class="step-num">3</div>
-        <div class="step-title">Travel with confidence</div>
-        <div class="step-body">Your live dashboard adapts as your trip progresses. Real-time alerts, updated schedules, everything you need — exactly when you need it.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── TESTIMONIALS ───────────────────────────────────────────────────────── -->
-<section class="testi-section">
-  <div class="section-inner">
-    <div class="section-label fade-in">Real results</div>
-    <h2 class="section-h2 fade-in">What travellers say</h2>
-
-    <div class="testi-grid">
-      <div class="testi-card fade-in">
-        <div class="testi-quote">"Planned my entire 7-day Tokyo trip in under a minute. It flagged the Teamlab Borderless tickets sold out 2 weeks in advance — I'd have completely missed it."</div>
-        <div class="testi-stars">★★★★★</div><div class="testi-author">Jamie L. · Melbourne</div>
-      </div>
-      <div class="testi-card fade-in">
-        <div class="testi-quote">"I used to spend a full Sunday planning a trip. Now I do it during my coffee break. The booking alerts alone are worth it — saved money twice already."</div>
-        <div class="testi-stars">★★★★★</div><div class="testi-author">Sofia R. · Barcelona</div>
-      </div>
-      <div class="testi-card fade-in">
-        <div class="testi-quote">"Built a 10-day Italy plan with every train, hotel, and museum slot perfectly sequenced. My travel agent literally couldn't do this as well."</div>
-        <div class="testi-stars">★★★★★</div><div class="testi-author">David K. · Toronto</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── PRICING ─────────────────────────────────────────────────────────────── -->
+<!-- ─── PROOF & PRICE (merged — testimonial strip above pricing) ─────────── -->
 <section class="pricing-section" id="pricing">
   <div class="section-inner">
-    <div class="section-label fade-in">No surprises</div>
-    <h2 class="section-h2 fade-in">Start free. Upgrade when you're ready.</h2>
-    <p class="section-sub fade-in">No credit card required to start. Upgrade or cancel anytime.</p>
-
+    <div class="section-label fade-in">Travellers say</div>
+    <h2 class="section-h2 fade-in">Real plans, real trips.</h2>
+    <p class="section-sub fade-in" style="margin-bottom:36px">Used by <span id="tripCountInline" style="font-weight:700;color:#fff">50+</span> travellers — free to start, pay only when you want more.</p>
+  </div>
+  <div class="proof-strip">
+    <div class="proof-quote fade-in">
+      <div class="proof-quote-text">"Planned my entire 7-day Tokyo trip in under a minute. It flagged Teamlab Borderless tickets sold out 2 weeks in advance — I'd have missed it."</div>
+      <div class="proof-quote-author">— Jamie L. · Melbourne</div>
+    </div>
+    <div class="proof-quote fade-in">
+      <div class="proof-quote-text">"I used to spend a full Sunday planning. Now I do it during my coffee break. The booking alerts saved me money twice already."</div>
+      <div class="proof-quote-author">— Sofia R. · Barcelona</div>
+    </div>
+    <div class="proof-quote fade-in">
+      <div class="proof-quote-text">"Built a 10-day Italy plan with every train, hotel, and museum slot sequenced. My travel agent couldn't do this."</div>
+      <div class="proof-quote-author">— David K. · Toronto</div>
+    </div>
+  </div>
+  <div class="section-inner">
     <div class="price-grid">
       <div class="price-card fade-in">
         <div class="price-tier">Free</div>
@@ -841,8 +979,14 @@ function handleEmail(e) {
         obs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
   for(var j=0;j<els.length;j++){ obs.observe(els[j]); }
+  // Safety-net: ensure below-fold content becomes visible even without scroll
+  // (covers reduced-motion users, headless captures, stale observer state)
+  setTimeout(function(){
+    var pending = document.querySelectorAll('.fade-in:not(.visible)');
+    for(var k=0;k<pending.length;k++){ pending[k].classList.add('visible'); }
+  }, 900);
 })();
 
 // PWA install banner
