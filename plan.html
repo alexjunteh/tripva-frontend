@@ -51,6 +51,129 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 .form-submit-btn:active{transform:scale(.97)}
 .form-submit-btn:disabled{opacity:.4;cursor:not-allowed}
 
+/* ─── Archetype picker (DESIGN.md v2) ─────────────────────────────────── */
+.arch-picker{
+  display:flex; flex-wrap:nowrap; gap:8px;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  margin:0 -20px 28px -20px; padding:4px 20px 12px 20px;
+  scrollbar-width:none;
+}
+.arch-picker::-webkit-scrollbar{display:none}
+.arch-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  flex-shrink:0;
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  padding:9px 14px;
+  font-size:14px;
+  font-weight:600;
+  color:rgba(255,255,255,.75);
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
+  font-family:inherit;
+  white-space:nowrap;
+  min-height:40px;
+}
+.arch-pill:hover{border-color:rgba(255,255,255,.25);color:#fff}
+.arch-pill.active{
+  background:var(--purple);
+  border-color:var(--purple);
+  color:#fff;
+  box-shadow:0 4px 16px rgba(124,106,247,.35);
+}
+.arch-pill-icon{font-size:16px;line-height:1}
+.arch-label{
+  display:block;
+  font-size:11px; font-weight:700; letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.38);
+  margin-bottom:8px;
+}
+/* Progressive-disclosure wrapper for archetype-specific fields */
+.arch-fields{display:none}
+.arch-fields.active{display:block}
+.arch-fields .form-section:first-child{margin-top:8px}
+.chip-group{display:flex; flex-wrap:wrap; gap:8px}
+.chip-pick{
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  padding:8px 14px;
+  font-size:13px; font-weight:600;
+  color:rgba(255,255,255,.7);
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease, color .15s ease;
+  font-family:inherit;
+  user-select:none;
+  min-height:36px;
+}
+.chip-pick.sel{background:rgba(124,106,247,.2); border-color:var(--purple); color:#fff}
+.arch-heads-up{
+  background:rgba(149,184,255,.06);
+  border:1px solid rgba(149,184,255,.18);
+  border-radius:12px;
+  padding:10px 14px;
+  font-size:12.5px;
+  color:rgba(200,220,255,.85);
+  margin-bottom:16px;
+  line-height:1.5;
+}
+.child-ages-wrap{display:flex; flex-wrap:wrap; gap:8px}
+.child-age-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:8px 10px 8px 14px;
+  font-size:13px; font-weight:600;
+  color:rgba(255,255,255,.85);
+}
+.child-age-pill input{
+  width:44px;
+  background:transparent; border:none; outline:none;
+  color:#fff; font-size:13px; font-weight:700;
+  text-align:center; font-family:inherit;
+}
+.child-age-pill button{
+  background:rgba(255,255,255,.08); border:none;
+  width:22px; height:22px; border-radius:50%;
+  color:#fff; font-size:14px; cursor:pointer; line-height:1;
+}
+.child-age-add{
+  background:rgba(124,106,247,.12);
+  border:1.5px dashed rgba(124,106,247,.45);
+  color:var(--purple-light);
+  border-radius:14px;
+  padding:8px 14px;
+  font-size:13px; font-weight:600; cursor:pointer;
+  font-family:inherit;
+  min-height:36px;
+}
+.child-age-add:hover{background:rgba(124,106,247,.2)}
+.arch-desc{font-size:13px; color:rgba(255,255,255,.6); margin:-8px 0 16px; line-height:1.5}
+.slider-row{display:flex; align-items:center; gap:12px}
+.slider-row input[type="range"]{flex:1; accent-color:var(--purple)}
+.slider-row .slider-val{
+  min-width:48px; text-align:right;
+  font-size:14px; font-weight:700;
+  color:#fff; font-variant-numeric: tabular-nums;
+}
+.toggle-row{display:flex; align-items:center; justify-content:space-between; padding:12px 0}
+.toggle-row .toggle-label{font-size:14px; color:rgba(255,255,255,.85); font-weight:500}
+.toggle-switch{
+  position:relative; width:44px; height:26px;
+  background:rgba(255,255,255,.12); border-radius:13px;
+  transition:background .2s ease; cursor:pointer; flex-shrink:0;
+}
+.toggle-switch::after{
+  content:''; position:absolute; top:3px; left:3px;
+  width:20px; height:20px; border-radius:50%;
+  background:#fff; transition:transform .2s cubic-bezier(.22,1,.36,1);
+}
+.toggle-switch.on{background:var(--purple)}
+.toggle-switch.on::after{transform:translateX(18px)}
+
 /* Generation screen */
 .gen-screen{display:none;flex-direction:column;gap:16px;padding:20px 0 40px}
 .gen-hero{text-align:center;padding:16px 0}
@@ -133,7 +256,19 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
   <!-- Form -->
   <div class="plan-form" id="planForm">
     <h1 class="page-title">Plan your trip &#10024;</h1>
-    <p class="page-sub">Describe where you're going — AI builds the full itinerary in seconds.</p>
+    <p class="page-sub" id="archSub">Pick your shape of trip — Tripva tailors the plan.</p>
+
+    <!-- Archetype picker -->
+    <label class="arch-label">You're planning a…</label>
+    <div class="arch-picker" id="archPicker">
+      <button class="arch-pill" type="button" data-arch="solo"><span class="arch-pill-icon">☀️</span> Solo</button>
+      <button class="arch-pill" type="button" data-arch="couple"><span class="arch-pill-icon">💑</span> Couple</button>
+      <button class="arch-pill" type="button" data-arch="family"><span class="arch-pill-icon">👨‍👩‍👧</span> Family</button>
+      <button class="arch-pill" type="button" data-arch="friends"><span class="arch-pill-icon">🎉</span> Friends</button>
+      <button class="arch-pill" type="button" data-arch="adventure"><span class="arch-pill-icon">⛰️</span> Adventure</button>
+      <button class="arch-pill" type="button" data-arch="nomad"><span class="arch-pill-icon">💻</span> Slow travel</button>
+    </div>
+
     <div class="form-section" style="margin-top:16px">
       <label class="form-label">Where to?</label>
       <input class="form-input" id="f-dest" type="text" placeholder="e.g. Japan, Italy + Switzerland" autocomplete="off">
@@ -164,25 +299,160 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       <label class="form-label">Budget (total trip)</label>
       <input class="form-input" id="f-budget" type="text" placeholder="e.g. $3000" autocomplete="off">
     </div>
-    <div class="form-section">
-      <label class="form-label">Travel style</label>
-      <input class="form-input" id="f-style" type="text" placeholder="e.g. romantic couple, solo backpacker" autocomplete="off">
+    <!-- Archetype-specific fields (progressive disclosure) -->
+
+    <!-- SOLO -->
+    <div class="arch-fields" data-arch="solo">
+      <div class="form-section">
+        <label class="form-label">Accommodation</label>
+        <div class="chip-group" data-group="solo-accom" data-single="1">
+          <div class="chip-pick" data-v="hostel">Hostel</div>
+          <div class="chip-pick sel" data-v="boutique">Boutique hotel</div>
+          <div class="chip-pick" data-v="hotel">Hotel</div>
+          <div class="chip-pick" data-v="rental">Rental</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Pace</label>
+        <div class="chip-group" data-group="solo-pace" data-single="1">
+          <div class="chip-pick" data-v="packed">Packed</div>
+          <div class="chip-pick sel" data-v="balanced">Balanced</div>
+          <div class="chip-pick" data-v="relaxed">Relaxed</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Safety priority</label>
+        <div class="slider-row">
+          <input type="range" id="solo-safety" min="1" max="10" value="7">
+          <div class="slider-val"><span id="solo-safety-val">7</span>/10</div>
+        </div>
+      </div>
     </div>
+
+    <!-- COUPLE -->
+    <div class="arch-fields" data-arch="couple">
+      <div class="form-section">
+        <label class="form-label">Occasion</label>
+        <div class="chip-group" data-group="couple-occasion" data-single="1">
+          <div class="chip-pick" data-v="anniversary">Anniversary</div>
+          <div class="chip-pick" data-v="honeymoon">Honeymoon</div>
+          <div class="chip-pick sel" data-v="weekend">Weekend</div>
+          <div class="chip-pick" data-v="just-us">Just us</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Accommodation</label>
+        <div class="chip-group" data-group="couple-accom" data-single="1">
+          <div class="chip-pick sel" data-v="boutique">Boutique hotel</div>
+          <div class="chip-pick" data-v="hotel">Hotel</div>
+          <div class="chip-pick" data-v="rental">Rental</div>
+          <div class="chip-pick" data-v="resort">Resort</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Dining priority</label>
+        <div class="slider-row">
+          <input type="range" id="couple-dining" min="1" max="10" value="8">
+          <div class="slider-val"><span id="couple-dining-val">8</span>/10</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAMILY -->
+    <div class="arch-fields" data-arch="family">
+      <div class="form-section">
+        <label class="form-label">Ages of kids</label>
+        <div class="child-ages-wrap" id="childAges">
+          <div class="child-age-pill" data-child-row="1">
+            <input type="number" class="child-age-input" min="0" max="17" value="7" aria-label="Child 1 age">
+            <span style="font-size:11px;color:rgba(255,255,255,.45)">yrs</span>
+            <button type="button" class="child-age-rm" aria-label="Remove child">×</button>
+          </div>
+        </div>
+        <button type="button" class="child-age-add" id="addChildBtn" style="margin-top:10px">+ Add child</button>
+      </div>
+      <div class="form-section">
+        <div class="toggle-row">
+          <span class="toggle-label">Stroller / push-chair?</span>
+          <div class="toggle-switch" id="strollerToggle" role="switch" aria-checked="false" tabindex="0"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Kid-friendly pace (shorter days, nap windows)</span>
+          <div class="toggle-switch on" id="kidPaceToggle" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Dietary notes (optional)</label>
+        <input class="form-input" id="f-dietary" type="text" placeholder="e.g. picky eater, nut allergy, vegetarian" autocomplete="off">
+      </div>
+    </div>
+
+    <!-- FRIENDS -->
+    <div class="arch-fields" data-arch="friends">
+      <div class="form-section">
+        <div class="toggle-row">
+          <span class="toggle-label">Shared accommodation (rental/villa)</span>
+          <div class="toggle-switch on" id="sharedAccomToggle" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Decision style</label>
+        <div class="chip-group" data-group="friends-decision" data-single="1">
+          <div class="chip-pick sel" data-v="democratic">Vote on everything</div>
+          <div class="chip-pick" data-v="planner-led">Led by planner</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Group energy</label>
+        <div class="chip-group" data-group="friends-energy" data-single="1">
+          <div class="chip-pick" data-v="chill">Chill</div>
+          <div class="chip-pick sel" data-v="balanced">Mix it up</div>
+          <div class="chip-pick" data-v="party">Party mode</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVENTURE (v1 fallback) -->
+    <div class="arch-fields" data-arch="adventure">
+      <div class="arch-heads-up">
+        Adventure-specific fields (gear lists, fitness level, permit windows) are coming soon. For now, use the interests below and Tripva will pace the plan based on your trip length.
+      </div>
+      <div class="form-section">
+        <label class="form-label">Pace</label>
+        <div class="chip-group" data-group="adv-pace" data-single="1">
+          <div class="chip-pick" data-v="intense">Intense</div>
+          <div class="chip-pick sel" data-v="balanced">Balanced</div>
+          <div class="chip-pick" data-v="relaxed">Relaxed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOMAD (v1 fallback) -->
+    <div class="arch-fields" data-arch="nomad">
+      <div class="arch-heads-up">
+        Slow-travel deep-dive (coworking, wifi audit, weekly rhythm) is coming soon. For now, Tripva builds a base-city itinerary with grocery + laundry + activity recs.
+      </div>
+      <div class="form-section">
+        <div class="toggle-row">
+          <span class="toggle-label">Need reliable wifi / coworking nearby</span>
+          <div class="toggle-switch on" id="wifiToggle" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interests (archetype-specific chip sets) -->
     <div class="form-section">
       <label class="form-label">Interests</label>
       <div class="interests" id="f-interests">
-        <div class="chip-int sel" data-v="food">Food</div>
-        <div class="chip-int sel" data-v="trains">Trains</div>
-        <div class="chip-int" data-v="hiking">Hiking</div>
-        <div class="chip-int sel" data-v="history">History</div>
-        <div class="chip-int" data-v="beaches">Beaches</div>
-        <div class="chip-int" data-v="alpine views">Alpine</div>
-        <div class="chip-int" data-v="museums">Museums</div>
-        <div class="chip-int" data-v="nightlife">Nightlife</div>
-        <div class="chip-int" data-v="shopping">Shopping</div>
-        <div class="chip-int" data-v="photography">Photos</div>
+        <!-- Chips rendered dynamically based on archetype -->
       </div>
       <div class="interests-fade"></div>
+    </div>
+
+    <!-- Optional free-text style (collapses to archetype context) -->
+    <div class="form-section">
+      <label class="form-label">Anything else? (optional)</label>
+      <input class="form-input" id="f-style" type="text" placeholder="e.g. picky eater, mobility issues, celebration" autocomplete="off">
     </div>
     <div class="form-section">
       <label class="form-label">Home city (departure)</label>
@@ -248,6 +518,57 @@ let travellers = 2;
 let _tripState = null;
 let _shareUrl = null;
 
+// ── Archetype state (DESIGN.md v2) ─────────────────────────────────────────
+const ARCHETYPES = {
+  solo:      { label:'Solo trip',        sub:'Safe, flexible, conversation-ready days.',      travDefault:1, paceHint:'balanced' },
+  couple:    { label:"Couple's trip",    sub:'Sunsets, dinners, one-bed stays.',                travDefault:2, paceHint:'balanced' },
+  family:    { label:'Family vacation',  sub:'Kid-friendly pacing, nap windows, stroller routes.', travDefault:4, paceHint:'relaxed' },
+  friends:   { label:'Friend group',     sub:'Shared rentals, group-friendly recs, splittable costs.', travDefault:4, paceHint:'balanced' },
+  adventure: { label:'Adventure',        sub:'Trail windows, gear lists, weather-aware pacing.', travDefault:2, paceHint:'balanced' },
+  nomad:     { label:'Slow travel',      sub:'One base, weekly rhythm, work + explore.',       travDefault:1, paceHint:'relaxed' }
+};
+// Interest chip catalogs per archetype — each is { value, label, defaultSel? }
+const INTEREST_SETS = {
+  solo:      [{v:'food',l:'Food',s:1},{v:'culture',l:'Culture',s:1},{v:'nightlife',l:'Nightlife'},{v:'nature',l:'Nature'},{v:'history',l:'History',s:1},{v:'shopping',l:'Shopping'},{v:'photography',l:'Photos'}],
+  couple:    [{v:'restaurants',l:'Restaurants',s:1},{v:'views',l:'Views',s:1},{v:'spa',l:'Spa / wellness'},{v:'culture',l:'Culture'},{v:'nature',l:'Nature'},{v:'nightlife',l:'Nightlife'},{v:'photography',l:'Photos'}],
+  family:    [{v:'kid-friendly',l:'Kid-friendly',s:1},{v:'food',l:'Food',s:1},{v:'nature',l:'Nature'},{v:'parks',l:'Parks & playgrounds',s:1},{v:'museums',l:'Museums'},{v:'beach',l:'Beach'},{v:'photography',l:'Photos'}],
+  friends:   [{v:'food',l:'Food',s:1},{v:'nightlife',l:'Nightlife',s:1},{v:'adventure',l:'Adventure'},{v:'culture',l:'Culture'},{v:'beach',l:'Beach'},{v:'shopping',l:'Shopping'},{v:'photography',l:'Photos'}],
+  adventure: [{v:'hiking',l:'Hiking',s:1},{v:'diving',l:'Diving'},{v:'climbing',l:'Climbing'},{v:'biking',l:'Biking'},{v:'water',l:'Water sports'},{v:'photography',l:'Photography'},{v:'wildlife',l:'Wildlife'}],
+  nomad:     [{v:'cowork',l:'Coworking',s:1},{v:'food',l:'Food',s:1},{v:'culture',l:'Culture'},{v:'nature',l:'Nature'},{v:'fitness',l:'Fitness'},{v:'community',l:'Community events'},{v:'nightlife',l:'Nightlife'}]
+};
+let currentArch = 'couple';
+
+function renderInterests(arch){
+  const set = INTEREST_SETS[arch] || INTEREST_SETS.couple;
+  const el = document.getElementById('f-interests');
+  el.innerHTML = set.map(c => `<div class="chip-int${c.s?' sel':''}" data-v="${c.v}">${c.l}</div>`).join('');
+}
+function setArchetype(arch){
+  if (!ARCHETYPES[arch]) arch = 'couple';
+  currentArch = arch;
+  // pills
+  document.querySelectorAll('.arch-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.arch === arch);
+  });
+  // conditional field blocks
+  document.querySelectorAll('.arch-fields').forEach(f => {
+    f.classList.toggle('active', f.dataset.arch === arch);
+  });
+  // sub-copy
+  const sub = document.getElementById('archSub');
+  if (sub) sub.textContent = ARCHETYPES[arch].sub;
+  // interests chip set
+  renderInterests(arch);
+  // sensible traveller default (only if user hasn't touched)
+  if (!window._travTouched) {
+    travellers = ARCHETYPES[arch].travDefault;
+    const t = document.getElementById('f-trav');
+    if (t) t.textContent = travellers;
+    const l = document.getElementById('f-trav-lbl');
+    if (l) l.textContent = travellers === 1 ? 'person' : 'people';
+  }
+}
+
 // ── Setup ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const p = new URLSearchParams(location.search);
@@ -255,14 +576,87 @@ document.addEventListener('DOMContentLoaded', () => {
   if (p.get('start')) document.getElementById('f-start').value = p.get('start');
   if (p.get('end')) document.getElementById('f-end').value = p.get('end');
 
-  document.getElementById('btn-minus').onclick = () => adjTrav(-1);
-  document.getElementById('btn-plus').onclick = () => adjTrav(1);
+  // Archetype from URL or default
+  const archParam = p.get('archetype');
+  setArchetype(archParam && ARCHETYPES[archParam] ? archParam : 'couple');
+
+  // Archetype pill clicks
+  document.getElementById('archPicker').addEventListener('click', e => {
+    const pill = e.target.closest('.arch-pill');
+    if (pill) setArchetype(pill.dataset.arch);
+  });
+
+  // Travellers +/−
+  document.getElementById('btn-minus').onclick = () => { window._travTouched = true; adjTrav(-1); };
+  document.getElementById('btn-plus').onclick  = () => { window._travTouched = true; adjTrav(1); };
   document.getElementById('submitBtn').onclick = submitTrip;
 
+  // Interests (delegated)
   document.getElementById('f-interests').addEventListener('click', e => {
     const c = e.target.closest('.chip-int');
     if (c) c.classList.toggle('sel');
   });
+
+  // Generic chip-group selectors (single-select per group)
+  document.addEventListener('click', e => {
+    const chip = e.target.closest('.chip-pick');
+    if (!chip) return;
+    const group = chip.closest('.chip-group');
+    if (!group) return;
+    if (group.dataset.single === '1') {
+      group.querySelectorAll('.chip-pick').forEach(c => c.classList.remove('sel'));
+      chip.classList.add('sel');
+    } else {
+      chip.classList.toggle('sel');
+    }
+  });
+
+  // Range sliders with live value
+  document.querySelectorAll('input[type="range"]').forEach(slider => {
+    const valSpan = document.getElementById(slider.id + '-val');
+    if (valSpan) {
+      slider.addEventListener('input', () => { valSpan.textContent = slider.value; });
+    }
+  });
+
+  // Toggle switches
+  document.addEventListener('click', e => {
+    const sw = e.target.closest('.toggle-switch');
+    if (!sw) return;
+    sw.classList.toggle('on');
+    sw.setAttribute('aria-checked', sw.classList.contains('on') ? 'true' : 'false');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== ' ' && e.key !== 'Enter') return;
+    const sw = e.target.closest('.toggle-switch');
+    if (!sw) return;
+    e.preventDefault();
+    sw.classList.toggle('on');
+    sw.setAttribute('aria-checked', sw.classList.contains('on') ? 'true' : 'false');
+  });
+
+  // Child age repeater (family archetype)
+  const addChildBtn = document.getElementById('addChildBtn');
+  if (addChildBtn) {
+    addChildBtn.onclick = () => {
+      const wrap = document.getElementById('childAges');
+      const count = wrap.querySelectorAll('.child-age-pill').length;
+      if (count >= 6) { showToast('&#9888; 6 kids max — contact us for larger groups'); return; }
+      const pill = document.createElement('div');
+      pill.className = 'child-age-pill';
+      pill.dataset.childRow = String(count + 1);
+      pill.innerHTML = '<input type="number" class="child-age-input" min="0" max="17" value="5" aria-label="Child age"><span style="font-size:11px;color:rgba(255,255,255,.45)">yrs</span><button type="button" class="child-age-rm" aria-label="Remove child">×</button>';
+      wrap.appendChild(pill);
+    };
+    document.getElementById('childAges').addEventListener('click', e => {
+      const rm = e.target.closest('.child-age-rm');
+      if (!rm) return;
+      const pill = rm.closest('.child-age-pill');
+      const remaining = document.getElementById('childAges').querySelectorAll('.child-age-pill').length;
+      if (remaining <= 1) { showToast('&#9888; Keep at least one child'); return; }
+      pill.remove();
+    });
+  }
 
   document.getElementById('authSubmitBtn').onclick = sendMagicLink;
   document.getElementById('authSkip').onclick = skipAuth;
@@ -315,14 +709,54 @@ function addLog(icon, text, cls) {
 }
 
 // ── Submit ─────────────────────────────────────────────────────────────────
+function _pickVal(groupAttr){
+  const sel = document.querySelector('.arch-fields.active .chip-group[data-group="'+groupAttr+'"] .chip-pick.sel');
+  return sel ? sel.dataset.v : null;
+}
+function _toggleState(id){
+  const el = document.getElementById(id);
+  return el ? el.classList.contains('on') : false;
+}
+function gatherArchetypeData(){
+  const a = currentArch;
+  const data = { archetype: a };
+  if (a === 'solo'){
+    data.accommodation_type = _pickVal('solo-accom');
+    data.pace = _pickVal('solo-pace');
+    const sf = document.getElementById('solo-safety');
+    data.safety_priority = sf ? Number(sf.value) : 7;
+  } else if (a === 'couple'){
+    data.occasion = _pickVal('couple-occasion');
+    data.accommodation_type = _pickVal('couple-accom');
+    const d = document.getElementById('couple-dining');
+    data.dining_priority = d ? Number(d.value) : 8;
+  } else if (a === 'family'){
+    const ages = [...document.querySelectorAll('.child-age-input')].map(i => Number(i.value)).filter(n => !isNaN(n));
+    data.child_ages = ages;
+    data.stroller_needed = _toggleState('strollerToggle');
+    data.kid_pace = _toggleState('kidPaceToggle');
+    const diet = document.getElementById('f-dietary');
+    if (diet && diet.value.trim()) data.dietary_notes = diet.value.trim();
+  } else if (a === 'friends'){
+    data.shared_accommodation = _toggleState('sharedAccomToggle');
+    data.decision_style = _pickVal('friends-decision');
+    data.group_energy = _pickVal('friends-energy');
+  } else if (a === 'adventure'){
+    data.pace = _pickVal('adv-pace');
+  } else if (a === 'nomad'){
+    data.wifi_priority = _toggleState('wifiToggle');
+  }
+  return data;
+}
 async function submitTrip() {
   const dest = document.getElementById('f-dest').value.trim();
   const start = document.getElementById('f-start').value;
   const end = document.getElementById('f-end').value;
   const budget = document.getElementById('f-budget').value.trim();
-  const style = document.getElementById('f-style').value.trim() || 'traveller';
+  const style = document.getElementById('f-style').value.trim() || ARCHETYPES[currentArch].label.toLowerCase();
   const home = document.getElementById('f-home').value.trim() || 'home city';
-  const interests = [...document.querySelectorAll('.chip-int.sel')].map(el => el.dataset.v);
+  const interests = [...document.querySelectorAll('#f-interests .chip-int.sel')].map(el => el.dataset.v);
+  const archData = gatherArchetypeData();
 
   if (!dest) { showToast('&#9888; Where are you going?'); return; }
   if (!start || !end) { showToast('&#9888; Pick your travel dates'); return; }
@@ -367,7 +801,7 @@ async function submitTrip() {
     const response = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: dest, startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests }),
+      body: JSON.stringify(Object.assign({ destination: dest, startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests }, archData)),
     });
 
     if (!response.ok) {
