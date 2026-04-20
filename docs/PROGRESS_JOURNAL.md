@@ -31,3 +31,47 @@ Status convention: ⏳ in-flight · ✅ done · 🔜 deferred · 🚫 blocked
 
 ## Running log (most recent first)
 
+### 2026-04-20 19:21 UTC — All phases shipped + baseline promoted
+- Phase (d) FocusCard verified live: generated a Barcelona 2-day trip via `/plan?archetype=family`, reached `/trip?id=871ef37957516825f0f8df718f838b7b`, confirmed FocusCard renders with "📍 TODAY · Arrival in Barcelona · Day 1 of 2" + "Open itinerary →" CTA
+- Visual baseline refreshed — `tests/visual/baseline/` now reflects the overhauled state (10 PNGs, mobile + desktop)
+- 4 of 10 routes differ from v1 baseline (intentional: landing + plan mobile/desktop)
+- Deferred (explicit, will note in morning brief):
+  - Full Now-tab 5-state (travel-day / final-day / post-trip) — only pre-trip + on-trip land tonight; post-trip has a minimal stub
+  - App-shell 8→5 tab merge
+  - Backend prompt branching by archetype (requires Tripva-backend repo PR)
+  - 6 archetype Watch-demo loops (landing has 1 static demo)
+
+### 2026-04-20 19:14 UTC — Phase (d) JS fix shipped (d5a36c4)
+- Root cause: LLM omits per-day `date` fields on short trips → my state detection saw "empty"
+- Fix: derive day dates from `plan.trip.startDate` + index offset when missing; re-resolve currentIdx
+- Live verified: FocusCard now shows for 2-day Barcelona trip
+
+### 2026-04-20 19:08 UTC — Phase (d) ID-collision fix shipped (3390a0d)
+- Root cause: pre-existing `#focusCard` on the Trip tab collided with my new one — `populateDashboard` overwrote my markup
+- Fix: renamed all new IDs/classes with `nowFocus-*` / `nowStage-*` / `nowPeek-*` prefix
+- Kept legacy `.focus-*` CSS untouched
+
+### 2026-04-20 18:57 UTC — Phase (d) shipped
+- Commit `ff4b6c0` — FocusCard + StageStrip + PeekNext (520-line trip.html addition)
+- Pre-trip + on-trip + post-trip states; travel-day + final-day fall back to on-trip
+- `.now-v3` class on `#tab-plan` hides legacy hero/now-card/progress
+- State detection, countdown formatting, progress ring SVG, stage chip auto-scroll
+
+### 2026-04-20 18:48 UTC — Phase (a2) plan form shipped
+- Commit `e0ab0cd` — archetype selector + progressive disclosure
+- 6 archetypes wired (solo, couple, family, friends fully; adventure, nomad fallback)
+- URL param `?archetype=<id>` seeds the selected pill
+- Submit payload now includes `archetype` + archetype-specific fields
+
+### 2026-04-20 18:43 UTC — Phase (a) landing shipped
+- Commit `aeac6a4` on main, pushed to origin
+- +226 / -82 in `index.html`
+- Archetype grid + Proof & Price merge + fade-in safety-net
+- Verified locally at 390x844 and 1280x800 via local python http server → screenshots `/tmp/landing-mobile-v3.png` + `/tmp/landing-desktop-local2.png`
+- All 6 archetype tiles render; titles, kickers, sub-copy, arrow all visible
+- No JS console errors
+- Awaiting Cloudflare deploy → live verification
+
+### 2026-04-20 18:27 UTC — Phase 3 docs shipped
+- Commit `0755e94` on main — DESIGN.md v2, IMPLEMENTATION.md, this journal
+
