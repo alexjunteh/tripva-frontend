@@ -3658,13 +3658,35 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
   if (!tab || !tab.classList.contains('now-v3')) return;
 
   // ── State detection ──
-  const allDates = (plan.days||[]).map(d=>d.date).filter(Boolean).sort();
-  const firstDate = allDates[0] || '';
-  const lastDate = allDates[allDates.length-1] || '';
+  // Day dates may be absent from the LLM output; fall back to plan.trip.startDate
+  // and derive per-day dates by offset from it.
+  const trip = plan.trip || {};
+  const tripStart = trip.startDate || trip.start || '';
+  const tripEnd   = trip.endDate   || trip.end   || '';
+  const addDays = (ymdStr, n) => {
+    if (!ymdStr) return '';
+    const [yy,mm,dd] = ymdStr.split('-').map(Number);
+    const dt = new Date(Date.UTC(yy, mm-1, dd));
+    dt.setUTCDate(dt.getUTCDate() + n);
+    return dt.toISOString().slice(0,10);
+  };
+  const dayDate = (dObj, idx) => {
+    if (dObj && dObj.date) return dObj.date;
+    if (tripStart) return addDays(tripStart, idx);
+    return '';
+  };
+  const derivedDates = (plan.days||[]).map((d,i) => dayDate(d, i)).filter(Boolean);
+  const firstDate = derivedDates[0] || tripStart || '';
+  const lastDate  = derivedDates[derivedDates.length-1] || tripEnd || '';
   const state = (!firstDate) ? 'empty'
               : (ymd < firstDate) ? 'pre-trip'
               : (ymd > lastDate) ? 'post-trip'
               : 'on-trip';
+  // If currentIdx didn't resolve (no d.date match), derive it from dates
+  if ((currentIdx == null || currentIdx < 0) && state === 'on-trip') {
+    const cIdx = derivedDates.findIndex(d => d === ymd);
+    if (cIdx >= 0) { currentIdx = cIdx; day = plan.days[cIdx]; timeline = (day && day.timeline) || []; }
+  }
 
   const setEl = (id, v, prop='textContent') => { const e = document.getElementById(id); if (e) e[prop] = v; };
   const show = (id, s=true) => { const e = document.getElementById(id); if (e) e.style.display = s ? '' : 'none'; };
