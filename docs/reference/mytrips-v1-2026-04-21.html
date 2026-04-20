@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d16">
+<title>My Trips · Tripva</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:#0d0d16;
+  color:#f5f0e8;
+  font-family:'DM Sans',system-ui,sans-serif;
+  font-weight:300;
+  line-height:1.75;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:60px;
+  background:#0d0d16;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.nav-logo{
+  font-family:'Cormorant Garant',Georgia,serif;
+  font-style:italic;font-size:22px;font-weight:600;
+  letter-spacing:1px;color:#f5f0e8;
+}
+.nav-back{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:#a89e96;cursor:pointer;
+  background:none;border:none;padding:8px 0;
+  transition:color .2s;
+}
+.nav-back:hover{color:#f5f0e8}
+
+/* MAIN */
+.page{max-width:700px;margin:0 auto;padding:32px 20px 48px;min-height:calc(100vh - 60px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
+
+.page-title{
+  font-family:'Cormorant Garant',Georgia,serif;
+  font-size:32px;font-weight:600;font-style:italic;
+  color:#f5f0e8;margin-bottom:6px;
+}
+.page-sub{font-size:14px;color:#cdc5bc;margin-bottom:32px}
+
+/* AUTH STATE */
+.auth-box-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 0 16px;box-sizing:border-box}
+.auth-box{
+  background:#1a1624;border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;padding:28px 24px;text-align:center;
+  margin-bottom:16px;
+}
+.auth-box-title{
+  font-family:'Cormorant Garant',Georgia,serif;
+  font-size:24px;font-weight:600;color:#f5f0e8;margin-bottom:8px;
+}
+.auth-box-sub{font-size:14px;color:#a89e96;margin-bottom:24px;line-height:1.6}
+.auth-input{
+  width:100%;max-width:320px;padding:12px 14px;
+  border:1.5px solid rgba(255,255,255,.35);border-radius:8px;
+  font-size:15px;background:#0d0d16;color:#f5f0e8;outline:none;
+  font-family:'DM Sans',sans-serif;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;
+  transition:border-color .2s;
+}
+.auth-input:focus{border-color:#c9a96e}
+.auth-input::placeholder{color:rgba(245,240,232,.38)}
+.auth-btn{
+  padding:12px 28px;background:linear-gradient(135deg,#b8963e,#d4a84b);
+  color:#fff;border:none;border-radius:8px;
+  font-size:14px;font-weight:500;letter-spacing:.5px;
+  text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:opacity .2s;
+}
+.auth-btn:hover{opacity:.88}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* OAuth buttons */
+.oauth-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;max-width:320px;margin:0 auto 12px;
+  padding:13px 20px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.07);color:#f5f0e8;font-size:14px;
+  font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background .2s,border-color .2s;
+}
+.oauth-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+.oauth-btn svg{width:18px;height:18px;flex-shrink:0}
+.oauth-btn.apple svg path{fill:#fff}
+
+/* SUCCESS STATES */
+.check-email-box{
+  text-align:center;padding:20px 0;
+}
+.check-email-icon{font-size:48px;margin-bottom:12px}
+.check-email-title{
+  font-family:'Cormorant Garant',Georgia,serif;
+  font-size:22px;font-weight:600;color:#f5f0e8;margin-bottom:8px;
+}
+.check-email-sub{font-size:14px;color:#a89e96;line-height:1.6}
+
+/* TRIP CARDS */
+.trips-grid{display:flex;flex-direction:column;gap:14px;min-height:50vh}
+
+.trip-card{
+  background:#1a1624;border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;padding:20px;
+  display:flex;align-items:center;gap:16px;
+  transition:border-color .2s,transform .15s;
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+}
+.trip-card:hover{border-color:rgba(201,169,110,.3);transform:translateY(-1px)}
+
+.trip-card-icon{
+  font-size:32px;flex-shrink:0;width:52px;height:52px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.04);border-radius:12px;
+}
+.trip-card-body{flex:1;min-width:0}
+.trip-card-dest{
+  font-family:'Cormorant Garant',Georgia,serif;
+  font-size:18px;font-weight:600;color:#f5f0e8;
+  margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.trip-card-dates{font-size:12px;color:#a89e96}
+.trip-card-meta{font-size:11px;color:#5c5249;margin-top:3px}
+.trip-card-arrow{
+  color:#a89e96;font-size:18px;flex-shrink:0;
+  transition:color .2s;
+}
+.trip-card:hover .trip-card-arrow{color:#c9a96e}
+
+.trip-card-delete{
+  background:none;border:none;color:#5c5249;font-size:18px;
+  cursor:pointer;padding:8px;border-radius:8px;flex-shrink:0;
+  transition:color .2s,background .2s;
+}
+.trip-card-delete:hover{color:#ff6b6b;background:rgba(255,107,107,.08)}
+
+/* LOADING */
+.loading-state{text-align:center;padding:60px 20px}
+.loading-spinner{
+  width:32px;height:32px;border:2px solid rgba(255,255,255,.1);
+  border-top-color:#c9a96e;border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 16px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-icon{font-size:48px;margin-bottom:16px}
+.empty-title{font-family:'Cormorant Garant',Georgia,serif;font-size:24px;font-weight:600;color:#f5f0e8;margin-bottom:8px}
+.empty-sub{font-size:14px;color:#a89e96;margin-bottom:24px;line-height:1.6}
+.empty-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:12px 24px;background:linear-gradient(135deg,#b8963e,#d4a84b);
+  color:#fff;border-radius:8px;font-size:14px;font-weight:500;
+  letter-spacing:.5px;text-transform:uppercase;text-decoration:none;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(20,20,30,.98);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;
+  z-index:700;opacity:0;transition:all .28s;pointer-events:none;
+  white-space:nowrap;backdrop-filter:blur(16px);color:#f5f0e8;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ACCOUNT BAR */
+.account-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#1a1624;border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;padding:12px 16px;margin-bottom:24px;
+  font-size:13px;
+}
+.account-email{color:#a89e96}
+.account-email strong{color:#f5f0e8}
+.sign-out-btn{
+  background:none;border:1px solid rgba(255,255,255,.1);
+  color:#a89e96;padding:5px 12px;border-radius:6px;
+  font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.sign-out-btn:hover{border-color:rgba(255,107,107,.4);color:#ff6b6b}
+
+@media(max-width:480px){
+  .page{padding:24px 16px 48px}
+  .auth-box{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Tripva</a>
+  <button class="nav-back" onclick="history.back()">← Back</button>
+</nav>
+
+<main class="page">
+  <h1 class="page-title">My Trips</h1>
+  <p class="page-sub">Your saved travel plans, all in one place.</p>
+
+  <!-- Auth section (shown when not logged in) -->
+  <div id="authSection">
+    <div class="auth-box-wrap">
+    <div class="auth-box">
+      <div id="authFormBox">
+        <div class="auth-box-title">Sign in to see your trips</div>
+        <div class="auth-box-sub">Enter your email to receive a magic link — no password needed.</div>
+        <!-- OAuth buttons -->
+        <button class="oauth-btn google" id="googleBtn" onclick="startOAuth('google')">
+          <svg viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+          Continue with Google
+        </button>
+        <button class="oauth-btn apple" id="appleBtn" onclick="startOAuth('apple')">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor"/></svg>
+          Continue with Apple
+        </button>
+        <div class="oauth-divider"><span>or</span></div>
+        <input type="email" class="auth-input" id="authEmail" placeholder="your@email.com" autocomplete="email">
+        <button class="auth-btn" id="authSendBtn" onclick="sendMagicLink()">Send magic link</button>
+      </div>
+      <div id="authSuccessBox" class="check-email-box" style="display:none">
+        <div class="check-email-icon">📬</div>
+        <div class="check-email-title">Check your email</div>
+        <div class="check-email-sub">We sent a magic link to <strong id="authEmailSent"></strong>.<br>Click it to log in and see your trips.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- Trips section (shown when logged in) -->
+  <div id="tripsSection" style="display:none">
+    <div class="account-bar" id="accountBar">
+      <span class="account-email">Signed in as <strong id="accountEmail">—</strong></span>
+      <button class="sign-out-btn" onclick="signOut()">Sign out</button>
+    </div>
+
+    <div id="tripsLoading" class="loading-state">
+      <div class="loading-spinner"></div>
+      <div style="font-size:14px;color:#a89e96">Loading your trips…</div>
+    </div>
+
+    <div id="tripsEmpty" class="empty-state" style="display:none">
+      <div class="empty-icon">🌍</div>
+      <div class="empty-title">No saved trips yet</div>
+      <div class="empty-sub">Plan a trip and save it to your account — it'll appear here.</div>
+      <a href="index.html" class="empty-cta">✈ Plan a trip</a>
+    </div>
+
+    <div class="trips-grid" id="tripsGrid"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var BACKEND = 'https://tripai-backend.vercel.app';
+var SUPABASE_URL = 'https://alnzqqlwqwxknxaxtawh.supabase.co';
+
+function getSession(){
+  try{ return JSON.parse(localStorage.getItem('tripva_session')||'null'); }catch(e){ return null; }
+}
+function setSession(s){ if(s) localStorage.setItem('tripva_session',JSON.stringify(s)); else localStorage.removeItem('tripva_session'); }
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+function signOut(){
+  setSession(null);
+  localStorage.removeItem('tripva_user_email');
+  location.reload();
+}
+
+function startOAuth(provider){
+  var btn = document.getElementById(provider + 'Btn');
+  btn.disabled = true;
+  btn.textContent = 'Redirecting…';
+  fetch(BACKEND+'/api/user/oauth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider: provider })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.error){ btn.disabled=false; btn.textContent = provider === 'google' ? 'Continue with Google' : 'Continue with Apple'; alert(d.error); return; }
+    // Redirect to OAuth provider
+    window.location.href = d.url;
+  })
+  .catch(function(){
+    btn.disabled=false;
+    btn.textContent = provider === 'google' ? 'Continue with Google' : 'Continue with Apple';
+    alert('Could not start ' + provider + ' login. Please try again.');
+  });
+}
+
+function sendMagicLink(){
+  var email = (document.getElementById('authEmail').value||'').trim();
+  if(!email||!email.includes('@')){ alert('Enter a valid email.'); return; }
+  var btn = document.getElementById('authSendBtn');
+  btn.textContent='Sending…'; btn.disabled=true;
+  fetch(BACKEND+'/api/user/magic-link',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.error){ btn.textContent='Send magic link'; btn.disabled=false; alert(d.error); return; }
+    document.getElementById('authEmailSent').textContent = email;
+    document.getElementById('authFormBox').style.display = 'none';
+    document.getElementById('authSuccessBox').style.display = 'block';
+    localStorage.setItem('tripva_pending_email', email);
+  })
+  .catch(function(){
+    btn.textContent='Send magic link'; btn.disabled=false;
+    alert('Could not send link. Please try again.');
+  });
+}
+
+function loadTrips(token){
+  document.getElementById('authSection').style.display = 'none';
+  document.getElementById('tripsSection').style.display = 'block';
+  document.getElementById('tripsLoading').style.display = 'block';
+  document.getElementById('tripsEmpty').style.display = 'none';
+  document.getElementById('tripsGrid').innerHTML = '';
+
+  // Show user email
+  var email = localStorage.getItem('tripva_user_email') || '';
+  if(email) document.getElementById('accountEmail').textContent = email;
+
+  fetch(BACKEND+'/api/user/trips',{
+    headers:{'Authorization':'Bearer '+token}
+  })
+  .then(function(r){
+    if(r.status===401){ setSession(null); location.reload(); return null; }
+    return r.json();
+  })
+  .then(function(d){
+    if(!d) return;
+    document.getElementById('tripsLoading').style.display = 'none';
+    var trips = d.trips || [];
+    if(trips.length === 0){
+      document.getElementById('tripsEmpty').style.display = 'block';
+      return;
+    }
+    renderTrips(trips);
+  })
+  .catch(function(){
+    document.getElementById('tripsLoading').style.display = 'none';
+    document.getElementById('tripsEmpty').style.display = 'block';
+  });
+}
+
+function renderTrips(trips){
+  var grid = document.getElementById('tripsGrid');
+  var emojis = ['🗺️','✈️','🏔️','🏖️','🏙️','🌍','🗼','🌊','🏛️','🎌'];
+  
+  trips.forEach(function(trip, i){
+    var emoji = emojis[i % emojis.length];
+    var dest = trip.destination || 'Unknown destination';
+    var dates = '';
+    if(trip.start_date && trip.end_date){
+      dates = formatDate(trip.start_date) + ' → ' + formatDate(trip.end_date);
+    } else if(trip.start_date){
+      dates = 'From ' + formatDate(trip.start_date);
+    }
+    var meta = 'Saved ' + timeAgo(trip.created_at);
+    
+    var tripUrl = trip.gist_id ? 'trip.html?id='+encodeURIComponent(trip.gist_id) : '#';
+    
+    var card = document.createElement('div');
+    card.className = 'trip-card';
+    card.style.position = 'relative';
+    card.innerHTML = [
+      '<a href="'+tripUrl+'" class="trip-card-link" style="display:flex;align-items:center;gap:16px;flex:1;text-decoration:none;color:inherit;min-width:0">',
+        '<div class="trip-card-icon">'+emoji+'</div>',
+        '<div class="trip-card-body">',
+          '<div class="trip-card-dest">'+escHtml(dest)+'</div>',
+          dates ? '<div class="trip-card-dates">'+escHtml(dates)+'</div>' : '',
+          '<div class="trip-card-meta">'+meta+'</div>',
+        '</div>',
+        '<div class="trip-card-arrow">›</div>',
+      '</a>',
+      '<button class="trip-card-delete" onclick="deleteTrip(\''+trip.id+'\',this)" title="Delete trip">✕</button>'
+    ].join('');
+    
+    grid.appendChild(card);
+  });
+}
+
+function deleteTrip(id, btn){
+  if(!confirm('Delete this trip?')) return;
+  var session = getSession();
+  if(!session) return;
+  
+  btn.disabled = true;
+  btn.textContent = '…';
+  
+  fetch(BACKEND+'/api/user/trips/'+id,{
+    method:'DELETE',
+    headers:{'Authorization':'Bearer '+session.access_token}
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d.success){
+      var card = btn.closest('.trip-card');
+      card.style.transition = 'opacity .3s,transform .3s';
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(20px)';
+      setTimeout(function(){ card.remove(); }, 300);
+      showToast('Trip deleted');
+    } else {
+      btn.disabled = false; btn.textContent = '✕';
+    }
+  })
+  .catch(function(){
+    btn.disabled = false; btn.textContent = '✕';
+  });
+}
+
+function formatDate(s){
+  if(!s) return '';
+  try{
+    var d = new Date(s);
+    return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  }catch(e){ return s; }
+}
+
+function timeAgo(ts){
+  if(!ts) return '';
+  var diff = (Date.now() - new Date(ts).getTime()) / 1000;
+  if(diff < 60) return 'just now';
+  if(diff < 3600) return Math.floor(diff/60)+'m ago';
+  if(diff < 86400) return Math.floor(diff/3600)+'h ago';
+  if(diff < 2592000) return Math.floor(diff/86400)+'d ago';
+  return Math.floor(diff/2592000)+'mo ago';
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Handle auth callback (magic link redirect)
+(function(){
+  var hash = window.location.hash;
+  if(hash && hash.includes('access_token=')){
+    var params = new URLSearchParams(hash.slice(1));
+    var session = {
+      access_token: params.get('access_token'),
+      refresh_token: params.get('refresh_token'),
+      expires_at: Date.now() + parseInt(params.get('expires_in')||'3600')*1000
+    };
+    setSession(session);
+    history.replaceState(null,'',location.pathname);
+  }
+
+  // Check if logged in
+  var session = getSession();
+  if(session && session.access_token){
+    // Check if token expired
+    if(session.expires_at && Date.now() > session.expires_at){
+      setSession(null);
+      return; // Show auth form
+    }
+    loadTrips(session.access_token);
+  }
+  // else: auth form shown by default
+})();
+</script>
+</body>
+</html>
