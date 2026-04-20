@@ -932,7 +932,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   display: none !important;
 }
 
-.focus-card {
+.nowFocus-card {
   position: relative;
   margin: 0 14px 14px;
   border-radius: 24px;
@@ -948,30 +948,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   border: 1px solid rgba(255,255,255,.06);
 }
 @media(min-width:900px){
-  .focus-card { max-height: 420px; min-height: 420px; margin: 0 20px 20px; }
+  .nowFocus-card { max-height: 420px; min-height: 420px; margin: 0 20px 20px; }
 }
-.focus-img {
+.nowFocus-img {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
   z-index: 0;
   transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
 }
-.focus-img.swapping { opacity: 0; }
-.focus-overlay-top {
+.nowFocus-img.swapping { opacity: 0; }
+.nowFocus-overlay-top {
   position: absolute; inset: 0 0 auto 0; height: 40%;
   background: linear-gradient(180deg, rgba(10,11,16,.55) 0%, rgba(10,11,16,0) 100%);
   z-index: 1;
 }
-.focus-overlay-bot {
+.nowFocus-overlay-bot {
   position: absolute; inset: auto 0 0 0; height: 70%;
   background: linear-gradient(0deg, rgba(10,11,16,.95) 0%, rgba(10,11,16,.55) 55%, rgba(10,11,16,0) 100%);
   z-index: 1;
 }
-.focus-body {
+.nowFocus-body {
   position: relative; z-index: 2;
   padding: 20px 22px 24px;
 }
-.focus-kicker {
+.nowFocus-kicker {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
   color: #d4a84b;
@@ -981,18 +981,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   padding: 5px 10px;
   margin-bottom: 12px;
 }
-.focus-kicker::before {
+.nowFocus-kicker::before {
   content: ''; display: inline-block;
   width: 7px; height: 7px; border-radius: 50%;
   background: #d4a84b;
   box-shadow: 0 0 10px rgba(212,168,75,.6);
-  animation: focus-pulse 1.6s cubic-bezier(.4,0,.6,1) infinite;
+  animation: nowFocus-pulse 1.6s cubic-bezier(.4,0,.6,1) infinite;
 }
-@keyframes focus-pulse { 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
+@keyframes nowFocus-pulse { 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
 @media (prefers-reduced-motion: reduce) {
-  .focus-kicker::before { animation: none; }
+  .nowFocus-kicker::before { animation: none; }
 }
-.focus-title {
+.nowFocus-title {
   font-family: 'Cormorant Garamond', 'Cormorant Garant', Georgia, serif;
   font-weight: 600;
   font-size: clamp(26px, 5.5vw, 34px);
@@ -1002,7 +1002,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   margin-bottom: 8px;
   text-shadow: 0 2px 12px rgba(0,0,0,.4);
 }
-.focus-countdown {
+.nowFocus-countdown {
   font-size: clamp(18px, 3.4vw, 22px);
   font-weight: 700;
   color: rgba(255,255,255,.92);
@@ -1010,13 +1010,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   margin-bottom: 4px;
   letter-spacing: -.3px;
 }
-.focus-subdetail {
+.nowFocus-subdetail {
   font-size: 13px;
   color: rgba(255,255,255,.72);
   margin-bottom: 18px;
   line-height: 1.4;
 }
-.focus-cta {
+.nowFocus-cta {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--purple, #7c6af7);
   color: #fff;
@@ -1032,17 +1032,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   text-decoration: none;
   min-height: 44px;
 }
-.focus-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(124,106,247,.55); }
-.focus-cta:active { transform: scale(.97); }
-.focus-ring {
+.nowFocus-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(124,106,247,.55); }
+.nowFocus-cta:active { transform: scale(.97); }
+.nowFocus-ring {
   position: absolute; top: 14px; right: 14px; z-index: 3;
   width: 46px; height: 46px;
   display: flex; align-items: center; justify-content: center;
 }
-.focus-ring svg { width: 46px; height: 46px; transform: rotate(-90deg); }
-.focus-ring-bg { fill: none; stroke: rgba(255,255,255,.14); stroke-width: 3; }
-.focus-ring-fg { fill: none; stroke: var(--purple, #7c6af7); stroke-width: 3; stroke-linecap: round; transition: stroke-dasharray .4s cubic-bezier(.22,1,.36,1); }
-.focus-ring-label {
+.nowFocus-ring svg { width: 46px; height: 46px; transform: rotate(-90deg); }
+.nowFocus-ring-bg { fill: none; stroke: rgba(255,255,255,.14); stroke-width: 3; }
+.nowFocus-ring-fg { fill: none; stroke: var(--purple, #7c6af7); stroke-width: 3; stroke-linecap: round; transition: stroke-dasharray .4s cubic-bezier(.22,1,.36,1); }
+.nowFocus-ring-label {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 10px; font-weight: 800; color: #fff;
@@ -1050,16 +1050,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 }
 
 /* Stage strip — horizontal chip row */
-.stage-strip-wrap { margin: 0 0 14px; padding: 0 0 4px; }
-.stage-strip {
+.nowStageStrip-wrap { margin: 0 0 14px; padding: 0 0 4px; }
+.nowStageStrip {
   display: flex; gap: 8px;
   overflow-x: auto; -webkit-overflow-scrolling: touch;
   padding: 0 14px 4px;
   scrollbar-width: none;
   scroll-snap-type: x proximity;
 }
-.stage-strip::-webkit-scrollbar { display: none; }
-.stage-chip {
+.nowStageStrip::-webkit-scrollbar { display: none; }
+.nowStage-chip {
   flex-shrink: 0;
   display: inline-flex; align-items: center; gap: 6px;
   background: transparent;
@@ -1075,20 +1075,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   cursor: default;
   transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
 }
-.stage-chip.done { border-color: rgba(74,222,128,.3); color: rgba(74,222,128,.8); }
-.stage-chip.done::before { content: '✓'; font-weight: 700; }
-.stage-chip.current {
+.nowStage-chip.done { border-color: rgba(74,222,128,.3); color: rgba(74,222,128,.8); }
+.nowStage-chip.done::before { content: '✓'; font-weight: 700; }
+.nowStage-chip.current {
   background: var(--purple, #7c6af7);
   border-color: var(--purple, #7c6af7);
   color: #fff;
   box-shadow: 0 4px 16px rgba(124,106,247,.35);
-  animation: stage-pulse 1800ms cubic-bezier(.4,0,.6,1) infinite;
+  animation: nowStage-pulse 1800ms cubic-bezier(.4,0,.6,1) infinite;
 }
-@keyframes stage-pulse { 0%,100%{ box-shadow: 0 4px 16px rgba(124,106,247,.35); } 50%{ box-shadow: 0 6px 22px rgba(124,106,247,.55); } }
-@media (prefers-reduced-motion: reduce) { .stage-chip.current { animation: none; } }
+@keyframes nowStage-pulse { 0%,100%{ box-shadow: 0 4px 16px rgba(124,106,247,.35); } 50%{ box-shadow: 0 6px 22px rgba(124,106,247,.55); } }
+@media (prefers-reduced-motion: reduce) { .nowStage-chip.current { animation: none; } }
 
 /* Peek next — one small card preview */
-.peek-next {
+.nowPeek {
   margin: 0 14px 14px;
   padding: 12px 14px;
   background: rgba(255,255,255,.04);
@@ -1100,23 +1100,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   text-decoration: none;
   color: inherit;
 }
-.peek-next:hover { background: rgba(255,255,255,.07); transform: translateY(-1px); }
-.peek-next-icon { font-size: 22px; flex-shrink: 0; }
-.peek-next-body { flex: 1; min-width: 0; }
-.peek-next-label {
+.nowPeek:hover { background: rgba(255,255,255,.07); transform: translateY(-1px); }
+.nowPeek-icon { font-size: 22px; flex-shrink: 0; }
+.nowPeek-body { flex: 1; min-width: 0; }
+.nowPeek-label {
   font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase;
   color: rgba(255,255,255,.45);
 }
-.peek-next-title {
+.nowPeek-title {
   font-size: 15px; font-weight: 700; color: rgba(255,255,255,.95);
   margin-top: 2px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.peek-next-time { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; font-variant-numeric: tabular-nums; }
-.peek-next-arrow { color: rgba(255,255,255,.4); font-size: 18px; flex-shrink: 0; }
+.nowPeek-time { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.nowPeek-arrow { color: rgba(255,255,255,.4); font-size: 18px; flex-shrink: 0; }
 
 /* Contextual alert — conditional weather / transit banner */
-.focus-alert {
+.nowFocus-alert {
   margin: 0 14px 14px;
   padding: 10px 14px;
   background: rgba(90,200,250,.08);
@@ -1127,7 +1127,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   display: flex; align-items: center; gap: 10px;
   line-height: 1.4;
 }
-.focus-alert-icon { flex-shrink: 0; font-size: 16px; }
+.nowFocus-alert-icon { flex-shrink: 0; font-size: 16px; }
 
 /* SECTION */
 .v2-section { margin: 14px 14px 0; }
@@ -1359,44 +1359,44 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="v2-scroll" id="opsScroll">
 
     <!-- ── NOW-TAB v3 — FocusCard + StageStrip + PeekNext ──────────────── -->
-    <div class="focus-card" id="focusCard" style="display:none">
-      <div class="focus-img" id="focusImg"></div>
-      <div class="focus-overlay-top"></div>
-      <div class="focus-overlay-bot"></div>
-      <div class="focus-ring" id="focusRing" style="display:none">
+    <div class="nowFocus-card" id="nowFocusCard" style="display:none">
+      <div class="nowFocus-img" id="nowFocusImg"></div>
+      <div class="nowFocus-overlay-top"></div>
+      <div class="nowFocus-overlay-bot"></div>
+      <div class="nowFocus-ring" id="nowFocusRing" style="display:none">
         <svg viewBox="0 0 46 46" aria-hidden="true">
-          <circle class="focus-ring-bg" cx="23" cy="23" r="20"></circle>
-          <circle class="focus-ring-fg" id="focusRingFg" cx="23" cy="23" r="20"
+          <circle class="nowFocus-ring-bg" cx="23" cy="23" r="20"></circle>
+          <circle class="nowFocus-ring-fg" id="nowFocusRingFg" cx="23" cy="23" r="20"
                   stroke-dasharray="0 125.66"></circle>
         </svg>
-        <div class="focus-ring-label" id="focusRingLabel">0%</div>
+        <div class="nowFocus-ring-label" id="nowFocusRingLabel">0%</div>
       </div>
-      <div class="focus-body">
-        <div class="focus-kicker" id="focusKicker">LOADING</div>
-        <div class="focus-title" id="focusTitle">—</div>
-        <div class="focus-countdown" id="focusCountdown">—</div>
-        <div class="focus-subdetail" id="focusSubdetail" style="display:none">—</div>
-        <a class="focus-cta" id="focusCta" href="#" style="display:none"><span id="focusCtaText">Get directions</span><span aria-hidden="true">→</span></a>
+      <div class="nowFocus-body">
+        <div class="nowFocus-kicker" id="nowFocusKicker">LOADING</div>
+        <div class="nowFocus-title" id="nowFocusTitle">—</div>
+        <div class="nowFocus-countdown" id="nowFocusCountdown">—</div>
+        <div class="nowFocus-subdetail" id="nowFocusSubdetail" style="display:none">—</div>
+        <a class="nowFocus-cta" id="nowFocusCta" href="#" style="display:none"><span id="nowFocusCtaText">Get directions</span><span aria-hidden="true">→</span></a>
       </div>
     </div>
 
-    <div class="stage-strip-wrap" id="stageStripWrap" style="display:none">
-      <div class="stage-strip" id="stageStrip" role="list" aria-label="Today's activities"></div>
+    <div class="nowStageStrip-wrap" id="nowStageStripWrap" style="display:none">
+      <div class="nowStageStrip" id="nowStageStrip" role="list" aria-label="Today's activities"></div>
     </div>
 
-    <a class="peek-next" id="peekNext" href="#" style="display:none">
-      <div class="peek-next-icon" aria-hidden="true">⏭️</div>
-      <div class="peek-next-body">
-        <div class="peek-next-label">Up next</div>
-        <div class="peek-next-title" id="peekNextTitle">—</div>
-        <div class="peek-next-time" id="peekNextTime">—</div>
+    <a class="nowPeek" id="nowPeekNext" href="#" style="display:none">
+      <div class="nowPeek-icon" aria-hidden="true">⏭️</div>
+      <div class="nowPeek-body">
+        <div class="nowPeek-label">Up next</div>
+        <div class="nowPeek-title" id="nowPeekTitle">—</div>
+        <div class="nowPeek-time" id="nowPeekTime">—</div>
       </div>
-      <div class="peek-next-arrow" aria-hidden="true">→</div>
+      <div class="nowPeek-arrow" aria-hidden="true">→</div>
     </a>
 
-    <div class="focus-alert" id="focusAlert" style="display:none">
-      <span class="focus-alert-icon" id="focusAlertIcon">☁️</span>
-      <span id="focusAlertText">—</span>
+    <div class="nowFocus-alert" id="nowFocusAlert" style="display:none">
+      <span class="nowFocus-alert-icon" id="nowFocusAlertIcon">☁️</span>
+      <span id="nowFocusAlertText">—</span>
     </div>
 
     <!-- EMPTY STATE -->
@@ -3652,7 +3652,7 @@ function renderLiveOps(){
 // Detects state: pre-trip (all days future) / on-trip (today in range).
 // Other states (travel-day, final-day, post-trip) fall back to on-trip.
 function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
-  const fc = document.getElementById('focusCard');
+  const fc = document.getElementById("nowFocusCard");
   if (!fc) return;
   const tab = document.getElementById('tab-plan');
   if (!tab || !tab.classList.contains('now-v3')) return;
@@ -3676,7 +3676,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
   const imgDay = (state === 'pre-trip') ? (plan.days[0] || {}) : day;
   const heroImg = (imgDay && imgDay.heroImg) || (plan.trip && plan.trip.heroImg) ||
                   `https://picsum.photos/seed/tripva-${(plan.trip&&plan.trip.destination||'trip').replace(/[^a-z0-9]/gi,'-')}/1200/800`;
-  const focusImg = document.getElementById('focusImg');
+  const focusImg = document.getElementById("nowFocusImg");
   if (focusImg) {
     const next = `url('${heroImg}')`;
     if (focusImg.style.backgroundImage !== next) {
@@ -3706,16 +3706,16 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
     const nowMs = new Date(ymd + 'T00:00:00Z').getTime();
     const diff = startMs - nowMs;
     const dest = (plan.trip && plan.trip.destination) || 'Your trip';
-    setEl('focusKicker', '⏳ UP AHEAD');
-    setEl('focusTitle', dest);
-    setEl('focusCountdown', `Starts in ${fmtDaysTil(diff)}`);
-    setEl('focusSubdetail', `Trip begins ${firstDate}`);
-    show('focusSubdetail', true);
-    show('focusCta', true);
-    setEl('focusCtaText', '🎒 Open packing list');
-    const cta = document.getElementById('focusCta');
+    setEl("nowFocusKicker", '⏳ UP AHEAD');
+    setEl("nowFocusTitle", dest);
+    setEl("nowFocusCountdown", `Starts in ${fmtDaysTil(diff)}`);
+    setEl("nowFocusSubdetail", `Trip begins ${firstDate}`);
+    show("nowFocusSubdetail", true);
+    show("nowFocusCta", true);
+    setEl("nowFocusCtaText", '🎒 Open packing list');
+    const cta = document.getElementById("nowFocusCta");
     if (cta) cta.href = "javascript:openPackModal();void(0);";
-    show('focusRing', false);
+    show("nowFocusRing", false);
     // Stage strip: Plan → Prep → Travel → Explore → Return
     renderStageStrip([
       { label:'Plan',   state:'done' },
@@ -3725,23 +3725,23 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       { label:'Return', state:'future' },
     ]);
     // No peek-next in pre-trip
-    show('peekNext', false);
-    show('focusAlert', false);
+    show("nowPeekNext", false);
+    show("nowFocusAlert", false);
     return;
   }
 
   if (state === 'post-trip') {
     const dest = (plan.trip && plan.trip.destination) || 'Your trip';
     const dayCount = (plan.days||[]).length;
-    setEl('focusKicker', '✨ RECENTLY');
-    setEl('focusTitle', `Your ${dest} trip`);
-    setEl('focusCountdown', `${dayCount} days complete`);
-    show('focusSubdetail', false);
-    show('focusCta', true);
-    setEl('focusCtaText', '📸 View scrapbook');
-    const cta = document.getElementById('focusCta');
+    setEl("nowFocusKicker", '✨ RECENTLY');
+    setEl("nowFocusTitle", `Your ${dest} trip`);
+    setEl("nowFocusCountdown", `${dayCount} days complete`);
+    show("nowFocusSubdetail", false);
+    show("nowFocusCta", true);
+    setEl("nowFocusCtaText", '📸 View scrapbook');
+    const cta = document.getElementById("nowFocusCta");
     if (cta) cta.href = 'javascript:switchTab("days");void(0);';
-    show('focusRing', false);
+    show("nowFocusRing", false);
     renderStageStrip([
       { label:'Plan',    state:'done' },
       { label:'Prep',    state:'done' },
@@ -3749,8 +3749,8 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       { label:'Explore', state:'done' },
       { label:'Return',  state:'current' },
     ]);
-    show('peekNext', false);
-    show('focusAlert', false);
+    show("nowPeekNext", false);
+    show("nowFocusAlert", false);
     return;
   }
 
@@ -3781,62 +3781,62 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
     const fi = timeline[0];
     const fmins = parseTimeM(fi.time);
     const wait = fmins - nowMins;
-    setEl('focusKicker', '⏰ FIRST UP');
-    setEl('focusTitle', fi.title || dayTitle);
-    setEl('focusCountdown', `In ${fmtCountdown(wait)} · at ${fi.time}`);
-    setEl('focusSubdetail', (fi.detail||'').split('.')[0] || '');
-    show('focusSubdetail', !!(fi.detail));
-    show('focusCta', true);
-    setEl('focusCtaText', '📍 Get directions');
-    const cta = document.getElementById('focusCta');
+    setEl("nowFocusKicker", '⏰ FIRST UP');
+    setEl("nowFocusTitle", fi.title || dayTitle);
+    setEl("nowFocusCountdown", `In ${fmtCountdown(wait)} · at ${fi.time}`);
+    setEl("nowFocusSubdetail", (fi.detail||'').split('.')[0] || '');
+    show("nowFocusSubdetail", !!(fi.detail));
+    show("nowFocusCta", true);
+    setEl("nowFocusCtaText", '📍 Get directions');
+    const cta = document.getElementById("nowFocusCta");
     if (cta) cta.href = `https://maps.google.com/?q=${encodeURIComponent(fi.title||dayTitle)}`;
     if (cta) cta.target = '_blank';
   } else if (afterDay) {
-    setEl('focusKicker', '✅ TODAY DONE');
-    setEl('focusTitle', "Today's plan complete");
-    setEl('focusCountdown', `${doneItems.length} stops in ${dayTitle}`);
+    setEl("nowFocusKicker", '✅ TODAY DONE');
+    setEl("nowFocusTitle", "Today's plan complete");
+    setEl("nowFocusCountdown", `${doneItems.length} stops in ${dayTitle}`);
     const nextDay = plan.days[currentIdx+1];
-    setEl('focusSubdetail', nextDay ? `Tomorrow: ${nextDay.title||'day ahead'}` : 'Trip ending soon — safe travels ✈️');
-    show('focusSubdetail', true);
-    show('focusCta', nextDay ? true : false);
-    setEl('focusCtaText', 'Peek tomorrow →');
-    const cta = document.getElementById('focusCta');
+    setEl("nowFocusSubdetail", nextDay ? `Tomorrow: ${nextDay.title||'day ahead'}` : 'Trip ending soon — safe travels ✈️');
+    show("nowFocusSubdetail", true);
+    show("nowFocusCta", nextDay ? true : false);
+    setEl("nowFocusCtaText", 'Peek tomorrow →');
+    const cta = document.getElementById("nowFocusCta");
     if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
   } else if (currentItem) {
-    setEl('focusKicker', '📍 YOU\'RE AT');
-    setEl('focusTitle', currentItem.title || dayTitle);
+    setEl("nowFocusKicker", '📍 YOU\'RE AT');
+    setEl("nowFocusTitle", currentItem.title || dayTitle);
     if (nextItem) {
       const nm = parseTimeM(nextItem.time);
       const leaveBy = nm - 10;
       const inMins = nm - nowMins;
       const leaveHH = String(Math.floor(leaveBy/60)).padStart(2,'0');
       const leaveMM = String(leaveBy%60).padStart(2,'0');
-      setEl('focusCountdown', `Leave in ${fmtCountdown(inMins-10)} · ${leaveHH}:${leaveMM}`);
-      setEl('focusSubdetail', `Next: ${nextItem.title} at ${nextItem.time}`);
-      show('focusSubdetail', true);
-      show('focusCta', true);
-      setEl('focusCtaText', '📍 Directions');
-      const cta = document.getElementById('focusCta');
+      setEl("nowFocusCountdown", `Leave in ${fmtCountdown(inMins-10)} · ${leaveHH}:${leaveMM}`);
+      setEl("nowFocusSubdetail", `Next: ${nextItem.title} at ${nextItem.time}`);
+      show("nowFocusSubdetail", true);
+      show("nowFocusCta", true);
+      setEl("nowFocusCtaText", '📍 Directions');
+      const cta = document.getElementById("nowFocusCta");
       if (cta) { cta.href = `https://maps.google.com/?q=${encodeURIComponent(currentItem.title||'')}`; cta.target = '_blank'; }
     } else {
-      setEl('focusCountdown', '');
-      setEl('focusSubdetail', (currentItem.detail||'').split('.')[0] || '');
-      show('focusSubdetail', !!(currentItem.detail));
-      show('focusCta', true);
-      setEl('focusCtaText', 'Open itinerary');
-      const cta = document.getElementById('focusCta');
+      setEl("nowFocusCountdown", '');
+      setEl("nowFocusSubdetail", (currentItem.detail||'').split('.')[0] || '');
+      show("nowFocusSubdetail", !!(currentItem.detail));
+      show("nowFocusCta", true);
+      setEl("nowFocusCtaText", 'Open itinerary');
+      const cta = document.getElementById("nowFocusCta");
       if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
     }
   } else {
     // No timeline data OR no match — generic fallback
-    setEl('focusKicker', '📍 TODAY');
-    setEl('focusTitle', dayTitle);
-    setEl('focusCountdown', `Day ${dayNum} of ${totalDays}`);
-    setEl('focusSubdetail', day.subtitle || 'Open your full itinerary');
-    show('focusSubdetail', true);
-    show('focusCta', true);
-    setEl('focusCtaText', 'Open itinerary');
-    const cta = document.getElementById('focusCta');
+    setEl("nowFocusKicker", '📍 TODAY');
+    setEl("nowFocusTitle", dayTitle);
+    setEl("nowFocusCountdown", `Day ${dayNum} of ${totalDays}`);
+    setEl("nowFocusSubdetail", day.subtitle || 'Open your full itinerary');
+    show("nowFocusSubdetail", true);
+    show("nowFocusCta", true);
+    setEl("nowFocusCtaText", 'Open itinerary');
+    const cta = document.getElementById("nowFocusCta");
     if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
   }
 
@@ -3845,12 +3845,12 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
     const frac = doneItems.length / timeline.length;
     const circ = 2 * Math.PI * 20; // ~125.66
     const dash = (frac * circ).toFixed(2);
-    const ring = document.getElementById('focusRingFg');
+    const ring = document.getElementById("nowFocusRingFg");
     if (ring) ring.setAttribute('stroke-dasharray', `${dash} ${circ}`);
-    setEl('focusRingLabel', `${Math.round(frac*100)}%`);
-    show('focusRing', true);
+    setEl("nowFocusRingLabel", `${Math.round(frac*100)}%`);
+    show("nowFocusRing", true);
   } else {
-    show('focusRing', false);
+    show("nowFocusRing", false);
   }
 
   // ── Stage strip — today's activities as chips ──
@@ -3880,34 +3880,34 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
 
   // Peek next — only if there's a next item today
   if (nextItem) {
-    show('peekNext', true);
-    setEl('peekNextTitle', nextItem.title || '—');
-    setEl('peekNextTime', nextItem.time || '');
+    show("nowPeekNext", true);
+    setEl("nowPeekTitle", nextItem.title || '—');
+    setEl("nowPeekTime", nextItem.time || '');
   } else {
-    show('peekNext', false);
+    show("nowPeekNext", false);
   }
 
   // Contextual alert (weather) — only if present on plan
   const weather = plan.weather || (plan.trip && plan.trip.weather);
   if (weather && (weather.alert || weather.summary)) {
-    show('focusAlert', true);
-    setEl('focusAlertIcon', weather.icon || '☁️');
-    setEl('focusAlertText', weather.alert || weather.summary);
+    show("nowFocusAlert", true);
+    setEl("nowFocusAlertIcon", weather.icon || '☁️');
+    setEl("nowFocusAlertText", weather.alert || weather.summary);
   } else {
-    show('focusAlert', false);
+    show("nowFocusAlert", false);
   }
 }
 
 function renderStageStrip(chips) {
-  const strip = document.getElementById('stageStrip');
-  const wrap = document.getElementById('stageStripWrap');
+  const strip = document.getElementById("nowStageStrip");
+  const wrap = document.getElementById("nowStageStripWrap");
   if (!strip || !wrap) return;
   if (!chips || !chips.length) { wrap.style.display = 'none'; return; }
   wrap.style.display = '';
   strip.innerHTML = chips.map((c, i) => {
     const label = (c.label || '').replace(/</g,'&lt;');
     const cls = c.state || 'future';
-    return `<div class="stage-chip ${cls}" role="listitem" aria-label="${label}${cls === 'current' ? ' (current)' : ''}">${label}</div>`;
+    return `<div class=.nowStage-chip ${cls}" role="listitem" aria-label="${label}${cls === 'current' ? ' (current)' : ''}">${label}</div>`;
   }).join('');
   // Auto-scroll current into view
   const cur = strip.querySelector('.stage-chip.current');
