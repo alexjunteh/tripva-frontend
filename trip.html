@@ -2473,17 +2473,24 @@ const CITY_IMG_ALTS = {
   'luzern':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
 };
 // Helper: get best image for a day card.
-// Always returns a DIFFERENT image per day by seeding picsum with destination + day index.
-// Day.imageUrl still wins if explicitly set.
+// Returns a DIFFERENT image per day by seeding picsum with destination + day index.
+// Respects day.imageUrl ONLY if it's not the generic loremflickr placeholder
+// that the current backend returns identically for every day (known data bug).
 function getDayImage(day, idx) {
-  if (day.imageUrl) return day.imageUrl;
-  // Build a deterministic seed per day so images are stable + unique.
   const dest = ((plan && plan.trip && (plan.trip.destination || plan.trip.name)) ||
                 (plan && plan.rawPlan && plan.rawPlan.trip && plan.rawPlan.trip.name) || 'trip')
                .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0, 40);
   const dayNum = (day && (day.day != null ? day.day : (idx + 1))) || (idx + 1);
-  const seed = `tripva-${dest || 'trip'}-d${dayNum}`;
-  return `https://picsum.photos/seed/${seed}/900/600`;
+  const picsum = `https://picsum.photos/seed/tripva-${dest || 'trip'}-d${dayNum}/900/600`;
+
+  // If the backend explicitly supplies a day image that isn't the generic
+  // loremflickr "same-for-every-day" placeholder, trust it. Otherwise use picsum.
+  const url = day && day.imageUrl;
+  if (!url) return picsum;
+  const looksGeneric = /loremflickr\.com\/\d+\/\d+\/[^/]*,travel\/?$/i.test(url) ||
+                       /loremflickr\.com\/\d+\/\d+\/travel\/?$/i.test(url) ||
+                       /loremflickr\.com\/\d+\/\d+\/[a-z\-]+,travel$/i.test(url);
+  return looksGeneric ? picsum : url;
 }
 
 // Track used images per populateDashboard call to avoid duplicates
