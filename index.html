@@ -562,6 +562,56 @@ footer{
   transition:transform .5s cubic-bezier(.22,1,.36,1);
 }
 .arch-tile:hover .arch-tile-img{transform:scale(1.04)}
+
+/* Archetype tiles — editorial gradients per traveller type (no external imagery,
+   never 404s, instant paint). Each tile gets its own hue + a large decorative
+   glyph in the top-right. */
+.arch-tile-img.arch-solo{
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255,195,120,.35), transparent 55%),
+    linear-gradient(160deg, #2a1a0e 0%, #0f0a07 75%);
+}
+.arch-tile-img.arch-couple{
+  background:
+    radial-gradient(circle at 70% 30%, rgba(255,130,160,.32), transparent 55%),
+    linear-gradient(160deg, #2b1020 0%, #100610 75%);
+}
+.arch-tile-img.arch-family{
+  background:
+    radial-gradient(circle at 30% 75%, rgba(255,200,110,.28), transparent 55%),
+    radial-gradient(circle at 75% 20%, rgba(130,200,255,.22), transparent 55%),
+    linear-gradient(160deg, #0e2430 0%, #050f16 75%);
+}
+.arch-tile-img.arch-friends{
+  background:
+    radial-gradient(circle at 50% 30%, rgba(140,230,180,.28), transparent 55%),
+    linear-gradient(160deg, #0b2a24 0%, #06140f 75%);
+}
+.arch-tile-img.arch-adventure{
+  background:
+    radial-gradient(circle at 30% 15%, rgba(160,200,255,.24), transparent 55%),
+    radial-gradient(circle at 75% 85%, rgba(90,110,200,.35), transparent 55%),
+    linear-gradient(160deg, #13223b 0%, #080e1b 75%);
+}
+.arch-tile-img.arch-nomad{
+  background:
+    radial-gradient(circle at 30% 80%, rgba(180,150,255,.28), transparent 55%),
+    linear-gradient(160deg, #1e1433 0%, #0a0718 75%);
+}
+.arch-glyph{
+  position:absolute; top:14px; right:16px;
+  font-size:56px;
+  line-height:1;
+  opacity:.85;
+  z-index:2;
+  pointer-events:none;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.arch-tile:hover .arch-glyph{ transform:scale(1.08) rotate(-3deg); }
+@media(max-width:480px){
+  .arch-glyph{ font-size:48px; top:12px; right:14px; }
+}
 .arch-tile-overlay{
   position:absolute; inset:0;
   background:linear-gradient(180deg, rgba(10,10,18,.1) 0%, rgba(10,10,18,.4) 45%, rgba(10,10,18,.9) 100%);
@@ -691,7 +741,8 @@ footer{
 
     <div class="arch-grid">
       <a class="arch-tile fade-in" href="plan.html?archetype=solo" aria-label="Plan a solo trip">
-        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-solo-v1/800/600')"></div>
+        <div class="arch-tile-img arch-solo"></div>
+        <div class="arch-glyph" aria-hidden="true">☀</div>
         <div class="arch-tile-overlay"></div>
         <div class="arch-tile-arrow" aria-hidden="true">→</div>
         <div class="arch-tile-body">
@@ -701,7 +752,8 @@ footer{
         </div>
       </a>
       <a class="arch-tile fade-in" href="plan.html?archetype=couple" aria-label="Plan a couple's trip">
-        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-couple-v1/800/600')"></div>
+        <div class="arch-tile-img arch-couple"></div>
+        <div class="arch-glyph" aria-hidden="true">🍷</div>
         <div class="arch-tile-overlay"></div>
         <div class="arch-tile-arrow" aria-hidden="true">→</div>
         <div class="arch-tile-body">
@@ -711,7 +763,8 @@ footer{
         </div>
       </a>
       <a class="arch-tile fade-in" href="plan.html?archetype=family" aria-label="Plan a family vacation">
-        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-family-v1/800/600')"></div>
+        <div class="arch-tile-img arch-family"></div>
+        <div class="arch-glyph" aria-hidden="true">🏝</div>
         <div class="arch-tile-overlay"></div>
         <div class="arch-tile-arrow" aria-hidden="true">→</div>
         <div class="arch-tile-body">
@@ -721,7 +774,8 @@ footer{
         </div>
       </a>
       <a class="arch-tile fade-in" href="plan.html?archetype=friends" aria-label="Plan a friend group trip">
-        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-friends-v1/800/600')"></div>
+        <div class="arch-tile-img arch-friends"></div>
+        <div class="arch-glyph" aria-hidden="true">🥂</div>
         <div class="arch-tile-overlay"></div>
         <div class="arch-tile-arrow" aria-hidden="true">→</div>
         <div class="arch-tile-body">
@@ -731,7 +785,8 @@ footer{
         </div>
       </a>
       <a class="arch-tile fade-in" href="plan.html?archetype=adventure" aria-label="Plan an adventure trip">
-        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-adventure-v1/800/600')"></div>
+        <div class="arch-tile-img arch-adventure"></div>
+        <div class="arch-glyph" aria-hidden="true">⛰</div>
         <div class="arch-tile-overlay"></div>
         <div class="arch-tile-arrow" aria-hidden="true">→</div>
         <div class="arch-tile-body">
@@ -741,7 +796,8 @@ footer{
         </div>
       </a>
       <a class="arch-tile fade-in" href="plan.html?archetype=nomad" aria-label="Plan a slow-travel or digital nomad trip">
-        <div class="arch-tile-img" style="background-image:url('https://picsum.photos/seed/tripva-nomad-v1/800/600')"></div>
+        <div class="arch-tile-img arch-nomad"></div>
+        <div class="arch-glyph" aria-hidden="true">☕</div>
         <div class="arch-tile-overlay"></div>
         <div class="arch-tile-arrow" aria-hidden="true">→</div>
         <div class="arch-tile-body">
