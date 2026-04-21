@@ -298,6 +298,42 @@ phase_5() {
     && pass "emoji glyphs render at color-emoji width (no text-variant fallback)" \
     || { fail "$thin_glyphs emoji glyph(s) rendering as thin text fallback — add U+FE0F variation selector"; ok=0; }
 
+  # CRITICAL: Save button + OAuth must be reachable on every trip. Open More
+  # menu on the fixture trip, confirm "Save trip" and login paths exist.
+  "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5m" >/dev/null 2>&1; sleep 6
+  # Clear any state that might false-trigger viewer-mode
+  "$B" js "try{localStorage.clear();sessionStorage.clear();}catch(e){} document.body.classList.remove('viewer-mode'); openMore(); true" >/dev/null 2>&1
+  sleep 1
+  local save_findable; save_findable=$("$B" js "
+    (()=>{
+      const more = document.getElementById('moreOverlay');
+      if (!more || !more.classList.contains('open')) return 'more-not-open';
+      const btns = [...more.querySelectorAll('button, .more-item, .more-action')];
+      const save = btns.find(b => /save\\s*trip|save\\s+this/i.test(b.textContent||''));
+      if (!save) return 'no-save-button';
+      const r = save.getBoundingClientRect();
+      if (!(r.width > 0 && r.height > 0)) return 'save-hidden';
+      if (getComputedStyle(save).display === 'none') return 'save-display-none';
+      return 'ok';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  [ "$save_findable" = "ok" ] && pass "Save trip reachable in More menu" \
+    || { fail "Save trip discoverability broken: $save_findable"; ok=0; }
+
+  # mytrips.html — Google login + magic-link must both be present
+  "$B" goto "https://tripva.app/mytrips?v=$t&phase=5m2" >/dev/null 2>&1; sleep 3
+  local auth_paths; auth_paths=$("$B" js "
+    JSON.stringify({
+      google: !!document.getElementById('googleBtn'),
+      magic:  !!document.getElementById('authSendBtn'),
+    })
+  " 2>/dev/null | tail -1)
+  if echo "$auth_paths" | grep -q '"google":true' && echo "$auth_paths" | grep -q '"magic":true'; then
+    pass "mytrips login paths present (Google + magic link)"
+  else
+    fail "mytrips login paths missing: $auth_paths"; ok=0
+  fi
+
   # Invisible touch-blockers — fixed/absolute elements that are visually hidden
   # (opacity 0 or visibility hidden) but still have pointer-events enabled.
   # These eat taps/scrolls silently. Caused right-edge scroll regression
