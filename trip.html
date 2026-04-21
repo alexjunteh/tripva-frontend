@@ -1417,6 +1417,11 @@ body.viewer-mode .more-action-primary{display:none}
 
 <div id="app">
 
+<!-- Offline badge — shown when navigator.onLine flips false -->
+<div id="offlineBanner" style="display:none;margin:10px 14px 0;padding:10px 14px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);border-radius:12px;font-size:13px;color:#fbbf24;flex-shrink:0;gap:8px;align-items:center;font-weight:600">
+  <span>📡 Offline — your plan + tickets still work. Edits queue for sync.</span>
+</div>
+
 <!-- Cold-viewer banner — shown on any tab when viewer-mode is active -->
 <div id="viewerBanner" class="viewer-banner" style="display:none;margin:10px 14px 0;flex-shrink:0">
   <span class="viewer-banner-icon">✨</span>
@@ -2120,7 +2125,9 @@ function markBudgetBooked(idx) {
   }
   savePlanToStorage();
   try { populateDashboard(plan); } catch(e) { console.warn('[budget] re-render failed:', e); }
-  try { showToast && showToast('✅ Marked as booked'); } catch(e) {}
+  // Queue a Gist re-save so other devices pick up the change — replays when online
+  try { _queueEdit({ type: 'save-plan' }); _replayEditQueue(); } catch(e) {}
+  try { showToast && showToast(navigator.onLine ? '✅ Marked as booked' : '✅ Marked · will sync when online'); } catch(e) {}
 }
 
 function addBudgetBookingLink(idx) {
@@ -2138,7 +2145,8 @@ function addBudgetBookingLink(idx) {
   if (trimmed) plan.budget[idx].status = 'booked';
   savePlanToStorage();
   try { populateDashboard(plan); } catch(e) {}
-  try { showToast && showToast(trimmed ? '🔗 Link saved — marked as booked' : '🔗 Link cleared'); } catch(e) {}
+  try { _queueEdit({ type: 'save-plan' }); _replayEditQueue(); } catch(e) {}
+  try { showToast && showToast(trimmed ? (navigator.onLine ? '🔗 Link saved — marked as booked' : '🔗 Saved · will sync when online') : '🔗 Link cleared'); } catch(e) {}
 }
 
 window.markBudgetBooked = markBudgetBooked;
@@ -5323,6 +5331,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.toggleAiChat = toggleAiChat;
 window.sendAiEdit = sendAiEdit;
+
+// ── OFFLINE TRAVELER MODE ──────────────────────────────────────────────────
+// Show a badge when navigator.onLine flips false. Edits (mark-booked,
+// add-link) still mutate the local plan instantly + persist to localStorage
+// so the UI feels alive; they're queued for replay once connectivity returns.
+// Tickets + trip JSON + hero photos served from SW cache → trip dashboard
+// stays fully functional with no network.
+function _offlineBadge(show) {
+  const el = document.getElementById('offlineBanner');
+  if (el) el.style.display = show ? 'flex' : 'none';
+}
+function _queueEdit(action) {
+  try {
+    const q = JSON.parse(localStorage.getItem('tripva_edit_queue') || '[]');
+    q.push({ ...action, queuedAt: Date.now() });
+    localStorage.setItem('tripva_edit_queue', JSON.stringify(q));
+  } catch (e) { console.warn('[offline] queue failed:', e); }
+}
+async function _replayEditQueue() {
+  let q;
+  try { q = JSON.parse(localStorage.getItem('tripva_edit_queue') || '[]'); } catch (e) { return; }
+  if (!q || !q.length) return;
+  if (!navigator.onLine) return;
+  const remaining = [];
+  for (const action of q) {
+    try {
+      if (action.type === 'save-plan') {
+        // Re-save the current plan to Gist to sync mutations
+        const rawPlan = (plan && plan.rawPlan) ? plan.rawPlan : plan;
+        if (!rawPlan || !rawPlan.trip) continue;
+        await fetch(BACKEND_URL + '/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: rawPlan })
+        });
+      }
+      // Other action types could be added here (ai-edit, account-save, etc.)
+    } catch (e) {
+      remaining.push(action); // keep for next retry
+    }
+  }
+  localStorage.setItem('tripva_edit_queue', JSON.stringify(remaining));
+  if (remaining.length === 0) {
+    try { showToast('☁️ Changes synced to cloud'); } catch(e){}
+  }
+}
+window.addEventListener('online', () => {
+  _offlineBadge(false);
+  // Small delay to let the network stabilize before retrying
+  setTimeout(_replayEditQueue, 1500);
+});
+window.addEventListener('offline', () => _offlineBadge(true));
+// Initial state
+if (!navigator.onLine) _offlineBadge(true);
+// Listen for SW sync messages (background sync API replay trigger)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data && e.data.type === 'replay-edits') _replayEditQueue();
+  });
+  // Try to register background sync (browser may ignore if unsupported)
+  try {
+    navigator.serviceWorker.ready.then(reg => {
+      if (reg.sync) reg.sync.register('tripva-edit-sync').catch(() => {});
+    });
+  } catch (_) {}
+}
+// Try sync on page load in case we were offline last session
+setTimeout(_replayEditQueue, 2000);
 
 // ── Calendar export (.ics) ─────────────────────────────────────────────────
 // Pure frontend: generates an RFC-5545 VEVENT per timeline item for either a
