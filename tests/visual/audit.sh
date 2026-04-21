@@ -119,8 +119,11 @@ phase_1() {
   # - "Failed to load resource: 404" from Plausible analytics, favicon, images
   # - ERR_FAILED from flaky-network image fetches (Wikipedia etc.)
   # - "Ignoring Event: localhost" from the browse daemon itself
-  local console_errors; console_errors=$("$B" console --errors 2>/dev/null | grep -vE "Ignoring Event|Failed to load resource|ERR_FAILED|favicon|plausible|google-analytics" | grep -c "\[error\]" || echo 0)
-  [ "$console_errors" = "0" ] && pass "no JS console errors" || { fail "$console_errors JS console error(s) — not external 404s"; ok=0; }
+  # grep -c exits 1 when 0 matches found, so `|| echo 0` can duplicate the "0".
+  # Use `true` to suppress the non-zero exit and rely on grep's own "0" output.
+  local console_errors; console_errors=$( { "$B" console --errors 2>/dev/null || true; } | grep -vE "Ignoring Event|Failed to load resource|ERR_FAILED|favicon|plausible|google-analytics" | { grep -c "\[error\]" || true; } | head -1)
+  console_errors="${console_errors:-0}"
+  [ "$console_errors" -eq 0 ] 2>/dev/null && pass "no JS console errors" || { fail "$console_errors JS console error(s) — not external 404s"; ok=0; }
 
   # Phase 1 pixel-diff against baseline (if one exists)
   if [ -d "$HERE/baseline/mobile" ]; then
@@ -259,7 +262,8 @@ phase_5() {
         return true;
       }).length
   " 2>/dev/null | tail -1)
-  [ "$tiny_targets" = "0" ] && pass "all core tap targets ≥44px" || { fail "$tiny_targets tap target(s) under 44px (excluding footer/decorative)"; ok=0; }
+  tiny_targets="${tiny_targets:-0}"
+  [ "$tiny_targets" -eq 0 ] 2>/dev/null && pass "all core tap targets ≥44px" || { fail "$tiny_targets tap target(s) under 44px (excluding footer/decorative)"; ok=0; }
 
   if [ "$ok" = "1" ]; then PHASE5_OK=1; fi
   return $((1 - ok))
