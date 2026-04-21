@@ -13,17 +13,17 @@
 ## I can build (executing this session, top→bottom)
 
 Quick wins (≤ 30 min each):
-- [ ] Edit-trip modal stale `tripMeta` fix — should repopulate from `plan.trip` on open
-- [ ] Scroll-hide bottom nav on Now tab (DESIGN.md principle 1 — maximize FocusCard)
+- [x] Edit-trip modal stale `tripMeta` fix — `67a0c3d`
+- [x] Scroll-hide bottom nav on Now tab — `3586d7a`
 
 Substantive work:
-- [ ] Adventure archetype full fields (`activity_types[]`, `fitness_level`, `gear_owned[]`) — both frontend + backend
-- [ ] Nomad archetype full fields (`work_hours_per_week`, `wifi_requirement`, `cowork_preferred`) — both frontend + backend
-- [ ] Now-tab 5-state machine: travel-day + final-day + post-trip refinements
-- [ ] Archetype prompt iteration — generate 6 test trips, compare, tune `getArchetypeInstruction` on any gaps
-- [ ] Trip sharing OG cards (dynamic Open-Graph images per trip)
-- [ ] Packing endpoint unit tests + archetype fixtures
-- [ ] PWA install polish — custom prompt, app icon, offline shell
+- [x] Adventure archetype full fields — FE `1ba8a17`, BE `591bb84`
+- [x] Nomad archetype full fields — FE `8befc9e`, BE `591bb84`
+- [x] Now-tab 5-state machine — FE `bb0fe98`
+- [x] Archetype prompt iteration — BE `b9455bf` + `5f7d1d6`. 6 test trips generated; found critical gap: `buildPlanPrompt` (non-streaming /api/plan) was archetype-blind. Wired it up + tuned solo/couple/family/friends/adventure prompts with explicit FAIL-style rules. Post-fix signals: family stroller 0→27, friends Airbnb 0→4 with correct hotel format "(Airbnb — N bedrooms)", adventure gear 0→8.
+- [x] Trip sharing OG cards foundation — FE `d1c1ee3` (static meta + JS patch; per-trip CF Worker deferred)
+- [x] Packing endpoint unit tests + archetype fixtures — BE `460955d` (11 tests pass)
+- [x] PWA install polish — FE `64b93d4` (manifest fix + shortcuts + smart dismiss)
 
 Deferred (intentionally — see why):
 - App-shell 8→5 tab merge — surgery on 4.5k-line `trip.html`, needs dedicated session with careful regression testing
