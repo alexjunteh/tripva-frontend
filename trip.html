@@ -1782,7 +1782,8 @@ body.viewer-mode .more-action-primary{display:none}
     <div class="sheet-body" id="sheetBody"></div>
     <div class="sheet-nav">
       <button class="sheet-nav-btn" id="sheetPrev" onclick="sheetNav(-1)">‹ Previous</button>
-      <button class="sheet-nav-btn" onclick="askAiAboutDay()" title="Ask Tripva to change this day" style="flex:0 0 auto;padding:11px 14px">🤖 Edit</button>
+      <button class="sheet-nav-btn" onclick="exportDayIcs(curSheetDay)" title="Add this day to your calendar" style="flex:0 0 auto;padding:11px 14px;min-width:56px">📅</button>
+      <button class="sheet-nav-btn" onclick="askAiAboutDay()" title="Ask Tripva to change this day" style="flex:0 0 auto;padding:11px 14px;min-width:72px">🤖 Edit</button>
       <button class="sheet-nav-btn" id="sheetNext" onclick="sheetNav(1)">Next ›</button>
     </div>
   </div>
@@ -1843,6 +1844,7 @@ body.viewer-mode .more-action-primary{display:none}
     <div class="more-divider"></div>
     <div class="more-action-row">
       <button class="more-action more-action-primary" onclick="closeMore();saveToAccount()">💾 Save trip</button>
+      <button class="more-action" onclick="closeMore();exportTripIcs()">📅 Calendar (.ics)</button>
       <button class="more-action" onclick="closeMore();exportHtml()">📄 Export HTML</button>
       <button class="more-action" onclick="closeMore();openEditModal()">✏️ Edit Trip</button>
       <button class="more-action" id="moreUpgradeBtn" onclick="closeMore();upgradeToPro()" style="background:linear-gradient(135deg,#95b8ff,var(--purple));color:var(--bg);border-color:transparent">⚡ Upgrade to Pro</button>
@@ -5321,6 +5323,144 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.toggleAiChat = toggleAiChat;
 window.sendAiEdit = sendAiEdit;
+
+// ── Calendar export (.ics) ─────────────────────────────────────────────────
+// Pure frontend: generates an RFC-5545 VEVENT per timeline item for either a
+// single day or the whole trip. Timezone is derived from the destination via
+// the same TZ_MAP used by renderLiveOps (falls back to UTC). No backend call.
+function _icsTzForDestination(destination) {
+  const TZ_MAP = {
+    'paris':'Europe/Paris','amsterdam':'Europe/Amsterdam','london':'Europe/London',
+    'rome':'Europe/Rome','barcelona':'Europe/Madrid','berlin':'Europe/Berlin',
+    'madrid':'Europe/Madrid','lisbon':'Europe/Lisbon','vienna':'Europe/Vienna',
+    'prague':'Europe/Prague','tokyo':'Asia/Tokyo','osaka':'Asia/Tokyo',
+    'kyoto':'Asia/Tokyo','new york':'America/New_York','los angeles':'America/Los_Angeles',
+    'chicago':'America/Chicago','san francisco':'America/Los_Angeles','bangkok':'Asia/Bangkok',
+    'singapore':'Asia/Singapore','kuala lumpur':'Asia/Kuala_Lumpur','penang':'Asia/Kuala_Lumpur',
+    'dubai':'Asia/Dubai','sydney':'Australia/Sydney','melbourne':'Australia/Sydney',
+    'bali':'Asia/Makassar','seoul':'Asia/Seoul','hong kong':'Asia/Hong_Kong',
+    'taipei':'Asia/Taipei','beijing':'Asia/Shanghai','shanghai':'Asia/Shanghai'
+  };
+  const d = (destination || '').toLowerCase();
+  for (const [k,v] of Object.entries(TZ_MAP)) if (d.includes(k)) return v;
+  return 'UTC';
+}
+
+function _icsEscape(s) {
+  return String(s || '').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+}
+
+function _icsFmtLocal(ymd, hhmm) {
+  // Produces "20260420T140000" format used by VEVENT with a TZID param.
+  // Keeps the LOCAL wall-clock time (what the user's itinerary says), with
+  // the TZID anchoring it to the destination timezone.
+  const [y,m,d] = String(ymd || '').split('-');
+  const [hh,mm] = String(hhmm || '00:00').match(/(\d{1,2}):(\d{2})/)?.slice(1) || ['00','00'];
+  if (!y || !m || !d) return null;
+  return `${y}${m}${d}T${String(hh).padStart(2,'0')}${String(mm).padStart(2,'0')}00`;
+}
+
+function _icsBuild(eventsByDay, tz, tripName) {
+  const uid = (s) => `${Date.now()}-${Math.random().toString(36).slice(2,8)}-${s}@tripva.app`;
+  const now = new Date();
+  const dtstamp = now.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Tripva//AI Trip Planner//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    `X-WR-CALNAME:${_icsEscape(tripName || 'Tripva trip')}`,
+    `X-WR-TIMEZONE:${tz}`,
+  ];
+
+  eventsByDay.forEach((day) => {
+    const date = day.date;
+    const tl = day.timeline || [];
+    tl.forEach((item, i) => {
+      const startLocal = _icsFmtLocal(date, item.time);
+      if (!startLocal) return;
+      // Default event duration: 90 min. Use next item's time as end if sooner.
+      let endTime = null;
+      const nextItem = tl[i+1];
+      if (nextItem && nextItem.time) {
+        const el = _icsFmtLocal(date, nextItem.time);
+        if (el && el > startLocal) endTime = el;
+      }
+      if (!endTime) {
+        // Add 90 min
+        const m = item.time.match(/^(\d{1,2}):(\d{2})/);
+        if (m) {
+          const total = parseInt(m[1])*60 + parseInt(m[2]) + 90;
+          const h = Math.min(23, Math.floor(total/60));
+          const mm = total % 60;
+          endTime = _icsFmtLocal(date, `${h}:${mm}`);
+        }
+      }
+      if (!endTime) endTime = startLocal;
+      const summary = _icsEscape(item.title || 'Activity');
+      const desc    = _icsEscape(item.detail || '');
+      const loc     = _icsEscape(item.mapQuery || item.location || '');
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:${uid('ev' + i)}`,
+        `DTSTAMP:${dtstamp}`,
+        `DTSTART;TZID=${tz}:${startLocal}`,
+        `DTEND;TZID=${tz}:${endTime}`,
+        `SUMMARY:${summary}`,
+        desc ? `DESCRIPTION:${desc}` : '',
+        loc ? `LOCATION:${loc}` : '',
+        'END:VEVENT',
+      );
+    });
+  });
+
+  lines.push('END:VCALENDAR');
+  // RFC-5545 requires CRLF line endings + empty lines removed
+  return lines.filter(Boolean).join('\r\n');
+}
+
+function _downloadIcs(content, filename) {
+  try {
+    const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+  } catch (e) {
+    if (typeof showToast === 'function') showToast('⚠️ Could not generate calendar file');
+    console.error('[ics] download failed:', e);
+  }
+}
+
+function exportDayIcs(idx) {
+  if (!plan || !plan.days || !plan.days[idx]) { try { showToast('⚠️ Day not found'); } catch(e){} return; }
+  const day = plan.days[idx];
+  if (!day.date) { try { showToast('⚠️ Day has no date — regenerate trip first'); } catch(e){} return; }
+  const tz = _icsTzForDestination(plan.trip?.destination);
+  const tripName = plan.trip?.name || 'Trip';
+  const ics = _icsBuild([day], tz, `${tripName} — Day ${day.day || idx+1}`);
+  const slug = (tripName + '-day-' + (day.day || idx+1)).toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  _downloadIcs(ics, `${slug}.ics`);
+  try { showToast('📅 Calendar file downloaded'); } catch(e){}
+}
+
+function exportTripIcs() {
+  if (!plan || !plan.days || !plan.days.length) { try { showToast('⚠️ No trip to export'); } catch(e){} return; }
+  const tz = _icsTzForDestination(plan.trip?.destination);
+  const tripName = plan.trip?.name || 'Trip';
+  const ics = _icsBuild(plan.days, tz, tripName);
+  const slug = tripName.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  _downloadIcs(ics, `${slug}.ics`);
+  try { showToast('📅 Full trip calendar downloaded'); } catch(e){}
+}
+window.exportDayIcs  = exportDayIcs;
+window.exportTripIcs = exportTripIcs;
 
 // ── Pro plan upgrade (Stripe Checkout) ─────────────────────────────────────
 // Sends auth token + redirect URLs to /api/stripe/checkout. Backend responds
