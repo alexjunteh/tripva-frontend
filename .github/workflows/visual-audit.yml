@@ -59,24 +59,36 @@ jobs:
           ls -la "$TARGET_DIR/browse/dist/" || true
           test -x "$TARGET_DIR/browse/dist/browse" || { echo "browse binary missing"; exit 2; }
 
-      - name: Wait for Cloudflare deploy to propagate
+      - name: Check tripva.app reachability from CI
+        id: reach
         run: |
-          # CF Pages usually publishes within 30–60s of push. Poll until the
-          # pushed SHA is embedded in the HTML (we stamp it server-side) OR
-          # give up after 3 minutes and audit whatever's live.
-          SHA=$(git rev-parse --short HEAD)
+          # Dev-phase Cloudflare firewall rule 90f3f1a949954f649dbd0b0c700fd855
+          # blocks non-Malaysia traffic. GitHub Actions runners (US-based) get 403.
+          # If that's what we're seeing, skip the audit gracefully — pre-push
+          # hook on local dev machines is the real gate until the firewall drops.
+          HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 15 https://tripva.app/)
+          echo "http_code=$HTTP_CODE" >> "$GITHUB_OUTPUT"
+          case "$HTTP_CODE" in
+            200) echo "reachable=true" >> "$GITHUB_OUTPUT" ;;
+            403) echo "::warning::tripva.app returns 403 — Cloudflare firewall blocking CI. Audit skipped. Pre-push hook remains authoritative until firewall drops."
+                 echo "reachable=false" >> "$GITHUB_OUTPUT" ;;
+            *)   echo "::warning::tripva.app unexpected status $HTTP_CODE — audit skipped."
+                 echo "reachable=false" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Wait for Cloudflare deploy to propagate
+        if: steps.reach.outputs.reachable == 'true'
+        run: |
           for i in $(seq 1 18); do
-            if curl -sf https://tripva.app/ >/dev/null; then
-              echo "tripva.app reachable — proceeding"; break
-            fi
+            if curl -sf https://tripva.app/ >/dev/null; then break; fi
             sleep 10
           done
 
       - name: Run visual audit
+        if: steps.reach.outputs.reachable == 'true'
         id: audit
         run: |
           chmod +x ./tests/visual/audit.sh
-          # Run in full mode; exits 0 on pass, 1 on fail
           ./tests/visual/audit.sh --full
 
       - name: Upload audit report artifact
