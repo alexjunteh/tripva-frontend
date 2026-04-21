@@ -412,10 +412,40 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       </div>
     </div>
 
-    <!-- ADVENTURE (v1 fallback) -->
+    <!-- ADVENTURE -->
     <div class="arch-fields" data-arch="adventure">
-      <div class="arch-heads-up">
-        Adventure-specific fields (gear lists, fitness level, permit windows) are coming soon. For now, use the interests below and Tripva will pace the plan based on your trip length.
+      <div class="form-section">
+        <label class="form-label">What kind of adventure?</label>
+        <div class="chip-group" data-group="adv-activities">
+          <div class="chip-pick sel" data-v="hiking">Hiking</div>
+          <div class="chip-pick" data-v="climbing">Climbing</div>
+          <div class="chip-pick" data-v="diving">Diving</div>
+          <div class="chip-pick" data-v="biking">Biking</div>
+          <div class="chip-pick" data-v="water-sports">Water sports</div>
+          <div class="chip-pick" data-v="skiing">Skiing</div>
+          <div class="chip-pick" data-v="wildlife">Wildlife</div>
+          <div class="chip-pick" data-v="camping">Camping</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Fitness level</label>
+        <div class="chip-group" data-group="adv-fitness" data-single="1">
+          <div class="chip-pick" data-v="beginner">Beginner</div>
+          <div class="chip-pick sel" data-v="intermediate">Intermediate</div>
+          <div class="chip-pick" data-v="advanced">Advanced</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Gear you already have</label>
+        <div class="chip-group" data-group="adv-gear">
+          <div class="chip-pick" data-v="hiking-boots">Hiking boots</div>
+          <div class="chip-pick" data-v="backpack">Backpack</div>
+          <div class="chip-pick" data-v="tent">Tent / sleep kit</div>
+          <div class="chip-pick" data-v="climbing">Climbing gear</div>
+          <div class="chip-pick" data-v="diving-cert">Diving cert</div>
+          <div class="chip-pick" data-v="bike">Bike</div>
+          <div class="chip-pick" data-v="camera">Camera</div>
+        </div>
       </div>
       <div class="form-section">
         <label class="form-label">Pace</label>
@@ -713,6 +743,9 @@ function _pickVal(groupAttr){
   const sel = document.querySelector('.arch-fields.active .chip-group[data-group="'+groupAttr+'"] .chip-pick.sel');
   return sel ? sel.dataset.v : null;
 }
+function _pickMulti(groupAttr){
+  return [...document.querySelectorAll('.arch-fields.active .chip-group[data-group="'+groupAttr+'"] .chip-pick.sel')].map(el => el.dataset.v);
+}
 function _toggleState(id){
   const el = document.getElementById(id);
   return el ? el.classList.contains('on') : false;
@@ -742,7 +775,10 @@ function gatherArchetypeData(){
     data.decision_style = _pickVal('friends-decision');
     data.group_energy = _pickVal('friends-energy');
   } else if (a === 'adventure'){
-    data.pace = _pickVal('adv-pace');
+    data.activity_types = _pickMulti('adv-activities');
+    data.fitness_level  = _pickVal('adv-fitness');
+    data.gear_owned     = _pickMulti('adv-gear');
+    data.pace           = _pickVal('adv-pace');
   } else if (a === 'nomad'){
     data.wifi_priority = _toggleState('wifiToggle');
   }
