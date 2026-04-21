@@ -162,3 +162,36 @@ async function replayQueuedEdits() {
     clients.forEach(c => c.postMessage({ type: 'replay-edits' }));
   } catch (_) {}
 }
+
+// ── Web Push handler ─────────────────────────────────────────────────────
+// Payload: { title, body, icon, badge, url, tag }. Clicking a notification
+// focuses an existing Tripva tab at the trip URL, or opens a new one.
+self.addEventListener('push', e => {
+  if (!e.data) return;
+  let payload;
+  try { payload = e.data.json(); } catch (_) { payload = { title: 'Tripva', body: e.data.text() }; }
+  e.waitUntil(self.registration.showNotification(payload.title || 'Tripva', {
+    body:  payload.body || '',
+    icon:  payload.icon  || '/icons/icon-192.png',
+    badge: payload.badge || '/icons/icon-192.png',
+    tag:   payload.tag   || undefined,
+    data:  { url: payload.url || '/mytrips.html' },
+  }));
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const target = (e.notification.data && e.notification.data.url) || '/';
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      // If a Tripva tab is already open, focus + navigate it
+      for (const c of list) {
+        if (c.url.includes('tripva.app') && 'focus' in c) {
+          c.navigate(target).catch(() => {});
+          return c.focus();
+        }
+      }
+      return self.clients.openWindow(target);
+    })
+  );
+});
