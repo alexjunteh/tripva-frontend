@@ -564,6 +564,11 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .budget-bar-track{height:3px;background:var(--surface2);border-radius:2px;margin-top:6px}
 .budget-bar-fill{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 .budget-amount{font-size:14px;font-weight:800;color:var(--text);text-align:right;flex-shrink:0}
+.budget-row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.budget-row-actions a,.budget-row-actions button{font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .15s ease,border-color .15s ease,color .15s ease;min-height:30px}
+.budget-row-actions a:hover,.budget-row-actions button:hover{border-color:rgba(124,106,247,.5);color:var(--text)}
+.budget-row-actions .budget-act-primary{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:#4ade80}
+.budget-row-actions .budget-act-primary:hover{background:rgba(74,222,128,.2);color:#86efac}
 .budget-context-panel,.stay-transparency-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 15px;margin-bottom:10px}
 .budget-context-head,.stay-transparency-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .budget-context-kicker,.stay-transparency-kicker{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
@@ -2048,7 +2053,60 @@ function onFxChange(val) {
   });
   const il = document.getElementById('fxSelectInline'); if(il) il.value = val;
   updateBudgetConversions();
+  // Hero totals are also in home currency → recompute when the chip changes.
+  updateBudgetHero();
 }
+
+function updateBudgetHero() {
+  if (!plan || !plan.budget || !plan.budget.length) return;
+  const hero = document.querySelector('.budget-hero');
+  if (!hero) return;
+  const isBooked = b => b.status === 'booked' || /✅|Paid|BOOKED/i.test(b.note||'') || /✅|PAID|BOOKED/i.test(b.amount||'');
+  const paid = plan.budget.filter(isBooked);
+  const pending = plan.budget.filter(b => !isBooked(b));
+  const paidTotal = paid.reduce((a,b) => a + parseBudgetToRM(b.amount), 0);
+  const pendingTotal = pending.reduce((a,b) => a + parseBudgetToRM(b.amount), 0);
+  const num = hero.querySelector('.budget-hero-num');
+  const sub = hero.querySelector('.budget-hero-sub');
+  if (num) num.textContent = '≈ ' + formatHomeCurrency(paidTotal);
+  if (sub) sub.textContent = `Pending ≈ ${formatHomeCurrency(pendingTotal)} · Total ≈ ${formatHomeCurrency(paidTotal+pendingTotal)}`;
+}
+
+// ── Budget item status mutations ───────────────────────────────────────────
+// Toggle pending → booked, and optionally attach a booking URL. Persists via
+// savePlanToStorage() and re-renders the budget section (cheap: ~10 rows).
+function markBudgetBooked(idx) {
+  if (!plan || !plan.budget || !plan.budget[idx]) return;
+  plan.budget[idx].status = 'booked';
+  // Strip any 'pending' markers from note so the isBooked detector agrees
+  if (plan.budget[idx].note) {
+    plan.budget[idx].note = plan.budget[idx].note.replace(/\bpending\b/gi, '').trim();
+  }
+  savePlanToStorage();
+  try { populateDashboard(plan); } catch(e) { console.warn('[budget] re-render failed:', e); }
+  try { showToast && showToast('✅ Marked as booked'); } catch(e) {}
+}
+
+function addBudgetBookingLink(idx) {
+  if (!plan || !plan.budget || !plan.budget[idx]) return;
+  const existing = plan.budget[idx].bookUrl || plan.budget[idx].url || '';
+  const url = window.prompt('Paste the booking URL (Booking.com, airline confirmation, etc.)', existing);
+  if (url === null) return;
+  const trimmed = String(url).trim();
+  if (trimmed && !/^https?:\/\//i.test(trimmed)) {
+    try { showToast && showToast('⚠️ URL must start with http:// or https://'); } catch(e) { alert('URL must start with http:// or https://'); }
+    return;
+  }
+  plan.budget[idx].bookUrl = trimmed;
+  // Adding a link implies the thing is booked
+  if (trimmed) plan.budget[idx].status = 'booked';
+  savePlanToStorage();
+  try { populateDashboard(plan); } catch(e) {}
+  try { showToast && showToast(trimmed ? '🔗 Link saved — marked as booked' : '🔗 Link cleared'); } catch(e) {}
+}
+
+window.markBudgetBooked = markBudgetBooked;
+window.addBudgetBookingLink = addBudgetBookingLink;
 
 function updateBudgetConversions() {
   if (!fxRates) return;
@@ -3290,15 +3348,19 @@ function populateDashboard(p) {
     const _be = document.getElementById('budgetEmpty');
     if (_be) _be.style.display = 'none';
     _be?.remove();
+    // Detect source currency BEFORE rendering so each row's data-src is correct.
+    // Previously fxSourceCurrency was still the 'USD' default at template time.
+    try { fxSourceCurrency = detectSourceCurrency(p.trip?.destination || ''); } catch(e) {}
     const isBooked = b => b.status === 'booked' || /✅|Paid|BOOKED/i.test(b.note||'') || /✅|PAID|BOOKED/i.test(b.amount||'');
     const paidItems = (p.budget||[]).filter(b => isBooked(b));
     const pendingItems = (p.budget||[]).filter(b => !isBooked(b));
-    const paidTotal=paidItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
-    const pendingTotal=pendingItems.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
+    // Totals in the user's chosen home currency, not a hard-coded RM.
+    const paidTotal = paidItems.reduce((a,b) => a + parseBudgetToRM(b.amount), 0);
+    const pendingTotal = pendingItems.reduce((a,b) => a + parseBudgetToRM(b.amount), 0);
     scroll.innerHTML=`${buildBudgetContextCard(p)}<div class="budget-hero">
       <div class="budget-hero-lbl">Confirmed spend</div>
-      <div class="budget-hero-num">≈ RM ${Math.round(paidTotal).toLocaleString()}</div>
-      <div class="budget-hero-sub">Pending ≈ RM ${Math.round(pendingTotal).toLocaleString()} · Total ≈ RM ${Math.round(paidTotal+pendingTotal).toLocaleString()}</div>
+      <div class="budget-hero-num">≈ ${formatHomeCurrency(paidTotal)}</div>
+      <div class="budget-hero-sub">Pending ≈ ${formatHomeCurrency(pendingTotal)} · Total ≈ ${formatHomeCurrency(paidTotal+pendingTotal)}</div>
     </div>`;
     function addBudgetSection(items, label, cssClass) {
       if(!items.length) return;
@@ -3306,16 +3368,35 @@ function populateDashboard(p) {
       hdr.className='budget-section-hdr '+cssClass;
       hdr.innerHTML=label;
       scroll.appendChild(hdr);
-      items.forEach(b=>{
+      items.forEach((b) => {
+        const idx = (p.budget || []).indexOf(b);  // stable index for mutations
         const pct=Math.min(b.pct||25,100);
         const row=document.createElement('div');
         row.className='budget-row '+cssClass;
+        const icon = b.icon || (b.category === 'accommodation' ? '🏨' : b.category === 'transport' ? '🚆' : b.category === 'food' ? '🍜' : b.category === 'activities' ? '🎯' : '💰');
+        const booked = cssClass === 'budget-booked';
+        const bookUrl = b.bookUrl || b.url || '';
+        // Action row: booked items just link to the receipt if any; pending
+        // items get "Mark booked" + "Add booking link" affordances.
+        let actions = '';
+        if (booked) {
+          actions = bookUrl
+            ? `<div class="budget-row-actions"><a href="${esc(bookUrl)}" target="_blank" rel="noopener">🔗 Booking</a></div>`
+            : '';
+        } else {
+          actions = `<div class="budget-row-actions">
+            <button class="budget-act-primary" onclick="markBudgetBooked(${idx})" aria-label="Mark as booked">✓ Mark booked</button>
+            <button onclick="addBudgetBookingLink(${idx})" aria-label="Add booking link">${bookUrl ? '🔗 Edit link' : '+ Add link'}</button>
+            ${bookUrl ? `<a href="${esc(bookUrl)}" target="_blank" rel="noopener">🔗 Open</a>` : ''}
+          </div>`;
+        }
         row.innerHTML=`
-          <div class="budget-icon">${b.icon || (b.category === 'accommodation' ? '🏨' : b.category === 'transport' ? '🚆' : b.category === 'food' ? '🍜' : b.category === 'activities' ? '🎯' : '💰')}</div>
+          <div class="budget-icon">${icon}</div>
           <div class="budget-info">
             <div class="budget-label">${esc(b.label||b.item||'')}</div>
             ${b.note?`<div class="budget-note">${esc(b.note)}</div>`:''}
             <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
+            ${actions}
           </div>
           <div class="budget-amount" data-raw="${esc(b.amount||'')}" data-src="${fxSourceCurrency}">${esc(b.amount||'')}</div>`;
         scroll.appendChild(row);
@@ -3573,16 +3654,68 @@ function formatDayDate(dayNum){
   const [y,m,d] = ymd.split('-').map(Number);
   return new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Rome',weekday:'short',day:'numeric',month:'short'}).format(new Date(Date.UTC(y,m-1,d,12,0,0)));
 }
+// Parse a budget amount string → { amount, currency }. Handles all the
+// currencies the backend may emit: USD ($), EUR (€), GBP (£), JPY (¥), MYR (RM),
+// SGD (S$), AUD (A$), CHF, THB (฿), plus trailing 3-letter codes ("120 EUR").
+// If nothing matches, treat as the trip's source currency (fallback).
+function parseBudgetAmount(str, fallbackCur){
+  const s = String(str||'').trim();
+  if (!s) return { amount: 0, currency: fallbackCur || 'USD' };
+  const num = v => { const m = String(v).match(/([\d,]+(?:\.\d+)?)/); return m ? parseFloat(m[1].replace(/,/g,'')) : 0; };
+  const patterns = [
+    { re: /RM\s*[\d,.]+/i,                 cur: 'MYR' },
+    { re: /(^|[^A])A\$\s*[\d,.]+/i,        cur: 'AUD' },
+    { re: /(^|[^S])S\$\s*[\d,.]+/i,        cur: 'SGD' },
+    { re: /\$\s*[\d,.]+/,                  cur: 'USD' },
+    { re: /€\s*[\d,.]+/,                   cur: 'EUR' },
+    { re: /£\s*[\d,.]+/,                   cur: 'GBP' },
+    { re: /¥\s*[\d,.]+/,                   cur: 'JPY' },
+    { re: /฿\s*[\d,.]+/,                   cur: 'THB' },
+    { re: /CHF\s*[\d,.]+/i,                cur: 'CHF' },
+    { re: /[\d,.]+\s*(USD|EUR|GBP|MYR|SGD|AUD|JPY|THB|CHF)\b/i, curFromMatch: true },
+  ];
+  for (const p of patterns) {
+    const m = s.match(p.re);
+    if (m) {
+      const amt = num(m[0]);
+      if (!amt) continue;
+      const cur = p.curFromMatch ? m[1].toUpperCase() : p.cur;
+      return { amount: amt, currency: cur };
+    }
+  }
+  // No currency symbol → fall back to trip's source currency with whatever
+  // number we can extract
+  return { amount: num(s), currency: fallbackCur || 'USD' };
+}
+
+// Legacy alias — kept so existing callers still work, but now currency-aware.
+// Converts to the user's chosen fxHomeCurrency via fxRates. If fxRates unavailable,
+// falls back to a lightweight static cross-rate (rough, for first paint).
 function parseBudgetToRM(str){
-  const s=String(str||'');
-  const grab=(re)=>{ const m=s.match(re); return m?parseFloat(m[1].replace(/,/g,'')):0; };
-  const rm=grab(/RM\s*([\d,]+(?:\.\d+)?)/i);
-  if(rm) return rm;
-  const chf=grab(/CHF\s*([\d,]+(?:\.\d+)?)/i);
-  if(chf) return chf*5.17;
-  const eur=grab(/€\s*([\d,]+(?:\.\d+)?)/i) || grab(/EUR\s*([\d,]+(?:\.\d+)?)/i);
-  if(eur) return eur*4.7;
-  return 0;
+  // Preserved name for back-compat — now returns amount in the CURRENT fxHomeCurrency.
+  const { amount, currency } = parseBudgetAmount(str, (typeof fxSourceCurrency !== 'undefined' ? fxSourceCurrency : 'USD'));
+  return convertToHomeCurrency(amount, currency);
+}
+
+// Convert amount/currency to the user's chosen home currency using fxRates
+// (base USD, keyed by currency). Falls back to a static approximation if fx
+// hasn't loaded yet so we never render "RM 0" for a real trip.
+const _FX_FALLBACK = { USD:1, EUR:0.92, GBP:0.79, JPY:149, MYR:4.7, SGD:1.34, AUD:1.51, THB:36, CHF:0.87 };
+function convertToHomeCurrency(amount, fromCur){
+  const to = (typeof fxHomeCurrency !== 'undefined') ? fxHomeCurrency : 'USD';
+  if (!amount) return 0;
+  if (fromCur === to) return amount;
+  const rates = (typeof fxRates !== 'undefined' && fxRates) ? fxRates : _FX_FALLBACK;
+  const fromRate = rates[fromCur] || _FX_FALLBACK[fromCur] || 1;
+  const toRate   = rates[to]      || _FX_FALLBACK[to]      || 1;
+  return (amount / fromRate) * toRate;
+}
+
+function formatHomeCurrency(amount){
+  const to = (typeof fxHomeCurrency !== 'undefined') ? fxHomeCurrency : 'USD';
+  const sym = { USD:'$', EUR:'€', GBP:'£', AUD:'A$', MYR:'RM ', SGD:'S$', JPY:'¥', THB:'฿', CHF:'CHF ' }[to] || (to + ' ');
+  const rounded = to === 'JPY' ? Math.round(amount) : Math.round(amount);
+  return `${sym}${rounded.toLocaleString()}`;
 }
 function formatBudgetMoney(value, currency='USD'){
   const amount=Number(value||0);
