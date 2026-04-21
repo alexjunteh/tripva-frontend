@@ -1,0 +1,12 @@
+name = "tripva-og-worker"
+main = "og-worker.js"
+compatibility_date = "2026-04-21"
+
+# Route: only fires for /trip and /trip.html paths on tripva.app.
+# CF will pass all other requests through to the Pages origin normally.
+routes = [
+  { pattern = "tripva.app/trip", zone_name = "tripva.app" },
+  { pattern = "tripva.app/trip.html", zone_name = "tripva.app" }
+]
+
+# No secrets needed — the worker calls the public Vercel backend.
