@@ -16,14 +16,20 @@ g="en" >
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Tripva — Your Trip</title>
-<meta property="og:title" content="My Trip — Tripva AI Planner">
-<meta property="og:description" content="View my AI-generated trip itinerary built with Tripva.">
-<meta property="og:image" content="https://loremflickr.com/1200/630/travel,city">
+<meta name="description" content="Your AI-generated trip itinerary — day-by-day plan with hotels, activities, and budget tracking.">
+<meta name="og:site_name" content="Tripva">
+<meta property="og:title" content="My Trip · Tripva AI Planner">
+<meta property="og:description" content="A day-by-day itinerary built in seconds — hotels, activities, budget, all sorted.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1200&h=630&fit=crop">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A traveler holding a trip plan on their phone">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="My Trip — Tripva AI Planner">
-<meta name="twitter:description" content="View my AI-generated trip itinerary built with Tripva.">
-<meta name="twitter:image" content="https://loremflickr.com/1200/630/travel,city">
+<meta name="twitter:title" content="My Trip · Tripva AI Planner">
+<meta name="twitter:description" content="A day-by-day itinerary built in seconds — hotels, activities, budget, all sorted.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1200&h=630&fit=crop">
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
@@ -3014,7 +3020,38 @@ async function extractAndBuild(userMsg, aiPlan) {
 // ══════════════════════════════════════
 //  POPULATE DASHBOARD
 // ══════════════════════════════════════
+// Update page title + OG/twitter meta with the trip's actual name + hero image.
+// Server-side crawlers see the static default; JS-savvy consumers + in-app
+// share sheets that re-read meta after render get the personalized preview.
+function updateTripMeta(p) {
+  try {
+    const name = (p && p.trip && p.trip.name) || '';
+    const dest = (p && p.trip && (p.trip.destination || p.trip.city)) || '';
+    const title = name ? `${name} · Tripva` : 'My Trip · Tripva';
+    document.title = title;
+    const days = (p && p.days) || [];
+    const hero = (days[0] && (days[0].heroImg || days[0].imageUrl)) ||
+                 (p && p.trip && p.trip.heroImg) ||
+                 'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1200&h=630&fit=crop';
+    const desc = dest
+      ? `A ${days.length || ''} day trip to ${dest} — built in seconds with Tripva's AI planner.`
+      : 'A day-by-day itinerary built in seconds — hotels, activities, budget, all sorted.';
+    const setMeta = (selector, attr, val) => {
+      const el = document.querySelector(selector);
+      if (el && val) el.setAttribute(attr, val);
+    };
+    setMeta('meta[property="og:title"]', 'content', title);
+    setMeta('meta[property="og:description"]', 'content', desc);
+    setMeta('meta[property="og:image"]', 'content', hero);
+    setMeta('meta[name="twitter:title"]', 'content', title);
+    setMeta('meta[name="twitter:description"]', 'content', desc);
+    setMeta('meta[name="twitter:image"]', 'content', hero);
+    setMeta('meta[name="description"]', 'content', desc);
+  } catch (e) {}
+}
+
 function populateDashboard(p) {
+  try { updateTripMeta(p); } catch(e) {}
   if (!p) return;
   _usedDayImgs = new Set(); // Reset image tracking for fresh render
 
