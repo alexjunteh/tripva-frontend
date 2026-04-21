@@ -73,7 +73,7 @@ phase_0() {
 # ══════════════════════════════════════════════════════════════
 # PHASE 1 — TAB-LEVEL CAPTURE (mobile + desktop)
 # ══════════════════════════════════════════════════════════════
-TRIP_FIXTURE_ID="${TRIP_FIXTURE_ID:-871ef37957516825f0f8df718f838b7b}"
+TRIP_FIXTURE_ID="${TRIP_FIXTURE_ID:-a2ba2994227e63956443c06529543317}"
 
 phase_1() {
   log "Phase 1 — tab-level capture (mobile + desktop)"
