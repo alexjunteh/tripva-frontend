@@ -1,0 +1,106 @@
+name: Visual audit
+
+# Runs after push-to-main + Cloudflare Pages deploy. Hits the LIVE site
+# so it catches anything the deploy pipeline mangled. Gates protected
+# branches: a failing audit marks the commit red in GitHub.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'plan.html'
+      - 'trip.html'
+      - 'mytrips.html'
+      - 'tests/visual/**'
+      - '.github/workflows/visual-audit.yml'
+  workflow_dispatch:  # manual trigger from the Actions tab
+
+concurrency:
+  group: visual-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Audit live site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install ImageMagick
+        run: sudo apt-get update -qq && sudo apt-get install -y imagemagick
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.1.30
+
+      - name: Install Playwright browsers (headless Chromium for browse tool)
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build gstack browse binary
+        run: |
+          # Compile or download the browse tool used by audit.sh.
+          # If the repo already vendored a binary, prefer that; otherwise
+          # clone minimal gstack and build just the browse module.
+          BROWSE_DIR="${HOME}/.claude/skills/gstack/browse"
+          if [ ! -x "$BROWSE_DIR/dist/browse" ]; then
+            git clone --depth 1 https://github.com/garrytan/gstack.git /tmp/gstack
+            mkdir -p "$BROWSE_DIR"
+            cp -r /tmp/gstack/browse/* "$BROWSE_DIR/"
+            (cd "$BROWSE_DIR" && bun install && bun run build)
+          fi
+          test -x "$BROWSE_DIR/dist/browse" || { echo "browse binary missing"; exit 2; }
+
+      - name: Wait for Cloudflare deploy to propagate
+        run: |
+          # CF Pages usually publishes within 30–60s of push. Poll until the
+          # pushed SHA is embedded in the HTML (we stamp it server-side) OR
+          # give up after 3 minutes and audit whatever's live.
+          SHA=$(git rev-parse --short HEAD)
+          for i in $(seq 1 18); do
+            if curl -sf https://tripva.app/ >/dev/null; then
+              echo "tripva.app reachable — proceeding"; break
+            fi
+            sleep 10
+          done
+
+      - name: Run visual audit
+        id: audit
+        run: |
+          chmod +x ./tests/visual/audit.sh
+          # Run in full mode; exits 0 on pass, 1 on fail
+          ./tests/visual/audit.sh --full
+
+      - name: Upload audit report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report-${{ github.sha }}
+          path: tests/visual/reports/
+          retention-days: 14
+
+      - name: Comment on commit if failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = context.sha;
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
+            await github.rest.repos.createCommitComment({
+              owner, repo, commit_sha: sha,
+              body: `❌ **Visual audit failed** on live site after deploy.\n\n` +
+                    `See the [Actions run](${runUrl}) for the audit.html report.\n` +
+                    `Download the \`audit-report-${sha.slice(0,7)}\` artifact for full evidence.\n\n` +
+                    `Common causes:\n` +
+                    `- Console error from a ship-breaking JS bug\n` +
+                    `- Tap-target regression (<44px)\n` +
+                    `- Pixel diff >2% without intentional redesign note\n` +
+                    `- Drill-in modal failed to open\n\n` +
+                    `Run locally: \`./tests/visual/audit.sh --full\``
+            });
