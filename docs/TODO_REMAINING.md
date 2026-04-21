@@ -7,7 +7,7 @@
 - [ ] **Drop Cloudflare firewall rule `90f3f1a949954f649dbd0b0c700fd855`** — blocks non-MY traffic + CI audit
 - [ ] **Stripe keys** — `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` in Vercel env
 - [ ] **Real affiliate IDs** — Booking.com, GetYourGuide, Trainline, Rentalcars
-- [ ] **Google + Apple OAuth app registration** — needed for one-tap signup wiring
+- [x] ~~Google + Apple OAuth app registration~~ — handled via Supabase managed providers (not separate Google/Apple app reg). Frontend wires `signInWithOAuth({provider})`; Supabase dashboard owns the client-id/secret config.
 - [ ] **Real testimonials** — current landing uses fake Jamie/Sofia/David, swap when real users exist
 
 ## I can build (executing this session, top→bottom)
