@@ -276,7 +276,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* Day list - big cards, 3 visible at a time */
 .days-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px calc(20px + 200px + var(--safe-b));display:flex;flex-direction:column;gap:10px}
-.day-big-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s;position:relative;height:calc((100dvh - 168px) / 3);min-height:200px;max-height:280px;display:flex;flex-direction:column;flex-shrink:0;margin-right:140px}
+.day-big-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s;position:relative;aspect-ratio:16/9;min-height:200px;max-height:320px;display:flex;flex-direction:column;flex-shrink:0}
+@media(min-width:640px){ .day-big-card{aspect-ratio:auto; height:calc((100dvh - 168px) / 3); max-height:320px} }
 .day-big-card:active{transform:scale(.985)}
 .day-big-card.today-card{border-color:rgba(52,211,153,.4)}
 .day-big-hero{flex:1;background-size:cover;background-position:center;position:relative;overflow:hidden;min-height:0}
@@ -1599,7 +1600,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     </div>
   </div>
   <div class="budget-scroll" id="budgetScroll">
-    <div class="empty-state" id="budgetEmpty">
+    <div class="empty-state" id="budgetEmpty" style="display:none">
       <div class="es-icon">💰</div><div class="es-title">Budget data unavailable for this trip</div>
       <div class="es-text">Generate a trip to see a full cost breakdown.</div>
     </div>
@@ -3181,7 +3182,9 @@ function populateDashboard(p) {
   // ── BUDGET ──
   if (p.budget && p.budget.length > 0) {
     const scroll=document.getElementById('budgetScroll');
-    document.getElementById('budgetEmpty')?.remove();
+    const _be = document.getElementById('budgetEmpty');
+    if (_be) _be.style.display = 'none';
+    _be?.remove();
     const isBooked = b => b.status === 'booked' || /✅|Paid|BOOKED/i.test(b.note||'') || /✅|PAID|BOOKED/i.test(b.amount||'');
     const paidItems = (p.budget||[]).filter(b => isBooked(b));
     const pendingItems = (p.budget||[]).filter(b => !isBooked(b));
@@ -3216,6 +3219,10 @@ function populateDashboard(p) {
     addBudgetSection(paidItems, '✅ BOOKED / PAID ('+paidItems.length+')', 'budget-booked');
     addBudgetSection(pendingItems, '⏳ PENDING / ESTIMATE ('+pendingItems.length+')', 'budget-pending');
     initFxBar();
+  } else {
+    // No budget data — expose the empty state explicitly (default hidden)
+    const _be = document.getElementById('budgetEmpty');
+    if (_be) _be.style.display = 'flex';
   }
 
   // ── TIPS ──
