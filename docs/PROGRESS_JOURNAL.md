@@ -31,6 +31,27 @@ Status convention: ⏳ in-flight · ✅ done · 🔜 deferred · 🚫 blocked
 
 ## Running log (most recent first)
 
+### 2026-04-21 05:50 UTC — Backend archetype support shipped (Tripva-backend 900df3f + 7f1e2c0)
+
+Deployed via `npx vercel@latest deploy --prod` after auto-deploy stalled.
+
+**`lib/schema.js`** — planInputSchema accepts archetype + all archetype-specific fields (child_ages, occasion, dining_priority, safety_priority, shared_accommodation, decision_style, etc). Trip sub-schema persists archetype + travelers + people + child_ages + dates.
+
+**`lib/prompt.js`** — new `getArchetypeInstruction(input)` emits ~15-line per-archetype block injected into both skeleton and day prompts. Six archetypes fully tuned (solo/couple/family/friends/adventure/nomad).
+
+**`api/plan.js`** — new `persistArchetypeOnTrip()` copies input fields to tripState.trip so frontend stops sniffing "for N people" text.
+
+**`api/packing.js`** NEW — archetype-aware packing list endpoint, replaces the 404 the frontend has been hitting.
+
+**End-to-end verified:** generated Lisbon family trip `56098b0a...` → backend persisted:
+- archetype: family
+- travelers: 4, people: 4
+- child_ages: [7]
+- dates: "Apr 21 → Apr 22"
+- trip.name: "Lisbon Family Vacation" (archetype-aware LLM output)
+
+Frontend audit SOP re-ran post-backend-deploy: green, zero regressions.
+
 ### 2026-04-21 02:15 UTC — Wikipedia-backed city imagery shipped (d0f6313)
 
 Replaced generic picsum seeded imagery with real, city-specific photos from
