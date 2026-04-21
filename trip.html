@@ -2986,24 +2986,16 @@ function populateDashboard(p) {
     if(statDaysEl && (t.days || derivedDays)) statDaysEl.textContent = t.days || derivedDays;
     const statPeopleEl = document.getElementById('statPeople');
     if(statPeopleEl && derivedPeople) statPeopleEl.textContent = derivedPeople;
-    // Budget: prefer explicit t.budget, else sum all budget line amounts (confirmed + pending)
-    // Compact format ('RM 6.9k') so it fits in a 390px-viewport stat card without truncation.
-    const _fmtCompact = (n) => {
-      const v = Math.round(n);
-      if (v >= 1_000_000) return (v/1_000_000).toFixed(v >= 10_000_000 ? 0 : 1).replace(/\.0$/,'') + 'm';
-      if (v >= 10_000)    return (v/1000).toFixed(0) + 'k';
-      if (v >= 1_000)     return (v/1000).toFixed(1).replace(/\.0$/,'') + 'k';
-      return v.toLocaleString();
-    };
+    // Budget: compact format so "~RM 6.9k" fits in a 390px stat card.
     const statBudgetEl = document.getElementById('statBudget');
     if(statBudgetEl){
       const _bi=p.budget||[];
       const _bt=_bi.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
       if(t.budget){
         const _bConfirmed=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
-        statBudgetEl.textContent=_bConfirmed>0?('~RM '+_fmtCompact(_bConfirmed)):'—';
+        statBudgetEl.textContent=_bConfirmed>0?('~RM '+_fmtBudgetCompact(_bConfirmed)):'—';
       } else if(_bt>0){
-        statBudgetEl.textContent='~RM '+_fmtCompact(_bt);
+        statBudgetEl.textContent='~RM '+_fmtBudgetCompact(_bt);
       }
     }
     const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
@@ -4411,7 +4403,27 @@ window.savePlanToStorage = savePlanToStorage;
 // ══════════════════════════════════════
 function openEditModal() { document.getElementById('editName').value=tripMeta.name||''; document.getElementById('editEmoji').value=tripMeta.emoji||''; document.getElementById('editDates').value=tripMeta.dates||''; document.getElementById('editPeople').value=tripMeta.people||''; document.getElementById('editBudget').value=tripMeta.budget||''; document.getElementById('editModal').classList.add('open'); }
 function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
-function restoreMeta() { if(window._demoMode) return; if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji; if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name; if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates; if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days; if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people; if(tripMeta.budget){const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_ri>0?('~RM '+Math.round(_ri).toLocaleString()):'—';} const cached=localStorage.getItem('tripva_plan'); if(cached){try{plan=JSON.parse(cached);}catch(e){}} }
+function _fmtBudgetCompact(n){
+  const v = Math.round(n);
+  if (v >= 1_000_000) return (v/1_000_000).toFixed(v >= 10_000_000 ? 0 : 1).replace(/\.0$/,'') + 'm';
+  if (v >= 10_000)    return (v/1000).toFixed(0) + 'k';
+  if (v >= 1_000)     return (v/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+  return v.toLocaleString();
+}
+function restoreMeta() {
+  if(window._demoMode) return;
+  if(tripMeta.emoji) document.getElementById('tripEmoji').textContent=tripMeta.emoji;
+  if(tripMeta.name) document.getElementById('tripName').textContent=tripMeta.name;
+  if(tripMeta.dates) document.getElementById('tripDates').textContent=tripMeta.dates;
+  if(tripMeta.days) document.getElementById('statDays').textContent=tripMeta.days;
+  if(tripMeta.people) document.getElementById('statPeople').textContent=tripMeta.people;
+  if(tripMeta.budget){
+    const _ri=(plan&&plan.budget||[]).filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
+    document.getElementById('statBudget').textContent=_ri>0?('~RM '+_fmtBudgetCompact(_ri)):'—';
+  }
+  const cached=localStorage.getItem('tripva_plan');
+  if(cached){try{plan=JSON.parse(cached);}catch(e){}}
+}
 
 // ══════════════════════════════════════
 //  SHARE / EXPORT
