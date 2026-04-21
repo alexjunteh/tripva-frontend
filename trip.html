@@ -690,7 +690,17 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .fab-wrap.open .fab-action{pointer-events:all;visibility:visible;transition:opacity .2s ease,transform .2s ease,visibility 0s linear 0s}
 .fab-action-label{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:12px;font-size:14px;font-weight:700;white-space:nowrap;backdrop-filter:blur(12px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .fab-action-btn{width:44px;height:44px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.fab-main{position:fixed;bottom:calc(var(--nav-h,64px) + var(--safe-b) + 20px);right:20px;top:auto;z-index:501;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#95b8ff,var(--purple));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--bg);box-shadow:0 4px 20px rgba(124,106,247,.45);transition:transform .2s,box-shadow .2s;font-weight:700;line-height:1}
+.fab-main{position:fixed;bottom:calc(var(--nav-h,64px) + var(--safe-b) + 20px);right:20px;top:auto;z-index:501;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#95b8ff,var(--purple));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--bg);box-shadow:0 4px 20px rgba(124,106,247,.45);transition:transform .2s,box-shadow .2s,opacity .2s;font-weight:700;line-height:1}
+/* When a modal/overlay is open, the FAB must get out of the way or it
+   overlaps the overlay's content (Upgrade to Pro / Edit Trip / Export). */
+body:has(.sheet-overlay.open) .fab-main,
+body:has(.modal-overlay.open) .fab-main,
+body:has(.pack-modal.open) .fab-main,
+body:has(.ai-chat-bar:not([style*="display: none"])) .fab-main,
+body.fab-suppressed .fab-main{opacity:0;pointer-events:none;transform:scale(.8)}
+body:has(.sheet-overlay.open) .fab-wrap,
+body:has(.modal-overlay.open) .fab-wrap,
+body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 .fab-main:active{transform:scale(.9)}
 .fab-main.open{transform:rotate(45deg)}
 .fab-backdrop{position:fixed;inset:0;z-index:499;display:none}
@@ -1429,6 +1439,7 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
   <span class="viewer-banner-text"><b>Shared trip.</b> Like what you see? Plan your own in 30 seconds.</span>
   <a class="viewer-banner-sec" href="javascript:planSimilarTrip();void(0);" id="viewerSimilarBtn">🪄 Similar</a>
   <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
+  <button id="viewerBannerClose" aria-label="Dismiss" onclick="dismissViewerBanner()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0">✕</button>
 </div>
 
 <!-- ── 1. LIVE OPS ── -->
@@ -2869,8 +2880,16 @@ async function loadTripPlan() {
           if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Tripva';
           if (isColdViewer) {
             document.body.classList.add('viewer-mode');
+            // Respect previous dismissal — per trip id, kept 30 days
+            const dismissKey = 'tripva_viewer_dismissed_' + urlId;
+            const dismissed = (function(){
+              try {
+                const ts = parseInt(localStorage.getItem(dismissKey) || '0', 10);
+                return ts && (Date.now() - ts) < 30 * 86400000;
+              } catch(e){ return false; }
+            })();
             const vb = document.getElementById('viewerBanner');
-            if (vb) vb.style.display = 'flex';
+            if (vb && !dismissed) vb.style.display = 'flex';
           } else {
             const banner = document.getElementById('restoredBanner');
             if (banner) { banner.textContent = '✅ Trip loaded from shared link'; banner.style.display = 'flex'; }
@@ -3000,13 +3019,16 @@ function openTicket(tktTitle) {
 })();
 function openMore() {
   document.getElementById('moreOverlay').classList.add('open');
+  document.body.classList.add('fab-suppressed');
 }
 function closeMore(e) {
   if (e && e.target !== document.getElementById('moreOverlay')) return;
   document.getElementById('moreOverlay').classList.remove('open');
+  document.body.classList.remove('fab-suppressed');
 }
 function openMoreTab(name) {
   document.getElementById('moreOverlay').classList.remove('open');
+  document.body.classList.remove('fab-suppressed');
   setTimeout(() => switchTab(name), 120);
 }
 
@@ -3459,7 +3481,50 @@ function populateDashboard(p) {
     // Totals in the user's chosen home currency, not a hard-coded RM.
     const paidTotal = paidItems.reduce((a,b) => a + parseBudgetToRM(b.amount), 0);
     const pendingTotal = pendingItems.reduce((a,b) => a + parseBudgetToRM(b.amount), 0);
-    scroll.innerHTML=`${buildBudgetContextCard(p)}<div class="budget-hero">
+    // ── Utilization vs user's stated envelope ──────────────────────────────
+    // Extract the envelope the user said in the plan form (persisted on
+    // plan.trip.budget). If present, compute % consumed, by-category split,
+    // and over/under status. Falls back gracefully when no envelope provided.
+    const envelope = (function(){
+      const b = (p.trip && (p.trip.budget || p.trip.totalBudget)) || '';
+      if (typeof b !== 'string') return null;
+      const parsed = window.parseBudgetAmount ? window.parseBudgetAmount(b, fxSourceCurrency) : null;
+      return (parsed && parsed.amount > 0) ? parsed : null;
+    })();
+    const categoryTotals = { accommodation:0, transport:0, food:0, activities:0, misc:0 };
+    const totalAllCategories = (p.budget||[]).reduce((a,b) => {
+      const homeAmt = parseBudgetToRM(b.amount);
+      const cat = (b.category || 'misc').toLowerCase();
+      if (cat in categoryTotals) categoryTotals[cat] += homeAmt;
+      return a + homeAmt;
+    }, 0);
+    const envelopeHome = envelope ? window.convertToHomeCurrency(envelope.amount, envelope.currency) : 0;
+    const pctOfEnvelope = envelopeHome > 0 ? Math.round(100 * totalAllCategories / envelopeHome) : 0;
+    const overUnder = envelopeHome > 0 ? (totalAllCategories - envelopeHome) : 0;
+    const envelopeBar = envelopeHome > 0 ? `
+      <div class="budget-env-wrap" style="margin:14px 14px 0;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Your envelope</div>
+          <div style="font-size:11px;color:${pctOfEnvelope > 100 ? '#f87171' : pctOfEnvelope > 85 ? '#fbbf24' : '#4ade80'};font-weight:800">${pctOfEnvelope}% allocated</div>
+        </div>
+        <div style="font-size:20px;font-weight:900;letter-spacing:-.4px;margin-bottom:10px">${formatHomeCurrency(totalAllCategories)} of ${formatHomeCurrency(envelopeHome)}</div>
+        <div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${Math.min(100,pctOfEnvelope)}%;background:linear-gradient(90deg,${pctOfEnvelope>100?'#f87171,#dc2626':pctOfEnvelope>85?'#fbbf24,#f59e0b':'#95b8ff,#7c6af7'});transition:width .4s"></div>
+        </div>
+        ${overUnder !== 0 ? `<div style="font-size:12px;color:var(--muted);margin-top:8px">${overUnder > 0 ? '⚠️ Over by ' + formatHomeCurrency(overUnder) : '✓ Under by ' + formatHomeCurrency(-overUnder)}</div>` : ''}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-top:12px">
+          ${Object.entries(categoryTotals).filter(([,v])=>v>0).map(([k,v])=>{
+            const p = envelopeHome > 0 ? Math.round(100*v/envelopeHome) : 0;
+            const icon = k === 'accommodation' ? '🏨' : k === 'transport' ? '🚆' : k === 'food' ? '🍜' : k === 'activities' ? '🎯' : '💰';
+            return `<div style="background:var(--surface2);border-radius:8px;padding:8px 10px">
+              <div style="font-size:11px;color:var(--muted);font-weight:700">${icon} ${k}</div>
+              <div style="font-size:13px;font-weight:800;margin-top:2px">${p}%</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">${formatHomeCurrency(v)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+    scroll.innerHTML=`${buildBudgetContextCard(p)}${envelopeBar}<div class="budget-hero">
       <div class="budget-hero-lbl">Confirmed spend</div>
       <div class="budget-hero-num">≈ ${formatHomeCurrency(paidTotal)}</div>
       <div class="budget-hero-sub">Pending ≈ ${formatHomeCurrency(pendingTotal)} · Total ≈ ${formatHomeCurrency(paidTotal+pendingTotal)}</div>
@@ -5390,6 +5455,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.toggleAiChat = toggleAiChat;
 window.sendAiEdit = sendAiEdit;
+
+// Dismiss the cold-viewer banner — per-trip-id, 30-day TTL so it doesn't
+// immediately reappear on every page refresh but DOES come back for a
+// different shared trip URL or after a month.
+function dismissViewerBanner() {
+  const vb = document.getElementById('viewerBanner');
+  if (vb) vb.style.display = 'none';
+  try {
+    const id = new URLSearchParams(location.search).get('id');
+    if (id) localStorage.setItem('tripva_viewer_dismissed_' + id, String(Date.now()));
+  } catch (e) {}
+}
+window.dismissViewerBanner = dismissViewerBanner;
 
 // ── Web Push — trip countdown + daily briefing subscription ──────────────
 // Subscribes the current browser so the backend can deliver:

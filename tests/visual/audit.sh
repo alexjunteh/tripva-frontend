@@ -334,6 +334,82 @@ phase_5() {
     fail "mytrips login paths missing: $auth_paths"; ok=0
   fi
 
+  # FAB must NOT overlap the More-menu action-row buttons. Open More, compare
+  # bounding rects: FAB should be invisible (opacity 0 or display none) OR
+  # sit OUTSIDE the action-row's rect. Otherwise Upgrade/Export/etc. get
+  # obscured by the + button.
+  "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5f" >/dev/null 2>&1; sleep 6
+  "$B" js "try{localStorage.clear();}catch(e){} openMore(); true" >/dev/null 2>&1; sleep 1
+  local fab_overlap; fab_overlap=$("$B" js "
+    (()=>{
+      const fab = document.querySelector('.fab-main');
+      const row = document.querySelector('#moreOverlay .more-action-row');
+      if (!fab || !row) return 'missing-els';
+      const fCs = getComputedStyle(fab);
+      if (fCs.display === 'none' || parseFloat(fCs.opacity) < 0.1) return 'ok-hidden';
+      const f = fab.getBoundingClientRect();
+      const r = row.getBoundingClientRect();
+      // Rect intersection check
+      const intersects = f.right > r.left && f.left < r.right && f.bottom > r.top && f.top < r.bottom;
+      return intersects ? 'fab-overlaps-more-actions' : 'ok-separate';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$fab_overlap" in
+    ok-hidden|ok-separate) pass "FAB does not overlap More menu action row" ;;
+    *) fail "FAB overlap bug: $fab_overlap"; ok=0 ;;
+  esac
+
+  # Cold-viewer banner must have a dismiss control (close button with
+  # sufficient tap target). Otherwise users are stuck with it forever.
+  "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5vb" >/dev/null 2>&1; sleep 6
+  "$B" js "
+    try{
+      // Force-show the banner so the check evaluates it regardless of dismiss state
+      localStorage.clear();
+      const vb = document.getElementById('viewerBanner');
+      if (vb) vb.style.display = 'flex';
+    }catch(e){}
+    true
+  " >/dev/null 2>&1
+  sleep 1
+  local banner_check; banner_check=$("$B" js "
+    (()=>{
+      const vb = document.getElementById('viewerBanner');
+      if (!vb) return 'no-banner-el';
+      const close = vb.querySelector('[aria-label=\"Dismiss\"], #viewerBannerClose');
+      if (!close) return 'no-close-button';
+      const r = close.getBoundingClientRect();
+      if (r.width < 44 || r.height < 44) return 'close-tap-target-' + Math.round(r.width) + 'x' + Math.round(r.height);
+      return 'ok';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  [ "$banner_check" = "ok" ] && pass "viewer banner has dismissible close (≥44px tap target)" \
+    || { fail "viewer banner dismiss broken: $banner_check"; ok=0; }
+
+  # Budget tab must render something (hero + rows, or the empty-state WITH
+  # actionable buttons). Previously showed a dead-end "Budget data unavailable".
+  local budget_state; budget_state=$("$B" js "
+    (()=>{
+      switchTab('budget');
+      const scroll = document.getElementById('budgetScroll');
+      if (!scroll) return 'no-scroll';
+      const rows = scroll.querySelectorAll('.budget-row').length;
+      const hero = !!scroll.querySelector('.budget-hero-num');
+      const empty = document.getElementById('budgetEmpty');
+      const emptyVisible = empty && getComputedStyle(empty).display !== 'none';
+      if (rows > 0 && hero) return 'ok-with-data';
+      if (emptyVisible) {
+        const actionable = empty.querySelectorAll('button, a').length;
+        return actionable > 0 ? 'ok-empty-actionable' : 'empty-dead-end';
+      }
+      return 'blank';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$budget_state" in
+    ok-with-data|ok-empty-actionable) pass "budget tab renders data or actionable empty state" ;;
+    *) fail "budget tab broken: $budget_state"; ok=0 ;;
+  esac
+
   # Invisible touch-blockers — fixed/absolute elements that are visually hidden
   # (opacity 0 or visibility hidden) but still have pointer-events enabled.
   # These eat taps/scrolls silently. Caused right-edge scroll regression
