@@ -31,6 +31,25 @@ Status convention: ⏳ in-flight · ✅ done · 🔜 deferred · 🚫 blocked
 
 ## Running log (most recent first)
 
+### 2026-04-21 01:35 UTC — User audit findings fixed (6 commits)
+
+After user spotted visible issues, did a proper tab-by-tab audit mobile + desktop and fixed:
+
+| # | Issue | Commit | Fix |
+|---|---|---|---|
+| 1 | Cormorant Garamond not loading on trip.html (title looked blocky) | `e7e41c1` | Added `<link>` to Google Fonts |
+| 2 | Stage chips rendered as unstyled plain text ("Day 1 Day 2") | `e7e41c1` | Earlier sed corrupted template literal; restored `class="nowStage-chip"` and updated the `.current` querySelector |
+| 3 | All day dates showed "WED 18 MAR" regardless of trip — Italy fallback leak | `e7e41c1` | `inferDayDate()` now falls back to `plan.trip.startDate` then today-offset; Italy hardcode removed |
+| 4 | Day 1 and Day 2 showed identical photos | `e7e41c1` + `1470fad` | `getDayImage()` now uses picsum seeded per-day; detects+overrides generic loremflickr placeholders that the backend returns identically for every day |
+| 5 | FocusCard hero picked same image as day cards (because same seed) | `e7e41c1` | FocusCard now calls `getDayImage` with day index for per-day-distinct hero |
+| 6 | Trip-overview tab stats all showed "-" for Days/People/Budget | `f36effb` + `df2e787` | Derive Days from `plan.days.length`, Dates from `t.startDate/t.endDate`, People from `t.travelers/t.groupSize` or sniffed from "for N people" text |
+
+Final audit (post-fix):
+- Mobile + desktop screenshots tab-by-tab at `/tmp/audit-final/*.png`
+- Trip tab: **2 Days · 4 People · ~RM 6,891 Budget · "Apr 20 → Apr 21"** ✓
+- Days tab: distinct photos, correct dates (Mon 20 Apr / Tue 21 Apr) ✓
+- Live tab: Cormorant italic title, styled stage chips Day 1 / Day 2 ✓
+
 ### 2026-04-20 19:21 UTC — All phases shipped + baseline promoted
 - Phase (d) FocusCard verified live: generated a Barcelona 2-day trip via `/plan?archetype=family`, reached `/trip?id=871ef37957516825f0f8df718f838b7b`, confirmed FocusCard renders with "📍 TODAY · Arrival in Barcelona · Day 1 of 2" + "Open itinerary →" CTA
 - Visual baseline refreshed — `tests/visual/baseline/` now reflects the overhauled state (10 PNGs, mobile + desktop)
