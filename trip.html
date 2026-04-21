@@ -2839,10 +2839,35 @@ function populateDashboard(p) {
     try{localStorage.setItem('tripai_meta',JSON.stringify(tripMeta));}catch(e){}
     const _te=document.getElementById('tripEmoji'); if(_te) _te.textContent=t.emoji||'🌍';
     const _tn=document.getElementById('tripName'); if(_tn) _tn.textContent=t.name||'My Trip';
-    const _td=document.getElementById('tripDates'); if(_td) _td.textContent=[t.dates,t.people&&t.people+' people'].filter(Boolean).join(' · ');
-    if(t.days) document.getElementById('statDays').textContent=t.days;
-    if(t.people) document.getElementById('statPeople').textContent=t.people;
-    if(t.budget){const _bi=p.budget||[];const _bt=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_bt>0?('~RM '+Math.round(_bt).toLocaleString()):'—';}
+    // Derive fallbacks for fields the backend doesn't always emit
+    const derivedDays    = (p.days && p.days.length) || null;
+    const derivedPeople  = t.people || t.travelers || t.groupSize || null;
+    const fmtShortDate   = (ymd) => {
+      const m = String(ymd||'').match(/(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return '';
+      const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${names[+m[2]-1]} ${+m[3]}`;
+    };
+    const derivedDates   = t.dates ||
+      (t.startDate && t.endDate ? `${fmtShortDate(t.startDate)} → ${fmtShortDate(t.endDate)}` : '');
+    const _td=document.getElementById('tripDates');
+    if(_td) _td.textContent=[derivedDates, derivedPeople && (derivedPeople+' people')].filter(Boolean).join(' · ');
+    const statDaysEl = document.getElementById('statDays');
+    if(statDaysEl && (t.days || derivedDays)) statDaysEl.textContent = t.days || derivedDays;
+    const statPeopleEl = document.getElementById('statPeople');
+    if(statPeopleEl && derivedPeople) statPeopleEl.textContent = derivedPeople;
+    // Budget: prefer explicit t.budget, else sum all budget line amounts (confirmed + pending)
+    const statBudgetEl = document.getElementById('statBudget');
+    if(statBudgetEl){
+      const _bi=p.budget||[];
+      const _bt=_bi.reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
+      if(t.budget){
+        const _bConfirmed=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);
+        statBudgetEl.textContent=_bConfirmed>0?('~RM '+Math.round(_bConfirmed).toLocaleString()):'—';
+      } else if(_bt>0){
+        statBudgetEl.textContent='~RM '+Math.round(_bt).toLocaleString();
+      }
+    }
     const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
     const heroImg=t.imageUrl||CITY_IMGS[_tripSeed]||(()=>{
       for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
