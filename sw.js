@@ -1,6 +1,6 @@
-// Service Worker — stale-while-revalidate for HTML, cache-first for static assets
-const CACHE_VERSION = 'tripva-v9';
-const STATIC_CACHE = 'tripva-static-v9';
+// Service Worker — NETWORK-FIRST for HTML (fresh wins), cache-first for static assets
+const CACHE_VERSION = 'tripva-v10';
+const STATIC_CACHE = 'tripva-static-v10';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
@@ -62,24 +62,21 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // HTML pages — stale-while-revalidate
-  // Serve cached version INSTANTLY, fetch fresh in background for next visit
+  // HTML pages — NETWORK-FIRST. Fresh content wins every time we're online.
+  // Cache is ONLY a fallback when offline or network fails.
+  // (Previously stale-while-revalidate caused users to see 1-visit-old HTML
+  // after a deploy, hiding CSS/UI fixes until they reloaded a second time.)
   if (e.request.destination === 'document' || url.pathname.endsWith('.html')) {
     e.respondWith(
-      caches.open(CACHE_VERSION).then(cache => {
-        return cache.match(e.request).then(cached => {
-          // Always fetch fresh in background to update cache for next load
-          const fetchPromise = fetch(e.request).then(networkRes => {
-            if (networkRes.ok) {
-              cache.put(e.request, networkRes.clone());
-            }
-            return networkRes;
-          }).catch(() => null);
-
-          // Return cached immediately if available, otherwise wait for network
-          return cached || fetchPromise;
-        });
-      })
+      fetch(e.request)
+        .then(networkRes => {
+          if (networkRes && networkRes.ok) {
+            const clone = networkRes.clone();
+            caches.open(CACHE_VERSION).then(c => c.put(e.request, clone));
+          }
+          return networkRes;
+        })
+        .catch(() => caches.open(CACHE_VERSION).then(c => c.match(e.request)))
     );
     return;
   }
