@@ -513,9 +513,11 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .more-item-label{font-size:14px;font-weight:800}
 .more-item-sub{font-size:11px;color:var(--muted);margin-top:-4px}
 .more-divider{height:1px;background:var(--border);margin:0 16px 14px}
-.more-action-row{display:flex;gap:8px;padding:0 16px 16px}
-.more-action{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:13px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition: opacity .15s ease-out, transform .15s ease-out, color .15s ease-out, background-color .15s ease-out}
+.more-action-row{display:flex;gap:8px;padding:0 16px 16px;flex-wrap:wrap}
+.more-action{flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:13px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition: opacity .15s ease-out, transform .15s ease-out, color .15s ease-out, background-color .15s ease-out}
 .more-action:active{transform:scale(.97)}
+.more-action-primary{background:linear-gradient(135deg,#b8963e,#d4a84b);border-color:transparent;color:#1a1407}
+.more-action-primary:hover{opacity:.92}
 
 /* ─── HOTELS / BUDGET / TIPS (accessed via More) ─── */
 #tab-hotels,#tab-budget,#tab-tips{background:var(--bg)}
@@ -1810,7 +1812,8 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
     </div>
     <div class="more-divider"></div>
     <div class="more-action-row">
-      <button class="more-action" onclick="closeMore();exportHtml()">💾 Export HTML</button>
+      <button class="more-action more-action-primary" onclick="closeMore();saveToAccount()">💾 Save trip</button>
+      <button class="more-action" onclick="closeMore();exportHtml()">📄 Export HTML</button>
       <button class="more-action" onclick="closeMore();openEditModal()">✏️ Edit Trip</button>
     </div>
   </div>
