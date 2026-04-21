@@ -645,8 +645,9 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .viewer-banner-cta:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(124,106,247,.35)}
 .viewer-banner-sec{background:transparent;color:var(--text2);padding:10px 14px;border-radius:999px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid var(--border);min-height:44px;display:inline-flex;align-items:center}
 .viewer-banner-sec:hover{color:var(--text);border-color:rgba(124,106,247,.4)}
-body.viewer-mode .save-btn.auth-save{display:none}
-body.viewer-mode .more-action-primary{display:none}
+/* Viewer-mode was hiding Save-to-account — but saving a shared trip TO your
+   own account is the most valuable action a cold viewer can take. Keep Save
+   visible; viewer-mode now only ADDS the 'Plan your own' banner. */
 
 ::-webkit-scrollbar{width:2px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -1671,8 +1672,13 @@ body.viewer-mode .more-action-primary{display:none}
   </div>
   <div class="budget-scroll" id="budgetScroll">
     <div class="empty-state" id="budgetEmpty" style="display:none">
-      <div class="es-icon">💰</div><div class="es-title">Budget data unavailable for this trip</div>
-      <div class="es-text">Generate a trip to see a full cost breakdown.</div>
+      <div class="es-icon">💰</div>
+      <div class="es-title">No budget yet</div>
+      <div class="es-text">This trip was generated without a cost breakdown. Ask Tripva to add one, or plan a new trip.</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+        <button class="es-btn" onclick="toggleAiChat();setTimeout(()=>{const i=document.getElementById('aiChatInput');if(i){i.value='Add a complete budget breakdown for this trip';i.focus();}},200)">🤖 Ask AI to add</button>
+        <button class="es-btn" onclick="switchTab('plan')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">✨ New trip</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2837,14 +2843,24 @@ async function loadTripPlan() {
           const rawData = data.rawPlan;
           plan = (rawData.rawPlan && rawData.rawPlan.days) ? rawData.rawPlan : rawData;
           tripMeta = plan.trip || {};
-          // Cold-viewer detection — if they DIDN'T have this plan locally yet,
-          // they're opening someone else's shared trip. Show viewer banner,
-          // hide owner-only actions (Save-to-account).
+          // Cold-viewer detection — a user is a viewer (not owner) only when:
+          //   (a) URL has ?id= AND
+          //   (b) they have NO Tripva session AND
+          //   (c) they have a DIFFERENT plan already in localStorage (so this
+          //       really is "someone else's trip" they're visiting)
+          // Previously step (c) was `urlId !== localId` which false-positived
+          // when localStorage was empty (fresh browser / first visit) — the
+          // owner got classified as cold-viewer and Save was hidden from them.
           const localId = (function(){
             try { const p = JSON.parse(localStorage.getItem('tripva_plan')||'null'); return p && p.trip && p.trip.id; } catch(e){ return null; }
           })();
+          const hasSession = (function(){
+            try { const s = JSON.parse(localStorage.getItem('tripva_session')||'null'); return !!(s && s.access_token); } catch(e){ return false; }
+          })();
           const urlId = new URLSearchParams(location.search).get('id');
-          const isColdViewer = urlId && urlId !== localId;
+          // Only flag cold-viewer when we have strong evidence user is NOT the
+          // owner: no session + they have a different saved trip in localStorage.
+          const isColdViewer = urlId && !hasSession && localId && urlId !== localId;
           localStorage.setItem('tripva_plan', JSON.stringify(plan));
           populateDashboard(plan);
 
