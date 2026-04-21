@@ -1835,6 +1835,11 @@ body.viewer-mode .more-action-primary{display:none}
         <div class="more-item-label">AI Edit</div>
         <div class="more-item-sub">Ask for changes</div>
       </div>
+      <div class="more-item" onclick="closeMore();enableTripReminders()">
+        <div class="more-item-icon">🔔</div>
+        <div class="more-item-label">Reminders</div>
+        <div class="more-item-sub">Countdown + daily</div>
+      </div>
       <div class="more-item" onclick="closeMore();shareTripLink()">
         <div class="more-item-icon">🔗</div>
         <div class="more-item-label">Share</div>
@@ -2033,11 +2038,24 @@ function trackAffiliateClick(partner) {
 // ══════════════════════════════════════
 const FX_CURRENCIES = ['USD','EUR','GBP','AUD','MYR','SGD','JPY','THB'];
 const DEST_CURRENCY_MAP = {
+  // Countries
   japan:'JPY', italy:'EUR', france:'EUR', spain:'EUR', germany:'EUR',
   portugal:'EUR', greece:'EUR', netherlands:'EUR', switzerland:'CHF',
   austria:'EUR', belgium:'EUR', thailand:'THB', malaysia:'MYR',
   singapore:'SGD', australia:'AUD', 'new zealand':'NZD', uk:'GBP',
-  ireland:'EUR', indonesia:'IDR', india:'INR', vietnam:'VND'
+  ireland:'EUR', indonesia:'IDR', india:'INR', vietnam:'VND',
+  // Cities (matched by includes() so tolerates "Paris, France" etc.)
+  paris:'EUR', london:'GBP', rome:'EUR', barcelona:'EUR', madrid:'EUR',
+  amsterdam:'EUR', berlin:'EUR', lisbon:'EUR', vienna:'EUR', prague:'CZK',
+  athens:'EUR', dublin:'EUR', tokyo:'JPY', osaka:'JPY', kyoto:'JPY',
+  bangkok:'THB', phuket:'THB', 'kuala lumpur':'MYR', penang:'MYR',
+  sydney:'AUD', melbourne:'AUD', bali:'IDR', jakarta:'IDR',
+  seoul:'KRW', 'hong kong':'HKD', taipei:'TWD', beijing:'CNY', shanghai:'CNY',
+  dubai:'AED', 'new york':'USD', 'los angeles':'USD', chicago:'USD',
+  'san francisco':'USD', miami:'USD', orlando:'USD', vancouver:'CAD',
+  toronto:'CAD', montreal:'CAD', zurich:'CHF', geneva:'CHF',
+  copenhagen:'DKK', stockholm:'SEK', oslo:'NOK', helsinki:'EUR',
+  riga:'EUR', warsaw:'PLN', budapest:'HUF', istanbul:'TRY'
 };
 
 let fxRates = null; // { USD:1, EUR:0.92, ... } keyed by target currency, base USD
@@ -3497,7 +3515,13 @@ function populateDashboard(p) {
       (d.timeline||[]).forEach(tl => {
         const det = (tl.detail||'').toLowerCase() + ' ' + (tl.title||'').toLowerCase();
         const isTransport = tl.type === 'transport' && /train|bus|flight|ferry|rail|thalys|frecciarossa|eurostar|rer|ice|tgv/i.test(det);
-        const isTicketed = tl.type !== 'food' && tl.type !== 'hotel' && /ticket|pre-book|prebook|museum|gallery|entry fee|admission|timed entry|€\d|\$\d/i.test(det);
+        // Tickets must be actually bookable/admission-required. Meal/food/hotel/
+        // transport/photospot types are NEVER tickets; only 'activity' items with
+        // a ticket/admission signal qualify. Mere mention of a price is not
+        // enough — "€30 per person" in a meal row is dinner cost, not a ticket.
+        const excludedTypes = ['food','meal','hotel','transport','photospot','logistics'];
+        const isTicketed = !excludedTypes.includes(tl.type) &&
+          /ticket|pre-book|prebook|museum|gallery|entry fee|admission|timed entry|tour booking/i.test(det);
         if (isTransport || isTicketed) {
           const icon = tl.type === 'transport' ? '🚆' : '🎟️';
           const price = (tl.detail||'').match(/[€$£¥][\d,.]+|[\d,.]+\s*(?:EUR|USD|GBP|RM)/i);
@@ -3716,7 +3740,12 @@ function formatDayDate(dayNum){
 // currencies the backend may emit: USD ($), EUR (€), GBP (£), JPY (¥), MYR (RM),
 // SGD (S$), AUD (A$), CHF, THB (฿), plus trailing 3-letter codes ("120 EUR").
 // If nothing matches, treat as the trip's source currency (fallback).
-function parseBudgetAmount(str, fallbackCur){
+//
+// These currency helpers are assigned to `window` because the enclosing
+// DOMContentLoaded arrow-function scope (opened earlier in the script, closes
+// ~line 3629) would otherwise hide them from `updateBudgetHero` and other
+// top-level callers — silent ReferenceError → hero stuck on USD.
+window.parseBudgetAmount = function parseBudgetAmount(str, fallbackCur){
   const s = String(str||'').trim();
   if (!s) return { amount: 0, currency: fallbackCur || 'USD' };
   const num = v => { const m = String(v).match(/([\d,]+(?:\.\d+)?)/); return m ? parseFloat(m[1].replace(/,/g,'')) : 0; };
@@ -3744,37 +3773,41 @@ function parseBudgetAmount(str, fallbackCur){
   // No currency symbol → fall back to trip's source currency with whatever
   // number we can extract
   return { amount: num(s), currency: fallbackCur || 'USD' };
-}
+};
 
-// Legacy alias — kept so existing callers still work, but now currency-aware.
-// Converts to the user's chosen fxHomeCurrency via fxRates. If fxRates unavailable,
-// falls back to a lightweight static cross-rate (rough, for first paint).
-function parseBudgetToRM(str){
-  // Preserved name for back-compat — now returns amount in the CURRENT fxHomeCurrency.
-  const { amount, currency } = parseBudgetAmount(str, (typeof fxSourceCurrency !== 'undefined' ? fxSourceCurrency : 'USD'));
-  return convertToHomeCurrency(amount, currency);
-}
+// Static fallback rates (used before /latest/USD resolves). Expanded to cover
+// every currency in DEST_CURRENCY_MAP so a Tokyo trip doesn't show RM 0 just
+// because fxRates hasn't loaded yet.
+window._FX_FALLBACK = {
+  USD:1, EUR:0.92, GBP:0.79, JPY:149, MYR:4.7, SGD:1.34, AUD:1.51, THB:36, CHF:0.87,
+  CAD:1.35, NZD:1.66, IDR:15700, INR:83, VND:25000, CZK:22.7, CNY:7.2,
+  HKD:7.8, TWD:31.5, AED:3.67, KRW:1360, DKK:6.9, SEK:10.6, NOK:10.8,
+  PLN:4, HUF:365, TRY:32
+};
 
-// Convert amount/currency to the user's chosen home currency using fxRates
-// (base USD, keyed by currency). Falls back to a static approximation if fx
-// hasn't loaded yet so we never render "RM 0" for a real trip.
-const _FX_FALLBACK = { USD:1, EUR:0.92, GBP:0.79, JPY:149, MYR:4.7, SGD:1.34, AUD:1.51, THB:36, CHF:0.87 };
-function convertToHomeCurrency(amount, fromCur){
-  const to = (typeof fxHomeCurrency !== 'undefined') ? fxHomeCurrency : 'USD';
+window.convertToHomeCurrency = function convertToHomeCurrency(amount, fromCur){
+  const to = (typeof fxHomeCurrency !== 'undefined') ? fxHomeCurrency : (window.__fxHome || 'USD');
   if (!amount) return 0;
   if (fromCur === to) return amount;
-  const rates = (typeof fxRates !== 'undefined' && fxRates) ? fxRates : _FX_FALLBACK;
-  const fromRate = rates[fromCur] || _FX_FALLBACK[fromCur] || 1;
-  const toRate   = rates[to]      || _FX_FALLBACK[to]      || 1;
+  const rates = (typeof fxRates !== 'undefined' && fxRates) ? fxRates : window._FX_FALLBACK;
+  const fromRate = rates[fromCur] || window._FX_FALLBACK[fromCur] || 1;
+  const toRate   = rates[to]      || window._FX_FALLBACK[to]      || 1;
   return (amount / fromRate) * toRate;
-}
+};
 
-function formatHomeCurrency(amount){
-  const to = (typeof fxHomeCurrency !== 'undefined') ? fxHomeCurrency : 'USD';
+window.formatHomeCurrency = function formatHomeCurrency(amount){
+  const to = (typeof fxHomeCurrency !== 'undefined') ? fxHomeCurrency : (window.__fxHome || 'USD');
   const sym = { USD:'$', EUR:'€', GBP:'£', AUD:'A$', MYR:'RM ', SGD:'S$', JPY:'¥', THB:'฿', CHF:'CHF ' }[to] || (to + ' ');
-  const rounded = to === 'JPY' ? Math.round(amount) : Math.round(amount);
+  const rounded = Math.round(amount);
   return `${sym}${rounded.toLocaleString()}`;
-}
+};
+
+// Legacy alias — kept so existing callers still work, but now currency-aware.
+window.parseBudgetToRM = function parseBudgetToRM(str){
+  const fb = (typeof fxSourceCurrency !== 'undefined') ? fxSourceCurrency : (window.__fxSource || 'USD');
+  const { amount, currency } = window.parseBudgetAmount(str, fb);
+  return window.convertToHomeCurrency(amount, currency);
+};
 function formatBudgetMoney(value, currency='USD'){
   const amount=Number(value||0);
   if(!Number.isFinite(amount)) return '—';
@@ -5331,6 +5364,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.toggleAiChat = toggleAiChat;
 window.sendAiEdit = sendAiEdit;
+
+// ── Web Push — trip countdown + daily briefing subscription ──────────────
+// Subscribes the current browser so the backend can deliver:
+//  • Pre-trip countdowns (T-7, T-3, T-1 days): "⏰ Paris in 3 days"
+//  • On-trip daily briefing: "📍 Day 2 — Barcelona · First up: ..."
+// Graceful 503 if VAPID env vars aren't set on Vercel (same pattern as Stripe).
+function _urlBase64ToUint8Array(base64) {
+  const pad = '='.repeat((4 - base64.length % 4) % 4);
+  const s = (base64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(s);
+  const arr = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+async function enableTripReminders() {
+  try {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      showToast('⚠️ This browser does not support push notifications');
+      return;
+    }
+    const session = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+    if (!session || !session.access_token) {
+      showToast('🔑 Sign in first to enable reminders');
+      setTimeout(saveToAccount, 300);
+      return;
+    }
+    // Fetch VAPID public key
+    const kr = await fetch(TRIPVA_BACKEND + '/api/push/public-key');
+    const kj = await kr.json().catch(() => ({}));
+    if (kr.status === 503 || !kj.publicKey) {
+      showToast('🔔 Reminders not ready yet — coming soon');
+      return;
+    }
+    // Request browser permission
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      showToast(perm === 'denied' ? '🔕 Allow notifications in browser settings' : '🔕 Reminders not enabled');
+      return;
+    }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: _urlBase64ToUint8Array(kj.publicKey)
+      });
+    }
+    // Persist to backend
+    const r = await fetch(TRIPVA_BACKEND + '/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ subscription: sub.toJSON ? sub.toJSON() : sub })
+    });
+    if (r.ok) {
+      localStorage.setItem('tripva_push_enabled', '1');
+      showToast('🔔 Trip reminders enabled');
+    } else {
+      const err = await r.json().catch(() => ({}));
+      showToast('⚠️ ' + (err.error || 'Could not enable reminders'));
+    }
+  } catch (e) {
+    console.error('[push] enable failed:', e);
+    showToast('⚠️ Could not enable reminders');
+  }
+}
+window.enableTripReminders = enableTripReminders;
 
 // ── OFFLINE TRAVELER MODE ──────────────────────────────────────────────────
 // Show a badge when navigator.onLine flips false. Edits (mark-booked,
