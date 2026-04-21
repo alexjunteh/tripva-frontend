@@ -391,6 +391,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tl-platform{display:inline-flex;align-items:center;background:#ffb24d;color:var(--bg);font-size:11px;font-weight:900;padding:2px 7px;border-radius:6px;margin-left:6px;letter-spacing:.3px;vertical-align:middle}
 .tl-stars{font-size:12px;color:#ffb24d;margin-top:4px;line-height:1.4;font-weight:600}
 .tl-detail{font-size:14px;color:var(--text);margin-top:5px;line-height:1.65}
+
+/* Timeline photospot — image was rendering at native resolution (too big)
+   because no CSS for .tl-ps-*. Constrain to editorial 16:9 landscape. */
+.tl-ps-wrap{
+  margin-top:8px;
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  max-width:100%;
+}
+.tl-ps-photo{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:var(--surface);
+  max-width:100%;
+}
+.tl-ps-tip{
+  padding:9px 12px;
+  font-size:12.5px;
+  color:rgba(255,255,255,.78);
+  line-height:1.5;
+  background:rgba(255,255,255,.04);
+  border-top:1px solid var(--border);
+}
 .tl-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .tl-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px}
 .tl-tag.activity{background:rgba(124,106,247,.12);color:var(--accent2)}
