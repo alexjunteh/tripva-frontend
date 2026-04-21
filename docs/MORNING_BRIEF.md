@@ -106,7 +106,7 @@ Pre-existing `browse` tool at `~/.claude/skills/gstack/browse/dist/browse` handl
 
 | # | Item | Why deferred | Effort (CC) |
 |---|---|---|---|
-| 1 | **Backend prompt branching by archetype** on `Tripva-backend/lib/prompt.js` | Backend repo not locally checked out. Frontend emits `archetype` + archetype-specific fields in payload; backend currently ignores them safely | ~2 hours |
+| 1 | ~~**Backend prompt branching by archetype**~~ ✅ **SHIPPED 2026-04-21** — `Tripva-backend` master `900df3f` + `7f1e2c0`. Schema accepts all 6 archetypes + specific fields; prompt branches per archetype; `trip.archetype/travelers/people/child_ages/dates` persist; `/api/packing` now live. Verified end-to-end with Lisbon family trip. | — |
 | 2 | **App shell 8 → 5 tab merge** (Live / Plan / Book / Money / More) | `trip.html` is 4.5k inline lines; collapsing 8 tabs into 5 with content merges is a dedicated surgery pass | ~2–4 hours |
 | 3 | **Adventure + Nomad archetype flows** | V1 fallback ships tonight; full conditional fields (gear lists, wifi audit, weekly rhythm) deferred | ~1 hour each |
 | 4 | **Six-archetype Watch demo loops** | Landing shows one static demo; animated per-archetype loops deferred | ~2–3 hours |
