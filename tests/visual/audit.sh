@@ -243,6 +243,29 @@ phase_5() {
   local fake_stars; fake_stars=$("$B" js "[...document.querySelectorAll('*')].filter(e=>e.children.length===0 && /★★★★★/.test(e.textContent)).length" 2>/dev/null | tail -1)
   [ "$fake_stars" = "0" ] || warn "$fake_stars star ratings on landing (verify they're real reviews)"
 
+  # Emoji-glyph presentation — text-variant emojis (☀ ⛰ ☕ etc. without U+FE0F)
+  # render as thin monochrome outlines on Safari/Firefox. Chromium headless hides
+  # the bug because it falls back to Noto Color Emoji. Heuristic: any element
+  # whose sole text content is emoji-glyph should render at a width that's at
+  # least ~55% of its font-size. Color emoji typically renders ~90-100%; text
+  # fallback renders ~30-50% because it uses a thin sans-serif font.
+  local thin_glyphs; thin_glyphs=$("$B" js "
+    [...document.querySelectorAll('.arch-glyph, .focus-icon, [data-glyph]')]
+      .filter(e=>{
+        const txt = (e.textContent||'').trim();
+        if (!txt) return false;
+        const r = e.getBoundingClientRect();
+        if (r.width < 1) return false;
+        const fs = parseFloat(getComputedStyle(e).fontSize) || 0;
+        if (fs < 16) return false;
+        return r.width < fs * 0.55;
+      }).length
+  " 2>/dev/null | tail -1)
+  thin_glyphs="${thin_glyphs:-0}"
+  [ "$thin_glyphs" -eq 0 ] 2>/dev/null \
+    && pass "emoji glyphs render at color-emoji width (no text-variant fallback)" \
+    || { fail "$thin_glyphs emoji glyph(s) rendering as thin text fallback — add U+FE0F variation selector"; ok=0; }
+
   # Cormorant Garamond actually loaded on trip page
   "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5b" >/dev/null 2>&1; sleep 6
   local font; font=$("$B" js "document.fonts ? [...document.fonts].filter(f=>/Cormorant/i.test(f.family)).length : 0" 2>/dev/null | tail -1)
