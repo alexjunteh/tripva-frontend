@@ -608,20 +608,33 @@ footer{
     linear-gradient(160deg, #1e1433 0%, #0a0718 75%);
 }
 .arch-glyph{
-  position:absolute; top:14px; right:16px;
-  font-size:56px;
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -58%);
+  font-size:118px;
   line-height:1;
-  opacity:.85;
+  opacity:.95;
   z-index:2;
   pointer-events:none;
   font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Android Emoji",sans-serif;
   font-variant-emoji:emoji;
-  filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));
+  filter:drop-shadow(0 8px 32px rgba(0,0,0,.55));
   transition:transform .4s cubic-bezier(.22,1,.36,1);
 }
-.arch-tile:hover .arch-glyph{ transform:scale(1.08) rotate(-3deg); }
+.arch-tile:hover .arch-glyph{ transform:translate(-50%, -62%) scale(1.06) rotate(-3deg); }
+/* Decorative texture — subtle grain/dots so the tile feels crafted, not flat */
+.arch-tile-img::after{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    radial-gradient(circle at 20% 18%, rgba(255,255,255,.06) 0%, transparent 26%),
+    radial-gradient(circle at 82% 86%, rgba(255,255,255,.05) 0%, transparent 28%),
+    radial-gradient(circle at 70% 12%, rgba(255,255,255,.04) 0%, transparent 20%);
+  pointer-events:none;
+  z-index:1;
+}
 @media(max-width:480px){
-  .arch-glyph{ font-size:48px; top:12px; right:14px; }
+  .arch-glyph{ font-size:96px; }
 }
 .arch-tile-overlay{
   position:absolute; inset:0;
