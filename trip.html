@@ -4436,7 +4436,25 @@ window.savePlanToStorage = savePlanToStorage;
 // ══════════════════════════════════════
 //  TRIP EDIT
 // ══════════════════════════════════════
-function openEditModal() { document.getElementById('editName').value=tripMeta.name||''; document.getElementById('editEmoji').value=tripMeta.emoji||''; document.getElementById('editDates').value=tripMeta.dates||''; document.getElementById('editPeople').value=tripMeta.people||''; document.getElementById('editBudget').value=tripMeta.budget||''; document.getElementById('editModal').classList.add('open'); }
+function openEditModal() {
+  // Prefer fresh plan.trip (backend now persists archetype-aware fields) over
+  // localStorage tripMeta which can be stale from a prior session's trip.
+  const t = (plan && plan.trip) || {};
+  const fallback = tripMeta || {};
+  const derivedDates = t.dates ||
+    (t.startDate && t.endDate ? (() => {
+      const fmt = (y) => { const m=String(y||'').match(/(\d{4})-(\d{2})-(\d{2})/); if(!m) return ''; const names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${names[+m[2]-1]} ${+m[3]}, ${m[1]}`; };
+      return `${fmt(t.startDate)} → ${fmt(t.endDate)}`;
+    })() : fallback.dates || '');
+  const derivedPeople = t.people || t.travelers || fallback.people || '';
+  const derivedBudget = (t.budget && typeof t.budget === 'string') ? t.budget : (fallback.budget || '');
+  document.getElementById('editName').value   = t.name   || fallback.name   || '';
+  document.getElementById('editEmoji').value  = t.emoji  || fallback.emoji  || '';
+  document.getElementById('editDates').value  = derivedDates;
+  document.getElementById('editPeople').value = derivedPeople;
+  document.getElementById('editBudget').value = derivedBudget;
+  document.getElementById('editModal').classList.add('open');
+}
 function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
 function _fmtBudgetCompact(n){
   const v = Math.round(n);
