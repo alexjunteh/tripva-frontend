@@ -696,7 +696,6 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 body:has(.sheet-overlay.open) .fab-main,
 body:has(.modal-overlay.open) .fab-main,
 body:has(.pack-modal.open) .fab-main,
-body:has(.ai-chat-bar:not([style*="display: none"])) .fab-main,
 body.fab-suppressed .fab-main{opacity:0;pointer-events:none;transform:scale(.8)}
 body:has(.sheet-overlay.open) .fab-wrap,
 body:has(.modal-overlay.open) .fab-wrap,
@@ -5291,6 +5290,9 @@ let _aiChatOpen = false;
 function toggleAiChat() {
   _aiChatOpen = !_aiChatOpen;
   document.getElementById('aiChatBar').style.display = _aiChatOpen ? 'flex' : 'none';
+  // Suppress FAB so it doesn't sit on top of the chat bar / send button
+  if (_aiChatOpen) document.body.classList.add('fab-suppressed');
+  else document.body.classList.remove('fab-suppressed');
   if (_aiChatOpen) {
     // Seed a welcome message + example quick-picks the first time each page-load
     const msgs = document.getElementById('aiChatMsgs');
