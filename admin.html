@@ -97,6 +97,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
   <div class="nav-tabs" id="navTabs">
     <button class="nav-tab active" data-tab="overview">📊 Overview</button>
+    <button class="nav-tab" data-tab="analytics">📈 Analytics</button>
     <button class="nav-tab" data-tab="links">🔗 Links</button>
     <button class="nav-tab" data-tab="commits">📝 Commits</button>
     <button class="nav-tab" data-tab="roadmap">🗺️ Roadmap</button>
@@ -118,6 +119,31 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div id="recentMini"></div>
       <div class="sec">Blockers</div>
       <div id="overviewBlockers"></div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="tab-panel" id="panel-analytics">
+    <div class="sec">User growth</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total users</div><div class="stat-val" id="aTotalUsers">…</div><div class="stat-sub" id="aTotalUsersSub">—</div></div>
+      <div class="stat-card"><div class="stat-label">Last 7 days</div><div class="stat-val" id="aUsers7">…</div><div class="stat-sub">new signups</div></div>
+      <div class="stat-card"><div class="stat-label">Last 30 days</div><div class="stat-val" id="aUsers30">…</div><div class="stat-sub">new signups</div></div>
+    </div>
+    <div class="sec">Trip saves</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total saved</div><div class="stat-val" id="aTotalSaves">…</div><div class="stat-sub">to accounts</div></div>
+      <div class="stat-card"><div class="stat-label">Last 7 days</div><div class="stat-val" id="aSaves7">…</div><div class="stat-sub">new saves</div></div>
+      <div class="stat-card"><div class="stat-label">Conversion</div><div class="stat-val" id="aConv">…</div><div class="stat-sub">saves / users</div></div>
+    </div>
+    <div class="sec">Top destinations</div>
+    <div id="aTopDest" style="display:flex;flex-direction:column;gap:6px;font-size:13px">Loading…</div>
+    <div class="sec">Archetype breakdown</div>
+    <div id="aArchetypes" style="display:flex;flex-direction:column;gap:6px;font-size:13px">Loading…</div>
+    <div class="sec">Recent saves (last 10)</div>
+    <div id="aRecent" style="display:flex;flex-direction:column;gap:6px;font-size:13px">Loading…</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5">
+      ⚠️ Requires <code>ADMIN_TOKEN</code> env var on Vercel. Currently uses the same admin password as this page. If empty responses, set <code>ADMIN_TOKEN=tripva2026</code> (or a stronger value — update <code>PASS</code> in admin.html to match) in Vercel project settings.
     </div>
   </div>
 
@@ -231,6 +257,7 @@ document.getElementById('navTabs').addEventListener('click',e=>{
   btn.classList.add('active');document.getElementById('panel-'+tab).classList.add('active');
   if(tab==='commits')loadCommits();
   if(tab==='roadmap')renderRoadmap();
+  if(tab==='analytics')loadAnalytics();
 });
 document.getElementById('refreshBtn').onclick=refreshAll;
 function showToast(m,ms=2500){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
@@ -288,6 +315,79 @@ async function fetchCommits(repo,n=12){
   try{const r=await fetch(`https://api.github.com/repos/FuturiztaOS/${repo}/commits?per_page=${n}`);return r.ok?await r.json():[];}
   catch(e){return[];}
 }
+
+// ── Analytics panel — pulls aggregated data from /api/admin/analytics ────────
+let _analyticsLoaded = false;
+async function loadAnalytics(force){
+  if (_analyticsLoaded && !force) return;
+  const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  const fmt = n => (typeof n === 'number') ? n.toLocaleString() : '—';
+  try {
+    const r = await fetch(BE + '/api/admin/analytics', {
+      headers: { 'x-admin-token': PASS, 'Origin': location.origin }
+    });
+    if (r.status === 401) {
+      setText('aTotalUsers', '—'); showToast('🔒 Admin token mismatch'); return;
+    }
+    if (r.status === 503) {
+      setText('aTotalUsers', '—'); showToast('⚠️ ADMIN_TOKEN env var not set on Vercel'); return;
+    }
+    if (!r.ok) { showToast('⚠️ Analytics fetch failed'); return; }
+    const d = await r.json();
+    _analyticsLoaded = true;
+
+    const c = d.counts || {};
+    setText('aTotalUsers', fmt(c.total_users));
+    setText('aTotalUsersSub', fmt(c.users_last_30) + ' in 30d');
+    setText('aUsers7',  fmt(c.users_last_7));
+    setText('aUsers30', fmt(c.users_last_30));
+    setText('aTotalSaves', fmt(c.total_saves));
+    setText('aSaves7',  fmt(c.saves_last_7));
+    setText('aConv', c.total_users ? (Math.round(100 * (c.total_saves || 0) / c.total_users) + '%') : '—');
+
+    const destEl = document.getElementById('aTopDest');
+    if (destEl) {
+      destEl.innerHTML = (d.top_destinations || []).length
+        ? d.top_destinations.map(x => `<div style="display:flex;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 11px"><span>${esc(x.destination)}</span><span style="color:var(--muted);font-weight:700">${x.count}</span></div>`).join('')
+        : '<div style="color:var(--muted)">No trips yet.</div>';
+    }
+
+    const archEl = document.getElementById('aArchetypes');
+    if (archEl) {
+      const entries = Object.entries(d.archetype_breakdown || {}).sort((a,b) => b[1] - a[1]);
+      const total = entries.reduce((a,[,n]) => a+n, 0);
+      archEl.innerHTML = entries.length
+        ? entries.map(([a,n]) => {
+            const pct = total ? Math.round(100*n/total) : 0;
+            return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 11px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>${esc(a)}</span><span style="color:var(--muted);font-weight:700">${n} · ${pct}%</span></div>
+              <div style="height:4px;background:var(--surface2);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#95b8ff,#7c6af7)"></div></div>
+            </div>`;
+          }).join('')
+        : '<div style="color:var(--muted)">No archetype data yet.</div>';
+    }
+
+    const recentEl = document.getElementById('aRecent');
+    if (recentEl) {
+      recentEl.innerHTML = (d.recent_saves || []).length
+        ? d.recent_saves.map(t => {
+            const when = t.created_at ? timeAgo(t.created_at) : '';
+            const title = esc(t.title || t.destination || 'Trip');
+            const dest  = esc(t.destination || '—');
+            const link  = t.gist_id ? `https://tripva.app/trip?id=${encodeURIComponent(t.gist_id)}` : '';
+            return `<div style="display:flex;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 11px">
+              <div style="min-width:0;flex:1"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${title}</div><div style="font-size:11px;color:var(--muted)">${dest} · ${when}</div></div>
+              ${link ? `<a href="${link}" target="_blank" style="color:var(--accent);font-size:12px;text-decoration:none;align-self:center">Open →</a>` : ''}
+            </div>`;
+          }).join('')
+        : '<div style="color:var(--muted)">No saves yet.</div>';
+    }
+  } catch (e) {
+    showToast('⚠️ Analytics network error');
+    console.error('[admin] analytics error:', e);
+  }
+}
+
 function renderCommits(commits,id){
   const el=document.getElementById(id);
   if(!commits.length){el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:10px">No commits</div>';return;}
@@ -328,7 +428,7 @@ function renderRoadmap(){
   document.getElementById('overviewBlockers').innerHTML=BLOCKED.slice(0,3).map(b=>`<div class="row"><span style="font-size:16px">🚫</span><div class="row-body"><div class="row-title">${esc(b.t)}</div><div class="row-sub">${esc(b.a)}</div></div></div>`).join('');
 }
 
-async function refreshAll(){showToast('Refreshing…');await Promise.all([checkBE(),checkStats(),checkAuth(),runChecks(),loadRecentMini()]);showToast('✅ Done');}
+async function refreshAll(){showToast('Refreshing…');await Promise.all([checkBE(),checkStats(),checkAuth(),runChecks(),loadRecentMini(),loadAnalytics(true)]);showToast('✅ Done');}
 async function init(){renderRoadmap();await Promise.all([checkBE(),checkStats(),checkAuth(),runChecks(),loadRecentMini()]);}
 </script>
 </body>
