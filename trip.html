@@ -1843,6 +1843,7 @@ body.viewer-mode .more-action-primary{display:none}
       <button class="more-action more-action-primary" onclick="closeMore();saveToAccount()">💾 Save trip</button>
       <button class="more-action" onclick="closeMore();exportHtml()">📄 Export HTML</button>
       <button class="more-action" onclick="closeMore();openEditModal()">✏️ Edit Trip</button>
+      <button class="more-action" id="moreUpgradeBtn" onclick="closeMore();upgradeToPro()" style="background:linear-gradient(135deg,#95b8ff,var(--purple));color:var(--bg);border-color:transparent">⚡ Upgrade to Pro</button>
     </div>
   </div>
 </div>
@@ -5318,6 +5319,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.toggleAiChat = toggleAiChat;
 window.sendAiEdit = sendAiEdit;
+
+// ── Pro plan upgrade (Stripe Checkout) ─────────────────────────────────────
+// Sends auth token + redirect URLs to /api/stripe/checkout. Backend responds
+// with {url} → browser navigates to Stripe; or 503 if billing not configured
+// yet (env vars missing on Vercel) → we toast a friendly message.
+async function upgradeToPro() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+    if (!sess || !sess.access_token) {
+      // Not signed in yet — reuse save-trip flow to auth first, then come back
+      if (typeof showToast === 'function') showToast('🔑 Sign in first, then upgrade');
+      setTimeout(saveToAccount, 300);
+      return;
+    }
+    if (typeof showToast === 'function') showToast('⏳ Opening checkout…');
+    const r = await fetch(TRIPVA_BACKEND + '/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: sess.access_token,
+        successUrl: location.origin + '/mytrips.html?upgraded=1',
+        cancelUrl: location.origin + location.pathname + location.search
+      })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (r.status === 503 && d.error === 'stripe_not_configured') {
+      if (typeof showToast === 'function') showToast('💳 Pro plan not live yet — stay tuned!');
+      return;
+    }
+    if (!r.ok || !d.url) {
+      if (typeof showToast === 'function') showToast('⚠️ ' + (d.error || d.message || 'Could not start checkout'));
+      return;
+    }
+    location.href = d.url;
+  } catch (err) {
+    console.error('[upgrade] error:', err);
+    if (typeof showToast === 'function') showToast('⚠️ Network error — try again');
+  }
+}
+window.upgradeToPro = upgradeToPro;
+
+// Hide the Upgrade button for users who already have Pro. We check on every
+// More-menu open so it reflects the latest plan state post-checkout.
+async function refreshPlanBadge() {
+  const btn = document.getElementById('moreUpgradeBtn');
+  if (!btn) return;
+  const sess = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+  if (!sess || !sess.access_token) { btn.style.display = ''; return; }
+  try {
+    const r = await fetch(TRIPVA_BACKEND + '/api/user/me', {
+      headers: { 'Authorization': 'Bearer ' + sess.access_token }
+    });
+    const d = await r.json().catch(() => ({}));
+    if (d && d.plan === 'pro') {
+      btn.textContent = '✓ Pro member';
+      btn.onclick = () => openBillingPortal();
+      btn.style.opacity = '.9';
+    }
+  } catch (_) { /* non-fatal */ }
+}
+
+async function openBillingPortal() {
+  const sess = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+  if (!sess) return;
+  try {
+    const r = await fetch(TRIPVA_BACKEND + '/api/stripe/portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: sess.access_token, returnUrl: location.href })
+    });
+    const d = await r.json();
+    if (d.url) location.href = d.url;
+    else if (typeof showToast === 'function') showToast('⚠️ ' + (d.error || 'Could not open portal'));
+  } catch (e) {
+    if (typeof showToast === 'function') showToast('⚠️ Network error');
+  }
+}
+window.openBillingPortal = openBillingPortal;
+
+// Refresh plan badge when opening More menu
+(function wireMorePlanRefresh(){
+  const origOpenMore = window.openMore;
+  window.openMore = function(){
+    try { refreshPlanBadge(); } catch(e){}
+    if (typeof origOpenMore === 'function') return origOpenMore.apply(this, arguments);
+  };
+})();
 
 // Context-aware AI entry from within the Day sheet — pre-seeds "Day N:" and
 // closes the sheet so the chat is unobstructed.
