@@ -639,10 +639,34 @@ document.addEventListener('DOMContentLoaded', () => {
   if (p.get('dest')) document.getElementById('f-dest').value = p.get('dest');
   if (p.get('start')) document.getElementById('f-start').value = p.get('start');
   if (p.get('end')) document.getElementById('f-end').value = p.get('end');
+  if (p.get('budget')) document.getElementById('f-budget').value = p.get('budget');
+  if (p.get('home')) document.getElementById('f-home').value = p.get('home');
+  if (p.get('style')) document.getElementById('f-style').value = p.get('style');
 
   // Archetype from URL or default
   const archParam = p.get('archetype');
   setArchetype(archParam && ARCHETYPES[archParam] ? archParam : 'couple');
+
+  // "Plan similar trip" deep link — pre-select interests + traveler count AFTER
+  // setArchetype (which rebuilds the chip set with archetype defaults).
+  const interestsParam = p.get('interests');
+  if (interestsParam) {
+    const want = new Set(interestsParam.split(',').map(s => s.trim()).filter(Boolean));
+    setTimeout(() => {
+      document.querySelectorAll('#f-interests .chip-int').forEach(c => {
+        c.classList.toggle('sel', want.has(c.dataset.v));
+      });
+    }, 0);
+  }
+  const travParam = parseInt(p.get('travelers') || '', 10);
+  if (!isNaN(travParam) && travParam >= 1 && travParam <= 20) {
+    setTimeout(() => {
+      travellers = travParam;
+      const el = document.getElementById('f-trav');
+      if (el) el.textContent = String(travParam);
+      window._travTouched = true;
+    }, 0);
+  }
 
   // Archetype pill clicks
   document.getElementById('archPicker').addEventListener('click', e => {

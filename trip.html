@@ -1799,6 +1799,11 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
         <div class="more-item-label">New Trip</div>
         <div class="more-item-sub">AI planner</div>
       </div>
+      <div class="more-item" onclick="closeMore();planSimilarTrip()">
+        <div class="more-item-icon">🪄</div>
+        <div class="more-item-label">Plan Similar</div>
+        <div class="more-item-sub">Pre-filled form</div>
+      </div>
       <div class="more-item" onclick="closeMore();shareTripLink()">
         <div class="more-item-icon">🔗</div>
         <div class="more-item-label">Share</div>
@@ -5393,6 +5398,32 @@ async function doSaveTrip(token){
     console.error('[save] failed:', err);
   });
 }
+
+// "Plan similar trip" — deep-link to /plan with the current trip's inputs
+// pre-filled so the user can tweak dates / destination and regenerate quickly.
+function planSimilarTrip() {
+  if (!plan || !plan.trip) { try { showToast('⚠️ No trip loaded'); } catch(e) {} return; }
+  const t = plan.trip;
+  const rawInterests = (plan.days && plan.days[0] && Array.isArray(plan.days[0].highlights))
+    ? plan.days.flatMap(d => (d.highlights || [])).join(' ').toLowerCase()
+    : '';
+  // Derive archetype-appropriate interest tags from content. We can only guess
+  // — prefer persisted trip.interests if backend exposed it; else sniff.
+  const candidates = ['food','culture','nightlife','adventure','shopping','nature','history','beach','photography','hiking','wellness','spa'];
+  const interests = (Array.isArray(t.interests) && t.interests.length)
+    ? t.interests
+    : candidates.filter(k => rawInterests.includes(k)).slice(0, 5);
+  const params = new URLSearchParams();
+  if (t.destination) params.set('dest', t.destination);
+  if (t.startDate)   params.set('start', t.startDate);
+  if (t.endDate)     params.set('end', t.endDate);
+  if (t.archetype)   params.set('archetype', t.archetype);
+  if (t.travelers)   params.set('travelers', String(t.travelers));
+  if (t.budget && typeof t.budget === 'string') params.set('budget', t.budget);
+  if (interests.length) params.set('interests', interests.join(','));
+  window.location.href = '/plan.html?' + params.toString();
+}
+window.planSimilarTrip = planSimilarTrip;
 
 function startTripOAuth(provider){
   var btn = document.getElementById('tripOauth' + provider[0].toUpperCase() + provider.slice(1));
