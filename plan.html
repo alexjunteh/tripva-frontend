@@ -457,10 +457,30 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       </div>
     </div>
 
-    <!-- NOMAD (v1 fallback) -->
+    <!-- NOMAD -->
     <div class="arch-fields" data-arch="nomad">
-      <div class="arch-heads-up">
-        Slow-travel deep-dive (coworking, wifi audit, weekly rhythm) is coming soon. For now, Tripva builds a base-city itinerary with grocery + laundry + activity recs.
+      <div class="form-section">
+        <label class="form-label">Work hours per week</label>
+        <div class="chip-group" data-group="nomad-hours" data-single="1">
+          <div class="chip-pick" data-v="10">&lt; 10h (part-time)</div>
+          <div class="chip-pick" data-v="25">~ 25h</div>
+          <div class="chip-pick sel" data-v="40">~ 40h (full-time)</div>
+          <div class="chip-pick" data-v="55">55h+ (heavy)</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Wifi requirement</label>
+        <div class="chip-group" data-group="nomad-wifi" data-single="1">
+          <div class="chip-pick" data-v="basic">Basic (email, browsing)</div>
+          <div class="chip-pick sel" data-v="fast">Fast (video calls)</div>
+          <div class="chip-pick" data-v="business">Business-grade (uploads, streaming)</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="toggle-row">
+          <span class="toggle-label">Coworking space preferred over cafes</span>
+          <div class="toggle-switch on" id="coworkToggle" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
       </div>
       <div class="form-section">
         <div class="toggle-row">
@@ -780,6 +800,10 @@ function gatherArchetypeData(){
     data.gear_owned     = _pickMulti('adv-gear');
     data.pace           = _pickVal('adv-pace');
   } else if (a === 'nomad'){
+    const hrs = _pickVal('nomad-hours');
+    if (hrs) data.work_hours_per_week = Number(hrs);
+    data.wifi_requirement = _pickVal('nomad-wifi');
+    data.cowork_preferred = _toggleState('coworkToggle');
     data.wifi_priority = _toggleState('wifiToggle');
   }
   return data;
