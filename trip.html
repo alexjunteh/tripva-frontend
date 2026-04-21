@@ -4032,32 +4032,72 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
   const beforeDay = timeline.length > 0 && nowMins < parseTimeM(timeline[0].time);
   const afterDay  = timeline.length > 0 && !nextItem && doneItems.length > 0;
 
+  // Sub-state detection: travel-day (first day w/ arrival transport) + final-day (last day)
+  const firstItem = timeline[0];
+  const lastItem  = timeline[timeline.length - 1];
+  const isArrivalDay   = currentIdx === 0 && firstItem && firstItem.type === 'transport';
+  const isFinalDay     = currentIdx === totalDays - 1;
+  const isDepartureDay = isFinalDay && lastItem && lastItem.type === 'transport';
+
   // Kicker + title + countdown
   if (beforeDay) {
     const fi = timeline[0];
     const fmins = parseTimeM(fi.time);
     const wait = fmins - nowMins;
-    setEl("nowFocusKicker", '⏰ FIRST UP');
-    setEl("nowFocusTitle", fi.title || dayTitle);
-    setEl("nowFocusCountdown", `In ${fmtCountdown(wait)} · at ${fi.time}`);
-    setEl("nowFocusSubdetail", (fi.detail||'').split('.')[0] || '');
-    show("nowFocusSubdetail", !!(fi.detail));
-    show("nowFocusCta", true);
-    setEl("nowFocusCtaText", '📍 Get directions');
-    const cta = document.getElementById("nowFocusCta");
-    if (cta) cta.href = `https://maps.google.com/?q=${encodeURIComponent(fi.title||dayTitle)}`;
-    if (cta) cta.target = '_blank';
+    if (isArrivalDay) {
+      setEl("nowFocusKicker", '✈️ TRAVEL DAY');
+      setEl("nowFocusTitle", fi.title || `Arriving in ${(plan.trip && plan.trip.destination) || 'destination'}`);
+      setEl("nowFocusCountdown", `Departs in ${fmtCountdown(wait)} · ${fi.time}`);
+      setEl("nowFocusSubdetail", (fi.detail||'').split('.')[0] || 'Boarding, travel, arrival — take it slow.');
+      show("nowFocusSubdetail", true);
+      show("nowFocusCta", true);
+      setEl("nowFocusCtaText", '🎟 View tickets');
+      const cta = document.getElementById("nowFocusCta");
+      if (cta) { cta.href = 'javascript:switchTab("tickets");void(0);'; cta.target = '_self'; }
+    } else if (isFinalDay) {
+      setEl("nowFocusKicker", '🧳 FINAL DAY');
+      setEl("nowFocusTitle", dayTitle);
+      setEl("nowFocusCountdown", `Check out + ${fi.title||'last stop'}`);
+      setEl("nowFocusSubdetail", (fi.detail||'').split('.')[0] || 'Pack up, tidy up, savor the last day.');
+      show("nowFocusSubdetail", true);
+      show("nowFocusCta", true);
+      setEl("nowFocusCtaText", '🎒 Packing checklist');
+      const cta = document.getElementById("nowFocusCta");
+      if (cta) { cta.href = 'javascript:openPackModal();void(0);'; cta.target = '_self'; }
+    } else {
+      setEl("nowFocusKicker", '⏰ FIRST UP');
+      setEl("nowFocusTitle", fi.title || dayTitle);
+      setEl("nowFocusCountdown", `In ${fmtCountdown(wait)} · at ${fi.time}`);
+      setEl("nowFocusSubdetail", (fi.detail||'').split('.')[0] || '');
+      show("nowFocusSubdetail", !!(fi.detail));
+      show("nowFocusCta", true);
+      setEl("nowFocusCtaText", '📍 Get directions');
+      const cta = document.getElementById("nowFocusCta");
+      if (cta) { cta.href = `https://maps.google.com/?q=${encodeURIComponent(fi.title||dayTitle)}`; cta.target = '_blank'; }
+    }
   } else if (afterDay) {
-    setEl("nowFocusKicker", '✅ TODAY DONE');
-    setEl("nowFocusTitle", "Today's plan complete");
-    setEl("nowFocusCountdown", `${doneItems.length} stops in ${dayTitle}`);
-    const nextDay = plan.days[currentIdx+1];
-    setEl("nowFocusSubdetail", nextDay ? `Tomorrow: ${nextDay.title||'day ahead'}` : 'Trip ending soon — safe travels ✈️');
-    show("nowFocusSubdetail", true);
-    show("nowFocusCta", nextDay ? true : false);
-    setEl("nowFocusCtaText", 'Peek tomorrow →');
-    const cta = document.getElementById("nowFocusCta");
-    if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+    if (isFinalDay) {
+      setEl("nowFocusKicker", '✨ TRIP COMPLETE');
+      setEl("nowFocusTitle", `Your ${(plan.trip && plan.trip.destination) || 'trip'} wraps up`);
+      setEl("nowFocusCountdown", `${totalDays} days · ${doneItems.length} stops today`);
+      setEl("nowFocusSubdetail", isDepartureDay ? 'Safe travels home — we hope it was memorable ✈️' : 'Hope it was unforgettable. Save a memory before you go.');
+      show("nowFocusSubdetail", true);
+      show("nowFocusCta", true);
+      setEl("nowFocusCtaText", '📸 View scrapbook');
+      const cta = document.getElementById("nowFocusCta");
+      if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+    } else {
+      setEl("nowFocusKicker", '✅ TODAY DONE');
+      setEl("nowFocusTitle", "Today's plan complete");
+      setEl("nowFocusCountdown", `${doneItems.length} stops in ${dayTitle}`);
+      const nextDay = plan.days[currentIdx+1];
+      setEl("nowFocusSubdetail", nextDay ? `Tomorrow: ${nextDay.title||'day ahead'}` : 'Trip ending soon — safe travels ✈️');
+      show("nowFocusSubdetail", true);
+      show("nowFocusCta", nextDay ? true : false);
+      setEl("nowFocusCtaText", 'Peek tomorrow →');
+      const cta = document.getElementById("nowFocusCta");
+      if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+    }
   } else if (currentItem) {
     setEl("nowFocusKicker", '📍 YOU\'RE AT');
     setEl("nowFocusTitle", currentItem.title || dayTitle);
