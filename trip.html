@@ -636,6 +636,17 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 
 /* ─── RESTORED BANNER ─── */
 .restored-banner{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:12px;padding:10px 14px;font-size:14px;margin:10px 14px 0;display:flex;align-items:center;gap:8px;font-weight:600;flex-shrink:0}
+/* Cold-viewer (non-owner opened a shared link) — invites them to plan their own */
+.viewer-banner{background:linear-gradient(135deg,rgba(124,106,247,.16),rgba(149,184,255,.08));border:1px solid rgba(124,106,247,.4);border-radius:14px;padding:12px 14px;margin:10px 14px 0;display:flex;align-items:center;gap:10px;font-size:13px;flex-shrink:0;flex-wrap:wrap}
+.viewer-banner-icon{font-size:18px}
+.viewer-banner-text{flex:1;min-width:160px;line-height:1.4;color:var(--text2)}
+.viewer-banner-text b{color:var(--text);font-weight:700}
+.viewer-banner-cta{background:linear-gradient(135deg,#95b8ff,var(--purple));color:var(--bg);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap;min-height:36px;display:inline-flex;align-items:center;transition:transform .15s ease,box-shadow .15s ease}
+.viewer-banner-cta:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(124,106,247,.35)}
+.viewer-banner-sec{background:transparent;color:var(--text2);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid var(--border);min-height:36px;display:inline-flex;align-items:center}
+.viewer-banner-sec:hover{color:var(--text);border-color:rgba(124,106,247,.4)}
+body.viewer-mode .save-btn.auth-save{display:none}
+body.viewer-mode .more-action-primary{display:none}
 
 ::-webkit-scrollbar{width:2px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -1548,6 +1559,12 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
       <div class="stat-card"><div class="stat-num" id="statBudget">-</div><div class="stat-lbl">Budget</div></div>
     </div>
     <div id="restoredBanner" class="restored-banner" style="display:none">✅ Trip plan loaded from shared link</div>
+    <div id="viewerBanner" class="viewer-banner" style="display:none">
+      <span class="viewer-banner-icon">✨</span>
+      <span class="viewer-banner-text"><b>Shared trip.</b> Like what you see? Plan your own in 30 seconds.</span>
+      <a class="viewer-banner-sec" href="javascript:planSimilarTrip();void(0);" id="viewerSimilarBtn">🪄 Similar</a>
+      <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
+    </div>
     <div id="focusCard" class="focus-card" style="display:none"></div>
     <!-- ROUTE MAP -->
     <div class="route-map-wrap" id="routeMapWrap">
@@ -2781,14 +2798,28 @@ async function loadTripPlan() {
           const rawData = data.rawPlan;
           plan = (rawData.rawPlan && rawData.rawPlan.days) ? rawData.rawPlan : rawData;
           tripMeta = plan.trip || {};
+          // Cold-viewer detection — if they DIDN'T have this plan locally yet,
+          // they're opening someone else's shared trip. Show viewer banner,
+          // hide owner-only actions (Save-to-account).
+          const localId = (function(){
+            try { const p = JSON.parse(localStorage.getItem('tripva_plan')||'null'); return p && p.trip && p.trip.id; } catch(e){ return null; }
+          })();
+          const urlId = new URLSearchParams(location.search).get('id');
+          const isColdViewer = urlId && urlId !== localId;
           localStorage.setItem('tripva_plan', JSON.stringify(plan));
           populateDashboard(plan);
 
           renderLiveOps();
           switchTab('days');
           if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Tripva';
-          const banner = document.getElementById('restoredBanner');
-          if (banner) { banner.textContent = '✅ Trip loaded from shared link'; banner.style.display = 'flex'; }
+          if (isColdViewer) {
+            document.body.classList.add('viewer-mode');
+            const vb = document.getElementById('viewerBanner');
+            if (vb) vb.style.display = 'flex';
+          } else {
+            const banner = document.getElementById('restoredBanner');
+            if (banner) { banner.textContent = '✅ Trip loaded from shared link'; banner.style.display = 'flex'; }
+          }
           showLoadingSpinner(false);
           return;
         }
