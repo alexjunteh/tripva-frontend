@@ -1045,26 +1045,54 @@ function handleEmail(e) {
   }, 900);
 })();
 
-// PWA install banner
+// PWA install banner — localStorage-backed, with escalating snooze so we
+// don't pester users who consistently decline. Respects display-mode:standalone
+// so installed users never see it. After 3 dismisses, suppress for 30 days.
 var deferredPrompt;
+function _pwaDismissCount(){ return parseInt(localStorage.getItem('pwa_dismiss_count')||'0',10)||0; }
+function _pwaLastDismiss(){ return parseInt(localStorage.getItem('pwa_dismiss_at')||'0',10)||0; }
+function _pwaSuppressed(){
+  if (matchMedia('(display-mode:standalone)').matches) return true;
+  if (localStorage.getItem('pwa_installed') === '1') return true;
+  var count = _pwaDismissCount();
+  var last = _pwaLastDismiss();
+  var daysSince = (Date.now() - last) / 86400000;
+  // Escalating backoff: 1 dismiss=1d, 2=7d, 3+=30d
+  var need = count >= 3 ? 30 : count === 2 ? 7 : count === 1 ? 1 : 0;
+  return daysSince < need;
+}
 window.addEventListener('beforeinstallprompt', function(e){
   e.preventDefault();
   deferredPrompt = e;
-  if(!sessionStorage.getItem('pwa_d') && !matchMedia('(display-mode:standalone)').matches){
-    setTimeout(function(){
-      var b = document.getElementById('pwaBanner');
-      if(b){ b.classList.add('show'); }
-    }, 3000);
-  }
+  if (_pwaSuppressed()) return;
+  setTimeout(function(){
+    var b = document.getElementById('pwaBanner');
+    if(b){ b.classList.add('show'); }
+  }, 3000);
+});
+window.addEventListener('appinstalled', function(){
+  localStorage.setItem('pwa_installed','1');
+  var b = document.getElementById('pwaBanner');
+  if (b) b.classList.remove('show');
 });
 document.getElementById('pwaInstallBtn').addEventListener('click', function(){
   document.getElementById('pwaBanner').classList.remove('show');
-  sessionStorage.setItem('pwa_d','1');
-  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt = null; }
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(choice){
+      if (choice && choice.outcome === 'accepted') localStorage.setItem('pwa_installed','1');
+      else {
+        localStorage.setItem('pwa_dismiss_count', String(_pwaDismissCount()+1));
+        localStorage.setItem('pwa_dismiss_at', String(Date.now()));
+      }
+    });
+    deferredPrompt = null;
+  }
 });
 document.getElementById('pwaDismissBtn').addEventListener('click', function(){
   document.getElementById('pwaBanner').classList.remove('show');
-  sessionStorage.setItem('pwa_d','1');
+  localStorage.setItem('pwa_dismiss_count', String(_pwaDismissCount()+1));
+  localStorage.setItem('pwa_dismiss_at', String(Date.now()));
 });
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
