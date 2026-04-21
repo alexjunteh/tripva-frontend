@@ -304,23 +304,33 @@ function signOut(){
 
 function startOAuth(provider){
   var btn = document.getElementById(provider + 'Btn');
-  btn.disabled = true;
-  btn.textContent = 'Redirecting…';
+  if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
+  var restore = function(){
+    if (btn) { btn.disabled = false; btn.textContent = provider === 'google' ? 'Continue with Google' : 'Continue with Apple'; }
+  };
   fetch(BACKEND+'/api/user/oauth', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ provider: provider })
+    body: JSON.stringify({ provider: provider, returnTo: location.origin + '/mytrips.html' })
   })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    if(d.error){ btn.disabled=false; btn.textContent = provider === 'google' ? 'Continue with Google' : 'Continue with Apple'; alert(d.error); return; }
-    // Redirect to OAuth provider
+  .then(function(r){ return r.json().then(function(d){ return { status: r.status, body: d }; }); })
+  .then(function(res){
+    var d = res.body;
+    if (res.status === 503 && d.error === 'provider_not_enabled') {
+      restore();
+      if (typeof showToast === 'function') showToast(d.message || 'Provider not enabled');
+      else alert(d.message || 'Fast login not enabled — use magic link instead.');
+      // Focus the magic-link input as the graceful fallback
+      var em = document.getElementById('authEmail'); if (em) em.focus();
+      return;
+    }
+    if (d.error) { restore(); alert(d.error); return; }
     window.location.href = d.url;
   })
   .catch(function(){
-    btn.disabled=false;
-    btn.textContent = provider === 'google' ? 'Continue with Google' : 'Continue with Apple';
-    alert('Could not start ' + provider + ' login. Please try again.');
+    restore();
+    if (typeof showToast === 'function') showToast('Could not start ' + provider + ' login. Please try again.');
+    else alert('Could not start ' + provider + ' login. Please try again.');
   });
 }
 
