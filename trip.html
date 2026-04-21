@@ -2060,6 +2060,7 @@ const DEST_CURRENCY_MAP = {
 
 let fxRates = null; // { USD:1, EUR:0.92, ... } keyed by target currency, base USD
 let fxHomeCurrency = localStorage.getItem('tripva_home_currency') || 'USD';
+try { window.__fxHome = fxHomeCurrency; } catch(e) {}
 let fxSourceCurrency = 'USD'; // detected from trip destination
 
 async function loadFxRates() {
@@ -2105,6 +2106,7 @@ function convertAmount(amountStr, fromCur, toCur) {
 
 function onFxChange(val) {
   fxHomeCurrency = val;
+  try { window.__fxHome = val; } catch(e) {}
   localStorage.setItem('tripva_home_currency', val);
   // Sync chip active states
   document.querySelectorAll('.fx-chip').forEach(c => {
@@ -3425,8 +3427,16 @@ function populateDashboard(p) {
     if (_be) _be.style.display = 'none';
     _be?.remove();
     // Detect source currency BEFORE rendering so each row's data-src is correct.
-    // Previously fxSourceCurrency was still the 'USD' default at template time.
-    try { fxSourceCurrency = detectSourceCurrency(p.trip?.destination || ''); } catch(e) {}
+    // Prefer trip.currency (backend-persisted ISO code) over city-name lookup,
+    // fall back to name sniff (trip.name often includes the city), then to
+    // destination field, last resort USD.
+    try {
+      fxSourceCurrency =
+        (p.trip?.currency && typeof p.trip.currency === 'string' ? p.trip.currency.toUpperCase() : null) ||
+        detectSourceCurrency(p.trip?.destination || p.trip?.name || '');
+    } catch(e) {}
+    // Mirror onto window so the top-level currency helpers can see it too
+    try { window.__fxSource = fxSourceCurrency; } catch(e) {}
     const isBooked = b => b.status === 'booked' || /✅|Paid|BOOKED/i.test(b.note||'') || /✅|PAID|BOOKED/i.test(b.amount||'');
     const paidItems = (p.budget||[]).filter(b => isBooked(b));
     const pendingItems = (p.budget||[]).filter(b => !isBooked(b));
