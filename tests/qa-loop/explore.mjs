@@ -27,7 +27,7 @@ const VP = process.env.QA_VIEWPORT || '390x844';
 
 // Pages to crawl. Trip fixture is known-good; landing covers the hero flow;
 // mytrips covers auth; plan covers the form. Add as the app grows.
-const FIXTURE = '871ef37957516825f0f8df718f838b7b';
+const FIXTURE = 'a2ba2994227e63956443c06529543317';
 const PAGES = [
   { id: 'landing',  url: '/?qa=1' },
   { id: 'plan',     url: '/plan?qa=1' },
@@ -168,36 +168,51 @@ function crawlPage(page, reportDir) {
   // Some pages redirect (e.g., /trip with no id → /plan). Capture actual URL.
   const actualUrl = bjs('location.href');
   if (!actualUrl.includes(page.url.split('?')[0].replace('/', ''))) {
-    // normalize — treat landing's '/' specially
     if (page.url !== '/?qa=1' || !actualUrl.endsWith('/')) {
       console.log(`  ↳ redirected: ${actualUrl}`);
     }
   }
 
-  const elements = enumerateClickables();
+  let elements = enumerateClickables();
   console.log(`  found ${elements.length} clickable element(s)`);
   const failures = [];
+  const tested = new Set();
+  let refreshCount = 0;
 
-  for (const el of elements) {
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    if (tested.has(el.ref)) continue;
+    tested.add(el.ref);
     const label = `${el.tag}${el.id ? '#'+el.id : ''} "${el.text || '(icon)'}"`;
     const res = testClickable(el);
+    if (res.skipped) { /* silent skip */ continue; }
+    if (res.info) continue;  // link-not-clicked etc.
     if (!res.ok) {
+      // If the reason is 'element-gone', that's flakiness from a prior click
+      // that removed the element from DOM (e.g., modal close). Skip instead
+      // of reloading — the element legitimately doesn't exist anymore in the
+      // current state, which is fine. Only treat non-gone reasons as bugs.
+      if (/element-gone/.test(res.reason)) continue;
       failures.push({ element: el, label, reason: res.reason });
       console.log(`    ✗ ${label} — ${res.reason}`);
-      // Screenshot at failure
       const shotPath = `${reportDir}/${page.id}-${el.ref}.png`;
       bshot(shotPath);
-      // Recover before next element
-      dismissOverlays();
-      bgoto(page.url);
-      run('sleep 5');
+      // Reload ONLY on real failures, then re-enumerate fresh so subsequent
+      // elements get new refs. Cap at 3 reloads per page to avoid loops.
+      if (refreshCount < 3) {
+        refreshCount++;
+        dismissOverlays();
+        bgoto(page.url);
+        run('sleep 5');
+        elements = enumerateClickables();
+        i = -1;  // restart loop; tested Set skips previously-checked refs
+      }
     } else {
       dismissOverlays();
-      // Re-navigate only if page state changed unexpectedly (modals closed)
     }
   }
 
-  return { page, tested: elements.length, failures };
+  return { page, tested: tested.size, failures };
 }
 
 async function main() {

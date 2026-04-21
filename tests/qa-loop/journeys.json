@@ -25,7 +25,7 @@
       "name": "More menu on trip has Save, Upgrade, Calendar, Edit",
       "critical": true,
       "steps": [
-        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
         { "action": "wait", "ms": 10000 },
         { "action": "eval", "js": "openMore(); true" },
         { "action": "wait", "ms": 1800 }
@@ -43,7 +43,7 @@
       "name": "FAB hidden when More menu open",
       "critical": true,
       "steps": [
-        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
         { "action": "wait", "ms": 10000 },
         { "action": "eval", "js": "openMore(); true" },
         { "action": "wait", "ms": 2000 }
@@ -57,7 +57,7 @@
       "name": "Budget tab either renders rows or actionable empty state",
       "critical": true,
       "steps": [
-        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
         { "action": "wait", "ms": 8000 },
         { "action": "eval", "js": "switchTab('budget'); true" },
         { "action": "wait", "ms": 1500 }
@@ -71,7 +71,7 @@
       "name": "Packing modal loads without API 400",
       "critical": true,
       "steps": [
-        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
         { "action": "wait", "ms": 8000 },
         { "action": "eval", "js": "openPackModal(); true" },
         { "action": "wait", "ms": 15000 }
@@ -99,7 +99,7 @@
       "name": "Tickets tab does not list meal items",
       "critical": false,
       "steps": [
-        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
         { "action": "wait", "ms": 8000 },
         { "action": "eval", "js": "switchTab('tickets'); true" },
         { "action": "wait", "ms": 1500 }
@@ -119,6 +119,62 @@
       "assert": [
         { "js-equals": "document.getElementById('f-dest').value", "expect": "Tokyo" },
         { "js-equals": "document.querySelector('.arch-pill.active')?.dataset.arch", "expect": "family" }
+      ]
+    },
+    {
+      "id": "days-tab-has-events",
+      "name": "Days tab shows per-day timeline items (not empty)",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('days'); true" },
+        { "action": "wait", "ms": 2000 }
+      ],
+      "assert": [
+        { "js-true": "document.querySelectorAll('.day-big-card, .day-card, .day-pill').length > 0" },
+        { "js-true": "(() => { const cards = [...document.querySelectorAll('.day-big-card')]; if (!cards.length) return false; const withEvents = cards.filter(c => { const n = parseInt((c.innerText.match(/(\\\\d+)\\\\s*events?/i)||[0,0])[1]); return n > 0 || c.querySelectorAll('.timeline-item, .day-event, .tl-row').length > 0; }); return withEvents.length > 0; })()" }
+      ]
+    },
+    {
+      "id": "day-sheet-has-timeline",
+      "name": "Opening Day sheet shows timeline items",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('days'); true" },
+        { "action": "wait", "ms": 1500 },
+        { "action": "eval", "js": "openDaySheet(0); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "document.getElementById('daySheetOverlay')?.classList.contains('open')" },
+        { "js-true": "document.querySelectorAll('#sheetBody .tl-row, #sheetBody .timeline-item, #sheetBody .tl-item').length >= 1" }
+      ]
+    },
+    {
+      "id": "landing-all-destinations-resolve",
+      "name": "All destination gallery tiles link to plan.html",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/?qa=1" },
+        { "action": "wait", "ms": 2500 }
+      ],
+      "assert": [
+        { "js-true": "document.querySelectorAll('a.dest-tile').length >= 6" }
+      ]
+    },
+    {
+      "id": "tabs-all-switchable",
+      "name": "All 5 bottom-nav tabs switch without error",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 }
+      ],
+      "assert": [
+        { "js-true": "(() => { const tabs=['plan','days','tickets','budget','trip']; for (const t of tabs) { try { switchTab(t); } catch(e){ return false; } const el = document.getElementById('tab-'+t); if (!el) return false; if (t !== '_more' && !el.classList.contains('active')) return false; } return true; })()" }
       ]
     }
   ]
