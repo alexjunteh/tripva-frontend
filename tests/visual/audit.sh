@@ -410,6 +410,33 @@ phase_5() {
     *) fail "budget tab broken: $budget_state"; ok=0 ;;
   esac
 
+  # Packing modal — opening it must not 400. Earlier bug: frontend sent
+  # human-format dates ('Apr 20') instead of YYYY-MM-DD → backend schema
+  # rejected every request. Live-fire the endpoint with the fixture trip.
+  local pack_state; pack_state=$("$B" js "
+    (async () => {
+      try {
+        if (typeof openPackModal !== 'function') return 'no-fn';
+        openPackModal();
+        // Wait up to 15s for fetch+render (AI call is ~5-10s)
+        for (let i = 0; i < 30; i++) {
+          await new Promise(r => setTimeout(r, 500));
+          const body = document.getElementById('packBody');
+          if (body && body.querySelector('.pack-cat, .pack-item')) return 'ok-has-items';
+          if (body && /API error|Could not load/i.test(body.innerText||'')) {
+            return 'pack-api-error: ' + (body.innerText || '').replace(/\\s+/g,' ').slice(0,100);
+          }
+        }
+        return 'timeout-no-items';
+      } catch (e) { return 'js-err: ' + e.message; }
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$pack_state" in
+    ok-has-items) pass "packing modal loads items without API error" ;;
+    timeout-no-items) warn "packing modal: no items within 15s (AI slow, not a failure)" ;;
+    *) fail "packing modal broken: $pack_state"; ok=0 ;;
+  esac
+
   # Invisible touch-blockers — fixed/absolute elements that are visually hidden
   # (opacity 0 or visibility hidden) but still have pointer-events enabled.
   # These eat taps/scrolls silently. Caused right-edge scroll regression
