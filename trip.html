@@ -5319,41 +5319,78 @@ function saveToAccount(){
   doSaveTrip(session.access_token);
 }
 
-function doSaveTrip(token){
+async function doSaveTrip(token){
   var btn = document.getElementById('saveToAccountBtn');
   if(btn){ btn.textContent = '⏳ Saving…'; btn.disabled = true; }
+  if(typeof showToast === 'function') showToast('⏳ Saving to your account…');
 
+  // Backend expects the RAW plan object — pass the same shape the streaming
+  // endpoint emits (trip, days, hotels, budget, ...). `plan` in the frontend
+  // can be either the wrapped {rawPlan: ...} or the raw shape; normalize.
+  var rawPlan = (plan && plan.rawPlan) ? plan.rawPlan : plan;
+  if (!rawPlan || !rawPlan.trip) {
+    if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
+    if(typeof showToast === 'function') showToast('⚠️ No trip loaded to save');
+    return;
+  }
+
+  // Ensure the trip has a share URL by saving to the Gist backend first if
+  // we don't have a trip id yet. share_url is what the user shares; it also
+  // lets the backend re-hydrate the trip on later opens.
   var tripId = new URLSearchParams(location.search).get('id') || null;
-  var dest = document.getElementById('heroDestTitle')?.textContent || 'Trip';
-  var gist = tripId;
+  var shareUrl = tripId ? (location.origin + '/trip?id=' + tripId) : null;
+  if (!shareUrl) {
+    try {
+      const r = await fetch(TRIPVA_BACKEND + '/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: rawPlan })
+      });
+      const j = await r.json();
+      if (j && j.id) {
+        tripId = j.id;
+        shareUrl = location.origin + '/trip?id=' + j.id;
+        // Reflect the new id in the URL without reloading so subsequent saves
+        // are idempotent and sharing works from this tab.
+        try { history.replaceState(null, '', '/trip?id=' + j.id); } catch(e) {}
+      }
+    } catch(e) { /* non-fatal — backend accepts plan without shareUrl */ }
+  }
 
   fetch(TRIPVA_BACKEND+'/api/user/trips/save',{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-    body:JSON.stringify({
-      destination: dest,
-      title: dest,
-      gist_id: gist,
-      plan_data: null
-    })
+    body:JSON.stringify({ plan: rawPlan, shareUrl: shareUrl })
   })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    if(d.error){
+  .then(function(r){ return r.json().then(function(d){ return { status: r.status, body: d }; }); })
+  .then(function(res){
+    var d = res.body;
+    if(res.status >= 400 || d.error){
       if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
       // Token expired? clear and re-auth
-      if(d.error.includes('Invalid') || d.error.includes('expired')){
+      if(d.error && (d.error.includes('Invalid') || d.error.includes('expired') || d.error.includes('JWT'))){
         localStorage.removeItem('tripva_session');
-        saveToAccount();
+        if(typeof showToast === 'function') showToast('🔑 Session expired — sign in again');
+        setTimeout(saveToAccount, 400);
+        return;
       }
+      if(typeof showToast === 'function') showToast('⚠️ Save failed: ' + (d.error || 'Unknown error'));
+      return;
+    }
+    if(d.saved === false){
+      if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
+      if(typeof showToast === 'function') showToast('🔑 Sign in to save trips to your account');
+      localStorage.removeItem('tripva_session');
+      setTimeout(saveToAccount, 400);
       return;
     }
     if(btn){ btn.textContent='✅ Saved'; btn.disabled=false; }
-    // Show toast
-    if(typeof showToast === 'function') showToast('Trip saved to your account ✅');
+    if(typeof showToast === 'function') showToast('✅ Trip saved to your account');
   })
-  .catch(function(){
+  .catch(function(err){
     if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
+    if(typeof showToast === 'function') showToast('⚠️ Network error — trip not saved');
+    console.error('[save] failed:', err);
   });
 }
 
