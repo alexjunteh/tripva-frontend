@@ -12,6 +12,9 @@ g="en" >
 <meta name="apple-mobile-web-app-title" content="AI Trip Planner">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Tripva — Your Trip</title>
 <meta property="og:title" content="My Trip — Tripva AI Planner">
 <meta property="og:description" content="View my AI-generated trip itinerary built with Tripva.">
@@ -2469,40 +2472,18 @@ const CITY_IMG_ALTS = {
   'lucerne':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
   'luzern':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
 };
-// Helper: get best image for a day card
+// Helper: get best image for a day card.
+// Always returns a DIFFERENT image per day by seeding picsum with destination + day index.
+// Day.imageUrl still wins if explicitly set.
 function getDayImage(day, idx) {
   if (day.imageUrl) return day.imageUrl;
-  // Build search terms: heroSeed, title words, trip destination
-  const tripDest = (plan?.trip?.name || plan?.rawPlan?.trip?.name || '').toLowerCase();
-  const seeds = [day.heroSeed, day.title, tripDest].filter(Boolean).map(s => s.toLowerCase());
-  for (const seed of seeds) {
-    // Exact match
-    if (CITY_IMGS[seed]) return CITY_IMGS[seed];
-    // Partial: check if any CITY_IMGS key appears in the seed, or vice versa
-    for (const [key, url] of Object.entries(CITY_IMGS)) {
-      if (seed.includes(key) || key.includes(seed.split(/[-\s]/)[0])) return url;
-    }
-    // Also split by spaces/hyphens and check each word
-    const words = seed.split(/[-\s,&]+/).filter(w => w.length > 2);
-    for (const word of words) {
-      if (CITY_IMGS[word]) return CITY_IMGS[word];
-      for (const [key, url] of Object.entries(CITY_IMGS)) {
-        if (key.includes(word) || word.includes(key)) return url;
-      }
-    }
-  }
-  // Final fallback: use trip destination or generic travel photo
-  const destKey = tripDest.split(/[-\s,&]+/).find(w => CITY_IMGS[w.toLowerCase()]);
-  if (destKey) return CITY_IMGS[destKey.toLowerCase()];
-  // Generic high-quality travel fallback (NOT the map/binoculars!)
-  const fallbacks = [
-    'https://loremflickr.com/900/500/travel,city',
-    'https://loremflickr.com/900/500/travel,city',
-    'https://loremflickr.com/900/500/travel,city',
-    'https://loremflickr.com/900/500/travel,city',
-    'https://loremflickr.com/900/500/travel,city',
-  ];
-  return fallbacks[idx % fallbacks.length];
+  // Build a deterministic seed per day so images are stable + unique.
+  const dest = ((plan && plan.trip && (plan.trip.destination || plan.trip.name)) ||
+                (plan && plan.rawPlan && plan.rawPlan.trip && plan.rawPlan.trip.name) || 'trip')
+               .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0, 40);
+  const dayNum = (day && (day.day != null ? day.day : (idx + 1))) || (idx + 1);
+  const seed = `tripva-${dest || 'trip'}-d${dayNum}`;
+  return `https://picsum.photos/seed/${seed}/900/600`;
 }
 
 // Track used images per populateDashboard call to avoid duplicates
@@ -3287,16 +3268,27 @@ function getTripDateInfo(){
   return { now, ymd, timeStr, localHour, localMin };
 }
 function inferDayDate(dayNum){
-  // Prefer explicit date field on the day object if present
+  // 1. Prefer explicit date field on the day object if present
   if(plan && plan.days){
     const dayObj = plan.days.find(d => d.day === dayNum);
     if(dayObj && dayObj.date) return dayObj.date;
   }
-  // Fallback: hardcoded Italy trip base (2026-03-18)
-  const base = new Date(Date.UTC(2026, 2, 18));
-  const d = new Date(base);
-  d.setUTCDate(base.getUTCDate() + (dayNum - 1));
-  return d.toISOString().slice(0,10);
+  // 2. Fall back to plan.trip.startDate + (dayNum-1) offset
+  const startStr = (plan && plan.trip && (plan.trip.startDate || plan.trip.start)) || '';
+  if(startStr){
+    const m = startStr.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if(m){
+      const base = new Date(Date.UTC(+m[1], +m[2]-1, +m[3]));
+      base.setUTCDate(base.getUTCDate() + (dayNum - 1));
+      return base.toISOString().slice(0,10);
+    }
+  }
+  // 3. Final fallback: today + (dayNum-1). Better than the old 2026-03-18
+  //    Italy hardcode which leaked into every new trip.
+  const today = new Date();
+  today.setUTCHours(0,0,0,0);
+  today.setUTCDate(today.getUTCDate() + (dayNum - 1));
+  return today.toISOString().slice(0,10);
 }
 function formatDayDate(dayNum){
   const ymd = inferDayDate(dayNum);
@@ -3696,7 +3688,11 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
 
   // ── Hero image: today's day image (or first day's for pre-trip) ──
   const imgDay = (state === 'pre-trip') ? (plan.days[0] || {}) : day;
-  const heroImg = (imgDay && imgDay.heroImg) || (plan.trip && plan.trip.heroImg) ||
+  const heroImgIdx = plan.days.indexOf(imgDay);
+  const heroImg = (imgDay && imgDay.heroImg) ||
+                  (imgDay && imgDay.imageUrl) ||
+                  (typeof getDayImage === 'function' ? getDayImage(imgDay || {}, Math.max(0, heroImgIdx)) : '') ||
+                  (plan.trip && plan.trip.heroImg) ||
                   `https://picsum.photos/seed/tripva-${(plan.trip&&plan.trip.destination||'trip').replace(/[^a-z0-9]/gi,'-')}/1200/800`;
   const focusImg = document.getElementById("nowFocusImg");
   if (focusImg) {
@@ -3929,10 +3925,10 @@ function renderStageStrip(chips) {
   strip.innerHTML = chips.map((c, i) => {
     const label = (c.label || '').replace(/</g,'&lt;');
     const cls = c.state || 'future';
-    return `<div class=.nowStage-chip ${cls}" role="listitem" aria-label="${label}${cls === 'current' ? ' (current)' : ''}">${label}</div>`;
+    return `<div class="nowStage-chip ${cls}" role="listitem" aria-label="${label}${cls === 'current' ? ' (current)' : ''}">${label}</div>`;
   }).join('');
   // Auto-scroll current into view
-  const cur = strip.querySelector('.stage-chip.current');
+  const cur = strip.querySelector('.nowStage-chip.current');
   if (cur && cur.scrollIntoView) {
     try { cur.scrollIntoView({behavior: 'smooth', inline: 'center', block: 'nearest'}); } catch(e) {}
   }
