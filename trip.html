@@ -1417,6 +1417,14 @@ body.viewer-mode .more-action-primary{display:none}
 
 <div id="app">
 
+<!-- Cold-viewer banner — shown on any tab when viewer-mode is active -->
+<div id="viewerBanner" class="viewer-banner" style="display:none;margin:10px 14px 0;flex-shrink:0">
+  <span class="viewer-banner-icon">✨</span>
+  <span class="viewer-banner-text"><b>Shared trip.</b> Like what you see? Plan your own in 30 seconds.</span>
+  <a class="viewer-banner-sec" href="javascript:planSimilarTrip();void(0);" id="viewerSimilarBtn">🪄 Similar</a>
+  <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
+</div>
+
 <!-- ── 1. LIVE OPS ── -->
 <div id="tab-plan" class="tab-content active now-v3" style="padding-top:env(safe-area-inset-top,0)">
   <div class="v2-scroll" id="opsScroll">
@@ -1559,12 +1567,6 @@ body.viewer-mode .more-action-primary{display:none}
       <div class="stat-card"><div class="stat-num" id="statBudget">-</div><div class="stat-lbl">Budget</div></div>
     </div>
     <div id="restoredBanner" class="restored-banner" style="display:none">✅ Trip plan loaded from shared link</div>
-    <div id="viewerBanner" class="viewer-banner" style="display:none">
-      <span class="viewer-banner-icon">✨</span>
-      <span class="viewer-banner-text"><b>Shared trip.</b> Like what you see? Plan your own in 30 seconds.</span>
-      <a class="viewer-banner-sec" href="javascript:planSimilarTrip();void(0);" id="viewerSimilarBtn">🪄 Similar</a>
-      <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
-    </div>
     <div id="focusCard" class="focus-card" style="display:none"></div>
     <!-- ROUTE MAP -->
     <div class="route-map-wrap" id="routeMapWrap">
