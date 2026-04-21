@@ -411,7 +411,11 @@ function renderTrips(trips){
     var meta = 'Saved ' + timeAgo(trip.created_at);
     
     var tripUrl = trip.gist_id ? 'trip.html?id='+encodeURIComponent(trip.gist_id) : '#';
-    
+    var similarParams = new URLSearchParams();
+    if (trip.destination) similarParams.set('dest', trip.destination);
+    if (trip.start_date) similarParams.set('start', trip.start_date);
+    if (trip.end_date) similarParams.set('end', trip.end_date);
+
     var card = document.createElement('div');
     card.className = 'trip-card';
     card.style.position = 'relative';
@@ -425,6 +429,7 @@ function renderTrips(trips){
         '</div>',
         '<div class="trip-card-arrow">›</div>',
       '</a>',
+      '<a class="trip-card-similar" href="plan.html?'+similarParams.toString()+'" title="Plan similar trip" style="position:absolute;top:10px;right:46px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#a89e96;text-decoration:none;font-size:14px;transition:background .15s,color .15s" onmouseover="this.style.background=\'rgba(201,169,110,.15)\';this.style.color=\'#c9a96e\'" onmouseout="this.style.background=\'rgba(255,255,255,.06)\';this.style.color=\'#a89e96\'">🪄</a>',
       '<button class="trip-card-delete" onclick="deleteTrip(\''+trip.id+'\',this)" title="Delete trip">✕</button>'
     ].join('');
     
