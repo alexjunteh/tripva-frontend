@@ -1,0 +1,125 @@
+{
+  "journeys": [
+    {
+      "id": "landing-see-demo",
+      "name": "Landing → 'See full demo' opens a real trip",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/?qa=1" },
+        { "action": "wait", "ms": 2500 },
+        { "action": "scroll", "to": "#demo" },
+        { "action": "wait", "ms": 1200 },
+        { "action": "eval", "js": "const a=document.querySelector('a[href*=\"trip.html?id=\"]'); if(a) location.href = a.href.replace('target=_blank','');" },
+        { "action": "wait", "ms": 12000 }
+      ],
+      "assert": [
+        { "url-matches": "/trip" },
+        { "no-404-in-body": true },
+        { "text-not-contains": "No trip found" },
+        { "text-not-contains": "Trip not found" },
+        { "js-true": "document.querySelectorAll('.tab-content.active').length > 0 || document.querySelectorAll('.nav-btn').length > 0" }
+      ]
+    },
+    {
+      "id": "more-menu-has-save",
+      "name": "More menu on trip has Save, Upgrade, Calendar, Edit",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "openMore(); true" },
+        { "action": "wait", "ms": 1800 }
+      ],
+      "assert": [
+        { "js-true": "document.getElementById('moreOverlay')?.classList.contains('open')" },
+        { "js-true": "[...document.querySelectorAll('.more-action')].some(b => /Save trip/i.test(b.textContent))" },
+        { "selector-exists": "#moreUpgradeBtn" },
+        { "js-true": "[...document.querySelectorAll('.more-action')].some(b => /Calendar/i.test(b.textContent))" },
+        { "js-true": "[...document.querySelectorAll('.more-action')].some(b => /Edit Trip/i.test(b.textContent))" }
+      ]
+    },
+    {
+      "id": "fab-no-overlap-more",
+      "name": "FAB hidden when More menu open",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "openMore(); true" },
+        { "action": "wait", "ms": 2000 }
+      ],
+      "assert": [
+        { "js-true": "(() => { const f=document.querySelector('.fab-main'); const cs=getComputedStyle(f); return parseFloat(cs.opacity) < 0.15 || cs.pointerEvents === 'none'; })()" }
+      ]
+    },
+    {
+      "id": "budget-tab-usable",
+      "name": "Budget tab either renders rows or actionable empty state",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "wait", "ms": 8000 },
+        { "action": "eval", "js": "switchTab('budget'); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "(() => { const rows=document.querySelectorAll('.budget-row').length; const empty=document.getElementById('budgetEmpty'); const emptyVisible = empty && getComputedStyle(empty).display !== 'none'; if (rows>0) return true; if (emptyVisible && empty.querySelectorAll('button,a').length>0) return true; return false; })()" }
+      ]
+    },
+    {
+      "id": "packing-no-400",
+      "name": "Packing modal loads without API 400",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "wait", "ms": 8000 },
+        { "action": "eval", "js": "openPackModal(); true" },
+        { "action": "wait", "ms": 15000 }
+      ],
+      "assert": [
+        { "text-not-contains": "API error" },
+        { "text-not-contains": "Could not load" }
+      ]
+    },
+    {
+      "id": "mytrips-auth-paths",
+      "name": "mytrips has Google + magic-link signin",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/mytrips?qa=1" },
+        { "action": "wait", "ms": 3000 }
+      ],
+      "assert": [
+        { "selector-exists": "#googleBtn" },
+        { "selector-exists": "#authSendBtn" }
+      ]
+    },
+    {
+      "id": "tickets-no-meals",
+      "name": "Tickets tab does not list meal items",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=871ef37957516825f0f8df718f838b7b&qa=1" },
+        { "action": "wait", "ms": 8000 },
+        { "action": "eval", "js": "switchTab('tickets'); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "(() => { const tkts = [...document.querySelectorAll('.tkt-card, .ticket-card, [data-derived-ticket]')]; for (const t of tkts) { const txt = (t.innerText||'').toLowerCase(); if (/breakfast|dinner|lunch|café|cafe at/i.test(txt) && !/breakfast train|lunch bus/i.test(txt)) return false; } return true; })()" }
+      ]
+    },
+    {
+      "id": "plan-form-prefills",
+      "name": "plan.html deep-link pre-fills dest + archetype",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/plan?dest=Tokyo&archetype=family&travelers=4&qa=1" },
+        { "action": "wait", "ms": 2500 }
+      ],
+      "assert": [
+        { "js-equals": "document.getElementById('f-dest').value", "expect": "Tokyo" },
+        { "js-equals": "document.querySelector('.arch-pill.active')?.dataset.arch", "expect": "family" }
+      ]
+    }
+  ]
+}
