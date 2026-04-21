@@ -73,7 +73,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── BOTTOM NAV - 5 TABS, iOS pill style ─── */
-.bottom-nav{display:flex;background:var(--surface-alpha);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:1px solid var(--border);padding:6px 4px calc(6px + var(--safe-b));flex-shrink:0;z-index:100}
+.bottom-nav{display:flex;background:var(--surface-alpha);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-top:1px solid var(--border);padding:6px 4px calc(6px + var(--safe-b));flex-shrink:0;z-index:100;transition:transform .25s ease,opacity .25s ease;will-change:transform}
+body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.bottom-nav{transition:none}}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:600;min-height:48px;background:none;border:none;position:relative;transition:color .2s;padding:4px 2px;border-radius:14px}
 .nav-btn.active{color:var(--purple)}
 .nav-btn.active::before{content:'';position:absolute;inset:2px 8px;background:rgba(124,106,247,.12);border-radius:12px}
@@ -2797,9 +2799,44 @@ function openTicket(tktTitle) {
     void _tabEl.offsetHeight; // force reflow to restart animation
   }
   if (document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
+  // Leaving Now tab → always show bottom nav
+  if (name !== 'plan') document.body.classList.remove('nav-hidden');
   // Re-render Live tab when activated (ensures it always shows fresh data)
   if (name === 'plan' && plan) { try { renderLiveOps(); } catch(e) {} }
 }
+
+// Scroll-hide bottom nav on Now tab (DESIGN.md principle 1 — maximize FocusCard).
+// Hide on scroll-down past 80px, reveal on scroll-up. Only active when Now tab is visible.
+(function wireNowScrollHide(){
+  let lastY = 0, ticking = false;
+  const THRESHOLD = 6;   // min delta to trigger
+  const HIDE_AT   = 80;  // px before we start hiding
+  function isNowActive(){
+    const t = document.getElementById('tab-plan');
+    return t && t.classList.contains('active') && t.classList.contains('now-v3');
+  }
+  function onScroll(el){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = el.scrollTop;
+      const d = y - lastY;
+      if (!isNowActive()) { document.body.classList.remove('nav-hidden'); lastY = y; ticking = false; return; }
+      if (y > HIDE_AT && d > THRESHOLD) document.body.classList.add('nav-hidden');
+      else if (d < -THRESHOLD || y <= HIDE_AT) document.body.classList.remove('nav-hidden');
+      lastY = y;
+      ticking = false;
+    });
+  }
+  function wire(){
+    const scroller = document.getElementById('opsScroll');
+    if (!scroller || scroller._nowScrollWired) return;
+    scroller._nowScrollWired = true;
+    scroller.addEventListener('scroll', () => onScroll(scroller), { passive: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else wire();
+})();
 function openMore() {
   document.getElementById('moreOverlay').classList.add('open');
 }
