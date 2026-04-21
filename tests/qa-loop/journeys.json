@@ -133,7 +133,7 @@
       ],
       "assert": [
         { "js-true": "document.querySelectorAll('.day-big-card, .day-card, .day-pill').length > 0" },
-        { "js-true": "(() => { const cards = [...document.querySelectorAll('.day-big-card')]; if (!cards.length) return false; const withEvents = cards.filter(c => { const n = parseInt((c.innerText.match(/(\\\\d+)\\\\s*events?/i)||[0,0])[1]); return n > 0 || c.querySelectorAll('.timeline-item, .day-event, .tl-row').length > 0; }); return withEvents.length > 0; })()" }
+        { "js-true": "(() => { const cards = [...document.querySelectorAll('.day-big-card')]; if (!cards.length) return false; const withEvents = cards.filter(c => { const n = parseInt((c.innerText.match(/(\\d+)\\s*events?/i)||[0,0])[1]); return n > 0 || c.querySelectorAll('.day-big-events').length > 0; }); return withEvents.length > 0; })()" }
       ]
     },
     {
