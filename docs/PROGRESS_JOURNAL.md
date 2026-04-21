@@ -31,6 +31,26 @@ Status convention: ⏳ in-flight · ✅ done · 🔜 deferred · 🚫 blocked
 
 ## Running log (most recent first)
 
+### 2026-04-21 02:15 UTC — Wikipedia-backed city imagery shipped (d0f6313)
+
+Replaced generic picsum seeded imagery with real, city-specific photos from
+Wikimedia Commons. Uses MediaWiki's search+pageimages REST endpoint
+(CORS-friendly, no auth). Per-day heroSeeds like `barcelona-sagradafamilia`
+resolve to actual Wikipedia page images.
+
+Live verification on Barcelona 2-day trip:
+  Day 1 "Arrival in Barcelona" (heroSeed: barcelona-sagradafamilia)
+      → Sagrada Família photo from Wikimedia ✓
+  Day 2 "Barcelona Adventures" (heroSeed: barcelona-parkguell)
+      → Aerial Barcelona photo from Wikimedia ✓
+  FocusCard (today = Day 1) → Sagrada Família ✓
+
+Architecture:
+- Serial fetch queue (not parallel — keeps UI responsive, avoids 429)
+- 30-day localStorage cache with negative caching for misses
+- AbortController 7s timeout
+- Graceful degradation: picsum placeholder stays if Wikipedia unreachable
+
 ### 2026-04-21 01:35 UTC — User audit findings fixed (6 commits)
 
 After user spotted visible issues, did a proper tab-by-tab audit mobile + desktop and fixed:
