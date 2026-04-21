@@ -266,6 +266,30 @@ phase_5() {
     && pass "emoji glyphs render at color-emoji width (no text-variant fallback)" \
     || { fail "$thin_glyphs emoji glyph(s) rendering as thin text fallback — add U+FE0F variation selector"; ok=0; }
 
+  # Invisible touch-blockers — fixed/absolute elements that are visually hidden
+  # (opacity 0 or visibility hidden) but still have pointer-events enabled.
+  # These eat taps/scrolls silently. Caused right-edge scroll regression
+  # where FAB action items (opacity:0, pointer-events:all) blocked scroll.
+  "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5c" >/dev/null 2>&1; sleep 4
+  local touch_blockers; touch_blockers=$("$B" js "
+    [...document.querySelectorAll('*')]
+      .filter(e=>{
+        const cs = getComputedStyle(e);
+        const pos = cs.position;
+        if (pos !== 'fixed' && pos !== 'absolute') return false;
+        const hidden = cs.opacity === '0' || cs.visibility === 'hidden' || cs.display === 'none';
+        if (!hidden) return false;
+        if (cs.pointerEvents === 'none') return false;
+        const r = e.getBoundingClientRect();
+        if (r.width < 30 || r.height < 30) return false;
+        return true;
+      }).map(e=>e.className||e.id||e.tagName).slice(0,5)
+  " 2>/dev/null | tail -1)
+  touch_blockers="${touch_blockers:-[]}"
+  [ "$touch_blockers" = "[]" ] \
+    && pass "no invisible touch-blockers (opacity:0 + pointer-events:all)" \
+    || { fail "invisible touch-blocker(s) found: $touch_blockers"; ok=0; }
+
   # Cormorant Garamond actually loaded on trip page
   "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5b" >/dev/null 2>&1; sleep 6
   local font; font=$("$B" js "document.fonts ? [...document.fonts].filter(f=>/Cormorant/i.test(f.family)).length : 0" 2>/dev/null | tail -1)
