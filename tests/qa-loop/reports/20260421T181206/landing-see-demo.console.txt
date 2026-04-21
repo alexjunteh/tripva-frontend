@@ -1,0 +1,12 @@
+--- BEGIN UNTRUSTED EXTERNAL CONTENT (source: https://tripva.app/?qa=1) ---
+[2026-04-21T17:32:25.632Z] [error] Failed to load resource: the server responded with a status of 400 ()
+[2026-04-21T17:34:36.302Z] [error] Failed to load resource: the server responded with a status of 400 ()
+[2026-04-21T17:37:46.678Z] [error] Failed to load resource: the server responded with a status of 400 ()
+[2026-04-21T17:51:10.808Z] [error] Failed to load resource: the server responded with a status of 400 ()
+[2026-04-21T17:59:56.833Z] [error] Failed to load resource: the server responded with a status of 404 ()
+[2026-04-21T18:02:23.255Z] [warning] localStorage parse failed: ReferenceError: Cannot access '_usedDayImgs' before initialization
+    at populateDashboard (https://tripva.app/trip?v=1776794541805564950:3232:16)
+    at loadTripPlan (https://tripva.app/trip?v=1776794541805564950:2915:7)
+    at HTMLDocument.<anonymous> (https://tripva.app/trip?v=1776794541805564950:2481:3)
+[2026-04-21T18:03:06.296Z] [error] Failed to load resource: the server responded with a status of 400 ()
+--- END UNTRUSTED EXTERNAL CONTENT ---
