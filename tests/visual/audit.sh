@@ -115,6 +115,38 @@ phase_1() {
   local narrow; narrow=$(echo "$day_dims" | python3 -c "import json,sys;d=json.loads(sys.stdin.read().strip() or '[]');print(len([c for c in d if c.get('w',0)<300]))" 2>/dev/null || echo 0)
   [ "$narrow" = "0" ] && pass "day cards width sane (desktop)" || { fail "$narrow day card(s) narrower than 300px"; ok=0; }
 
+  # Landing-page link-check: any anchor pointing to /trip?id=<X> or trip.html?id=<X>
+  # must resolve to an actual saved trip, not 404. Catches the 'See full demo'
+  # demo-trip-goes-to-empty-redirect bug.
+  "$B" goto "$base_url/?v=$t&phase=1b" >/dev/null 2>&1
+  sleep 3
+  local trip_links; trip_links=$("$B" js "JSON.stringify([...document.querySelectorAll('a[href*=\"trip\"][href*=\"id=\"]')].map(a => a.href))" 2>/dev/null | tail -1)
+  local broken_count=0
+  if [ -n "$trip_links" ] && [ "$trip_links" != "[]" ]; then
+    # Extract each id= value and curl the backend to check
+    local ids; ids=$(echo "$trip_links" | python3 -c "
+import json,sys,urllib.parse
+try:
+  links = json.loads(sys.stdin.read())
+  seen = set()
+  for l in links:
+    q = urllib.parse.urlparse(l).query
+    for part in q.split('&'):
+      if part.startswith('id='):
+        i = part[3:]
+        if i and i not in seen:
+          seen.add(i); print(i)
+except: pass
+")
+    for id in $ids; do
+      local code; code=$(curl -s -o /dev/null -w "%{http_code}" "https://tripai-backend.vercel.app/api/trip?id=$id")
+      if [ "$code" != "200" ]; then
+        broken_count=$((broken_count + 1))
+      fi
+    done
+  fi
+  [ "$broken_count" = "0" ] && pass "landing demo-trip links resolve" || { fail "$broken_count landing demo-trip link(s) 404/broken — 'See full demo' etc."; ok=0; }
+
   # Console error filter: exclude 3rd-party/external resource failures that aren't product bugs:
   # - "Failed to load resource: 404" from Plausible analytics, favicon, images
   # - ERR_FAILED from flaky-network image fetches (Wikipedia etc.)
