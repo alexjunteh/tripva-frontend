@@ -2841,7 +2841,18 @@ function populateDashboard(p) {
     const _tn=document.getElementById('tripName'); if(_tn) _tn.textContent=t.name||'My Trip';
     // Derive fallbacks for fields the backend doesn't always emit
     const derivedDays    = (p.days && p.days.length) || null;
-    const derivedPeople  = t.people || t.travelers || t.groupSize || null;
+    // Backend doesn't persist `travelers` as a structured field — parse from
+    // any "for N people" descriptions in budget / urgent / tickets as a last resort.
+    const _sniffPeople = () => {
+      const blobs = [p.budget, p.urgent, p.tickets].filter(Array.isArray).flat();
+      for (const item of blobs) {
+        const txt = (item.note || item.description || item.title || '') + '';
+        const m = txt.match(/\bfor\s+(\d{1,2})\s+people\b/i);
+        if (m) return +m[1];
+      }
+      return null;
+    };
+    const derivedPeople  = t.people || t.travelers || t.groupSize || _sniffPeople();
     const fmtShortDate   = (ymd) => {
       const m = String(ymd||'').match(/(\d{4})-(\d{2})-(\d{2})/);
       if (!m) return '';
