@@ -2571,7 +2571,13 @@ document.addEventListener("DOMContentLoaded", () => {
   try { window.__dclTrace = { fired: true, winCI_type: typeof window.CITY_IMGS, winCI_keys: window.CITY_IMGS ? Object.keys(window.CITY_IMGS).length : 'nil', bareCI: (()=>{ try { return typeof CITY_IMGS; } catch(e){ return 'throws:' + e.message.slice(0,50); } })() }; } catch(e){}
   const _splashMs = (new URLSearchParams(location.search).get('demo')==='1') ? 300 : 500;
   setTimeout(() => document.getElementById('splash').classList.add('gone'), _splashMs);
-  loadTripPlan();
+  // NOTE: loadTripPlan() intentionally NOT called here. This DOMContentLoaded
+  // listener body extends for thousands of lines and contains the helper
+  // declarations (CITY_IMGS, populateDashboard, parseBudgetToRM, …) further
+  // down. Calling loadTripPlan on entry would execute populateDashboard BEFORE
+  // its own helpers are initialized — every render would crash on first paint.
+  // Instead, loadTripPlan is invoked at the END of the callback below, just
+  // before the closing `});`.
   const firstMsgTimeEl = document.getElementById('firstMsgTime');
   if (firstMsgTimeEl) firstMsgTimeEl.textContent = fmtTime(new Date());
   updateStatus();
@@ -6061,6 +6067,9 @@ window.askAiAboutDay = askAiAboutDay;
   window.closePackModal = closePackModal;
   window.togglePackItem = togglePackItem;
   window.resetPacking   = resetPacking;
+
+  // Kick off the trip load LAST — by now every helper above is initialized.
+  loadTripPlan();
 }); // close DOMContentLoaded
 
 // ── DARK MODE ONLY ──
