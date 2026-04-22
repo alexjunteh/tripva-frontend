@@ -1146,8 +1146,69 @@ function handleSSEEvent(evt, logRoute, logDays) {
 }
 
 // ── Navigation ─────────────────────────────────────────────────────────────
-function openGeneratedTrip() {
-  window.location.href = _shareUrl || '/trip.html';
+// Pre-navigate budget guard: before handing off to /trip, make sure the plan
+// actually has a budget. The SSE stream emits budget only inside the 'done'
+// event, so if the stream got truncated (CF buffering, timeout, backend
+// rate-limit hang) the user would land on the dashboard with an empty budget
+// tab and then watch a post-load self-heal kick in. Doing it here keeps the
+// user on the loading screen until budget is ready — one load screen, not two.
+let _openingTripInFlight = false;
+async function openGeneratedTrip() {
+  if (_openingTripInFlight) return;
+  _openingTripInFlight = true;
+  try {
+    let plan = null;
+    try { plan = JSON.parse(localStorage.getItem('tripva_plan') || 'null'); } catch(e) {}
+    const rp = plan && (plan.rawPlan || plan);
+    const hasDays = !!(rp && rp.days && rp.days.length);
+    const hasBudget = !!(rp && rp.budget && rp.budget.length);
+    if (hasDays && !hasBudget) {
+      const est = document.getElementById('genEstimate');
+      if (est) est.textContent = '\u2728 Finalizing your budget\u2026';
+      try {
+        const resp = await fetch(BACKEND + '/api/patch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            state: {
+              normalizedVersion: rp.normalizedVersion || 2,
+              planVersion: rp.planVersion || new Date().toISOString(),
+              rawPlan: rp,
+            },
+            instruction: 'Add a complete, realistic budget breakdown for this trip. Include flights, accommodation, transport, food, activities, and misc. Use the trip currency. Mark all items as status:"pending" unless already booked.'
+          })
+        });
+        if (resp.ok) {
+          const patched = await resp.json();
+          const patchedRp = patched.rawPlan || patched;
+          if (patchedRp && patchedRp.budget && patchedRp.budget.length) {
+            const cur = (patchedRp.trip && patchedRp.trip.currency) || (rp.trip && rp.trip.currency) || 'USD';
+            const sym = ({USD:'$', EUR:'\u20ac', GBP:'\u00a3', JPY:'\u00a5', MYR:'RM', SGD:'S$', AUD:'A$', THB:'\u0e3f'})[cur] || (cur + ' ');
+            const inferCat = (label) => {
+              const s = String(label || '').toLowerCase();
+              if (/flight|train|bus|transport|metro|taxi|uber|rental|car|ferry/.test(s)) return 'transport';
+              if (/hotel|accommodation|airbnb|hostel|stay|lodging/.test(s)) return 'accommodation';
+              if (/food|meal|restaurant|breakfast|lunch|dinner|cafe|drink/.test(s)) return 'food';
+              if (/ticket|tour|museum|activit|attraction|entry|admission|experience/.test(s)) return 'activities';
+              return 'misc';
+            };
+            rp.budget = patchedRp.budget.map(b => ({
+              item: b.item || b.label || b.name || '',
+              label: b.label || b.item || b.name || '',
+              amount: (b.amount && String(b.amount).trim()) ? String(b.amount) : (b.cost != null ? sym + b.cost : (b.price != null ? sym + b.price : '')),
+              note: b.note || '',
+              status: b.status || 'pending',
+              category: b.category || inferCat(b.item || b.label || b.name),
+              icon: b.icon,
+            }));
+            try { localStorage.setItem('tripva_plan', JSON.stringify(rp)); } catch(e) {}
+          }
+        }
+      } catch(e) { console.warn('[plan] pre-navigate budget patch failed:', e); }
+    }
+  } finally {
+    window.location.href = _shareUrl || '/trip.html';
+  }
 }
 
 // ── Auth ───────────────────────────────────────────────────────────────────
