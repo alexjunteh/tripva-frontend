@@ -167,10 +167,20 @@ except: pass
   if [ -n "$css_image_urls" ] && [ "$css_image_urls" != "[]" ]; then
     while IFS= read -r u; do
       [ -z "$u" ] && continue
-      local code; code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$u")
+      # Check BOTH: returns 200 AND body size > 8KB. Product photos + tiny
+      # placeholders tend to be under 8KB at our typical w=400-800 / q=70,
+      # while real travel landscapes are 20-100KB. Catches the 'shoe-returned-
+      # -instead-of-Bali' class where the URL 200s but content is unrelated.
+      local http_size; http_size=$(curl -s -o /dev/null -w "%{http_code} %{size_download}" --max-time 10 "$u")
+      local code=${http_size%% *}
+      local size=${http_size##* }
       if [ "$code" != "200" ]; then
         img_fails=$((img_fails + 1))
-        echo "      broken: $code $u" >> "$FAILURES"
+        echo "      broken ($code): $u" >> "$FAILURES"
+      elif [ "$size" -lt "8000" ] 2>/dev/null; then
+        # Under-8KB can legitimately happen for very low-res, but at w≥400
+        # it's a strong signal of a thumbnail / wrong photo
+        warn "tiny image (${size}b — may be wrong): $(echo $u | tail -c 80)"
       fi
     done < <(echo "$css_image_urls" | python3 -c "import json,sys; [print(u) for u in json.loads(sys.stdin.read().strip() or '[]')]" 2>/dev/null)
   fi
