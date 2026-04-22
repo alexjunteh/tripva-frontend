@@ -2568,6 +2568,7 @@ function resetPacking() {
 //  INIT
 // ══════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
+  try { window.__dclTrace = { fired: true, winCI_type: typeof window.CITY_IMGS, winCI_keys: window.CITY_IMGS ? Object.keys(window.CITY_IMGS).length : 'nil', bareCI: (()=>{ try { return typeof CITY_IMGS; } catch(e){ return 'throws:' + e.message.slice(0,50); } })() }; } catch(e){}
   const _splashMs = (new URLSearchParams(location.search).get('demo')==='1') ? 300 : 500;
   setTimeout(() => document.getElementById('splash').classList.add('gone'), _splashMs);
   loadTripPlan();
