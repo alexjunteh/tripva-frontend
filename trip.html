@@ -3360,6 +3360,9 @@ function populateDashboard(p) {
   // bare reference inside this function resolves even if the module-level
   // function-expression binding didn't leak into the enclosing scope chain.
   const parseBudgetToRM = (typeof window !== 'undefined' && window.parseBudgetToRM) || (s => { const n=parseFloat(String(s||'').replace(/[^\d.]/g,''))||0; return n; });
+  const parseBudgetAmount = (window.parseBudgetAmount) || ((s, fb) => ({amount: parseFloat(String(s||'').replace(/[^\d.]/g,''))||0, currency: fb||'USD'}));
+  const convertToHomeCurrency = (window.convertToHomeCurrency) || ((a) => a);
+  const formatHomeCurrency = (window.formatHomeCurrency) || ((n) => '$' + Math.round(n).toLocaleString());
   // Mirror the active plan onto window so top-level helpers (markBudgetBooked,
   // addBudgetBookingLink, audit checks) can reach it from outside this scope.
   try { window.plan = p; } catch(e) {}
