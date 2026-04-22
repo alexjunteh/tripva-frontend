@@ -2153,36 +2153,43 @@ function updateBudgetHero() {
 // Toggle pending → booked, and optionally attach a booking URL. Persists via
 // savePlanToStorage() and re-renders the budget section (cheap: ~10 rows).
 function markBudgetBooked(idx) {
-  if (!plan || !plan.budget || !plan.budget[idx]) return;
-  plan.budget[idx].status = 'booked';
-  // Strip any 'pending' markers from note so the isBooked detector agrees
-  if (plan.budget[idx].note) {
-    plan.budget[idx].note = plan.budget[idx].note.replace(/\bpending\b/gi, '').trim();
+  // markBudgetBooked sits at top-level scope but `plan` + `populateDashboard`
+  // live inside a different IIFE/DOMContentLoaded closure. Pull both via
+  // window mirrors that we maintain in populateDashboard. This was failing
+  // silently — bare `plan` ref → ReferenceError caught by an outer try.
+  var p = window.plan || (function(){ try { return JSON.parse(localStorage.getItem('tripva_plan') || 'null'); } catch(e) { return null; } })();
+  if (!p || !p.budget || !p.budget[idx]) return;
+  p.budget[idx].status = 'booked';
+  if (p.budget[idx].note) {
+    p.budget[idx].note = p.budget[idx].note.replace(/\bpending\b/gi, '').trim();
   }
-  savePlanToStorage();
-  try { populateDashboard(plan); } catch(e) { console.warn('[budget] re-render failed:', e); }
-  // Queue a Gist re-save so other devices pick up the change — replays when online
-  try { _queueEdit({ type: 'save-plan' }); _replayEditQueue(); } catch(e) {}
-  try { showToast && showToast(navigator.onLine ? '✅ Marked as booked' : '✅ Marked · will sync when online'); } catch(e) {}
+  try { localStorage.setItem('tripva_plan', JSON.stringify(p)); } catch(e) {}
+  if (window.plan) window.plan = p;
+  // Re-render via window-exposed populateDashboard
+  try { (window.populateDashboard || function(){})(p); } catch(e) { console.warn('[budget] re-render failed:', e); }
+  try { (window._queueEdit || function(){})({ type: 'save-plan' }); (window._replayEditQueue || function(){})(); } catch(e) {}
+  try { (window.showToast || function(){})(navigator.onLine ? '✅ Marked as booked' : '✅ Marked · will sync when online'); } catch(e) {}
 }
 
 function addBudgetBookingLink(idx) {
-  if (!plan || !plan.budget || !plan.budget[idx]) return;
-  const existing = plan.budget[idx].bookUrl || plan.budget[idx].url || '';
+  // Same scope-trap fix as markBudgetBooked above.
+  var p = window.plan || (function(){ try { return JSON.parse(localStorage.getItem('tripva_plan') || 'null'); } catch(e) { return null; } })();
+  if (!p || !p.budget || !p.budget[idx]) return;
+  const existing = p.budget[idx].bookUrl || p.budget[idx].url || '';
   const url = window.prompt('Paste the booking URL (Booking.com, airline confirmation, etc.)', existing);
   if (url === null) return;
   const trimmed = String(url).trim();
   if (trimmed && !/^https?:\/\//i.test(trimmed)) {
-    try { showToast && showToast('⚠️ URL must start with http:// or https://'); } catch(e) { alert('URL must start with http:// or https://'); }
+    try { (window.showToast||function(){})('⚠️ URL must start with http:// or https://'); } catch(e) { alert('URL must start with http:// or https://'); }
     return;
   }
-  plan.budget[idx].bookUrl = trimmed;
-  // Adding a link implies the thing is booked
-  if (trimmed) plan.budget[idx].status = 'booked';
-  savePlanToStorage();
-  try { populateDashboard(plan); } catch(e) {}
-  try { _queueEdit({ type: 'save-plan' }); _replayEditQueue(); } catch(e) {}
-  try { showToast && showToast(trimmed ? (navigator.onLine ? '🔗 Link saved — marked as booked' : '🔗 Saved · will sync when online') : '🔗 Link cleared'); } catch(e) {}
+  p.budget[idx].bookUrl = trimmed;
+  if (trimmed) p.budget[idx].status = 'booked';
+  try { localStorage.setItem('tripva_plan', JSON.stringify(p)); } catch(e) {}
+  if (window.plan) window.plan = p;
+  try { (window.populateDashboard || function(){})(p); } catch(e) {}
+  try { (window._queueEdit || function(){})({ type: 'save-plan' }); (window._replayEditQueue || function(){})(); } catch(e) {}
+  try { (window.showToast||function(){})(trimmed ? (navigator.onLine ? '🔗 Link saved — marked as booked' : '🔗 Saved · will sync when online') : '🔗 Link cleared'); } catch(e) {}
 }
 
 window.markBudgetBooked = markBudgetBooked;
@@ -3249,6 +3256,9 @@ function updateTripMeta(p) {
 }
 
 function populateDashboard(p) {
+  // Mirror the active plan onto window so top-level helpers (markBudgetBooked,
+  // addBudgetBookingLink, audit checks) can reach it from outside this scope.
+  try { window.plan = p; } catch(e) {}
   try { updateTripMeta(p); } catch(e) {}
   if (!p) return;
   _usedDayImgs = new Set(); // Reset image tracking for fresh render
@@ -3821,6 +3831,9 @@ function populateDashboard(p) {
     setTimeout(() => { try { upgradeTripImages(); } catch(e){} }, 150);
   }
 }
+// Expose so top-level callers (markBudgetBooked / addBudgetBookingLink and
+// the audit) can re-render after mutating window.plan.
+try { window.populateDashboard = populateDashboard; } catch(e) {}
 
 function getTripDateInfo(){
   const now = new Date();

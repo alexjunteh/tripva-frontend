@@ -198,6 +198,70 @@
       ]
     },
     {
+      "id": "mark-booked-actually-flips",
+      "name": "Clicking Mark Booked reduces pending count + increases booked count (outcome test)",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('budget'); window.__pre = {pending: document.querySelectorAll('.budget-row.budget-pending').length, booked: document.querySelectorAll('.budget-row.budget-booked').length}; true" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "eval", "js": "document.querySelector('.budget-row.budget-pending button[onclick*=\"markBudgetBooked\"]')?.click(); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "document.querySelectorAll('.budget-row.budget-pending').length < (window.__pre?.pending ?? 99)" },
+        { "js-true": "document.querySelectorAll('.budget-row.budget-booked').length > (window.__pre?.booked ?? -1)" }
+      ]
+    },
+    {
+      "id": "currency-chip-hero-actually-changes",
+      "name": "FX chip tap actually changes hero number (not just active state)",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('budget'); true" },
+        { "action": "wait", "ms": 1500 },
+        { "action": "eval", "js": "window.__heroBefore = document.querySelector('.budget-hero-num')?.textContent || ''; onFxChange('JPY'); true" },
+        { "action": "wait", "ms": 1000 }
+      ],
+      "assert": [
+        { "js-true": "/¥/.test(document.querySelector('.budget-hero-num')?.textContent||'')" },
+        { "js-true": "document.querySelector('.budget-hero-num')?.textContent !== window.__heroBefore" }
+      ]
+    },
+    {
+      "id": "ai-example-chip-fills-input",
+      "name": "Clicking an AI example chip drops it into the input (outcome test)",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "toggleAiChat(); true" },
+        { "action": "wait", "ms": 1000 },
+        { "action": "eval", "js": "document.querySelector('#aiChatMsgs .ai-examples button')?.click(); true" },
+        { "action": "wait", "ms": 300 }
+      ],
+      "assert": [
+        { "js-true": "(document.getElementById('aiChatInput')?.value || '').length > 5" }
+      ]
+    },
+    {
+      "id": "day-sheet-event-count-matches-backend",
+      "name": "Day sheet timeline items == backend timeline length (data contract)",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('days'); openDaySheet(0); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "(() => { const backendCount = (window.plan?.days?.[0]?.timeline || []).length; const rendered = document.querySelectorAll('#sheetBody .tl-row, #sheetBody .timeline-item, #sheetBody .tl-item').length; return backendCount === 0 || rendered === backendCount; })()" }
+      ]
+    },
+    {
       "id": "calendar-export-reachable",
       "name": "Calendar (.ics) button present in More menu + Day sheet",
       "critical": false,

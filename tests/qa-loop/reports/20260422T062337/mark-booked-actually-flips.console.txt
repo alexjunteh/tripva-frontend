@@ -1,0 +1,9 @@
+--- BEGIN UNTRUSTED EXTERNAL CONTENT (source: https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1) ---
+[2026-04-22T06:23:37.257Z] [warning] [budget] re-render failed: ReferenceError: populateDashboard is not defined
+    at markBudgetBooked (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1:2163:9)
+    at HTMLButtonElement.onclick (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1:1:1)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:91)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:290:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+--- END UNTRUSTED EXTERNAL CONTENT ---
