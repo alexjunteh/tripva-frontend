@@ -3581,11 +3581,15 @@ function populateDashboard(p) {
   }
 
   // ── BUDGET ──
+  try { window.__budgetTrace = (window.__budgetTrace||[]); window.__budgetTrace.push('enter:p.budget.len=' + ((p.budget||[]).length)); } catch(e){}
   if (p.budget && p.budget.length > 0) { try {
+    try { window.__budgetTrace.push('branch-entered'); } catch(e){}
     const scroll=document.getElementById('budgetScroll');
+    try { window.__budgetTrace.push('scroll-found:' + !!scroll); } catch(e){}
     const _be = document.getElementById('budgetEmpty');
     if (_be) _be.style.display = 'none';
     _be?.remove();
+    try { window.__budgetTrace.push('empty-removed'); } catch(e){}
     // Detect source currency BEFORE rendering so each row's data-src is correct.
     // Prefer trip.currency (backend-persisted ISO code) over city-name lookup,
     // fall back to name sniff (trip.name often includes the city), then to
@@ -3699,10 +3703,14 @@ function populateDashboard(p) {
         scroll.appendChild(row);
       });
     }
+    try { window.__budgetTrace.push('before-sections:paid=' + paidItems.length + ',pending=' + pendingItems.length); } catch(e){}
     addBudgetSection(paidItems, '✅ BOOKED / PAID ('+paidItems.length+')', 'budget-booked');
     addBudgetSection(pendingItems, '⏳ PENDING / ESTIMATE ('+pendingItems.length+')', 'budget-pending');
+    try { window.__budgetTrace.push('after-sections:rows=' + document.querySelectorAll('.budget-row').length); } catch(e){}
     initFxBar();
+    try { window.__budgetTrace.push('done'); } catch(e){}
   } catch(_budgetErr) {
+    try { window.__budgetTrace.push('THROW:' + (_budgetErr && _budgetErr.message || _budgetErr)); } catch(e){}
     // Render failed — stash the error visibly (window + localStorage for post-mortem)
     // so these don't silently eat the render the way catch-and-redirect used to.
     try { window.__budgetRenderError = String(_budgetErr && _budgetErr.stack || _budgetErr); } catch(e){}
