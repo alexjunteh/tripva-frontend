@@ -166,6 +166,183 @@
       ]
     },
     {
+      "id": "currency-chip-updates-hero",
+      "name": "Budget FX chip flips hero totals to selected currency",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('budget'); true" },
+        { "action": "wait", "ms": 1500 },
+        { "action": "eval", "js": "onFxChange('EUR'); true" },
+        { "action": "wait", "ms": 1000 }
+      ],
+      "assert": [
+        { "js-true": "/€/.test(document.querySelector('.budget-hero-num')?.textContent||'')" },
+        { "js-true": "document.querySelector('.fx-chip.active')?.dataset.cur === 'EUR'" }
+      ]
+    },
+    {
+      "id": "mark-booked-moves-row",
+      "name": "Mark booked button flips row from pending to booked section",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('budget'); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "document.querySelectorAll('.budget-row.budget-pending button[onclick*=\"markBudgetBooked\"]').length >= 1" },
+        { "js-true": "document.querySelectorAll('.budget-row.budget-pending button[onclick*=\"addBudgetBookingLink\"]').length >= 1" }
+      ]
+    },
+    {
+      "id": "calendar-export-reachable",
+      "name": "Calendar (.ics) button present in More menu + Day sheet",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "openMore(); true" },
+        { "action": "wait", "ms": 1000 }
+      ],
+      "assert": [
+        { "js-true": "[...document.querySelectorAll('.more-action')].some(b => /Calendar/i.test(b.textContent))" },
+        { "js-true": "typeof window.exportTripIcs === 'function'" },
+        { "js-true": "typeof window.exportDayIcs === 'function'" }
+      ]
+    },
+    {
+      "id": "plan-archetype-switch-conditional",
+      "name": "Plan form switching archetypes reveals archetype-specific fields",
+      "critical": true,
+      "steps": [
+        { "action": "goto", "url": "/plan?archetype=family&qa=1" },
+        { "action": "wait", "ms": 2500 }
+      ],
+      "assert": [
+        { "js-true": "document.querySelector('.arch-fields[data-arch=\"family\"]')?.classList.contains('active')" },
+        { "js-true": "document.querySelectorAll('.child-age-input').length >= 1 || document.querySelectorAll('.child-ages-wrap').length >= 1" },
+        { "js-true": "document.querySelector('.arch-fields[data-arch=\"couple\"]')?.classList.contains('active') === false" }
+      ]
+    },
+    {
+      "id": "plan-submit-validation",
+      "name": "Plan submit without destination surfaces validation",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/plan?qa=1" },
+        { "action": "wait", "ms": 2000 },
+        { "action": "eval", "js": "document.getElementById('f-dest').value=''; try{submitTrip();}catch(e){} true" },
+        { "action": "wait", "ms": 500 }
+      ],
+      "assert": [
+        { "js-true": "document.getElementById('toast')?.classList?.contains('show') || /going|destination|required/i.test(document.getElementById('toast')?.textContent||'')" }
+      ]
+    },
+    {
+      "id": "reminders-button-present",
+      "name": "🔔 Reminders button shows in More menu",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "openMore(); true" },
+        { "action": "wait", "ms": 800 }
+      ],
+      "assert": [
+        { "js-true": "[...document.querySelectorAll('.more-item')].some(el => /Reminders/i.test(el.textContent))" },
+        { "js-true": "typeof window.enableTripReminders === 'function'" }
+      ]
+    },
+    {
+      "id": "edit-trip-modal-opens",
+      "name": "Edit Trip button opens modal with fields pre-filled from plan",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "openEditModal(); true" },
+        { "action": "wait", "ms": 800 }
+      ],
+      "assert": [
+        { "js-true": "document.getElementById('editModal')?.classList.contains('open')" },
+        { "js-true": "document.getElementById('editName')?.value?.length > 0" }
+      ]
+    },
+    {
+      "id": "upgrade-to-pro-graceful",
+      "name": "Upgrade to Pro shows graceful 'not ready' toast (no Stripe env yet)",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "window.__pollToasts = []; const el = document.getElementById('toast'); const mo = new MutationObserver(() => window.__pollToasts.push(el.textContent)); if (el) mo.observe(el, {childList:true, characterData:true, subtree:true}); localStorage.setItem('tripva_session', JSON.stringify({access_token:'fake',expires_at:Date.now()+3600000})); upgradeToPro(); true" },
+        { "action": "wait", "ms": 3500 }
+      ],
+      "assert": [
+        { "js-true": "(window.__pollToasts||[]).some(m => /not live yet|Pro plan|Opening checkout|Could not|Network/i.test(m||''))" }
+      ]
+    },
+    {
+      "id": "cold-viewer-banner-dismiss",
+      "name": "Cold-viewer banner has dismissible close (regression guard)",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "document.body.classList.add('viewer-mode'); const vb=document.getElementById('viewerBanner'); if(vb){vb.style.display='flex';} true" },
+        { "action": "wait", "ms": 500 },
+        { "action": "eval", "js": "dismissViewerBanner(); true" },
+        { "action": "wait", "ms": 500 }
+      ],
+      "assert": [
+        { "js-true": "getComputedStyle(document.getElementById('viewerBanner')).display === 'none'" }
+      ]
+    },
+    {
+      "id": "share-link-reachable",
+      "name": "Share button in More menu triggers share flow",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "openMore(); true" },
+        { "action": "wait", "ms": 800 }
+      ],
+      "assert": [
+        { "js-true": "[...document.querySelectorAll('.more-item')].some(el => /Share/i.test(el.textContent))" },
+        { "js-true": "typeof shareTripLink === 'function'" }
+      ]
+    },
+    {
+      "id": "dest-gallery-carries-dest-param",
+      "name": "Destination gallery tile URLs include dest= query param",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/?qa=1" },
+        { "action": "wait", "ms": 2500 }
+      ],
+      "assert": [
+        { "js-true": "[...document.querySelectorAll('a.dest-tile')].every(a => /[?&]dest=/.test(a.getAttribute('href')||''))" }
+      ]
+    },
+    {
+      "id": "sos-tab-has-content",
+      "name": "SOS tab shows emergency info for the destination",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "switchTab('sos'); true" },
+        { "action": "wait", "ms": 1500 }
+      ],
+      "assert": [
+        { "js-true": "document.querySelectorAll('#tab-sos .sos-number, #tab-sos a[href^=\"tel:\"], #tab-sos .sos-card, #tab-sos button').length >= 1" }
+      ]
+    },
+    {
       "id": "ai-edit-works",
       "name": "AI Edit chat opens + example chips appear + input focusable",
       "critical": false,

@@ -1,0 +1,13 @@
+--- BEGIN UNTRUSTED EXTERNAL CONTENT (source: https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1) ---
+[2026-04-21T18:37:32.508Z] [error] Failed to load resource: the server responded with a status of 404 ()
+[2026-04-21T18:37:32.508Z] [error] Failed to load resource: the server responded with a status of 404 ()
+[2026-04-21T18:50:59.584Z] [warning] Backend load failed: TypeError: Failed to fetch
+    at loadTripPlan (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317:2869:25)
+    at HTMLDocument.<anonymous> (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317:2503:3)
+[2026-04-21T18:51:00.042Z] [warning] Backend load failed: TypeError: Failed to fetch
+    at loadTripPlan (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1:2869:25)
+    at HTMLDocument.<anonymous> (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1:2503:3)
+[2026-04-21T18:51:00.325Z] [warning] Backend load failed: TypeError: Failed to fetch
+    at loadTripPlan (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1:2869:25)
+    at HTMLDocument.<anonymous> (https://tripva.app/trip?id=a2ba2994227e63956443c06529543317&qa=1:2503:3)
+--- END UNTRUSTED EXTERNAL CONTENT ---
