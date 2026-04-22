@@ -3358,10 +3358,10 @@ function populateDashboard(p) {
   try { updateTripMeta(p); } catch(e) {}
   if (!p) { try { window.__pdTrace.push('no-p'); } catch(e){} return; }
   try { window.__pdTrace.push('after-meta'); } catch(e){}
-  _usedDayImgs = new Set(); // Reset image tracking for fresh render
-  try { window.__pdTrace.push('used-imgs-ok'); } catch(e){}
   // Wrap the remaining body in a diagnostic try so silent throws surface.
   try {
+    _usedDayImgs = new Set(); // Reset image tracking for fresh render
+    try { window.__pdTrace.push('used-imgs-ok'); } catch(e){}
 
   // ── TRIP META ──
   if (p.trip) {
