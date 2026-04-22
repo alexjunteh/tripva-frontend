@@ -2882,8 +2882,13 @@ async function upgradeTripImages(){
   }
 }
 
-// Track used images per populateDashboard call to avoid duplicates
-let _usedDayImgs = new Set();
+// Track used images per populateDashboard call to avoid duplicates.
+// Use `var` so the binding is hoisted to the top of the enclosing script scope
+// and is never in TDZ — the dashboard entry path (DOMContentLoaded →
+// loadTripPlan → populateDashboard) was tripping a "Cannot access before
+// initialization" on the former `let` declaration under certain load orderings.
+var _usedDayImgs = new Set();
+try { window.__usedDayImgsReady = true; } catch(e){}
 
 async function loadTripPlan() {
   const params = new URLSearchParams(location.search);
