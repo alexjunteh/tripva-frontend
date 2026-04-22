@@ -2939,11 +2939,23 @@ async function loadTripPlan() {
           // owner: no session + they have a different saved trip in localStorage.
           const isColdViewer = urlId && !hasSession && localId && urlId !== localId;
           localStorage.setItem('tripva_plan', JSON.stringify(plan));
-          populateDashboard(plan);
-
-          renderLiveOps();
-          switchTab('days');
+          // Isolated steps — partial render failure must NOT bubble up to the
+          // showNoTripFound() fallback below.
+          try { populateDashboard(plan); } catch(e) { console.warn('[load-id] populateDashboard threw:', e); }
+          try { renderLiveOps(); } catch(e) { console.warn('[load-id] renderLiveOps threw:', e); }
+          try { switchTab('days'); } catch(e) { console.warn('[load-id] switchTab threw:', e); }
           if (plan.trip && plan.trip.name) document.title = plan.trip.name + ' · Tripva';
+          // Top-level heal trigger (id-load path).
+          try {
+            if (plan && plan.days && plan.days.length && (!plan.budget || !plan.budget.length)) {
+              const tripKey = (plan.trip && (plan.trip.id || plan.trip.name)) || 'current';
+              const healKey = 'tripva_budget_heal_' + tripKey;
+              if (!sessionStorage.getItem(healKey) && typeof window.healMissingBudget === 'function') {
+                sessionStorage.setItem(healKey, '1');
+                window.healMissingBudget(plan).catch(e => console.warn('[budget-heal/load-id] failed:', e));
+              }
+            }
+          } catch(e) { console.warn('[budget-heal/load-id] init error:', e); }
           if (isColdViewer) {
             document.body.classList.add('viewer-mode');
             // Respect previous dismissal — per trip id, kept 30 days
@@ -2974,17 +2986,33 @@ async function loadTripPlan() {
   // Fallback: localStorage
   const cached = localStorage.getItem('tripva_plan');
   if (cached) {
-    try {
-      const parsedPlan = JSON.parse(cached);
+    let parsedPlan = null;
+    try { parsedPlan = JSON.parse(cached); }
+    catch(e) { console.warn('localStorage parse failed:', e); }
+    if (parsedPlan) {
       // Unwrap double-nesting if present
       plan = (parsedPlan.rawPlan && parsedPlan.rawPlan.days) ? parsedPlan.rawPlan : parsedPlan;
       tripMeta = plan.trip || {};
-      populateDashboard(plan);
-      renderLiveOps();
-      switchTab('days');
+      // Render in isolated steps — a partial failure (e.g. budget missing) must
+      // NOT cascade into a /plan redirect that hides the trip from the user.
+      try { populateDashboard(plan); } catch(e) { console.warn('[load] populateDashboard threw:', e); }
+      try { renderLiveOps(); } catch(e) { console.warn('[load] renderLiveOps threw:', e); }
+      try { switchTab('days'); } catch(e) { console.warn('[load] switchTab threw:', e); }
+      // Top-level heal trigger: if populateDashboard threw before reaching the
+      // budget branch, the per-branch heal won't fire. Catch that here.
+      try {
+        if (plan && plan.days && plan.days.length && (!plan.budget || !plan.budget.length)) {
+          const tripKey = (plan.trip && (plan.trip.id || plan.trip.name)) || 'current';
+          const healKey = 'tripva_budget_heal_' + tripKey;
+          if (!sessionStorage.getItem(healKey) && typeof window.healMissingBudget === 'function') {
+            sessionStorage.setItem(healKey, '1');
+            window.healMissingBudget(plan).catch(e => console.warn('[budget-heal/load] failed:', e));
+          }
+        }
+      } catch(e) { console.warn('[budget-heal/load] init error:', e); }
       showLoadingSpinner(false);
       return;
-    } catch(e) { console.warn('localStorage parse failed:', e); }
+    }
   }
 
   // No trip found — redirect to plan.html
