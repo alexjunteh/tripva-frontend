@@ -166,6 +166,22 @@
       ]
     },
     {
+      "id": "ai-edit-works",
+      "name": "AI Edit chat opens + example chips appear + input focusable",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/trip?id=a2ba2994227e63956443c06529543317&qa=1" },
+        { "action": "wait", "ms": 10000 },
+        { "action": "eval", "js": "toggleAiChat(); true" },
+        { "action": "wait", "ms": 1200 }
+      ],
+      "assert": [
+        { "js-true": "document.getElementById('aiChatBar')?.style.display === 'flex'" },
+        { "js-true": "document.querySelectorAll('#aiChatMsgs .ai-examples button').length >= 4" },
+        { "js-true": "!!document.getElementById('aiChatInput')" }
+      ]
+    },
+    {
       "id": "tabs-all-switchable",
       "name": "All 5 bottom-nav tabs switch without error",
       "critical": true,
