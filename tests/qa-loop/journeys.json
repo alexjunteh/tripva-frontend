@@ -262,6 +262,23 @@
       ]
     },
     {
+      "id": "budget-self-heal-when-missing",
+      "name": "Plan with days but no budget triggers self-heal (fetches via /api/patch + renders)",
+      "critical": false,
+      "steps": [
+        { "action": "goto", "url": "/" },
+        { "action": "eval", "js": "sessionStorage.clear(); localStorage.setItem('tripva_plan', JSON.stringify({trip:{id:'heal-test-'+Date.now(),name:'Heal Test Rome',destination:'Rome',startDate:'2026-07-01',endDate:'2026-07-04',currency:'EUR'},days:[{day:1,date:'2026-07-01',title:'Arrive',timeline:[{time:'10:00',title:'Colosseum',detail:'Visit',type:'activity'}]}],hotels:[],tickets:[],urgent:[]})); true" },
+        { "action": "goto", "url": "/trip.html" },
+        { "action": "wait", "ms": 8000 },
+        { "action": "eval", "js": "switchTab && switchTab('budget'); true" },
+        { "action": "wait", "ms": 2000 }
+      ],
+      "assert": [
+        { "js-true": "typeof window.healMissingBudget === 'function'" },
+        { "js-true": "!!document.getElementById('budgetEmpty') === false || /Generating|No budget/.test(document.getElementById('budgetEmpty')?.textContent || '')" }
+      ]
+    },
+    {
       "id": "calendar-export-reachable",
       "name": "Calendar (.ics) button present in More menu + Day sheet",
       "critical": false,
