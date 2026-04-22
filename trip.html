@@ -3581,7 +3581,7 @@ function populateDashboard(p) {
   }
 
   // ── BUDGET ──
-  if (p.budget && p.budget.length > 0) {
+  if (p.budget && p.budget.length > 0) { try {
     const scroll=document.getElementById('budgetScroll');
     const _be = document.getElementById('budgetEmpty');
     if (_be) _be.style.display = 'none';
@@ -3702,7 +3702,13 @@ function populateDashboard(p) {
     addBudgetSection(paidItems, '✅ BOOKED / PAID ('+paidItems.length+')', 'budget-booked');
     addBudgetSection(pendingItems, '⏳ PENDING / ESTIMATE ('+pendingItems.length+')', 'budget-pending');
     initFxBar();
-  } else {
+  } catch(_budgetErr) {
+    // Render failed — stash the error visibly (window + localStorage for post-mortem)
+    // so these don't silently eat the render the way catch-and-redirect used to.
+    try { window.__budgetRenderError = String(_budgetErr && _budgetErr.stack || _budgetErr); } catch(e){}
+    try { localStorage.setItem('tripva_budget_render_error', String(_budgetErr && _budgetErr.message || _budgetErr)); } catch(e){}
+    console.error('[budget-render] failed:', _budgetErr);
+  } } else {
     // No budget data — expose the empty state, then try a one-shot self-heal
     // by asking the backend to fill in the budget from the existing days/hotels.
     // Guard with a per-trip flag so a failed heal doesn't loop on every render.
