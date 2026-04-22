@@ -2596,7 +2596,7 @@ function sanitizeImgUrl(url, keyword) {
   }
   return url;
 }
-try { window.__ciStart = true; } catch(e){}
+try { window.__ciStart = (window.__ciStart||0) + 1; window.__ciStartStack = new Error().stack?.slice(0,200); } catch(e){}
 window.CITY_IMGS = {
     // Italy
     'riomaggiore':'https://loremflickr.com/900/500/riomaggiore,travel',
@@ -2729,7 +2729,7 @@ window.CITY_IMGS = {
 };
 
 // Alternate hero images per city — used to avoid duplicate images when multiple days share a seed
-try { window.__ciEnd = true; window.__ciKeys = Object.keys(window.CITY_IMGS || {}).length; } catch(e) { try { window.__ciEndErr = e.message; } catch(e){} }
+try { window.__ciEnd = (window.__ciEnd||0) + 1; window.__ciKeys = Object.keys(window.CITY_IMGS || {}).length; } catch(e) { try { window.__ciEndErr = e.message; } catch(e){} }
 window.CITY_IMG_ALTS = {
   'paris':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
   'rome':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
