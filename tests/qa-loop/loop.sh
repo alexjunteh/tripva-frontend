@@ -35,22 +35,29 @@ echo -e "${C}━━━ QA Loop ━━━${N}"
 echo "  Site:     ${QA_SITE:-https://tripva.app}"
 echo "  Mode:     $MODE"
 
+EXIT_A=0
 EXIT_J=0
 EXIT_E=0
 
+if [ "$MODE" = "both" ] || [ "$MODE" = "journeys" ] || [ "$MODE" = "api" ]; then
+  echo -e "\n${C}[1/3] Backend API smoke${N}"
+  bash tests/qa-loop/api-smoke.sh
+  EXIT_A=$?
+fi
+
 if [ "$MODE" = "both" ] || [ "$MODE" = "journeys" ]; then
-  echo -e "\n${C}[1/2] Scripted journeys${N}"
+  echo -e "\n${C}[2/3] Scripted frontend journeys${N}"
   node tests/qa-loop/run.mjs
   EXIT_J=$?
 fi
 
 if [ "$MODE" = "both" ] || [ "$MODE" = "explore" ]; then
-  echo -e "\n${C}[2/2] Exhaustive element crawler${N}"
+  echo -e "\n${C}[3/3] Exhaustive element crawler${N}"
   node tests/qa-loop/explore.mjs
   EXIT_E=$?
 fi
 
-TOTAL=$((EXIT_J + EXIT_E))
+TOTAL=$((EXIT_A + EXIT_J + EXIT_E))
 echo ""
 if [ "$TOTAL" = "0" ]; then
   echo -e "${G}✓ QA loop PASSED${N} — ship-ready"

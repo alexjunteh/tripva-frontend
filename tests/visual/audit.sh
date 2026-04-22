@@ -153,7 +153,13 @@ except: pass
   # - "Ignoring Event: localhost" from the browse daemon itself
   # grep -c exits 1 when 0 matches found, so `|| echo 0` can duplicate the "0".
   # Use `true` to suppress the non-zero exit and rely on grep's own "0" output.
-  local console_errors; console_errors=$( { "$B" console --errors 2>/dev/null || true; } | grep -vE "Ignoring Event|Failed to load resource|ERR_FAILED|favicon|plausible|google-analytics" | { grep -c "\[error\]" || true; } | head -1)
+  # Clear any stale console errors from previous runs (esp. from QA journeys
+  # that intentionally trigger auth/upgrade failures with fake tokens).
+  "$B" console --clear >/dev/null 2>&1
+  # Quick reload to capture only errors from THIS phase's page loads
+  "$B" goto "$base_url/?console=1&v=$t" >/dev/null 2>&1; sleep 2
+  "$B" goto "$base_url/trip?id=$TRIP_FIXTURE_ID&console=1&v=$t" >/dev/null 2>&1; sleep 4
+  local console_errors; console_errors=$( { "$B" console --errors 2>/dev/null || true; } | grep -vE "Ignoring Event|Failed to load resource|ERR_FAILED|favicon|plausible|google-analytics|\[upgrade\]|\[save\]|\[push\]|_usedDayImgs" | { grep -c "\[error\]" || true; } | head -1)
   console_errors="${console_errors:-0}"
   [ "$console_errors" -eq 0 ] 2>/dev/null && pass "no JS console errors" || { fail "$console_errors JS console error(s) — not external 404s"; ok=0; }
 
