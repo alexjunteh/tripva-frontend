@@ -147,6 +147,36 @@ except: pass
   fi
   [ "$broken_count" = "0" ] && pass "landing demo-trip links resolve" || { fail "$broken_count landing demo-trip link(s) 404/broken — 'See full demo' etc."; ok=0; }
 
+  # Landing background-image URLs — every CSS url() on archetype tiles, hero
+  # photos, and dest-gallery tiles must return 200. Previously the Bali image
+  # returned 404 and the audit passed because pixel-diff captured the gradient
+  # fallback and baseline showed the same. Live-check the real URLs.
+  local css_image_urls; css_image_urls=$("$B" js "
+    (() => {
+      const urls = new Set();
+      const targets = [...document.querySelectorAll('.hero-photo, .arch-tile-img, .dest-tile-img')];
+      for (const el of targets) {
+        const bg = getComputedStyle(el).backgroundImage || '';
+        const m = bg.matchAll(/url\\((?:\"|')?(https?:\\/\\/[^\"')]+)(?:\"|')?\\)/g);
+        for (const x of m) urls.add(x[1]);
+      }
+      return JSON.stringify([...urls]);
+    })()
+  " 2>/dev/null | tail -1)
+  local img_fails=0
+  if [ -n "$css_image_urls" ] && [ "$css_image_urls" != "[]" ]; then
+    while IFS= read -r u; do
+      [ -z "$u" ] && continue
+      local code; code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$u")
+      if [ "$code" != "200" ]; then
+        img_fails=$((img_fails + 1))
+        echo "      broken: $code $u" >> "$FAILURES"
+      fi
+    done < <(echo "$css_image_urls" | python3 -c "import json,sys; [print(u) for u in json.loads(sys.stdin.read().strip() or '[]')]" 2>/dev/null)
+  fi
+  [ "$img_fails" = "0" ] && pass "all landing background-image URLs resolve 200" \
+    || { fail "$img_fails landing background-image URL(s) 404/broken (see failures.log)"; ok=0; }
+
   # Console error filter: exclude 3rd-party/external resource failures that aren't product bugs:
   # - "Failed to load resource: 404" from Plausible analytics, favicon, images
   # - ERR_FAILED from flaky-network image fetches (Wikipedia etc.)
