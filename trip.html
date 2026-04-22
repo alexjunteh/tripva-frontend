@@ -3348,6 +3348,10 @@ function updateTripMeta(p) {
 
 function populateDashboard(p) {
   try { window.__pdTrace = (window.__pdTrace||[]); window.__pdTrace.push('enter'); } catch(e){}
+  // Scope-trap safeguard: bind helpers from window into local scope so any
+  // bare reference inside this function resolves even if the module-level
+  // function-expression binding didn't leak into the enclosing scope chain.
+  const parseBudgetToRM = (typeof window !== 'undefined' && window.parseBudgetToRM) || (s => { const n=parseFloat(String(s||'').replace(/[^\d.]/g,''))||0; return n; });
   // Mirror the active plan onto window so top-level helpers (markBudgetBooked,
   // addBudgetBookingLink, audit checks) can reach it from outside this scope.
   try { window.plan = p; } catch(e) {}
