@@ -2181,7 +2181,32 @@ async function healMissingBudget(p) {
   const patched = await resp.json();
   const rp = patched.rawPlan || patched;
   if (!rp || !rp.budget || !rp.budget.length) throw new Error('no budget in patch response');
-  p.budget = rp.budget;
+  // Normalize patched budget rows — Claude sometimes returns {cost:500} (number)
+  // instead of the {amount:"$500", category:"..."} shape the dashboard reads.
+  const cur = (rp.trip && rp.trip.currency) || (p.trip && p.trip.currency) || 'USD';
+  const sym = ({USD:'$', EUR:'€', GBP:'£', JPY:'¥', MYR:'RM', SGD:'S$', AUD:'A$', THB:'฿'})[cur] || (cur + ' ');
+  const inferCat = (label) => {
+    const s = String(label || '').toLowerCase();
+    if (/flight|train|bus|transport|metro|taxi|uber|rental|car|ferry/.test(s)) return 'transport';
+    if (/hotel|accommodation|airbnb|hostel|stay|lodging/.test(s)) return 'accommodation';
+    if (/food|meal|restaurant|breakfast|lunch|dinner|cafe|drink/.test(s)) return 'food';
+    if (/ticket|tour|museum|activit|attraction|entry|admission|experience/.test(s)) return 'activities';
+    return 'misc';
+  };
+  p.budget = rp.budget.map(b => {
+    const amount = b.amount && String(b.amount).trim()
+      ? String(b.amount)
+      : (b.cost != null ? sym + b.cost : (b.price != null ? sym + b.price : ''));
+    return {
+      item: b.item || b.label || b.name || '',
+      label: b.label || b.item || b.name || '',
+      amount,
+      note: b.note || '',
+      status: b.status || 'pending',
+      category: b.category || inferCat(b.item || b.label || b.name),
+      icon: b.icon,
+    };
+  });
   if (rp.trip && rp.trip.currency && p.trip) p.trip.currency = rp.trip.currency;
   try { localStorage.setItem('tripva_plan', JSON.stringify(p)); } catch(e) {}
   try { window.plan = p; } catch(e) {}
