@@ -223,7 +223,8 @@ except: pass
         'openMore','closeMore','switchTab','toggleAiChat','planSimilarTrip',
         'exportTripIcs','exportDayIcs','markBudgetBooked','addBudgetBookingLink',
         'upgradeToPro','enableTripReminders','dismissViewerBanner','saveToAccount',
-        'parseBudgetToRM','parseBudgetAmount','convertToHomeCurrency','formatHomeCurrency'
+        'parseBudgetToRM','parseBudgetAmount','convertToHomeCurrency','formatHomeCurrency',
+        'populateDashboard'
       ];
       return needed.filter(n => typeof window[n] !== 'function').join(',');
     })()
@@ -277,6 +278,85 @@ except: pass
     ok-has-cards*|ok-empty-no-activities) pass "tickets tab renders derived tickets ($tickets_state)" ;;
     *) fail "tickets coverage too thin: $tickets_state"; ok=0 ;;
   esac
+
+  # ── CONTRACT CHECKS ────────────────────────────────────────────────────
+  # Compare backend-returned data to what the DOM actually renders. Catches
+  # the whole class of 'present but wrong' bugs where a feature appears to
+  # work but numbers/counts don't match the source of truth.
+  local backend_json; backend_json=$(curl -s "https://tripai-backend.vercel.app/api/trip?id=$TRIP_FIXTURE_ID")
+  local expected_days expected_budget expected_name expected_currency
+  expected_days=$(echo "$backend_json" | python3 -c "import sys,json;d=json.load(sys.stdin);p=d.get('rawPlan',{}).get('rawPlan') or d.get('rawPlan',{});print(len(p.get('days',[])))" 2>/dev/null)
+  expected_budget=$(echo "$backend_json" | python3 -c "import sys,json;d=json.load(sys.stdin);p=d.get('rawPlan',{}).get('rawPlan') or d.get('rawPlan',{});print(len(p.get('budget',[])))" 2>/dev/null)
+  expected_name=$(echo "$backend_json" | python3 -c "import sys,json;d=json.load(sys.stdin);p=d.get('rawPlan',{}).get('rawPlan') or d.get('rawPlan',{});print((p.get('trip',{}).get('name') or '').strip())" 2>/dev/null)
+  expected_currency=$(echo "$backend_json" | python3 -c "import sys,json;d=json.load(sys.stdin);p=d.get('rawPlan',{}).get('rawPlan') or d.get('rawPlan',{});print((p.get('trip',{}).get('currency') or '').strip().upper())" 2>/dev/null)
+
+  # Day count contract
+  "$B" js "switchTab('days'); true" >/dev/null 2>&1; sleep 1
+  local rendered_days; rendered_days=$("$B" js "document.querySelectorAll('.day-big-card').length" 2>/dev/null | tail -1)
+  if [ "$rendered_days" = "$expected_days" ]; then
+    pass "day count matches backend ($rendered_days == $expected_days)"
+  else
+    fail "day count mismatch: rendered=$rendered_days, backend=$expected_days"; ok=0
+  fi
+
+  # Budget count contract
+  "$B" js "switchTab('budget'); true" >/dev/null 2>&1; sleep 1
+  local rendered_budget; rendered_budget=$("$B" js "document.querySelectorAll('.budget-row').length" 2>/dev/null | tail -1)
+  if [ "$rendered_budget" = "$expected_budget" ]; then
+    pass "budget row count matches backend ($rendered_budget == $expected_budget)"
+  else
+    fail "budget row count mismatch: rendered=$rendered_budget, backend=$expected_budget"; ok=0
+  fi
+
+  # Budget hero = sum of rendered rows (within 2% for rounding). Catches
+  # silent parse failures where rows show but totals are wrong.
+  local sum_check; sum_check=$("$B" js "
+    (() => {
+      const rows = [...document.querySelectorAll('.budget-row')];
+      if (!rows.length) return 'ok-no-rows';
+      // Sum each row's converted value via the same helper the hero uses
+      let sum = 0;
+      for (const r of rows) {
+        const raw = r.querySelector('.budget-amount')?.dataset.raw || '';
+        sum += (window.parseBudgetToRM ? window.parseBudgetToRM(raw) : 0);
+      }
+      const hero = document.querySelector('.budget-hero-num')?.textContent || '';
+      const heroNum = parseFloat((hero.match(/[\\d,]+(?:\\.\\d+)?/)||[0])[0].toString().replace(/,/g,''));
+      const diff = Math.abs(sum - heroNum);
+      const pct = heroNum > 0 ? (diff / heroNum) : (diff > 0 ? 1 : 0);
+      if (pct <= 0.02) return 'ok-sum-matches';
+      return 'sum-mismatch: rows=' + Math.round(sum) + ' vs hero=' + Math.round(heroNum) + ' (' + Math.round(pct*100) + '% off)';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$sum_check" in
+    ok-no-rows|ok-sum-matches) pass "budget hero = sum of rendered rows" ;;
+    *) fail "budget contract broken: $sum_check"; ok=0 ;;
+  esac
+
+  # Trip name contract — backend name appears somewhere in document
+  local title_found; title_found=$("$B" js "
+    (() => {
+      const want = ${expected_name:+$(python3 -c "import json,sys;print(json.dumps('''$expected_name'''))" 2>/dev/null)};
+      if (!want) return 'ok-no-name-in-api';
+      const bodyText = document.body.innerText || '';
+      const title = document.title || '';
+      return (bodyText.includes(want) || title.includes(want)) ? 'ok' : 'missing';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$title_found" in
+    ok|ok-no-name-in-api) pass "trip name from backend appears in DOM" ;;
+    *) fail "trip name '$expected_name' not found in DOM"; ok=0 ;;
+  esac
+
+  # Currency contract — if backend specifies trip.currency, rows' data-src
+  # should match. Catches the 'data-src always USD' class bug.
+  if [ -n "$expected_currency" ] && [ "$expected_currency" != "USD" ]; then
+    local src_match; src_match=$("$B" js "
+      [...document.querySelectorAll('.budget-amount[data-src]')].every(el => el.dataset.src === '$expected_currency')
+    " 2>/dev/null | tail -1)
+    [ "$src_match" = "true" ] && pass "budget row data-src matches trip.currency ($expected_currency)" \
+      || { fail "budget rows data-src != '$expected_currency' (fxSourceCurrency detection broken)"; ok=0; }
+  fi
 
   # OG meta presence on each entry page — if a deploy accidentally strips
   # these, social previews break silently. Check the core tags.

@@ -498,6 +498,77 @@ new real console error, or visible "API error"/"Could not load" after click.
 
 ---
 
+## Catching functional bugs, not just visual ones
+
+The audit evolved from pure pixel-diff into a multi-layer system because **"rendered"
+≠ "correct"**. Every time a bug made it past the audit, the check was too loose —
+it asserted presence, not behavior. Five patterns for writing checks that actually
+catch functional bugs:
+
+### 1. Contract checks (backend → DOM consistency)
+
+Compare what the backend returned against what the DOM rendered. If they drift, the
+audit fails. Currently enforced on the fixture trip:
+
+- Day count: `backend.days.length === DOM day-big-cards`
+- Budget count: `backend.budget.length === DOM budget-rows`
+- Trip name: `backend.trip.name` appears in `document.body.innerText` or `<title>`
+- Currency: `trip.currency === every .budget-amount[data-src]`
+- Budget sum: `hero total ≈ sum of row amounts (within 2%)`
+
+Pattern: *"Whatever the backend says exists, must appear in the DOM with the right count and sum."*
+
+### 2. Outcome checks (click does what it promises)
+
+Don't assert `#button exists`. Assert `click #button → expected state change`.
+
+Examples added:
+- `mark-booked-actually-flips` — click Mark Booked, then: pending count ↓ AND booked count ↑
+- `currency-chip-hero-actually-changes` — click JPY, then: hero contains ¥ AND hero text != before
+- `ai-example-chip-fills-input` — click a chip, then: input value length > 5
+
+Pattern: *"If a button exists, clicking it must change state in the way a user would expect."*
+
+### 3. Red-team mutation tests (`tests/qa-loop/redteam.mjs`)
+
+Seeds intentionally-broken data, reloads, runs the same assertions the audit uses.
+If audit passes on broken data, the check is too lenient. Current mutations:
+
+- `all-zero-budget` — every budget item has amount `$0` → audit must fail the hero-non-zero check
+- `empty-day-timelines` — all days have `timeline:[]` → days-tab-has-events must fail
+- `name-missing-from-dom` — sentinel string in trip.name → must appear in DOM
+- `currency-mismatch` — EUR trip with no amount symbols → data-src must still be EUR
+
+Pattern: *"Before you trust an audit check, verify it fails when it should."*
+
+### 4. Property-based assertions (universal truths, not thresholds)
+
+Prefer stricter invariants over bounded thresholds:
+
+| Too loose | Tight property |
+|---|---|
+| `hero number > 0` | `hero number === sum(row amounts) ±2%` |
+| `>= 1 day card present` | `day card count === backend.days.length` |
+| `body contains 'Paris'` | `body contains backend.trip.name exactly` |
+| `.budget-row.budget-pending ≥ 1` | `pending + booked === backend.budget.length` |
+
+Pattern: *"Every threshold can be gamed by a partial render. Every identity cannot."*
+
+### 5. Class of bug, not instance of bug
+
+When a bug slips through, don't just patch the instance — identify the *class* and
+close all of it.
+
+Example: Bali returned 404 → class is "Unsplash ID rot / any CDN URL breaks silently
+with gradient fallback." Fix: enumerate every `background-image: url()` on the landing,
+curl all, fail on any non-200. One check, whole class closed.
+
+Another: `parseBudgetToRM` trapped in DOMContentLoaded scope → class is "critical helpers
+inadvertently function-scoped instead of global." Fix: list the critical helpers + assert
+`typeof window[x] === 'function'` for each.
+
+Pattern: *"After each bug, write one check that catches every variant of it."*
+
 ## Gap analysis — known limitations
 
 Honest list to keep closing over time:
