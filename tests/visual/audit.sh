@@ -177,6 +177,90 @@ except: pass
   [ "$img_fails" = "0" ] && pass "all landing background-image URLs resolve 200" \
     || { fail "$img_fails landing background-image URL(s) 404/broken (see failures.log)"; ok=0; }
 
+  # All internal anchor href values on landing must resolve 200 (not just
+  # trip links). Catches broken pricing anchors, dead footer links, typos
+  # in href=, etc. before they confuse a real user.
+  local internal_links; internal_links=$("$B" js "
+    JSON.stringify([...document.querySelectorAll('a[href]')]
+      .map(a => a.getAttribute('href'))
+      .filter(h => h && !h.startsWith('#') && !h.startsWith('javascript:') && !h.startsWith('mailto:') && !h.startsWith('tel:'))
+      .filter(h => !/^https?:/.test(h) || h.includes('tripva.app'))
+      .map(h => h.startsWith('http') ? h : 'https://tripva.app/' + h.replace(/^\\//, ''))
+      .filter((v,i,a) => a.indexOf(v) === i))
+  " 2>/dev/null | tail -1)
+  local link_fails=0
+  if [ -n "$internal_links" ] && [ "$internal_links" != "[]" ]; then
+    while IFS= read -r u; do
+      [ -z "$u" ] && continue
+      local code; code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 "$u")
+      # 200/204 OK, 301/302/308 redirects OK (CF Pages rewrites /trip ↔ /trip.html)
+      if [ "$code" != "200" ] && [ "$code" != "204" ] && [ "$code" != "301" ] && [ "$code" != "302" ] && [ "$code" != "308" ]; then
+        link_fails=$((link_fails + 1))
+        echo "      broken link: $code $u" >> "$FAILURES"
+      fi
+    done < <(echo "$internal_links" | python3 -c "import json,sys; [print(u) for u in json.loads(sys.stdin.read().strip() or '[]')]" 2>/dev/null)
+  fi
+  [ "$link_fails" = "0" ] && pass "all landing internal links resolve" \
+    || { fail "$link_fails broken internal link(s) on landing (see failures.log)"; ok=0; }
+
+  # Critical helper functions must be globally accessible. We've had bugs
+  # where currency helpers got trapped inside a DOMContentLoaded closure
+  # and top-level callers silently ReferenceError'd. This guards that class.
+  "$B" goto "$base_url/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=1d" >/dev/null 2>&1; sleep 6
+  local missing_globals; missing_globals=$("$B" js "
+    (() => {
+      const needed = [
+        'openMore','closeMore','switchTab','toggleAiChat','planSimilarTrip',
+        'exportTripIcs','exportDayIcs','markBudgetBooked','addBudgetBookingLink',
+        'upgradeToPro','enableTripReminders','dismissViewerBanner','saveToAccount',
+        'parseBudgetToRM','parseBudgetAmount','convertToHomeCurrency','formatHomeCurrency'
+      ];
+      return needed.filter(n => typeof window[n] !== 'function').join(',');
+    })()
+  " 2>/dev/null | tail -1)
+  [ -z "$missing_globals" ] || [ "$missing_globals" = '""' ] \
+    && pass "all critical helpers exposed on window" \
+    || { fail "missing window globals: $missing_globals"; ok=0; }
+
+  # If the budget has rows, the hero total MUST be non-zero. Catches silent
+  # currency-parse failures where rows render but convertToHomeCurrency
+  # returns 0 for every amount (prior bug with MYR/JPY/etc.).
+  "$B" js "switchTab('budget'); true" >/dev/null 2>&1; sleep 2
+  local budget_hero_state; budget_hero_state=$("$B" js "
+    (() => {
+      const rows = document.querySelectorAll('.budget-row').length;
+      const hero = document.querySelector('.budget-hero-num')?.textContent || '';
+      const num = parseFloat((hero.match(/[\\d,]+(?:\\.\\d+)?/)||[0])[0].toString().replace(/,/g,''));
+      const sub = document.querySelector('.budget-hero-sub')?.textContent || '';
+      const subNum = parseFloat((sub.match(/[\\d,]+(?:\\.\\d+)?/g)||['0','0']).slice(-1)[0].toString().replace(/,/g,''));
+      if (rows === 0) return 'ok-no-rows';
+      if (num > 0 || subNum > 0) return 'ok-nonzero';
+      return 'hero-zero-with-rows: ' + rows + ' rows, hero=' + hero + ', sub=' + sub.slice(0,60);
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$budget_hero_state" in
+    ok-no-rows|ok-nonzero) pass "budget hero total matches row content" ;;
+    *) fail "budget silent-zero bug: $budget_hero_state"; ok=0 ;;
+  esac
+
+  # OG meta presence on each entry page — if a deploy accidentally strips
+  # these, social previews break silently. Check the core tags.
+  for page_path in "/" "/plan" "/trip?id=$TRIP_FIXTURE_ID" "/mytrips"; do
+    "$B" goto "$base_url$page_path&v=$t&phase=1e" >/dev/null 2>&1
+    sleep 2
+    local og_check; og_check=$("$B" js "
+      (() => {
+        const has = n => !!(document.querySelector('meta[property=\"og:' + n + '\"], meta[name=\"og:' + n + '\"]')?.getAttribute('content'));
+        const hasTwitter = !!(document.querySelector('meta[name=\"twitter:card\"]')?.getAttribute('content'));
+        const missing = ['title','description','image'].filter(x => !has(x));
+        if (!hasTwitter) missing.push('twitter:card');
+        return missing.length ? missing.join(',') : 'ok';
+      })()
+    " 2>/dev/null | tail -1 | tr -d '\"')
+    [ "$og_check" = "ok" ] && pass "OG meta present on $page_path" \
+      || { fail "OG meta missing on $page_path: $og_check"; ok=0; }
+  done
+
   # Console error filter: exclude 3rd-party/external resource failures that aren't product bugs:
   # - "Failed to load resource: 404" from Plausible analytics, favicon, images
   # - ERR_FAILED from flaky-network image fetches (Wikipedia etc.)
@@ -195,6 +279,20 @@ except: pass
 
   # Phase 1 pixel-diff against baseline (if one exists)
   if [ -d "$HERE/baseline/mobile" ]; then
+    # Baseline freshness check: warn if baseline is > 14 days old. Stale
+    # baselines can HIDE regressions that were frozen in when the baseline
+    # was promoted (e.g., a broken image already broken at capture time).
+    local oldest_days=0
+    if command -v stat >/dev/null; then
+      local oldest_sec
+      oldest_sec=$(find "$HERE/baseline/mobile" -name '*.png' -printf '%T@\n' 2>/dev/null | sort -n | head -1)
+      if [ -n "$oldest_sec" ]; then
+        oldest_days=$(( ($(date +%s) - ${oldest_sec%.*}) / 86400 ))
+      fi
+    fi
+    if [ "$oldest_days" -gt 14 ] 2>/dev/null; then
+      warn "baseline is ${oldest_days} days old — consider reviewing + re-promoting (./tests/visual/promote.sh)"
+    fi
     _run_compare_against_baseline
   fi
 
