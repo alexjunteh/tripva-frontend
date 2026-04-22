@@ -428,9 +428,96 @@ One failed gate = audit fails. Exit code 1.
 
 ---
 
+## Full coverage inventory (refreshed 2026-04-22)
+
+Audit runs in four layers. Every check is live-gated on every push unless noted.
+
+### Layer 1 — Visual + structural (`tests/visual/audit.sh`)
+
+**Phase 1 — landing & core pages** (new checks marked 🆕)
+- Mobile + desktop screenshots, pixel-diff against baseline
+- 🆕 Baseline freshness warn if > 14 days old (stale baselines freeze in bugs)
+- Day cards width sane (desktop)
+- No JS console errors (filters 3rd-party + intentional test-path logs)
+- 🆕 **All landing internal links resolve** — nav, pricing, footer, CTAs (not just demo-trip)
+- Landing demo-trip links resolve in backend
+- 🆕 **All background-image URLs resolve 200** (hero cycle, archetype tiles, dest gallery) — catches Unsplash ID rot like the Bali bug
+- 🆕 **Critical helper functions on `window`** — `parseBudgetToRM`, `formatHomeCurrency`, `openMore`, `exportTripIcs`, etc. Catches the "trapped inside DOMContentLoaded closure" scope bug.
+- 🆕 **Budget hero ≠ 0 when rows present** — catches silent currency-parse failures
+- 🆕 **OG meta present on `/`, `/plan`, `/trip`, `/mytrips`** — og:title / og:description / og:image / twitter:card
+
+**Phase 2 — drill-in surfaces**
+- Day sheet / Edit modal / Packing modal / FAB-expanded all render
+- Photospot aspect ratios sane
+- No Light/Dark toggle (dark-only brand compliance)
+
+**Phase 3 — interactive states**
+- Archetype pill solo/family active-state transitions
+- Conditional fields reveal on archetype switch (child ages etc.)
+
+**Phase 5 — design compliance**
+- No AI-slop `47++`
+- Emoji glyphs color-render (catches text-variant fallback without U+FE0F)
+- No invisible touch-blockers (opacity:0 + pointer-events:all)
+- Cormorant Garamond loaded
+- All core tap targets ≥44px
+- Save trip reachable in More (catches viewer-mode hiding Save)
+- mytrips login paths present
+- FAB does NOT overlap More menu
+- Viewer banner dismissible ≥44px close
+- Budget tab renders data or actionable empty state
+- Packing modal loads without API 400
+
+### Layer 2 — Backend API smoke (`tests/qa-loop/api-smoke.sh`)
+
+15 endpoints curled + shape-checked in ~10s:
+health / stats / trip (good+bad id) / og / packing (good+bad date) / user/me / user/trips / user/oauth / admin/analytics / stripe/checkout / push/public-key / push/send-daily / save (round-trip).
+Accepts graceful 503 (stripe_not_configured, push_not_configured) — fails only on unexpected shape.
+
+### Layer 3 — Frontend journeys (`tests/qa-loop/run.mjs`)
+
+25 scripted user flows:
+
+| Area | Journeys |
+|---|---|
+| Navigation | landing-see-demo, landing-all-destinations-resolve, dest-gallery-carries-dest-param, tabs-all-switchable |
+| Save & auth | more-menu-has-save, mytrips-auth-paths |
+| Budget | budget-tab-usable, currency-chip-updates-hero, mark-booked-moves-row |
+| Days & itinerary | days-tab-has-events, day-sheet-has-timeline |
+| Tickets / Packing | tickets-no-meals, packing-no-400 |
+| FAB / overlays | fab-no-overlap-more, cold-viewer-banner-dismiss |
+| Plan form | plan-form-prefills, plan-archetype-switch-conditional, plan-submit-validation |
+| AI edit | ai-edit-works |
+| Calendar / Reminders / Share | calendar-export-reachable, reminders-button-present, share-link-reachable |
+| Edit / Monetization / SOS | edit-trip-modal-opens, upgrade-to-pro-graceful, sos-tab-has-content |
+
+### Layer 4 — Exhaustive crawler (`tests/qa-loop/explore.mjs`)
+
+~96 visible buttons/links clicked across 5 pages. Fails on any JS exception,
+new real console error, or visible "API error"/"Could not load" after click.
+
+---
+
+## Gap analysis — known limitations
+
+Honest list to keep closing over time:
+
+- **Cross-browser beyond Chromium** — Chromium-only. Safari emoji / `:has()` / `backdrop-filter` quirks can still surface.
+- **Performance** — no LCP/CLS/TBT thresholds.
+- **True offline replay** — SW trusted; no airplane-mode simulation.
+- **Accessibility** — no aria/focus-order/screen-reader audit. 44px tap target is our only a11y gate.
+- **SW cache version** — no automated check that `CACHE_VERSION` is bumped when HTML changes.
+- **Frontend → backend payload shape** — API smoke validates response; journeys catch wrong frontend requests, but only via the UI (not the raw shape).
+- **Destructive ops confirmation** — crawler skips delete/sign-out by pattern; no positive test.
+- **Image content quality** — we check URL resolves, not that the photo is thematically right.
+- **Email magic-link delivery** — only validates the endpoint accepts the request, not that the email arrives.
+
+**Rule of thumb when a bug slips through**: (a) ship the fix, (b) add the check that would have caught it, (c) update this list.
+
 ## Checklist for humans (quick-ref)
 
 - [ ] Run `./tests/visual/audit.sh --quick` → exit 0
+- [ ] Run `./tests/qa-loop/loop.sh` → exit 0 (all three phases)
 - [ ] Review `reports/<stamp>/audit.html` side-by-side diff grid
 - [ ] Confirm any flagged "intentional" diffs against DESIGN.md
 - [ ] If archetype-touching change: run `./audit.sh --archetypes`
