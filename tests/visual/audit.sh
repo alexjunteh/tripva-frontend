@@ -232,25 +232,50 @@ except: pass
     && pass "all critical helpers exposed on window" \
     || { fail "missing window globals: $missing_globals"; ok=0; }
 
-  # If the budget has rows, the hero total MUST be non-zero. Catches silent
-  # currency-parse failures where rows render but convertToHomeCurrency
-  # returns 0 for every amount (prior bug with MYR/JPY/etc.).
+  # If the budget has rows, the PROMINENT hero number MUST be non-zero. The
+  # big display is what users react to first. Previous check only required
+  # 1-of-3 (confirmed OR pending OR total) to be non-zero — which passed
+  # 'Confirmed $0 · Pending $5,500' as fine. Now requires the BIG number
+  # itself to be > 0 (post-fix, new trips show Total prominently).
   "$B" js "switchTab('budget'); true" >/dev/null 2>&1; sleep 2
   local budget_hero_state; budget_hero_state=$("$B" js "
     (() => {
       const rows = document.querySelectorAll('.budget-row').length;
+      if (rows === 0) return 'ok-no-rows';
       const hero = document.querySelector('.budget-hero-num')?.textContent || '';
       const num = parseFloat((hero.match(/[\\d,]+(?:\\.\\d+)?/)||[0])[0].toString().replace(/,/g,''));
-      const sub = document.querySelector('.budget-hero-sub')?.textContent || '';
-      const subNum = parseFloat((sub.match(/[\\d,]+(?:\\.\\d+)?/g)||['0','0']).slice(-1)[0].toString().replace(/,/g,''));
-      if (rows === 0) return 'ok-no-rows';
-      if (num > 0 || subNum > 0) return 'ok-nonzero';
-      return 'hero-zero-with-rows: ' + rows + ' rows, hero=' + hero + ', sub=' + sub.slice(0,60);
+      if (num > 0) return 'ok-hero-nonzero';
+      return 'hero-zero-with-' + rows + '-rows: hero=\"' + hero + '\"';
     })()
   " 2>/dev/null | tail -1 | tr -d '\"')
   case "$budget_hero_state" in
-    ok-no-rows|ok-nonzero) pass "budget hero total matches row content" ;;
-    *) fail "budget silent-zero bug: $budget_hero_state"; ok=0 ;;
+    ok-no-rows|ok-hero-nonzero) pass "budget hero big-number non-zero when rows present" ;;
+    *) fail "budget hero still zero: $budget_hero_state"; ok=0 ;;
+  esac
+
+  # Tickets tab — if the trip has timeline items of type activity or transport
+  # with names/details, there SHOULD be derived tickets. Catches the class
+  # where our keyword-only heuristic misses most bookable items. Real class
+  # is .bp-card (not .tkt-card as my earlier check incorrectly used).
+  "$B" js "switchTab('tickets'); true" >/dev/null 2>&1; sleep 2
+  local tickets_state; tickets_state=$("$B" js "
+    (() => {
+      const scroll = document.getElementById('ticketsScroll');
+      if (!scroll) return 'no-scroll-el';
+      // Count real ticket cards (bp-card is what renderDerivedTickets uses)
+      const cards = scroll.querySelectorAll('.bp-card, .tkt-card, [data-derived-ticket]').length;
+      // Count how many activity items the trip has — if trip has many activities
+      // but tickets show 0-1, the derivation is too narrow
+      const actCount = [...window.plan?.days||[]].reduce((a,d) => a + (d.timeline||[]).filter(t => t.type==='activity').length, 0);
+      const emptyVisible = document.getElementById('ticketsEmpty') && getComputedStyle(document.getElementById('ticketsEmpty')).display !== 'none';
+      if (cards > 0) return 'ok-has-cards:' + cards;
+      if (emptyVisible && actCount === 0) return 'ok-empty-no-activities';
+      return 'too-few-tickets: ' + cards + ' cards for ' + actCount + ' activity items';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '\"')
+  case "$tickets_state" in
+    ok-has-cards*|ok-empty-no-activities) pass "tickets tab renders derived tickets ($tickets_state)" ;;
+    *) fail "tickets coverage too thin: $tickets_state"; ok=0 ;;
   esac
 
   # OG meta presence on each entry page — if a deploy accidentally strips

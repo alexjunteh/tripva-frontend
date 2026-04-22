@@ -3545,10 +3545,18 @@ function populateDashboard(p) {
           }).join('')}
         </div>
       </div>` : '';
+    // Hero label flip: if nothing's booked yet (new trip), showing 'Confirmed
+    // ≈ $0' as the giant number makes the budget look broken. Flip to show
+    // Total (estimate) prominently instead, with a 'mark as booked' nudge.
+    const heroLbl = paidTotal > 0 ? 'Confirmed spend' : 'Estimated total';
+    const heroBig = paidTotal > 0 ? paidTotal : (paidTotal + pendingTotal);
+    const heroSub = paidTotal > 0
+      ? `Pending ≈ ${formatHomeCurrency(pendingTotal)} · Total ≈ ${formatHomeCurrency(paidTotal+pendingTotal)}`
+      : `All ${pendingItems.length} items pending — tap <b>Mark booked</b> as you confirm bookings`;
     scroll.innerHTML=`${buildBudgetContextCard(p)}${envelopeBar}<div class="budget-hero">
-      <div class="budget-hero-lbl">Confirmed spend</div>
-      <div class="budget-hero-num">≈ ${formatHomeCurrency(paidTotal)}</div>
-      <div class="budget-hero-sub">Pending ≈ ${formatHomeCurrency(pendingTotal)} · Total ≈ ${formatHomeCurrency(paidTotal+pendingTotal)}</div>
+      <div class="budget-hero-lbl">${heroLbl}</div>
+      <div class="budget-hero-num">≈ ${formatHomeCurrency(heroBig)}</div>
+      <div class="budget-hero-sub">${heroSub}</div>
     </div>`;
     function addBudgetSection(items, label, cssClass) {
       if(!items.length) return;
@@ -3627,13 +3635,20 @@ function populateDashboard(p) {
       (d.timeline||[]).forEach(tl => {
         const det = (tl.detail||'').toLowerCase() + ' ' + (tl.title||'').toLowerCase();
         const isTransport = tl.type === 'transport' && /train|bus|flight|ferry|rail|thalys|frecciarossa|eurostar|rer|ice|tgv/i.test(det);
-        // Tickets must be actually bookable/admission-required. Meal/food/hotel/
-        // transport/photospot types are NEVER tickets; only 'activity' items with
-        // a ticket/admission signal qualify. Mere mention of a price is not
-        // enough — "€30 per person" in a meal row is dinner cost, not a ticket.
-        const excludedTypes = ['food','meal','hotel','transport','photospot','logistics'];
-        const isTicketed = !excludedTypes.includes(tl.type) &&
-          /ticket|pre-book|prebook|museum|gallery|entry fee|admission|timed entry|tour booking/i.test(det);
+        // Tickets = anything bookable. Meals/hotels/photospots/logistics are NEVER
+        // bookable in this sense (you don't book a "photospot"). But every
+        // ACTIVITY is bookable — most named attractions need reservations,
+        // tours, or at least entry fees. Broader net: any 'activity' type
+        // with either a named venue (mapQuery) or a price signal. Previous
+        // keyword-only regex missed the Eiffel/Louvre/Seine-cruise class.
+        const excludedTypes = ['food','meal','hotel','photospot','logistics'];
+        const hasPrice = /[€$£¥]\s*\d|\d+\s*(?:EUR|USD|GBP|MYR|SGD|AUD|JPY|THB|RM)\b/i.test(det);
+        const hasTicketKeyword = /ticket|pre-book|prebook|museum|gallery|entry fee|admission|timed entry|tour booking|reserve|book at|advance booking/i.test(det);
+        const hasMapQuery = !!(tl.mapQuery && String(tl.mapQuery).trim().length);
+        const isTicketed = !excludedTypes.includes(tl.type) && (
+          hasTicketKeyword ||
+          (tl.type === 'activity' && (hasPrice || hasMapQuery))
+        );
         if (isTransport || isTicketed) {
           const icon = tl.type === 'transport' ? '🚆' : '🎟️';
           const price = (tl.detail||'').match(/[€$£¥][\d,.]+|[\d,.]+\s*(?:EUR|USD|GBP|RM)/i);
