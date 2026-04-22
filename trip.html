@@ -3418,8 +3418,8 @@ function populateDashboard(p) {
       }
     }
     const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
-    const heroImg=t.imageUrl||CITY_IMGS[_tripSeed]||(()=>{
-      for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
+    const heroImg=t.imageUrl||(window.CITY_IMGS||{})[_tripSeed]||(()=>{
+      for(const [c,u] of Object.entries(window.CITY_IMGS||{})){if(_tripSeed.includes(c))return u;}
       if(_tripSeed) return `https://loremflickr.com/900/500/${encodeURIComponent(_tripSeed.replace(/-/g,' '))}`;
       return null;
     })();
@@ -4237,7 +4237,7 @@ function renderLiveOps(){
   const timeline=day.timeline||[];
 
   // ── HERO ──
-  const heroImg=day.imageUrl||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://loremflickr.com/900/500/travel,city';
+  const heroImg=day.imageUrl||((()=>{const seed=(day.heroSeed||'').toLowerCase();if((window.CITY_IMGS||{})[seed])return (window.CITY_IMGS||{})[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&(window.CITY_IMGS||{})[k])return (window.CITY_IMGS||{})[k];}return null;})())||'https://loremflickr.com/900/500/travel,city';
   if(el('liveHero'))el('liveHero').style.backgroundImage=`url('${heroImg}')`;
   if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`Day ${day.day} of ${totalDays}`;
   if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
