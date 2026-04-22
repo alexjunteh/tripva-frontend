@@ -2152,6 +2152,44 @@ function updateBudgetHero() {
 // ── Budget item status mutations ───────────────────────────────────────────
 // Toggle pending → booked, and optionally attach a booking URL. Persists via
 // savePlanToStorage() and re-renders the budget section (cheap: ~10 rows).
+// Self-heal: when a plan lands without budget[] (usually because the SSE stream
+// dropped before the 'done' event), call /api/patch to fill it in, then merge
+// and re-render the budget tab in place. Caller guards against loops via a
+// per-trip sessionStorage flag.
+async function healMissingBudget(p) {
+  const emptyEl = document.getElementById('budgetEmpty');
+  if (emptyEl) {
+    emptyEl.innerHTML = '<div class="es-icon">💰</div>'
+      + '<div class="es-title">Generating your budget…</div>'
+      + '<div class="es-text">This trip was saved before the cost breakdown finished. Filling it in now — takes ~10 seconds.</div>'
+      + '<div style="margin-top:12px"><div style="width:28px;height:28px;border:3px solid rgba(124,106,247,.2);border-top-color:#95b8ff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto"></div></div>';
+  }
+  const state = {
+    normalizedVersion: p.normalizedVersion || 2,
+    planVersion: p.planVersion || new Date().toISOString(),
+    rawPlan: p.rawPlan || p,
+  };
+  const resp = await fetch('https://tripai-backend.vercel.app/api/patch', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      state,
+      instruction: 'Add a complete, realistic budget breakdown for this trip. Include flights, accommodation, transport, food, activities, and misc. Use the trip currency. Mark all items as status:"pending" unless already booked.'
+    })
+  });
+  if (!resp.ok) throw new Error('patch ' + resp.status);
+  const patched = await resp.json();
+  const rp = patched.rawPlan || patched;
+  if (!rp || !rp.budget || !rp.budget.length) throw new Error('no budget in patch response');
+  p.budget = rp.budget;
+  if (rp.trip && rp.trip.currency && p.trip) p.trip.currency = rp.trip.currency;
+  try { localStorage.setItem('tripva_plan', JSON.stringify(p)); } catch(e) {}
+  try { window.plan = p; } catch(e) {}
+  try { (window.populateDashboard || function(){})(p); } catch(e) { console.warn('[budget-heal] re-render failed:', e); }
+  try { (window.showToast || function(){})('✅ Budget filled in'); } catch(e) {}
+}
+try { window.healMissingBudget = healMissingBudget; } catch(e) {}
+
 function markBudgetBooked(idx) {
   // markBudgetBooked sits at top-level scope but `plan` + `populateDashboard`
   // live inside a different IIFE/DOMContentLoaded closure. Pull both via
@@ -3612,9 +3650,21 @@ function populateDashboard(p) {
     addBudgetSection(pendingItems, '⏳ PENDING / ESTIMATE ('+pendingItems.length+')', 'budget-pending');
     initFxBar();
   } else {
-    // No budget data — expose the empty state explicitly (default hidden)
+    // No budget data — expose the empty state, then try a one-shot self-heal
+    // by asking the backend to fill in the budget from the existing days/hotels.
+    // Guard with a per-trip flag so a failed heal doesn't loop on every render.
     const _be = document.getElementById('budgetEmpty');
     if (_be) _be.style.display = 'flex';
+    try {
+      if (p && p.days && p.days.length) {
+        const tripKey = (p.trip && (p.trip.id || p.trip.name)) || 'current';
+        const healKey = 'tripva_budget_heal_' + tripKey;
+        if (!sessionStorage.getItem(healKey)) {
+          sessionStorage.setItem(healKey, '1');
+          healMissingBudget(p).catch(e => console.warn('[budget-heal] failed:', e));
+        }
+      }
+    } catch(e) { console.warn('[budget-heal] init error:', e); }
   }
 
   // ── TIPS ──
