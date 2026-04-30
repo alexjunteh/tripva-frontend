@@ -2737,6 +2737,9 @@ window.CITY_IMGS = {
     'maldives-beach':'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=900&h=500&fit=crop',
     'maldives-snorkeling':'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900&h=500&fit=crop',
     'maldives-water':'https://images.unsplash.com/photo-1578922746465-3a80a228f223?w=900&h=500&fit=crop',
+    'maldives-local':'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=900&h=500&fit=crop',
+    'maldives-relax':'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=900&h=500&fit=crop',
+    'maldives-departure':'https://images.unsplash.com/photo-1578922746465-3a80a228f223?w=900&h=500&fit=crop',
 };
 
 // Alternate hero images per city — used to avoid duplicate images when multiple days share a seed
@@ -2882,6 +2885,12 @@ async function upgradeTripImages(){
   try {
     for (let i = 0; i < plan.days.length; i++) {
       const d = plan.days[i];
+      // Skip if day already has a curated Unsplash image from CITY_IMGS
+      const _seed = (d.heroSeed||'').toLowerCase();
+      const _ci = window.CITY_IMGS||{};
+      if (_seed && (_ci[_seed] || Object.keys(_ci).some(k=>_seed.includes(k)||k.includes(_seed)))) continue;
+      // Also skip if day.imageUrl is a real (non-loremflickr) image
+      if (d.imageUrl && !d.imageUrl.includes('loremflickr')) continue;
       const seeds = _wikiSeedsForDay(d);
       let img = null;
       for (const s of seeds) {
@@ -3451,7 +3460,7 @@ function populateDashboard(p) {
     const _tripSeed = (t.heroSeed||t.destination||nameWords[0]||'').toLowerCase();
     const heroImg=(t.imageUrl&&!t.imageUrl.includes('loremflickr')?t.imageUrl:null)||CITY_IMGS[_tripSeed]||(()=>{
       if(!_tripSeed) return null;
-      for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
+      for(const [c,u] of Object.entries(CITY_IMGS)){if(c && (_tripSeed.includes(c) || c.includes(_tripSeed)))return u;}
       return null;
     })();
     if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
@@ -4503,7 +4512,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
   const imgDay = (state === 'pre-trip') ? (plan.days[0] || {}) : day;
   const heroImgIdx = plan.days.indexOf(imgDay);
   const heroImg = (imgDay && imgDay.heroImg) ||
-                  (imgDay && imgDay.imageUrl) ||
+                  (imgDay && imgDay.imageUrl && !imgDay.imageUrl.includes('loremflickr') ? imgDay.imageUrl : '') ||
                   (typeof getDayImage === 'function' ? getDayImage(imgDay || {}, Math.max(0, heroImgIdx)) : '') ||
                   (plan.trip && plan.trip.heroImg) ||
                   `https://picsum.photos/seed/tripva-${(plan.trip&&plan.trip.destination||'trip').replace(/[^a-z0-9]/gi,'-')}/1200/800`;
