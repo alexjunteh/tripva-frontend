@@ -1,23 +1,39 @@
 {
-  "name": "Tripva — AI Trip Planner",
+  "name": "Tripva",
   "short_name": "Tripva",
   "description": "AI-powered travel planner with live itinerary, ticket wallet, and budget tracking.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#0a0a0f",
   "theme_color": "#0a0a0f",
   "orientation": "portrait",
-  "categories": ["travel", "lifestyle", "productivity"],
+  "categories": [
+    "travel",
+    "lifestyle",
+    "productivity"
+  ],
   "lang": "en",
   "dir": "ltr",
   "prefer_related_applications": false,
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/tripva-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/tripva-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
     {
@@ -25,14 +41,24 @@
       "short_name": "New trip",
       "description": "Start planning your next adventure",
       "url": "/plan.html?source=pwa_shortcut",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "My saved trips",
       "short_name": "My trips",
       "description": "Open your saved itineraries",
       "url": "/mytrips.html?source=pwa_shortcut",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
