@@ -3389,6 +3389,49 @@ function updateTripMeta(p) {
   } catch (e) {}
 }
 
+// ── Derive hotels from timeline when hotels[] is empty ──
+function deriveHotelsFromTimeline(p) {
+  if (!p || !p.days) return [];
+  const hotels = [], seen = new Set();
+  for (const d of p.days) {
+    if (!d.timeline) continue;
+    for (const t of d.timeline) {
+      if (t.type !== 'hotel') continue;
+      const key = t.title || '';
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const ms = p.mapStops && p.mapStops[0];
+      const city = (ms && ms.name) || (p.trip && (p.trip.destination || p.trip.name || ''));
+      hotels.push({ city: String(city).split(/[\s+-]/)[0], name: t.title.replace(/^Check\s+(in|out)\s+/i,'').trim()||'Hotel', nights:1, price:'', note:t.detail||'', checkin:d.date||'', checkout:'', bookUrl:'' });
+    }
+  }
+  return hotels;
+}
+// ── Derive budget from timeline when budget[] is empty ──
+function deriveBudgetFromTimeline(p) {
+  if (!p || !p.days) return [];
+  const cur = (p.trip && p.trip.currency) || 'USD';
+  const sym = cur==='MYR'?'RM':cur==='EUR'?'€':cur==='GBP'?'£':'$';
+  const nd = p.days.length || 1;
+  let m=0, a=0, tr=0;
+  for (const d of p.days) {
+    if (!d.timeline) continue;
+    for (const t of d.timeline) {
+      if (t.type==='meal'||t.type==='food') m++;
+      else if (t.type==='activity') a++;
+      else if (t.type==='transport') tr++;
+    }
+  }
+  const tot = (nd>7?200:150)*nd;
+  const f = n => sym + (n>=1000?Math.round(n/1000)+'K':n.toLocaleString());
+  const it = [{l:'Accommodation',a:Math.round(tot*0.40),n:`~${nd} nights`,c:'accommodation',i:'🏨'}];
+  if (m) it.push({l:'Meals',a:Math.round(tot*0.25),n:`~${m} meals`,c:'food',i:'🍽️'});
+  if (a) it.push({l:'Activities',a:Math.round(tot*0.15),n:`~${a} activities`,c:'activities',i:'🎯'});
+  it.push({l:'Flights',a:Math.round(tot*0.30),n:'Return flights (est.)',c:'transport',i:'✈️'});
+  it.push({l:'Miscellaneous',a:Math.round(tot*0.10),n:'Souvenirs, tips',c:'misc',i:'💡'});
+  return it.map(x => ({ label:x.l, amount:f(x.a), note:x.n, status:'pending', category:x.c, icon:x.i }));
+}
+
 function populateDashboard(p) {
   try { window.__pdTrace = (window.__pdTrace||[]); window.__pdTrace.push('enter'); } catch(e){}
   // Scope-trap safeguard: bind helpers from window into local scope so any
@@ -3637,6 +3680,15 @@ function populateDashboard(p) {
     }
   }
 
+  // ── Auto-derive budget + hotels from timeline if empty ──
+  if (!p.budget || p.budget.length === 0) {
+    const derived = deriveBudgetFromTimeline(p);
+    if (derived.length > 0) p.budget = derived;
+  }
+  if (!p.hotels || p.hotels.length === 0) {
+    const derived = deriveHotelsFromTimeline(p);
+    if (derived.length > 0) p.hotels = derived;
+  }
   // ── BUDGET ──
   try { window.__budgetTrace = (window.__budgetTrace||[]); window.__budgetTrace.push('enter:p.budget.len=' + ((p.budget||[]).length)); } catch(e){}
   if (p.budget && p.budget.length > 0) { try {
