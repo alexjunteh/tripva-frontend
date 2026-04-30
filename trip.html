@@ -2731,7 +2731,12 @@ window.CITY_IMGS = {
     'prague':'https://loremflickr.com/900/500/prague,travel',
     'vienna':'https://loremflickr.com/900/500/vienna,travel',
     // Africa (added)
-    'cairo':'https://loremflickr.com/900/500/cairo,travel',
+    'cairo':'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=900&h=500&fit=crop',
+    // Maldives
+    'maldives':'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=900&h=500&fit=crop',
+    'maldives-beach':'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=900&h=500&fit=crop',
+    'maldives-snorkeling':'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900&h=500&fit=crop',
+    'maldives-water':'https://images.unsplash.com/photo-1578922746465-3a80a228f223?w=900&h=500&fit=crop',
 };
 
 // Alternate hero images per city — used to avoid duplicate images when multiple days share a seed
@@ -2759,23 +2764,38 @@ window.CITY_IMG_ALTS = {
 // city photo (resolved async and swapped in via upgradeTripImages); third:
 // picsum seeded by destination + day-index as the immediate placeholder.
 function getDayImage(day, idx) {
-  // First choice: heroImg cached by upgradeTripImages() from Wikipedia.
-  if (day && day.heroImg) return day.heroImg;
-
-  const dest = ((plan && plan.trip && (plan.trip.destination || plan.trip.name)) ||
-                (plan && plan.rawPlan && plan.rawPlan.trip && plan.rawPlan.trip.name) || 'trip')
-               .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0, 40);
-  const dayNum = (day && (day.day != null ? day.day : (idx + 1))) || (idx + 1);
-  const picsum = `https://picsum.photos/seed/tripva-${dest || 'trip'}-d${dayNum}/900/600`;
-
-  // If the backend explicitly supplies a day image that isn't the generic
-  // loremflickr "same-for-every-day" placeholder, trust it. Otherwise use picsum.
-  const url = day && day.imageUrl;
-  if (!url) return picsum;
-  const looksGeneric = /loremflickr\.com\/\d+\/\d+\/[^/]*,travel\/?$/i.test(url) ||
-                       /loremflickr\.com\/\d+\/\d+\/travel\/?$/i.test(url) ||
-                       /loremflickr\.com\/\d+\/\d+\/[a-z\-]+,travel$/i.test(url);
-  return looksGeneric ? picsum : url;
+  if (day.imageUrl && !day.imageUrl.includes('loremflickr')) return day.imageUrl;
+  // Build search terms: heroSeed, title words, trip destination
+  const tripDest = (plan?.trip?.name || plan?.rawPlan?.trip?.name || '').toLowerCase();
+  const seeds = [day.heroSeed, day.title, tripDest].filter(Boolean).map(s => s.toLowerCase());
+  for (const seed of seeds) {
+    // Exact match
+    if (CITY_IMGS[seed]) return CITY_IMGS[seed];
+    // Partial: check if any CITY_IMGS key appears in the seed, or vice versa
+    for (const [key, url] of Object.entries(CITY_IMGS)) {
+      if (seed.includes(key) || key.includes(seed.split(/[-\s]/)[0])) return url;
+    }
+    // Also split by spaces/hyphens and check each word
+    const words = seed.split(/[-\s,&]+/).filter(w => w.length > 2);
+    for (const word of words) {
+      if (CITY_IMGS[word]) return CITY_IMGS[word];
+      for (const [key, url] of Object.entries(CITY_IMGS)) {
+        if (key.includes(word) || word.includes(key)) return url;
+      }
+    }
+  }
+  // Final fallback: use trip destination or generic travel photo
+  const destKey = tripDest.split(/[-\s,&]+/).find(w => CITY_IMGS[w.toLowerCase()]);
+  if (destKey) return CITY_IMGS[destKey.toLowerCase()];
+  // Generic high-quality travel fallback (NOT the map/binoculars!)
+  const fallbacks = [
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&h=500&fit=crop',
+  ];
+  return fallbacks[idx % fallbacks.length];
 }
 
 // ── Wikipedia-backed city imagery ─────────────────────────────────────
@@ -3427,9 +3447,9 @@ function populateDashboard(p) {
       }
     }
     const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
-    const heroImg=t.imageUrl||(window.CITY_IMGS||{})[_tripSeed]||(()=>{
-      for(const [c,u] of Object.entries(window.CITY_IMGS||{})){if(_tripSeed.includes(c))return u;}
-      if(_tripSeed) return `https://loremflickr.com/900/500/${encodeURIComponent(_tripSeed.replace(/-/g,' '))}`;
+    const heroImg=(t.imageUrl&&!t.imageUrl.includes('loremflickr')?t.imageUrl:null)||CITY_IMGS[_tripSeed]||(()=>{
+      for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
+      if(CITY_IMGS[_tripSeed]) return CITY_IMGS[_tripSeed];
       return null;
     })();
     if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
@@ -4246,7 +4266,7 @@ function renderLiveOps(){
   const timeline=day.timeline||[];
 
   // ── HERO ──
-  const heroImg=day.imageUrl||((()=>{const seed=(day.heroSeed||'').toLowerCase();if((window.CITY_IMGS||{})[seed])return (window.CITY_IMGS||{})[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&(window.CITY_IMGS||{})[k])return (window.CITY_IMGS||{})[k];}return null;})())||'https://loremflickr.com/900/500/travel,city';
+  const heroImg=(day.imageUrl&&!day.imageUrl.includes('loremflickr')?day.imageUrl:null)||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
   if(el('liveHero'))el('liveHero').style.backgroundImage=`url('${heroImg}')`;
   if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`Day ${day.day} of ${totalDays}`;
   if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
