@@ -3446,10 +3446,12 @@ function populateDashboard(p) {
         statBudgetEl.textContent='~RM '+_fmtBudgetCompact(_bt);
       }
     }
-    const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
+    // Extract seed from heroSeed/destination, or fallback to extracting from trip name
+    const nameWords = (t.name||'').toLowerCase().split(/[\s,+-]+/).filter(w => w.length>2);
+    const _tripSeed = (t.heroSeed||t.destination||nameWords[0]||'').toLowerCase();
     const heroImg=(t.imageUrl&&!t.imageUrl.includes('loremflickr')?t.imageUrl:null)||CITY_IMGS[_tripSeed]||(()=>{
+      if(!_tripSeed) return null;
       for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
-      if(CITY_IMGS[_tripSeed]) return CITY_IMGS[_tripSeed];
       return null;
     })();
     if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
