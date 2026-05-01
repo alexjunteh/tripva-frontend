@@ -9,7 +9,7 @@ on:
 jobs:
   qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
 
     steps:
       - name: Checkout code
@@ -25,8 +25,8 @@ jobs:
       - name: Install Playwright
         run: |
           cd qa
-          npm install
-          npx playwright install chromium --with-deps
+          npm install --legacy-peer-deps
+          npx playwright install --with-deps chromium
 
       - name: Run QA tests
         run: |
@@ -40,11 +40,13 @@ jobs:
           cd qa
           node audit-report.js
 
-      - name: Upload QA report
+      - name: Upload QA report artifact
         if: always()
-        run: |
-          cp qa/qa-results.json qa-results-$(date +%Y%m%d-%H%M%S).json 2>/dev/null || true
-          echo "reports saved"
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-results
+          path: qa/qa-results.json
+          retention-days: 7
 
       - name: Block deploy on QA failure
         if: failure()
