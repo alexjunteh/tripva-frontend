@@ -1,0 +1,79 @@
+Testing: Landing Page (https://tripva.app/)
+{
+  "url": "https://tripva.app/",
+  "name": "Landing Page",
+  "status": "PASS",
+  "loadTime": 1010,
+  "httpStatus": 200,
+  "consoleErrors": [],
+  "missingElements": [],
+  "brokenResources": [],
+  "checks": {
+    "http_200": true,
+    "nav/header": true,
+    "hero h1": true,
+    "plan CTA": true,
+    "footer or section": true
+  },
+  "formChecks": {}
+}
+Testing: Plan Page (https://tripva.app/plan)
+{
+  "url": "https://tripva.app/plan",
+  "name": "Plan Page",
+  "status": "PASS",
+  "loadTime": 745,
+  "httpStatus": 200,
+  "consoleErrors": [],
+  "missingElements": [],
+  "brokenResources": [],
+  "checks": {
+    "http_200": true,
+    "destination input": true,
+    "any text input": true,
+    "generate button": true
+  },
+  "formChecks": {
+    "text input accepts typing": true
+  }
+}
+Testing: Trip Dashboard (https://tripva.app/trip?id=950502456a1b0d6bf86a079dc7dada05)
+{
+  "url": "https://tripva.app/trip?id=950502456a1b0d6bf86a079dc7dada05",
+  "name": "Trip Dashboard",
+  "status": "PASS",
+  "loadTime": 1912,
+  "httpStatus": 200,
+  "consoleErrors": [],
+  "missingElements": [],
+  "brokenResources": [],
+  "checks": {
+    "http_200": true,
+    "page heading": true,
+    "main content area": true,
+    "tab or section nav": true,
+    "trip data section": true
+  },
+  "formChecks": {}
+}
+Testing: My Trips (https://tripva.app/mytrips)
+{
+  "url": "https://tripva.app/mytrips",
+  "name": "My Trips",
+  "status": "PASS",
+  "loadTime": 768,
+  "httpStatus": 200,
+  "consoleErrors": [],
+  "missingElements": [],
+  "brokenResources": [],
+  "checks": {
+    "http_200": true,
+    "page heading": true,
+    "main content": true,
+    "trip cards or list": true,
+    "empty state or items": true
+  },
+  "formChecks": {}
+}
+
+Results saved to /home/alex/.openclaw/workspace-travel/trip-planner/qa/qa-results.json
