@@ -20,31 +20,30 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: /home/alex/.openclaw/workspace-travelapp/qa/package-lock.json
+          cache-dependency-path: qa/package-lock.json
 
       - name: Install Playwright
         run: |
-          cd /home/alex/.openclaw/workspace-travelapp/qa
+          cd qa
           npm install
           npx playwright install chromium --with-deps
 
       - name: Run QA tests
         run: |
-          cd /home/alex/.openclaw/workspace-travelapp/qa
+          cd qa
           node run-qa.js > qa-output.json 2>&1
           echo "=== QA RESULTS ==="
           cat qa-output.json
-          echo ""
 
       - name: Parse QA results
         run: |
-          cd /home/alex/.openclaw/workspace-travelapp/qa
+          cd qa
           node audit-report.js
 
       - name: Upload QA report
         if: always()
         run: |
-          cp /home/alex/.openclaw/workspace-travelapp/qa/qa-results.json qa-results-$(date +%Y%m%d-%H%M%S).json
+          cp qa/qa-results.json qa-results-$(date +%Y%m%d-%H%M%S).json 2>/dev/null || true
           echo "reports saved"
 
       - name: Block deploy on QA failure

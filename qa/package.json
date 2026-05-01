@@ -1,0 +1,13 @@
+{
+  "name": "tripva-qa",
+  "version": "1.0.0",
+  "description": "Playwright-based QA suite for tripva.app",
+  "scripts": {
+    "qa": "node run-qa.js",
+    "report": "node audit-report.js",
+    "full": "node run-qa.js && node audit-report.js"
+  },
+  "dependencies": {
+    "playwright": "^1.59.1"
+  }
+}
