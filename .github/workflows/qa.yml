@@ -1,0 +1,54 @@
+name: QA Browser Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: /home/alex/.openclaw/workspace-travelapp/qa/package-lock.json
+
+      - name: Install Playwright
+        run: |
+          cd /home/alex/.openclaw/workspace-travelapp/qa
+          npm install
+          npx playwright install chromium --with-deps
+
+      - name: Run QA tests
+        run: |
+          cd /home/alex/.openclaw/workspace-travelapp/qa
+          node run-qa.js > qa-output.json 2>&1
+          echo "=== QA RESULTS ==="
+          cat qa-output.json
+          echo ""
+
+      - name: Parse QA results
+        run: |
+          cd /home/alex/.openclaw/workspace-travelapp/qa
+          node audit-report.js
+
+      - name: Upload QA report
+        if: always()
+        run: |
+          cp /home/alex/.openclaw/workspace-travelapp/qa/qa-results.json qa-results-$(date +%Y%m%d-%H%M%S).json
+          echo "reports saved"
+
+      - name: Block deploy on QA failure
+        if: failure()
+        run: |
+          echo "❌ QA FAILED — blocking deploy"
+          exit 1
