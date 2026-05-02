@@ -5016,7 +5016,7 @@ const SPOT_PHOTO_DB = {
   "trevi":                'https://live.staticflickr.com/65535/52821162431_efdcb72951_b.jpg',
   "pantheon":             'https://live.staticflickr.com/65535/54721824094_8698acd543_b.jpg',
 };
-// Returns a verified photo URL, or null when no match (no fallback — wrong photo = worse than no photo)
+// Returns a verified photo URL from DB, or null (caller handles async Wikipedia fallback)
 function getSpotPhoto(title, city) {
   const t = (title||'').toLowerCase();
   let best = null, bestLen = 0;
@@ -5024,6 +5024,39 @@ function getSpotPhoto(title, city) {
     if(t.includes(kw) && kw.length > bestLen){ best=url; bestLen=kw.length; }
   }
   return best;
+}
+// In-memory cache: query → url string ('' = confirmed no image)
+const _wikiThumbCache = {};
+async function _fetchWikiThumb(query) {
+  if (_wikiThumbCache[query] !== undefined) return _wikiThumbCache[query] || null;
+  try {
+    const slug = query.trim().replace(/\s+/g,'_');
+    const r = await fetch(
+      'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(slug),
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!r.ok) { _wikiThumbCache[query]=''; return null; }
+    const d = await r.json();
+    const url = d?.thumbnail?.source || '';
+    _wikiThumbCache[query] = url;
+    return url || null;
+  } catch { _wikiThumbCache[query]=''; return null; }
+}
+// After rendering photospot cards, async-inject Wikipedia thumbnails
+async function _populateWikiPhotos(container) {
+  const cards = container.querySelectorAll('.tl-ps-wrap[data-wiki-spot]');
+  await Promise.all(Array.from(cards).map(async wrap => {
+    if (wrap.querySelector('.tl-ps-photo')) return; // already has static photo
+    const spot = wrap.dataset.wikiSpot;
+    const city = wrap.dataset.wikiCity;
+    let url = await _fetchWikiThumb(spot);
+    if (!url && city) url = await _fetchWikiThumb(city);
+    if (!url) return;
+    const img = document.createElement('img');
+    img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
+    img.onerror = () => img.remove();
+    wrap.insertBefore(img, wrap.firstChild);
+  }));
 }
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
@@ -5074,7 +5107,7 @@ function renderDaySheet(idx) {
       <div class="tl-main">
         <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');return`<div class="tl-ps-wrap">${_sp?`<img src="${_sp}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
+        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^📸\s*Photospot:\s*/i,'').split(',')[0].trim();const _cy=(d.city||'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}" data-wiki-city="${esc(_cy)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${_sp}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
@@ -5098,6 +5131,7 @@ function renderDaySheet(idx) {
   }
 
   body.innerHTML=html;
+  _populateWikiPhotos(body);
 
   // Prev/Next
   document.getElementById('sheetPrev').disabled=idx===0;
