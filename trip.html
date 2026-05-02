@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html lan
-
-  // [DEMO] fallback — only if no localStorage plan
-g="en" >
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -351,14 +348,11 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .booknow-seg-dot.booked{background:var(--success)}
 .booknow-seg-dot.arrange{background:rgba(255,255,255,.3)}
 .booknow-segment.pending .card-btn.done-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition: opacity .2s ease-out, transform .2s ease-out, color .2s ease-out, background-color .2s ease-out}
-.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:var(--success)}
-.booknow-seg-hdr{color:#ffb24d}
+.booknow-segment.pending .booknow-seg-hdr{color:#ffb24d}
 .booknow-segment.booked .card-btn.done-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition: opacity .2s ease-out, transform .2s ease-out, color .2s ease-out, background-color .2s ease-out}
-.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:var(--success)}
-.booknow-seg-hdr{color:var(--success)}
+.booknow-segment.booked .booknow-seg-hdr{color:var(--success)}
 .booknow-segment.arrange .card-btn.done-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition: opacity .2s ease-out, transform .2s ease-out, color .2s ease-out, background-color .2s ease-out}
-.card-btn.done-btn:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.3);color:var(--success)}
-.booknow-seg-hdr{color:var(--text2)}
+.booknow-segment.arrange .booknow-seg-hdr{color:var(--text2)}
 .book-card.booked-card{border-left:3px solid rgba(74,222,128,.4)}
 .book-card.booked-card .book-card-title{color:var(--text)}
 .booked-chip{background:rgba(74,222,128,.15)!important;color:var(--success)!important;border-color:rgba(74,222,128,.3)!important}
@@ -3029,12 +3023,9 @@ async function loadTripPlan() {
     DEMO_TRIP.days.forEach((d, i) => { d.date = _d(i - 1); }); // Day 1 = yesterday
     DEMO_TRIP.hotels[0].checkin = _d(-1); DEMO_TRIP.hotels[0].checkout = _d(2);
     DEMO_TRIP.hotels[1].checkin = _d(3);  DEMO_TRIP.hotels[1].checkout = _d(6);
-    // Flag so restoreMeta doesn't override with localStorage
-    // _demoMode removed
     // Schedule AFTER restoreMeta runs (setTimeout 0 ensures correct order)
     // Each step wrapped in try/catch — switchTab ALWAYS fires even if populate throws
     setTimeout(() => {
-      if (!window._demoMode) return; // Skip DEMO if real plan exists in localStorage
       try {
         plan = DEMO_TRIP;
         tripMeta = plan.trip || {};
@@ -3374,11 +3365,14 @@ async function send() {
   addMsg('user', txt);
   msgs.push({role:'user',content:txt});
   const tid = showTyping(); busy=true;
+  const _sendCtrl = new AbortController();
+  const _sendTo = setTimeout(() => _sendCtrl.abort(), 60000);
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-      body:JSON.stringify({model,messages:[{role:'system',content:SYSTEM},...msgs],stream:true,temperature:.7,max_tokens:3500})
+      body:JSON.stringify({model,messages:[{role:'system',content:SYSTEM},...msgs],stream:true,temperature:.7,max_tokens:3500}),
+      signal: _sendCtrl.signal
     });
     if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||'API error '+res.status); }
     removeTyping(tid);
@@ -3396,9 +3390,10 @@ async function send() {
     await extractAndBuild(txt, full);
   } catch(err) {
     removeTyping(tid);
-    const m=err.message.includes('401')?'Invalid API key - tap Setup to fix':err.message.includes('429')?'Rate limit hit - try again in a moment':'Error: '+err.message;
+    const m=err.name==='AbortError'?'Request timed out — try again':err.message.includes('401')?'Invalid API key - tap Setup to fix':err.message.includes('429')?'Rate limit hit - try again in a moment':'Error: '+err.message;
     addMsg('ai','⚠️ '+m);
   } finally {
+    clearTimeout(_sendTo);
     busy=false;
     if(document.getElementById('sendBtn') && document.getElementById('msgInput')) document.getElementById('sendBtn').disabled=!document.getElementById('msgInput').value.trim();
   }
@@ -3653,7 +3648,7 @@ function populateDashboard(p) {
     // Itin list in overview
     const _itin=document.getElementById('itinList'); if(_itin) _itin.innerHTML=p.days.map((d,i)=>`
       <div class="itin-row" onclick="switchTab('days');setTimeout(()=>openDaySheet(${i}),150)">
-        <div class="day-badge ${i<3?'done':''}">Day ${d.day}</div>
+        <div class="day-badge ${(()=>{const _dd=inferDayDate(d.day);return _dd&&_dd<getTripDateInfo().ymd?'done':''})()}">Day ${d.day}</div>
         <div class="itin-info">
           <div class="itin-title">${d.emoji||'📅'} ${esc(d.title||'')}</div>
           <div class="itin-sub">${formatDayDate(d.day)} · ${esc(d.subtitle||'')}</div>
@@ -4148,7 +4143,7 @@ try { window.populateDashboard = populateDashboard; } catch(e) {}
 
 function getTripDateInfo(){
   const now = new Date();
-  const TZ = 'Europe/Rome';
+  const TZ = (plan&&plan.trip&&plan.trip.timezone) || 'UTC';
   const dateFmt = new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
   const timeFmt = new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false});
   const dateParts = Object.fromEntries(dateFmt.formatToParts(now).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
@@ -5035,7 +5030,9 @@ async function _fetchCommonsThumb(query) {
       '&gsrsearch=' + encodeURIComponent(query + ' filetype:bitmap') +
       '&gsrlimit=10&prop=imageinfo&iiprop=url&iiurlwidth=600' +
       '&format=json&origin=*';
-    const r = await fetch(url, { signal: AbortSignal.timeout(7000) });
+    const _ctrl = new AbortController();
+    const _to = setTimeout(() => _ctrl.abort(), 7000);
+    const r = await fetch(url, { signal: _ctrl.signal }).finally(() => clearTimeout(_to));
     if (!r.ok) { _commonsCache[query]=''; return null; }
     const data = await r.json();
     const pages = data?.query?.pages;
@@ -5348,81 +5345,9 @@ function loadFromHash() {
     if(data.plan){plan=data.plan;populateDashboard(plan);}
     if(data.msgs){msgs=data.msgs;const box=document.getElementById('chatMsgs');data.msgs.forEach(m=>{const el=document.createElement('div');el.className='msg '+(m.role==='assistant'?'ai':m.role);if(m.role==='assistant'||m.role==='ai'){el.innerHTML=`<div class="ai-ava">✈️</div><div class="bubble">${md(m.content)}</div><div class="msg-time">Restored</div>`;}else{el.innerHTML=`<div class="bubble">${esc(m.content)}</div><div class="msg-time">Restored</div>`;}box.appendChild(el);});}
     document.getElementById('restoredBanner').style.display='flex';
-  
-  // ── DERIVED TICKETS (from timeline when p.tickets is empty) ──
-  if (_hasDerived && !_hasTickets) {
-    const scroll=document.getElementById('ticketsScroll');
-    document.getElementById('ticketsEmpty')?.remove();
-    scroll.innerHTML='<div class="tickets-intro" style="color:var(--muted);font-size:12px;padding:4px 0 8px">🔍 Tickets derived from your itinerary — book these for your trip</div>';
-
-    // Group by day
-    const byDay = {};
-    _derivedTickets.forEach(t => { (byDay[t.day] = byDay[t.day] || []).push(t); });
-
-    Object.keys(byDay).sort((a,b) => a-b).forEach(dayNum => {
-      const items = byDay[dayNum];
-      const dayHdr = document.createElement('div');
-      dayHdr.style.cssText = 'font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--accent2);padding:12px 0 6px;text-transform:uppercase';
-      dayHdr.textContent = `Day ${dayNum} · ${items[0].dayTitle || ''}`;
-      scroll.appendChild(dayHdr);
-
-      items.forEach((t, ti) => {
-        const card = document.createElement('div');
-        card.className = 'bp-card';
-        card.style.cssText = 'cursor:pointer';
-        const id = `dt-${dayNum}-${ti}`;
-        card.id = id;
-        card.innerHTML = `
-          <div class="bp-trigger" onclick="document.getElementById('${id}').classList.toggle('open')">
-            <div>
-              <div class="bp-route">${t.icon} ${esc(t.title)}</div>
-              <div class="bp-meta">${esc(t.date)} · ${esc(t.time)}${t.price ? ' · <span style="color:#4ade80;font-weight:700">' + esc(t.price) + '</span>' : ''}</div>
-            </div>
-            <span class="bp-chevron">▾</span>
-          </div>
-          <div class="bp-body" style="padding:12px 14px">
-            <div style="font-size:13px;line-height:1.6;color:var(--text2)">${esc(t.detail)}</div>
-            ${t.mapQuery ? '<a style="display:inline-block;margin-top:8px;font-size:12px;color:var(--accent2);font-weight:700" href="https://maps.google.com/?q=' + encodeURIComponent(t.mapQuery) + '" target="_blank">📍 Open in Maps</a>' : ''}
-          </div>`;
-        scroll.appendChild(card);
-      });
-    });
-  }
-
-    // ── NEXT TICKET DERIVATION ──
-  const nowYmd = getTripDateInfo ? getTripDateInfo().ymd : new Date().toISOString().slice(0,10);
-  const upcoming = (p.tickets||[]).filter(t => {
-    // Parse ticket date: "Mar 23, 2026" or "2026-03-23" format
-    const raw = t.date||'';
-    const m = raw.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/);
-    if(m){ const months={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const d=new Date(Date.UTC(parseInt(m[3]),months[m[1]]||0,parseInt(m[2]))); return d.toISOString().slice(0,10) >= nowYmd; }
-    return raw >= nowYmd;
-  }).sort((a,b) => {
-    const parseD = s => { const mo={'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11}; const lm=s.match(/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/); if(lm) return new Date(Date.UTC(+lm[3],mo[lm[1]]||0,+lm[2])).getTime(); return new Date(s).getTime()||0; };
-    return parseD(a.date||'') - parseD(b.date||'');
-  });
-  const nextTkt = upcoming[0] || null;
-  const hero = document.getElementById('nextTicketHero');
-  if(nextTkt && hero){
-    hero.style.display = '';
-    document.getElementById('nextTktRoute').textContent = (/gallery|museum|uffizi|accademia|colosseum|vatican/i.test(nextTkt.name||'')?'🎟️':/penang|flight|SQ/i.test(nextTkt.name||'')?'✈️':'🚂') + ' ' + (nextTkt.name||'');
-    const firstLeg = (nextTkt.legs||[])[0];
-    document.getElementById('nextTktMeta').textContent = (nextTkt.date||'') + (firstLeg ? ' · ' + (firstLeg.fromTime||'') + ' from ' + (firstLeg.from||'') + (firstLeg.fromPlatform?' · Platform '+firstLeg.fromPlatform:'') : '');
-    // Derive pax0 across both schemas (passengers[] or seats[])
-    const pax0 = (nextTkt.passengers||[])[0] || (nextTkt.seats||[]).map((s,si)=>({
-      name: s.traveler||s.passenger||('Traveller '+(si+1)),
-      pdfUrl: s.pdfUrl||(si===0?nextTkt.pdfUrl:null)
-    }))[0];
-    const tktPdfUrl = (pax0&&pax0.pdfUrl) || nextTkt.pdfUrl || '';
-    const tktTitle  = nextTkt.title || nextTkt.name || '';
-    const actEl = document.getElementById('nextTktActions');
-    actEl.innerHTML = `<button class="next-tkt-btn primary" onclick="openTicket(${JSON.stringify(tktTitle)})">View ticket →</button>`
-      + (tktPdfUrl ? `<a class="next-tkt-btn" href="${tktPdfUrl}" target="_blank">📄 Open PDF</a>` : '');
-  }
-  document.getElementById('saveBar').style.display='flex';
-  renderLiveOps();
-  try { localStorage.setItem('tripva_plan',JSON.stringify(p)); } catch(e){}
-  document.getElementById('saveBar').style.display='flex';
+    // populateDashboard (called above) handles derived tickets + next-ticket hero
+    document.getElementById('saveBar').style.display='flex';
+    try { localStorage.setItem('tripva_plan',JSON.stringify(plan)); } catch(e){}
     setTimeout(()=>switchTab('trip'),400);
     showToast('✅ Trip loaded!');
   } catch(e){console.warn('Hash load failed',e);}
@@ -5528,13 +5453,14 @@ async function submitPlan() {
     if (msg) document.getElementById('planProgMsg').textContent = msg;
   };
 
+  const _planCtrl = new AbortController();
+  let _planAbort, _planWarn, _planWarn2;
   try {
     updateProgress('Thinking…', 'Claude is designing your route');
     // Timeout: warn at 45s, abort at 150s
-    const _planCtrl = new AbortController();
-    const _planAbort = setTimeout(() => _planCtrl.abort(), 150000);
-    const _planWarn = setTimeout(() => updateProgress(null, '⏳ Still working — complex trips take a bit longer…'), 45000);
-    const _planWarn2 = setTimeout(() => updateProgress(null, '⏳ Almost there — hang tight…'), 90000);
+    _planAbort = setTimeout(() => _planCtrl.abort(), 150000);
+    _planWarn = setTimeout(() => updateProgress(null, '⏳ Still working — complex trips take a bit longer…'), 45000);
+    _planWarn2 = setTimeout(() => updateProgress(null, '⏳ Almost there — hang tight…'), 90000);
     const resp = await fetch(BACKEND_URL + '/api/plan?stream=true', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -5603,7 +5529,7 @@ async function submitPlan() {
       renderLiveOps();
       switchTab('trip');
       if (window._lastShareUrl) {
-        setTimeout(() => showToast('🔗 Trip saved! <a href="' + window._lastShareUrl + '" target="_blank" style="color:#95b8ff;text-decoration:underline">Open share link</a>', 5000), 1000);
+        setTimeout(() => showToast('🔗 Trip saved! <a href="' + esc(window._lastShareUrl) + '" target="_blank" rel="noopener" style="color:#95b8ff;text-decoration:underline">Open share link</a>', 5000), 1000);
       }
     }, 800);
 
@@ -6292,7 +6218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── TRIP AUTH / SAVE ────────────────────────────────────────────
-var TRIPVA_BACKEND = 'https://tripai-backend.vercel.app';
+var TRIPVA_BACKEND = BACKEND_URL; // consolidated — use BACKEND_URL as single source of truth
 
 function getTripvaSession(){
   try{ return JSON.parse(localStorage.getItem('tripva_session')||'null'); }catch(e){ return null; }
