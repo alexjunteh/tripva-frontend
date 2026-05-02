@@ -1415,6 +1415,17 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 /* ── AUTH SAVE BTN ─────────────────────────────────────────── */
 .save-btn.auth-save{background:linear-gradient(135deg,#b8963e,#d4a84b);color:#fff}
 .save-btn.auth-save:hover{opacity:0.9}
+.spots-skel-card{height:130px;background:var(--surface);border:1px solid var(--border);border-radius:16px;opacity:.7;animation:spotsShimmer 1.5s ease-in-out infinite}
+@keyframes spotsShimmer{0%,100%{opacity:.4}50%{opacity:.7}}
+.spot-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 15px;display:flex;flex-direction:column;gap:8px}
+.spot-card-name{font-size:15px;font-weight:800;color:rgba(255,255,255,.92);display:flex;align-items:center;gap:6px}
+.spot-card-desc{font-size:13px;color:rgba(255,255,255,.6);line-height:1.45}
+.spot-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.spot-best-time{font-size:11px;font-weight:700;background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.25);border-radius:8px;padding:3px 9px}
+.spot-map-link{font-size:11px;font-weight:700;color:#7c6af7;text-decoration:none;background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.25);border-radius:8px;padding:3px 9px}
+.spot-tip{font-size:12px;color:rgba(255,255,255,.45);font-style:italic;padding-top:4px;border-top:1px solid var(--border)}
+.spot-tags{display:flex;flex-wrap:wrap;gap:5px}
+.spot-tag{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);border-radius:6px;padding:2px 7px}
 </style>
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -1695,6 +1706,30 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
   </div>
 </div>
 
+<div id="tab-spots" class="tab-content">
+  <div style="padding:16px 16px 80px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;height:100%">
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 0 8px">
+      <span style="font-size:22px">📸</span>
+      <div>
+        <div style="font-size:17px;font-weight:800;color:rgba(255,255,255,.92)">Photo Spots</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.38);margin-top:1px">Best spots to photograph in your destination</div>
+      </div>
+    </div>
+    <div id="spots-skeleton" style="display:flex;flex-direction:column;gap:10px">
+      <div class="spots-skel-card"></div>
+      <div class="spots-skel-card"></div>
+      <div class="spots-skel-card"></div>
+    </div>
+    <div id="spots-error" style="display:none;text-align:center;padding:40px 20px;color:rgba(255,255,255,.38)">
+      <div style="font-size:32px;margin-bottom:10px">📷</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:6px;color:rgba(255,255,255,.6)">Couldn't load photo spots</div>
+      <div style="font-size:13px">Check your connection and try again</div>
+      <button onclick="loadPhotoSpots(true)" style="margin-top:16px;background:rgba(124,106,247,.2);border:1px solid rgba(124,106,247,.4);color:#a78bfa;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer">Retry</button>
+    </div>
+    <div id="spots-grid" style="display:none;flex-direction:column;gap:10px"></div>
+  </div>
+</div>
+
 <!-- ── 7. TIPS (via More) ── -->
 <div id="tab-tips" class="tab-content">
   <div class="sub-header">
@@ -1782,6 +1817,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
   <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></button>
   <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></button>
   <button class="nav-btn" id="nav-budget" onclick="openMoreTab('budget')"><span class="nav-icon">💰</span><span class="nav-lbl">Budget</span></button>
+  <button class="nav-btn" id="nav-spots" onclick="switchTab('spots');loadPhotoSpots()"><span class="nav-icon">📸</span><span class="nav-lbl">Spots</span></button>
   <button class="nav-btn" id="nav-more" onclick="openMore()"><span class="nav-icon">⋯</span><span class="nav-lbl">More</span></button>
 </nav>
 
@@ -2433,6 +2469,47 @@ function openPackModal() {
 
 function closePackModal() {
   document.getElementById('packModal').classList.remove('open');
+}
+
+let _spotsLoaded = false;
+async function loadPhotoSpots(force) {
+  if (_spotsLoaded && !force) return;
+  const dest = plan?.trip?.destination;
+  if (!dest) return;
+
+  _spotsLoaded = false;
+  document.getElementById('spots-skeleton').style.display = 'flex';
+  document.getElementById('spots-error').style.display = 'none';
+  document.getElementById('spots-grid').style.display = 'none';
+
+  try {
+    const res = await fetch(BACKEND_URL + '/api/photospot?destination=' + encodeURIComponent(dest));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const spots = Array.isArray(data.spots) ? data.spots : [];
+
+    const grid = document.getElementById('spots-grid');
+    grid.innerHTML = spots.map(s => `
+      <div class="spot-card">
+        <div class="spot-card-name">📍 ${esc(s.name || '')}</div>
+        <div class="spot-card-desc">${esc(s.description || '')}</div>
+        ${s.tags && s.tags.length ? `<div class="spot-tags">${s.tags.map(t => `<span class="spot-tag">${esc(t)}</span>`).join('')}</div>` : ''}
+        <div class="spot-card-footer">
+          <span class="spot-best-time">${esc(s.bestTime || '')}</span>
+          ${s.lat && s.lng ? `<a class="spot-map-link" href="https://maps.google.com/?q=${encodeURIComponent(s.name+', '+dest)}&ll=${s.lat},${s.lng}&z=15" target="_blank" rel="noopener">🗺 Map</a>` : ''}
+        </div>
+        ${s.tip ? `<div class="spot-tip">💡 ${esc(s.tip)}</div>` : ''}
+      </div>
+    `).join('');
+
+    document.getElementById('spots-skeleton').style.display = 'none';
+    grid.style.display = 'flex';
+    _spotsLoaded = true;
+  } catch (e) {
+    console.error('[spots]', e);
+    document.getElementById('spots-skeleton').style.display = 'none';
+    document.getElementById('spots-error').style.display = 'block';
+  }
 }
 
 async function fetchPacking() {
@@ -4928,17 +5005,9 @@ const SPOT_PHOTO_DB = {
   // Venice — Flickr verified
   'bridge of sighs':      'https://live.staticflickr.com/65535/52493320633_50b8c1396c_b.jpg',
   'libreria acqua alta':  'https://live.staticflickr.com/4697/39445545884_3792440f92_b.jpg',
-  // Venice — Unsplash city fallbacks
-  "st mark":              'https://loremflickr.com/600/400/travel,city',
-  "accademia bridge":     'https://loremflickr.com/600/400/travel,city',
-  "scala contarini":      'https://loremflickr.com/600/400/travel,city',
   // Cinque Terre — Flickr verified
   "vernazza":             'https://live.staticflickr.com/65535/53111656785_b2d2e9bb86_b.jpg',
   "manarola":             'https://live.staticflickr.com/65535/50543709071_3fc27656cf_b.jpg',
-  // Switzerland — Unsplash verified
-  "chapel bridge":        'https://loremflickr.com/600/400/travel,city',
-  "eiger":                'https://loremflickr.com/600/400/travel,city',
-  "grindelwald":          'https://loremflickr.com/600/400/travel,city',
   // Florence — Flickr verified
   "piazzale michelangelo":'https://live.staticflickr.com/65535/51524143636_4645131122_b.jpg',
   "ponte vecchio":        'https://live.staticflickr.com/65535/53897311701_5246910f88_b.jpg',
@@ -4947,28 +5016,14 @@ const SPOT_PHOTO_DB = {
   "trevi":                'https://live.staticflickr.com/65535/52821162431_efdcb72951_b.jpg',
   "pantheon":             'https://live.staticflickr.com/65535/54721824094_8698acd543_b.jpg',
 };
-// City fallback images (Unsplash — verified 200)
-const CITY_PHOTO_FALLBACK = {
-  'venice':   'https://loremflickr.com/600/400/travel,city',
-  'florence': 'https://loremflickr.com/600/400/travel,city',
-  'rome':     'https://loremflickr.com/600/400/travel,city',
-  'lucerne':  'https://loremflickr.com/600/400/travel,city',
-  'cinque terre': 'https://loremflickr.com/600/400/travel,city',
-};
+// Returns a verified photo URL, or null when no match (no fallback — wrong photo = worse than no photo)
 function getSpotPhoto(title, city) {
   const t = (title||'').toLowerCase();
-  // Scan DB by keyword match (longest match wins)
   let best = null, bestLen = 0;
   for(const [kw, url] of Object.entries(SPOT_PHOTO_DB)){
     if(t.includes(kw) && kw.length > bestLen){ best=url; bestLen=kw.length; }
   }
-  if(best) return best;
-  // City fallback
-  const c = (city||'').toLowerCase();
-  for(const [cw, url] of Object.entries(CITY_PHOTO_FALLBACK)){
-    if(c.includes(cw)) return url;
-  }
-  return 'https://loremflickr.com/600/400/travel,city';
+  return best;
 }
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
@@ -5019,7 +5074,7 @@ function renderDaySheet(idx) {
       <div class="tl-main">
         <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?`<div class="tl-ps-wrap"><img src="${getSpotPhoto(tl.title,d.city||'')}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">${tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:''}</div>`:(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
+        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');return`<div class="tl-ps-wrap">${_sp?`<img src="${_sp}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
