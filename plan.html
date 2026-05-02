@@ -677,8 +677,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Travellers +/−
   document.getElementById('btn-minus').onclick = () => { window._travTouched = true; adjTrav(-1); };
   document.getElementById('btn-plus').onclick  = () => { window._travTouched = true; adjTrav(1); };
-  document.getElementById('submitBtn').onclick = submitTrip;
-
   // Interests (delegated)
   document.getElementById('f-interests').addEventListener('click', e => {
     const c = e.target.closest('.chip-int');
@@ -751,23 +749,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('authSkip2').onclick = skipAuth;
   document.getElementById('genDoneBtn').onclick = openGeneratedTrip;
   var submitBtn = document.getElementById('submitBtn');
-  var stickyCta = null;
-  var scrollHint = document.getElementById('scrollHint');
-  if (submitBtn && stickyCta) {
-    var io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          stickyCta.classList.remove('show');
-          if (scrollHint) scrollHint.style.display = 'none';
-        } else {
-          stickyCta.classList.add('show');
-        }
-      });
-    }, { threshold: 0.1 });
-    io.observe(submitBtn);
-    
-  }
-  // Always register submit button click
   if (submitBtn) submitBtn.onclick = submitTrip;
 });
 
@@ -858,6 +839,7 @@ async function submitTrip() {
 
   if (!dest) { showToast('&#9888; Where are you going?'); return; }
   if (!start || !end) { showToast('&#9888; Pick your travel dates'); return; }
+  if (end < start) { showToast('&#9888; End date must be after start date'); return; }
   if (!budget) { showToast('&#9888; Enter your budget'); return; }
   if (!interests.length) { showToast('&#9888; Pick at least one interest'); return; }
 
@@ -885,11 +867,11 @@ async function submitTrip() {
   const logRoute = addLog('&#9201;', 'Designing your route\u2026', 'active');
   const logDays = addLog('&#9201;', 'Building daily itineraries\u2026', '');
 
-  const _t60 = setTimeout(() => showToast('&#9201; Still building \u2014 almost done\u2026', 5000), 60000);
-  const _t120 = setTimeout(() => {
+  window._sseT60 = setTimeout(() => showToast('&#9201; Still building \u2014 almost done\u2026', 5000), 60000);
+  window._sseT120 = setTimeout(() => {
     document.getElementById('genEstimate').textContent = 'Still building \u2014 please wait\u2026';
   }, 120000);
-  const _tFail = setTimeout(() => {
+  window._sseTFail = setTimeout(() => {
     document.getElementById('genCta').innerHTML = '<button class="form-submit-btn" onclick="location.reload()">&#9888; Timed out \u2014 Retry</button>';
     document.getElementById('genCta').style.display = 'block';
   }, 180000);
@@ -953,7 +935,7 @@ async function submitTrip() {
       setTimeout(openGeneratedTrip, 500);
     }
   } catch(err) {
-    try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
+    try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
     document.getElementById('planForm').style.display = 'block';
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('genLog').innerHTML = '';
@@ -1116,7 +1098,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
     }
 
     case 'done': {
-      try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
+      try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
       setProgress(100);
       document.getElementById('genEstimate').textContent = '&#10024; Trip ready!';
       logDays.className = 'gen-log-item done';
@@ -1136,7 +1118,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
     }
 
     case 'error': {
-      try { clearTimeout(_t60); } catch(e){} try { clearTimeout(_t120); } catch(e){} try { clearTimeout(_tFail); } catch(e){}
+      try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
       showToast('&#9888; ' + (evt.message || 'Generation failed'), 5000);
       document.getElementById('planForm').style.display = 'block';
       document.getElementById('genScreen').style.display = 'none';
