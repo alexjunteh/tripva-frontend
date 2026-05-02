@@ -5026,31 +5026,51 @@ function getSpotPhoto(title, city) {
   return best;
 }
 // In-memory cache: query → url string ('' = confirmed no image)
-const _wikiThumbCache = {};
-async function _fetchWikiThumb(query) {
-  if (_wikiThumbCache[query] !== undefined) return _wikiThumbCache[query] || null;
+const _commonsCache = {};
+async function _fetchCommonsThumb(query) {
+  if (_commonsCache[query] !== undefined) return _commonsCache[query] || null;
   try {
-    const slug = query.trim().replace(/\s+/g,'_');
-    const r = await fetch(
-      'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(slug),
-      { signal: AbortSignal.timeout(5000) }
-    );
-    if (!r.ok) { _wikiThumbCache[query]=''; return null; }
-    const d = await r.json();
-    const url = d?.thumbnail?.source || '';
-    _wikiThumbCache[query] = url;
-    return url || null;
-  } catch { _wikiThumbCache[query]=''; return null; }
+    const url = 'https://commons.wikimedia.org/w/api.php?action=query' +
+      '&generator=search&gsrnamespace=6' +
+      '&gsrsearch=' + encodeURIComponent(query + ' filetype:bitmap') +
+      '&gsrlimit=10&prop=imageinfo&iiprop=url&iiurlwidth=600' +
+      '&format=json&origin=*';
+    const r = await fetch(url, { signal: AbortSignal.timeout(7000) });
+    if (!r.ok) { _commonsCache[query]=''; return null; }
+    const data = await r.json();
+    const pages = data?.query?.pages;
+    if (!pages) { _commonsCache[query]=''; return null; }
+    const SKIP = /flag|Flag|coat_of_arms|Coat_of_Arms|logo|Logo|icon|Icon|map|Map|diagram|Diagram|svg|SVG/;
+    for (const p of Object.values(pages)) {
+      const ii = p.imageinfo?.[0];
+      const thumb = ii?.thumburl || ii?.url || '';
+      if (thumb && /\.(jpg|jpeg|png|webp)/i.test(thumb) && !SKIP.test(thumb)) {
+        _commonsCache[query] = thumb;
+        return thumb;
+      }
+    }
+    _commonsCache[query]=''; return null;
+  } catch { _commonsCache[query]=''; return null; }
 }
-// After rendering photospot cards, async-inject Wikipedia thumbnails
+// Extract destination from plan (used for Commons image queries)
+function _planDestination() {
+  const dest = plan?.trip?.destination || plan?.trip?.city || '';
+  if (dest) return dest;
+  const nm = plan?.trip?.name || '';
+  const m = nm.match(/\b(?:in|to|at)\s+([A-Z][^,()]+?)(?:\s*[,(]|$)/i);
+  return m ? m[1].trim() : '';
+}
+// After rendering photospot cards, async-inject Wikimedia Commons thumbnails
 async function _populateWikiPhotos(container) {
   const cards = container.querySelectorAll('.tl-ps-wrap[data-wiki-spot]');
+  const dest = _planDestination();
   await Promise.all(Array.from(cards).map(async wrap => {
-    if (wrap.querySelector('.tl-ps-photo')) return; // already has static photo
-    const spot = wrap.dataset.wikiSpot;
-    const city = wrap.dataset.wikiCity;
-    let url = await _fetchWikiThumb(spot);
-    if (!url && city) url = await _fetchWikiThumb(city);
+    if (wrap.querySelector('.tl-ps-photo')) return;
+    const spot = wrap.dataset.wikiSpot || '';
+    const cleanSpot = spot.replace(/\b(at|the|a|an|for|of|on)\b/gi,' ').replace(/\s+/g,' ').trim();
+    const query = dest ? `${cleanSpot} ${dest}` : cleanSpot;
+    let url = await _fetchCommonsThumb(query);
+    if (!url && dest) url = await _fetchCommonsThumb(dest + ' travel');
     if (!url) return;
     const img = document.createElement('img');
     img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
@@ -5107,7 +5127,7 @@ function renderDaySheet(idx) {
       <div class="tl-main">
         <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^📸\s*Photospot:\s*/i,'').split(',')[0].trim();const _cy=(d.city||'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}" data-wiki-city="${esc(_cy)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${_sp}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
+        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^📸\s*Photospot:\s*/i,'').split(',')[0].trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${_sp}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
