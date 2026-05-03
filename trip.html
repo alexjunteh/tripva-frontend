@@ -1411,7 +1411,10 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 .save-btn.auth-save:hover{opacity:0.9}
 .spots-skel-card{height:130px;background:var(--surface);border:1px solid var(--border);border-radius:16px;opacity:.7;animation:spotsShimmer 1.5s ease-in-out infinite}
 @keyframes spotsShimmer{0%,100%{opacity:.4}50%{opacity:.7}}
-.spot-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 15px;display:flex;flex-direction:column;gap:8px}
+.spot-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;gap:0}
+.spot-card-img-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;background:var(--surface2)}
+.spot-card-img-placeholder{width:100%;height:100%;background:linear-gradient(135deg,rgba(124,106,247,.12),rgba(149,181,255,.08));animation:spotsShimmer 1.5s ease-in-out infinite}
+.spot-card-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .spot-card-name{font-size:15px;font-weight:800;color:rgba(255,255,255,.92);display:flex;align-items:center;gap:6px}
 .spot-card-desc{font-size:13px;color:rgba(255,255,255,.6);line-height:1.45}
 .spot-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
@@ -2463,49 +2466,81 @@ function closePackModal() {
 }
 
 let _spotsLoaded = false;
-async function loadPhotoSpots(force) {
+function loadPhotoSpots(force) {
   if (_spotsLoaded && !force) return;
+
+  const skelEl  = document.getElementById('spots-skeleton');
+  const errEl   = document.getElementById('spots-error');
+  const gridEl  = document.getElementById('spots-grid');
+
+  // Collect all photospot timeline items from plan days — no backend call needed
+  const days = plan?.days || [];
   const dest = plan?.trip?.destination || plan?.trip?.city ||
     (()=>{ const nm=plan?.trip?.name||''; const m=nm.match(/\b(?:in|to|at)\s+([A-Z][^,()]+?)(?:\s*[,(]|$)/i); return m?m[1].trim():''; })();
-  if (!dest) {
-    document.getElementById('spots-skeleton').style.display='none';
-    document.getElementById('spots-error').style.display='block';
+
+  const spots = [];
+  days.forEach((d, di) => {
+    (d.timeline || []).forEach((tl, ti) => {
+      if (tl.type === 'photospot') {
+        spots.push({ tl, dayIdx: di, tlIdx: ti, dayNum: d.day });
+      }
+    });
+  });
+
+  if (!spots.length) {
+    skelEl.style.display = 'none';
+    errEl.style.display = 'block';
+    errEl.querySelector('div:nth-child(2)').textContent = 'No photo spots in this trip plan';
     return;
   }
 
-  _spotsLoaded = false;
-  document.getElementById('spots-skeleton').style.display = 'flex';
-  document.getElementById('spots-error').style.display = 'none';
-  document.getElementById('spots-grid').style.display = 'none';
+  skelEl.style.display = 'none';
+  errEl.style.display = 'none';
 
-  try {
-    const res = await fetch(BACKEND_URL + '/api/photospot?destination=' + encodeURIComponent(dest));
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const spots = Array.isArray(data.spots) ? data.spots : [];
-
-    const grid = document.getElementById('spots-grid');
-    grid.innerHTML = spots.map(s => `
-      <div class="spot-card">
-        <div class="spot-card-name">📍 ${esc(s.name || '')}</div>
-        <div class="spot-card-desc">${esc(s.description || '')}</div>
-        ${s.tags && s.tags.length ? `<div class="spot-tags">${s.tags.map(t => `<span class="spot-tag">${esc(t)}</span>`).join('')}</div>` : ''}
-        <div class="spot-card-footer">
-          <span class="spot-best-time">${esc(s.bestTime || '')}</span>
-          ${s.lat && s.lng ? `<a class="spot-map-link" href="https://maps.google.com/?q=${encodeURIComponent(s.name+', '+dest)}&ll=${s.lat},${s.lng}&z=15" target="_blank" rel="noopener">🗺 Map</a>` : ''}
-        </div>
-        ${s.tip ? `<div class="spot-tip">💡 ${esc(s.tip)}</div>` : ''}
+  gridEl.innerHTML = spots.map(({ tl, dayIdx, dayNum }) => {
+    const cleanName = (tl.title || '').replace(/^[^\w]*photospot:\s*/i, '').trim() || (tl.title || '');
+    const mapQuery  = tl.mapQuery || (cleanName + (dest ? ', ' + dest : ''));
+    const wikiAttr  = `data-wiki-spot="${esc(mapQuery)}"`;
+    return `<div class="spot-card" ${wikiAttr} onclick="switchTab('days');setTimeout(()=>openDaySheet(${dayIdx}),150)" style="cursor:pointer">
+      <div class="spot-card-img-wrap">
+        <div class="spot-card-img-placeholder"></div>
       </div>
-    `).join('');
+      <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px">
+        <div class="spot-card-name">📍 ${esc(cleanName)}</div>
+        ${tl.detail ? `<div class="spot-card-desc">${esc(tl.detail)}</div>` : ''}
+        ${tl.tip ? `<div class="spot-tip">💡 ${esc(tl.tip)}</div>` : ''}
+        <div class="spot-card-footer">
+          <span class="spot-best-time">Day ${dayNum}</span>
+          <a class="spot-map-link" href="https://maps.google.com/?q=${encodeURIComponent(mapQuery)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🗺 Map</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 
-    document.getElementById('spots-skeleton').style.display = 'none';
-    grid.style.display = 'flex';
-    _spotsLoaded = true;
-  } catch (e) {
-    console.error('[spots]', e);
-    document.getElementById('spots-skeleton').style.display = 'none';
-    document.getElementById('spots-error').style.display = 'block';
-  }
+  gridEl.style.display = 'flex';
+  _spotsLoaded = true;
+
+  // Async-inject Wikimedia Commons photos into each card
+  _populateSpotsPhotos(gridEl, dest);
+}
+
+async function _populateSpotsPhotos(container, dest) {
+  const cards = Array.from(container.querySelectorAll('.spot-card[data-wiki-spot]'));
+  await Promise.all(cards.map(async card => {
+    const query = card.dataset.wikiSpot || '';
+    const wrap  = card.querySelector('.spot-card-img-wrap');
+    if (!wrap) return;
+    const alreadyHasDest = dest && query.toLowerCase().includes(dest.toLowerCase());
+    const fullQuery = alreadyHasDest ? query : (dest ? `${query} ${dest}` : query);
+    let url = await _fetchCommonsThumb(fullQuery);
+    if (!url && dest) url = await _fetchCommonsThumb(dest + ' beach landscape');
+    if (!url) { wrap.style.display = 'none'; return; }
+    const img = document.createElement('img');
+    img.src = url; img.alt = query; img.loading = 'lazy';
+    img.onerror = () => { wrap.style.display = 'none'; };
+    wrap.querySelector('.spot-card-img-placeholder')?.remove();
+    wrap.appendChild(img);
+  }));
 }
 
 async function fetchPacking() {
