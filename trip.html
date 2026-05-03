@@ -2307,13 +2307,10 @@ function updateBudgetConversions() {
 }
 
 function initFxBar() {
-  const sel = document.getElementById('fxSelect');
-  if (!sel) return;
-  // init chip strip
+  // Sync chip active states
   document.querySelectorAll('.fx-chip').forEach(c => {
     c.classList.toggle('active', c.dataset.cur === fxHomeCurrency);
   });
-  const il = document.getElementById('fxSelectInline'); if(il) il.value = fxHomeCurrency;
   fxSourceCurrency = detectSourceCurrency(plan?.trip?.destination || '');
   loadFxRates().then(() => updateBudgetConversions());
 }
@@ -2739,13 +2736,10 @@ window.CITY_IMGS = {
     'hiroshima':'https://loremflickr.com/900/500/hiroshima,travel',
     'hakone':'https://loremflickr.com/900/500/hakone,travel',
     'japan':'https://loremflickr.com/900/500/japan,travel',
-    'seminyak':'https://loremflickr.com/900/500/seminyak,travel',
     'uluwatu':'https://loremflickr.com/900/500/uluwatu,travel',
     'denpasar':'https://loremflickr.com/900/500/denpasar,travel',
     'kyoto':'https://loremflickr.com/900/500/kyoto,travel',
     'osaka':'https://loremflickr.com/900/500/osaka,travel',
-    'hiroshima':'https://loremflickr.com/900/500/hiroshima,travel',
-    'nara':'https://loremflickr.com/900/500/nara,travel',
     // Southeast Asia
     'bangkok':'https://loremflickr.com/900/500/bangkok,travel',
     'chiang mai':'https://loremflickr.com/900/500/chiang-mai,travel',
@@ -5058,7 +5052,10 @@ function _planDestination() {
   return m ? m[1].trim() : '';
 }
 // After rendering photospot cards, async-inject Wikimedia Commons thumbnails
+// _wikiGenId increments each renderDaySheet — stale async calls abort early
+let _wikiGenId = 0;
 async function _populateWikiPhotos(container) {
+  const myGen = ++_wikiGenId;
   const cards = container.querySelectorAll('.tl-ps-wrap[data-wiki-spot]');
   const dest = _planDestination();
   await Promise.all(Array.from(cards).map(async wrap => {
@@ -5067,8 +5064,9 @@ async function _populateWikiPhotos(container) {
     const cleanSpot = spot.replace(/\b(at|the|a|an|for|of|on)\b/gi,' ').replace(/\s+/g,' ').trim();
     const query = dest ? `${cleanSpot} ${dest}` : cleanSpot;
     let url = await _fetchCommonsThumb(query);
+    if (_wikiGenId !== myGen) return; // user navigated away, discard
     if (!url && dest) url = await _fetchCommonsThumb(dest + ' travel');
-    if (!url) return;
+    if (_wikiGenId !== myGen || !url) return;
     const img = document.createElement('img');
     img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
     img.onerror = () => img.remove();
@@ -5276,7 +5274,26 @@ function openEditModal() {
   document.getElementById('editBudget').value = derivedBudget;
   document.getElementById('editModal').classList.add('open');
 }
-function saveEditedTrip() { tripMeta.name=document.getElementById('editName').value.trim()||'My Trip'; tripMeta.emoji=document.getElementById('editEmoji').value.trim()||'🌍'; tripMeta.dates=document.getElementById('editDates').value.trim(); tripMeta.people=document.getElementById('editPeople').value.trim(); tripMeta.budget=document.getElementById('editBudget').value.trim(); localStorage.setItem('tripai_meta',JSON.stringify(tripMeta)); restoreMeta(); closeModal('editModal'); showToast('✅ Saved'); }
+function saveEditedTrip() {
+  tripMeta.name   = document.getElementById('editName').value.trim()   || 'My Trip';
+  tripMeta.emoji  = document.getElementById('editEmoji').value.trim()  || '🌍';
+  tripMeta.dates  = document.getElementById('editDates').value.trim();
+  tripMeta.people = document.getElementById('editPeople').value.trim();
+  tripMeta.budget = document.getElementById('editBudget').value.trim();
+  // Sync plan.trip so Live tab / FocusCard / hero see updated values immediately
+  if (plan && plan.trip) {
+    plan.trip.name   = tripMeta.name;
+    plan.trip.emoji  = tripMeta.emoji;
+    plan.trip.dates  = tripMeta.dates;
+    plan.trip.people = tripMeta.people;
+    plan.trip.budget = tripMeta.budget;
+    try { localStorage.setItem('tripva_plan', JSON.stringify(plan)); } catch(e) {}
+  }
+  localStorage.setItem('tripai_meta', JSON.stringify(tripMeta));
+  restoreMeta();
+  closeModal('editModal');
+  showToast('✅ Saved');
+}
 function _fmtBudgetCompact(n){
   const v = Math.round(n);
   if (v >= 1_000_000) return (v/1_000_000).toFixed(v >= 10_000_000 ? 0 : 1).replace(/\.0$/,'') + 'm';
