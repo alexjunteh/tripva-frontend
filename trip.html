@@ -2714,6 +2714,36 @@ function resetPacking() {
   if (packingData) renderPackingList(packingData);
 }
 
+// In-memory cache: query → url string ('' = confirmed no image)
+const _commonsCache = {};
+async function _fetchCommonsThumb(query) {
+  if (_commonsCache[query] !== undefined) return _commonsCache[query] || null;
+  try {
+    const url = 'https://commons.wikimedia.org/w/api.php?action=query' +
+      '&generator=search&gsrnamespace=6' +
+      '&gsrsearch=' + encodeURIComponent(query + ' filetype:bitmap') +
+      '&gsrlimit=10&prop=imageinfo&iiprop=url&iiurlwidth=600' +
+      '&format=json&origin=*';
+    const _ctrl = new AbortController();
+    const _to = setTimeout(() => _ctrl.abort(), 7000);
+    const r = await fetch(url, { signal: _ctrl.signal }).finally(() => clearTimeout(_to));
+    if (!r.ok) { _commonsCache[query]=''; return null; }
+    const data = await r.json();
+    const pages = data?.query?.pages;
+    if (!pages) { _commonsCache[query]=''; return null; }
+    const SKIP = /flag|Flag|coat_of_arms|Coat_of_Arms|logo|Logo|icon|Icon|map|Map|diagram|Diagram|svg|SVG/;
+    for (const p of Object.values(pages)) {
+      const ii = p.imageinfo?.[0];
+      const thumb = ii?.thumburl || ii?.url || '';
+      if (thumb && /\.(jpg|jpeg|png|webp)/i.test(thumb) && !SKIP.test(thumb)) {
+        _commonsCache[query] = thumb;
+        return thumb;
+      }
+    }
+    _commonsCache[query]=''; return null;
+  } catch { _commonsCache[query]=''; return null; }
+}
+
 // ══════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════
@@ -5093,35 +5123,6 @@ function getSpotPhoto(title, city) {
     if(t.includes(kw) && kw.length > bestLen){ best=url; bestLen=kw.length; }
   }
   return best;
-}
-// In-memory cache: query → url string ('' = confirmed no image)
-const _commonsCache = {};
-async function _fetchCommonsThumb(query) {
-  if (_commonsCache[query] !== undefined) return _commonsCache[query] || null;
-  try {
-    const url = 'https://commons.wikimedia.org/w/api.php?action=query' +
-      '&generator=search&gsrnamespace=6' +
-      '&gsrsearch=' + encodeURIComponent(query + ' filetype:bitmap') +
-      '&gsrlimit=10&prop=imageinfo&iiprop=url&iiurlwidth=600' +
-      '&format=json&origin=*';
-    const _ctrl = new AbortController();
-    const _to = setTimeout(() => _ctrl.abort(), 7000);
-    const r = await fetch(url, { signal: _ctrl.signal }).finally(() => clearTimeout(_to));
-    if (!r.ok) { _commonsCache[query]=''; return null; }
-    const data = await r.json();
-    const pages = data?.query?.pages;
-    if (!pages) { _commonsCache[query]=''; return null; }
-    const SKIP = /flag|Flag|coat_of_arms|Coat_of_Arms|logo|Logo|icon|Icon|map|Map|diagram|Diagram|svg|SVG/;
-    for (const p of Object.values(pages)) {
-      const ii = p.imageinfo?.[0];
-      const thumb = ii?.thumburl || ii?.url || '';
-      if (thumb && /\.(jpg|jpeg|png|webp)/i.test(thumb) && !SKIP.test(thumb)) {
-        _commonsCache[query] = thumb;
-        return thumb;
-      }
-    }
-    _commonsCache[query]=''; return null;
-  } catch { _commonsCache[query]=''; return null; }
 }
 // Extract destination from plan (used for Commons image queries)
 function _planDestination() {
