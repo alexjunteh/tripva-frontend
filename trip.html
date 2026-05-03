@@ -2465,8 +2465,13 @@ function closePackModal() {
 let _spotsLoaded = false;
 async function loadPhotoSpots(force) {
   if (_spotsLoaded && !force) return;
-  const dest = plan?.trip?.destination;
-  if (!dest) return;
+  const dest = plan?.trip?.destination || plan?.trip?.city ||
+    (()=>{ const nm=plan?.trip?.name||''; const m=nm.match(/\b(?:in|to|at)\s+([A-Z][^,()]+?)(?:\s*[,(]|$)/i); return m?m[1].trim():''; })();
+  if (!dest) {
+    document.getElementById('spots-skeleton').style.display='none';
+    document.getElementById('spots-error').style.display='block';
+    return;
+  }
 
   _spotsLoaded = false;
   document.getElementById('spots-skeleton').style.display = 'flex';
@@ -5061,11 +5066,16 @@ async function _populateWikiPhotos(container) {
   await Promise.all(Array.from(cards).map(async wrap => {
     if (wrap.querySelector('.tl-ps-photo')) return;
     const spot = wrap.dataset.wikiSpot || '';
+    // Use the full mapQuery as the primary query (already destination-qualified, e.g. "Coral Garden, Maldives")
+    // Clean articles only, keep commas/destination info intact
     const cleanSpot = spot.replace(/\b(at|the|a|an|for|of|on)\b/gi,' ').replace(/\s+/g,' ').trim();
-    const query = dest ? `${cleanSpot} ${dest}` : cleanSpot;
+    // If dest not already in spot, append it; otherwise use spot directly
+    const alreadyHasDest = dest && spot.toLowerCase().includes(dest.toLowerCase());
+    const query = alreadyHasDest ? cleanSpot : (dest ? `${cleanSpot} ${dest}` : cleanSpot);
     let url = await _fetchCommonsThumb(query);
     if (_wikiGenId !== myGen) return; // user navigated away, discard
-    if (!url && dest) url = await _fetchCommonsThumb(dest + ' travel');
+    // Fallback: try destination only (generic but better than nothing)
+    if (!url && dest) url = await _fetchCommonsThumb(dest + ' beach landscape');
     if (_wikiGenId !== myGen || !url) return;
     const img = document.createElement('img');
     img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
@@ -5113,6 +5123,7 @@ function renderDaySheet(idx) {
     const isLast=i===(d.timeline||[]).length-1;
     const typeClass=tl.type||'activity';
     const mapLink=tl.mapQuery?`<a class="tl-map-btn" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank" onclick="event.stopPropagation()">📍 Map</a>`:'';
+    const dispTitle=tl.type==='photospot'?(tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim()||(tl.title||''):(tl.title||'');
     return `<div class="tl-item" onclick="openEditSheet(${idx},${i})" title="Tap to edit">
       <div class="tl-left"><div class="tl-time">${esc(tl.time||'')}</div></div>
       <div class="tl-dot-col">
@@ -5120,9 +5131,9 @@ function renderDaySheet(idx) {
         ${!isLast?'<div class="tl-line"></div>':''}
       </div>
       <div class="tl-main">
-        <div class="tl-title">${esc(tl.title||'')}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
+        <div class="tl-title">${esc(dispTitle)}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^📸\s*Photospot:\s*/i,'').split(',')[0].trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${_sp}" alt="${esc(tl.title)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
+        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${_sp}" alt="${esc(dispTitle)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${mapLink}
