@@ -559,18 +559,16 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 <div class="auth-modal-bg" id="authModalBg">
   <div class="auth-modal">
     <div id="authModalContent">
-      <h3>&#9992; Save your trip</h3>
-      <p>Enter your email to save this trip to your account and access it from any device.</p>
+      <h3>&#10024; Your trip is ready!</h3>
+      <p>Enter your email to access your full itinerary and save it to your account.</p>
       <input class="auth-email-input" type="email" id="authEmailInput" placeholder="you@example.com" autocomplete="email">
-      <button class="auth-submit-btn" id="authSubmitBtn">Send magic link &#8594;</button>
-      <span class="auth-skip" id="authSkip">Continue without saving</span>
+      <button class="auth-submit-btn" id="authSubmitBtn">View my trip &#8594;</button>
     </div>
     <div id="authSentContent" style="display:none">
       <div style="text-align:center;padding:8px 0">
         <div style="font-size:40px;margin-bottom:12px">&#128234;</div>
-        <h3 style="margin-bottom:8px">Check your email</h3>
-        <p>Sent a magic link to <strong id="authSentEmail"></strong>.<br>Click it to save your trip.</p>
-        <span class="auth-skip" style="margin-top:16px;display:block" id="authSkip2">I'll do it later</span>
+        <h3 style="margin-bottom:8px">Magic link sent!</h3>
+        <p>We emailed a link to <strong id="authSentEmail"></strong>.<br>Click it anytime to return to your trip.</p>
       </div>
     </div>
   </div>
@@ -745,8 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('authSubmitBtn').onclick = sendMagicLink;
-  document.getElementById('authSkip').onclick = skipAuth;
-  document.getElementById('authSkip2').onclick = skipAuth;
+  document.getElementById('authEmailInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMagicLink(); });
   document.getElementById('genDoneBtn').onclick = openGeneratedTrip;
   var submitBtn = document.getElementById('submitBtn');
   if (submitBtn) submitBtn.onclick = submitTrip;
@@ -1112,7 +1109,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
       _shareUrl = evt.data && evt.data.saved ? evt.data.saved.url : null;
       localStorage.setItem('tripva_plan', JSON.stringify(planData.rawPlan || planData));
 
-      // Immediately redirect to dashboard
+      // Show email gate before navigating to dashboard
       setTimeout(openGeneratedTrip, 300);
       break;
     }
@@ -1189,38 +1186,35 @@ async function openGeneratedTrip() {
       } catch(e) { console.warn('[plan] pre-navigate budget patch failed:', e); }
     }
   } finally {
-    window.location.href = _shareUrl || '/trip.html';
+    // Show email gate — navigate only after email captured
+    document.getElementById('authModalBg').classList.add('open');
+    setTimeout(() => document.getElementById('authEmailInput').focus(), 300);
   }
 }
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 function sendMagicLink() {
   const email = document.getElementById('authEmailInput').value.trim();
-  if (!email) { showToast('&#9888; Enter your email'); return; }
-  document.getElementById('authSubmitBtn').textContent = 'Sending\u2026';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('&#9888; Enter a valid email'); return;
+  }
+  document.getElementById('authSubmitBtn').textContent = 'Just a sec\u2026';
+  // Save lead immediately regardless of API outcome
+  try { localStorage.setItem('tripva_lead_email', email); } catch(e) {}
+  // Fire magic link in background \u2014 don't block navigation on it
   fetch(BACKEND + '/api/user/magic-link', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
-  }).then(r => r.json()).then(data => {
-    if (data.ok) {
-      document.getElementById('authSentEmail').textContent = email;
-      document.getElementById('authModalContent').style.display = 'none';
-      document.getElementById('authSentContent').style.display = 'block';
-    } else {
-      showToast(data.message || 'Failed to send', 4000);
-      document.getElementById('authSubmitBtn').textContent = 'Send magic link \u2192';
-    }
-  }).catch(() => {
-    showToast('&#9888; Network error', 4000);
-    document.getElementById('authSubmitBtn').textContent = 'Send magic link \u2192';
-  });
+  }).catch(() => {}); // silent fail \u2014 lead is already saved
+  // Navigate immediately after a brief confirmation flash
+  document.getElementById('authSentEmail').textContent = email;
+  document.getElementById('authModalContent').style.display = 'none';
+  document.getElementById('authSentContent').style.display = 'block';
+  setTimeout(() => { window.location.href = _shareUrl || '/trip.html'; }, 1200);
 }
 
-function skipAuth() {
-  document.getElementById('authModalBg').classList.remove('open');
-  openGeneratedTrip();
-}
+
 </script>
 </body>
 </html>
