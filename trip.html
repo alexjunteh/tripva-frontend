@@ -2469,59 +2469,99 @@ let _spotsLoaded = false;
 function loadPhotoSpots(force) {
   if (_spotsLoaded && !force) return;
 
-  const skelEl  = document.getElementById('spots-skeleton');
-  const errEl   = document.getElementById('spots-error');
-  const gridEl  = document.getElementById('spots-grid');
+  const skelEl = document.getElementById('spots-skeleton');
+  const errEl  = document.getElementById('spots-error');
+  const gridEl = document.getElementById('spots-grid');
+  if (!skelEl || !errEl || !gridEl) return; // DOM not ready
 
-  // Collect all photospot timeline items from plan days — no backend call needed
-  const days = plan?.days || [];
   const dest = plan?.trip?.destination || plan?.trip?.city ||
-    (()=>{ const nm=plan?.trip?.name||''; const m=nm.match(/\b(?:in|to|at)\s+([A-Z][^,()]+?)(?:\s*[,(]|$)/i); return m?m[1].trim():''; })();
+    (()=>{ try { const nm=plan?.trip?.name||''; const m=nm.match(/\b(?:in|to|at)\s+([A-Z][^,()]+?)(?:\s*[,(]|$)/i); return m?m[1].trim():''; } catch(e){ return ''; } })();
 
+  // Collect photospot timeline items from plan days
   const spots = [];
-  days.forEach((d, di) => {
-    (d.timeline || []).forEach((tl, ti) => {
-      if (tl.type === 'photospot') {
-        spots.push({ tl, dayIdx: di, tlIdx: ti, dayNum: d.day });
-      }
+  try {
+    (plan?.days || []).forEach((d, di) => {
+      (d.timeline || []).forEach((tl) => {
+        if (tl.type === 'photospot') spots.push({ tl, dayIdx: di, dayNum: d.day });
+      });
     });
-  });
-
-  if (!spots.length) {
-    skelEl.style.display = 'none';
-    errEl.style.display = 'block';
-    errEl.querySelector('div:nth-child(2)').textContent = 'No photo spots in this trip plan';
-    return;
-  }
+  } catch(e) { /* ignore */ }
 
   skelEl.style.display = 'none';
-  errEl.style.display = 'none';
+  errEl.style.display  = 'none';
 
-  gridEl.innerHTML = spots.map(({ tl, dayIdx, dayNum }) => {
-    const cleanName = (tl.title || '').replace(/^[^\w]*photospot:\s*/i, '').trim() || (tl.title || '');
-    const mapQuery  = tl.mapQuery || (cleanName + (dest ? ', ' + dest : ''));
-    const wikiAttr  = `data-wiki-spot="${esc(mapQuery)}"`;
-    return `<div class="spot-card" ${wikiAttr} onclick="switchTab('days');setTimeout(()=>openDaySheet(${dayIdx}),150)" style="cursor:pointer">
-      <div class="spot-card-img-wrap">
-        <div class="spot-card-img-placeholder"></div>
-      </div>
-      <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px">
-        <div class="spot-card-name">📍 ${esc(cleanName)}</div>
-        ${tl.detail ? `<div class="spot-card-desc">${esc(tl.detail)}</div>` : ''}
-        ${tl.tip ? `<div class="spot-tip">💡 ${esc(tl.tip)}</div>` : ''}
-        <div class="spot-card-footer">
-          <span class="spot-best-time">Day ${dayNum}</span>
-          <a class="spot-map-link" href="https://maps.google.com/?q=${encodeURIComponent(mapQuery)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🗺 Map</a>
+  if (spots.length) {
+    // Render plan spots immediately
+    gridEl.innerHTML = spots.map(({ tl, dayIdx, dayNum }) => {
+      const cleanName = (tl.title || '').replace(/^[^\w]*photospot:\s*/i, '').trim() || (tl.title || '');
+      const mapQuery  = tl.mapQuery || (cleanName + (dest ? ', ' + dest : ''));
+      return `<div class="spot-card" data-wiki-spot="${esc(mapQuery)}" onclick="switchTab('days');setTimeout(()=>openDaySheet(${dayIdx}),150)" style="cursor:pointer">
+        <div class="spot-card-img-wrap"><div class="spot-card-img-placeholder"></div></div>
+        <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px">
+          <div class="spot-card-name">📍 ${esc(cleanName)}</div>
+          ${tl.detail ? `<div class="spot-card-desc">${esc(tl.detail)}</div>` : ''}
+          ${tl.tip ? `<div class="spot-tip">💡 ${esc(tl.tip)}</div>` : ''}
+          <div class="spot-card-footer">
+            <span class="spot-best-time">Day ${dayNum}</span>
+            <a class="spot-map-link" href="https://maps.google.com/?q=${encodeURIComponent(mapQuery)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🗺 Map</a>
+          </div>
         </div>
-      </div>
-    </div>`;
-  }).join('');
+      </div>`;
+    }).join('');
+    gridEl.style.display = 'flex';
+    _spotsLoaded = true;
+    _populateSpotsPhotos(gridEl, dest);
+  } else if (dest) {
+    // No plan spots — build a destination gallery from Commons directly
+    _buildDestGallery(gridEl, errEl, dest);
+  } else {
+    errEl.style.display = 'block';
+  }
+}
 
+async function _buildDestGallery(gridEl, errEl, dest) {
+  // Queries that reliably return travel photos for a destination
+  const queries = [
+    dest + ' landmark',
+    dest + ' beach',
+    dest + ' travel',
+    dest + ' scenic',
+  ];
+  const urls = [];
+  for (const q of queries) {
+    if (urls.length >= 6) break;
+    try {
+      const url = 'https://commons.wikimedia.org/w/api.php?action=query' +
+        '&generator=search&gsrnamespace=6&gsrsearch=' + encodeURIComponent(q + ' filetype:bitmap') +
+        '&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=600&format=json&origin=*';
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const data = await r.json();
+      const pages = data?.query?.pages;
+      if (!pages) continue;
+      const SKIP = /flag|coat_of_arms|logo|icon|map|diagram|\.svg/i;
+      for (const p of Object.values(pages)) {
+        if (urls.length >= 6) break;
+        const ii = p.imageinfo?.[0];
+        const thumb = ii?.thumburl || ii?.url || '';
+        if (thumb && /\.(jpg|jpeg|png|webp)/i.test(thumb) && !SKIP.test(thumb) && !urls.includes(thumb)) {
+          urls.push(thumb);
+        }
+      }
+    } catch(e) { /* silent */ }
+  }
+  if (!urls.length) { errEl.style.display = 'block'; return; }
+  gridEl.innerHTML = urls.map((u, i) => `
+    <div class="spot-card">
+      <div class="spot-card-img-wrap">
+        <img src="${u}" alt="${esc(dest)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.closest('.spot-card').style.display='none'">
+      </div>
+      <div style="padding:10px 14px 12px">
+        <div class="spot-card-name">📍 ${esc(dest)}</div>
+      </div>
+    </div>`).join('');
   gridEl.style.display = 'flex';
   _spotsLoaded = true;
-
-  // Async-inject Wikimedia Commons photos into each card
-  _populateSpotsPhotos(gridEl, dest);
 }
 
 async function _populateSpotsPhotos(container, dest) {
@@ -5657,6 +5697,7 @@ function fabInstall() {
 
   // ── Expose onclick handlers to global scope ──────────────────────────────
   window.switchTab      = switchTab;
+  window.loadPhotoSpots = loadPhotoSpots;
   window.openMore       = openMore;
   window.closeMore      = closeMore;
   window.openMoreTab    = openMoreTab;
