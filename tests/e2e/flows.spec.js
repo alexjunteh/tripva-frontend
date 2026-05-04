@@ -162,14 +162,8 @@ test.describe('Tripva E2E flows', () => {
         await route.continue();
       }
     });
-    // Mock Wikipedia photo API so spot cards show images instantly
-    await page.route('https://en.wikipedia.org/**', async route => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ thumbnail: { source: 'https://placehold.co/400x300/7c6af7/fff?text=Photo' } }),
-      });
-    });
+    // Do NOT mock Wikipedia — let real fetches happen so blank/wrong-image bugs are caught.
+    // Cards should always show at least loremflickr (instant placeholder) even if wiki is slow.
 
     await page.goto('/plan.html');
     await fillPlanForm(page, { dest: SPOT_DEST, budget: '$3000' });
@@ -183,6 +177,9 @@ test.describe('Tripva E2E flows', () => {
 
     // Spot cards must render
     await expect(page.locator('#spotGrid .spot-card')).toHaveCount(8, { timeout: 10_000 });
+
+    // Cards must NOT be blank — every card must have a non-empty img src (loremflickr at minimum)
+    await expect(page.locator('#spotGrid .spot-card img.loaded').first()).toBeVisible({ timeout: 8_000 });
 
     // The "Generate" button in spot footer should be visible
     await expect(page.locator('.spot-go-btn')).toBeVisible();
