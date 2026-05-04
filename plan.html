@@ -1117,12 +1117,11 @@ async function _fetchWikiPhoto(wikiSlug) {
     const d = await r.json();
     const src = d.thumbnail?.source;
     if (!src) return null;
-    // Sanity-check: thumbnail must be a Wikimedia Commons image, not a person/event photo
-    // (AI sometimes returns slugs that redirect to disambiguation or event pages)
-    const descUrl = d.content_urls?.desktop?.page || '';
-    const type = d.type || '';
-    if (type === 'disambiguation') return null;
-    return src.replace(/\/\d+px-/, '/800px-');
+    // Skip disambiguation pages — their thumbnails are unrelated to the place
+    if ((d.type || '') === 'disambiguation') return null;
+    // Use the URL as-is: Wikimedia only serves specific allowed sizes.
+    // Replacing e.g. 330px→800px causes HTTP 400 for images where 800px > original.
+    return src;
   } catch { return null; }
 }
 
