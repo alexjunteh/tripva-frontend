@@ -5,16 +5,21 @@ const BACKEND = 'https://tripai-backend.vercel.app';
 
 // ── Shared mock data ─────────────────────────────────────────────────────────
 
+// Use Tbilisi — NOT in the curated SPOT_DATA list (rome/paris/tokyo/etc.), so the
+// API mock is actually exercised. Curated destinations use hardcoded data and bypass
+// the fetch entirely, producing a different card count and defeating the mock assertion.
+const SPOT_DEST = 'Tbilisi';
+
 const MOCK_SPOTS = {
   spots: [
-    { name: 'Eiffel Tower', description: 'The iconic iron lattice tower on the Seine.', category: 'landmark', wikiSlug: 'Eiffel_Tower' },
-    { name: 'Louvre Museum', description: 'Home of the Mona Lisa and countless masterpieces.', category: 'museum', wikiSlug: 'Louvre' },
-    { name: 'Notre-Dame Cathedral', description: 'Gothic masterpiece rising above the Seine.', category: 'landmark', wikiSlug: 'Notre-Dame_de_Paris' },
-    { name: 'Montmartre', description: 'Bohemian hilltop village with sweeping city views.', category: 'culture', wikiSlug: 'Montmartre' },
-    { name: 'Palace of Versailles', description: 'Opulent royal palace surrounded by formal gardens.', category: 'landmark', wikiSlug: 'Palace_of_Versailles' },
-    { name: 'Musée d\'Orsay', description: 'Impressionist art in a stunning converted railway station.', category: 'museum', wikiSlug: 'Mus%C3%A9e_d\'Orsay' },
-    { name: 'Seine River', description: 'Boat past illuminated bridges and monuments at dusk.', category: 'nature', wikiSlug: 'Seine' },
-    { name: 'Champs-Élysées', description: 'The world\'s most famous avenue lined with luxury boutiques.', category: 'street', wikiSlug: 'Champs-%C3%89lys%C3%A9es' },
+    { name: 'Narikala Fortress', description: 'Ancient hilltop citadel watching over the Kura river gorge.', category: 'landmark', wikiSlug: 'Narikala' },
+    { name: 'Old Town Tbilisi', description: 'Crumbling balconied houses and sulfur baths in a maze of cobblestones.', category: 'culture', wikiSlug: 'Abanotubani' },
+    { name: 'Holy Trinity Cathedral', description: 'Sameba — Georgia\'s golden-domed centerpiece rising above the city.', category: 'temple', wikiSlug: 'Holy_Trinity_Cathedral_of_Tbilisi' },
+    { name: 'Rustaveli Avenue', description: 'The elegant heart of the city — theatres, galleries, and Georgian wine bars.', category: 'street', wikiSlug: 'Rustaveli_Avenue' },
+    { name: 'Bridge of Peace', description: 'Glass-and-steel pedestrian bridge glowing neon over the Kura at night.', category: 'landmark', wikiSlug: 'Bridge_of_Peace,_Tbilisi' },
+    { name: 'Mtatsminda Park', description: 'Funicular to the hilltop park with the best panoramic view of the city.', category: 'view', wikiSlug: 'Mtatsminda' },
+    { name: 'Dezerter Bazaar', description: 'The chaotic, colourful soul of Tbilisi — spices, churchkhela, and cheese.', category: 'market', wikiSlug: 'Dezerter_Bazaar' },
+    { name: 'Gori-Jvari Monastery', description: 'Sixth-century monastery perched on a cliff where two rivers meet.', category: 'temple', wikiSlug: 'Jvari_Monastery' },
   ],
 };
 
@@ -167,7 +172,7 @@ test.describe('Tripva E2E flows', () => {
     });
 
     await page.goto('/plan.html');
-    await fillPlanForm(page, { dest: 'Paris', budget: '$3000' });
+    await fillPlanForm(page, { dest: SPOT_DEST, budget: '$3000' });
 
     // Submit the form
     await page.click('#submitBtn');
@@ -188,8 +193,8 @@ test.describe('Tripva E2E flows', () => {
     await cards.nth(1).click();
     await cards.nth(2).click();
 
-    // Footer count should reflect selection
-    await expect(page.locator('#spotFooter')).toContainText('3', { timeout: 2_000 });
+    // Footer count should reflect selection (#spotCountRow shows "3 places selected…")
+    await expect(page.locator('#spotCountRow')).toContainText('3', { timeout: 2_000 });
 
     // Now mock /api/plan before clicking generate
     await page.route(`${BACKEND}/api/plan**`, async route => {
@@ -206,11 +211,19 @@ test.describe('Tripva E2E flows', () => {
     await page.route(`${BACKEND}/api/patch**`, async route => {
       await route.fulfill({ status: 200, body: JSON.stringify(MOCK_PLAN) });
     });
+    await page.route(`${BACKEND}/api/user/magic-link**`, async route => {
+      await route.fulfill({ status: 200, body: JSON.stringify({ ok: true }) });
+    });
 
-    // Click generate
+    // Click generate, then handle the email gate modal that appears post-generation
+    await page.locator('.spot-go-btn').click();
+
+    // Wait for auth email gate to appear, fill email, submit, then wait for redirect
+    await expect(page.locator('#authModalBg.open')).toBeVisible({ timeout: 20_000 });
+    await page.fill('#authEmailInput', 'test@e2e.example.com');
     await Promise.all([
-      page.waitForURL(/\/trip\.html/, { timeout: 30_000 }),
-      page.locator('.spot-go-btn').click(),
+      page.waitForURL(/\/trip(\.html)?(\?|$)/, { timeout: 15_000 }),
+      page.locator('#authSubmitBtn').click(),
     ]);
 
     await expect(page.locator('.bottom-nav')).toBeVisible({ timeout: 10_000 });
@@ -232,6 +245,9 @@ test.describe('Tripva E2E flows', () => {
     await page.route(`${BACKEND}/api/patch**`, async route => {
       await route.fulfill({ status: 200, body: JSON.stringify(MOCK_PLAN) });
     });
+    await page.route(`${BACKEND}/api/user/magic-link**`, async route => {
+      await route.fulfill({ status: 200, body: JSON.stringify({ ok: true }) });
+    });
     // Mock spots so selector loads fast, then immediately click generate
     await page.route(`${BACKEND}/api/spots**`, async route => {
       await route.fulfill({
@@ -251,7 +267,7 @@ test.describe('Tripva E2E flows', () => {
     });
 
     await page.goto('/plan.html');
-    await fillPlanForm(page, { dest: 'Paris', budget: '$3000' });
+    await fillPlanForm(page, { dest: SPOT_DEST, budget: '$3000' });
 
     await page.click('#submitBtn');
 
@@ -259,9 +275,13 @@ test.describe('Tripva E2E flows', () => {
     await expect(page.locator('#spotScreen')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#spotGrid .spot-card')).toHaveCount(8, { timeout: 10_000 });
 
+    // Click generate, handle email gate, then wait for redirect
+    await page.locator('.spot-go-btn').click();
+    await expect(page.locator('#authModalBg.open')).toBeVisible({ timeout: 20_000 });
+    await page.fill('#authEmailInput', 'test@e2e.example.com');
     await Promise.all([
-      page.waitForURL(/\/trip\.html/, { timeout: 30_000 }),
-      page.locator('.spot-go-btn').click(),
+      page.waitForURL(/\/trip(\.html)?(\?|$)/, { timeout: 15_000 }),
+      page.locator('#authSubmitBtn').click(),
     ]);
 
     await expect(page.locator('.bottom-nav')).toBeVisible({ timeout: 10_000 });
@@ -332,13 +352,13 @@ test.describe('Tripva E2E flows', () => {
         });
       });
       await page.goto('/plan.html');
-      await fillPlanForm(page, { dest: 'Paris', budget: '$3000' });
+      await fillPlanForm(page, { dest: SPOT_DEST, budget: '$3000' });
       await page.click('#submitBtn');
       await expect(page.locator('#spotScreen')).toBeVisible({ timeout: 10_000 });
       await expect(page.locator('#spotGrid .spot-card')).toHaveCount(8, { timeout: 10_000 });
       // Cards must be tappable on mobile
       await page.locator('#spotGrid .spot-card').first().click();
-      await expect(page.locator('#spotFooter')).toContainText('1');
+      await expect(page.locator('#spotCountRow')).toContainText('1');
     });
   });
 });

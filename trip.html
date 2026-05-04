@@ -3144,7 +3144,7 @@ async function loadTripPlan() {
     }, 0);
     
     showLoadingSpinner(false);
-    // NOTE: no return — fall through to localStorage check below
+    return; // demo mode is self-contained — don't fall through to the localStorage/redirect path
   }
 
   // ── NORMAL: Load from URL id or localStorage ─────────────────────────────
