@@ -1108,21 +1108,46 @@ function _matchDest(dest) {
 
 async function _fetchWikiPhoto(wikiSlug) {
   if (!wikiSlug) return null;
+
+  // Try a single slug against the Wikipedia REST summary API
+  const trySlug = async (slug, timeout) => {
+    try {
+      const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(slug), {
+        signal: AbortSignal.timeout(timeout),
+        headers: { 'Accept': 'application/json' },
+      });
+      if (!r.ok) return null;
+      const d = await r.json();
+      const src = d.thumbnail?.source;
+      if (!src || (d.type || '') === 'disambiguation') return null;
+      // Return as-is: Wikimedia only serves specific allowed sizes; replacing px size causes HTTP 400
+      return src;
+    } catch { return null; }
+  };
+
+  // Fast path — exact slug
+  const direct = await trySlug(wikiSlug, 8000);
+  if (direct) return direct;
+
+  // Fallback — search Wikipedia by name to recover from bad/hallucinated slugs (e.g. Canals_of_Venice → 404)
   try {
-    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(wikiSlug), {
-      signal: AbortSignal.timeout(12000),
-      headers: { 'Accept': 'application/json' },
-    });
-    if (!r.ok) return null;
-    const d = await r.json();
-    const src = d.thumbnail?.source;
-    if (!src) return null;
-    // Skip disambiguation pages — their thumbnails are unrelated to the place
-    if ((d.type || '') === 'disambiguation') return null;
-    // Use the URL as-is: Wikimedia only serves specific allowed sizes.
-    // Replacing e.g. 330px→800px causes HTTP 400 for images where 800px > original.
-    return src;
-  } catch { return null; }
+    const q = wikiSlug.replace(/_/g, ' ');
+    const sr = await fetch(
+      'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' +
+      encodeURIComponent(q) + '&format=json&srlimit=3&srprop=&origin=*',
+      { signal: AbortSignal.timeout(6000) }
+    );
+    if (sr.ok) {
+      const sd = await sr.json();
+      const hits = (sd?.query?.search || []).slice(0, 2);
+      for (const hit of hits) {
+        const url = await trySlug(hit.title.replace(/ /g, '_'), 6000);
+        if (url) return url;
+      }
+    }
+  } catch { /* ignore */ }
+
+  return null;
 }
 
 // Fetch spots for any destination dynamically from Wikipedia
