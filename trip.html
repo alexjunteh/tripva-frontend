@@ -431,6 +431,7 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .tl-tag.hotel{background:rgba(167,139,250,.1);color:var(--accent2)}
 .tl-tag.tip{background:var(--surface2);color:var(--muted)}
 .tl-map-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--accent2);text-decoration:none;background:rgba(124,106,247,.08);padding:3px 9px;border-radius:8px;font-weight:600;margin-top:5px}
+.tl-book-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#fff;text-decoration:none;background:linear-gradient(135deg,rgba(124,106,247,.7),rgba(149,181,255,.5));padding:3px 10px;border-radius:8px;font-weight:700;margin-top:5px;border:1px solid rgba(124,106,247,.3)}
 /* Highlights strip */
 .day-highlights{display:flex;flex-direction:column;gap:6px;padding:14px 16px 8px;background:rgba(124,106,247,.05);border-bottom:1px solid var(--border);flex-shrink:0}
 .day-hl-title{font-size:10px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
@@ -3065,12 +3066,9 @@ async function upgradeTripImages(){
   try {
     for (let i = 0; i < plan.days.length; i++) {
       const d = plan.days[i];
-      // Skip if day already has a curated Unsplash image from CITY_IMGS
-      const _seed = (d.heroSeed||'').toLowerCase();
-      const _ci = window.CITY_IMGS||{};
-      if (_seed && (_ci[_seed] || Object.keys(_ci).some(k=>_seed.includes(k)||k.includes(_seed)))) continue;
-      // Also skip if day.imageUrl is a real (non-loremflickr) image
+      // Skip only if day already has a real (non-loremflickr) image
       if (d.imageUrl && !d.imageUrl.includes('loremflickr')) continue;
+      if (d.heroImg && !d.heroImg.includes('loremflickr')) continue;
       const seeds = _wikiSeedsForDay(d);
       let img = null;
       for (const s of seeds) {
@@ -5198,10 +5196,23 @@ function renderDaySheet(idx) {
 
   // ── TIMELINE ──
   html+=`<div class="tl-section-hdr">📍 Hour-by-hour plan</div>`;
+
+  // Build activity booking URL — prefer server-enriched bookUrl, else build GYG search client-side
+  const makeActivityBookUrl = (tl, dayTitle) => {
+    if (tl.bookUrl) return tl.bookUrl;
+    const dest = plan.trip?.destination || '';
+    // Extract city from mapQuery ("Anne Frank House, Amsterdam" → "Amsterdam") or fall back to trip destination
+    const mapCity = tl.mapQuery ? (tl.mapQuery.split(',').pop() || '').trim() : '';
+    const city = mapCity || dest;
+    const q = encodeURIComponent((tl.title || '') + (city ? ' ' + city : ''));
+    return `https://www.getyourguide.com/s/?q=${q}&cmp=tripva`;
+  };
+
   html+=(d.timeline||[]).map((tl,i)=>{
     const isLast=i===(d.timeline||[]).length-1;
     const typeClass=tl.type||'activity';
     const mapLink=tl.mapQuery?`<a class="tl-map-btn" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank" onclick="event.stopPropagation()">📍 Map</a>`:'';
+    const bookLink=tl.type==='activity'?`<a class="tl-book-btn" href="${makeActivityBookUrl(tl, d.title)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🎟️ Book tickets</a>`:'';
     const dispTitle=tl.type==='photospot'?(tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim()||(tl.title||''):(tl.title||'');
     return `<div class="tl-item" onclick="openEditSheet(${idx},${i})" title="Tap to edit">
       <div class="tl-left"><div class="tl-time">${esc(tl.time||'')}</div></div>
@@ -5215,6 +5226,7 @@ function renderDaySheet(idx) {
         ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _sp=getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${_sp}" alt="${esc(dispTitle)}" class="tl-ps-photo" loading="lazy" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
+          ${bookLink}
           ${mapLink}
         </div>
       </div>

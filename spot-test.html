@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spot Selector Test</title>
+<style>
+  body { background: #0a0a12; color: #fff; font-family: -apple-system, sans-serif; padding: 20px; }
+  input { background: #1a1a28; border: 1.5px solid rgba(255,255,255,.2); border-radius: 10px; padding: 12px 16px; font-size: 16px; color: #fff; width: 260px; outline: none; }
+  button { background: #7c6af7; border: none; border-radius: 10px; padding: 12px 24px; font-size: 16px; font-weight: 700; color: #fff; cursor: pointer; margin-left: 8px; }
+  #status { margin: 16px 0; color: rgba(255,255,255,.6); font-size: 14px; }
+  #raw { background: #1a1a28; border-radius: 12px; padding: 16px; font-size: 12px; font-family: monospace; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; margin-top: 16px; display: none; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 20px; }
+  .card { background: #1c1c28; border-radius: 14px; overflow: hidden; }
+  .card img { width: 100%; height: 120px; object-fit: cover; display: block; background: #252535; }
+  .card-body { padding: 10px; }
+  .card-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .card-cat { font-size: 11px; color: #7c6af7; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .card-desc { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.4; }
+  .card-wiki { font-size: 10px; color: rgba(255,255,255,.3); margin-top: 4px; word-break: break-all; }
+  .err { color: #f87171; }
+  .ok { color: #34d399; }
+</style>
+</head>
+<body>
+<h2 style="margin:0 0 20px;font-size:20px">Spot Selector — API Test</h2>
+<div>
+  <input id="dest" type="text" placeholder="Destination (e.g. Italy, Bali, Penang)" value="Italy">
+  <button onclick="test()">Fetch Spots</button>
+</div>
+<div id="status">Enter a destination and click Fetch Spots.</div>
+<div id="raw"></div>
+<div class="grid" id="grid"></div>
+
+<script>
+const BACKEND = 'https://tripai-backend.vercel.app';
+
+async function fetchWikiPhoto(slug) {
+  try {
+    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(slug));
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.thumbnail?.source?.replace(/\/\d+px-/, '/400px-') || null;
+  } catch { return null; }
+}
+
+async function test() {
+  const dest = document.getElementById('dest').value.trim();
+  if (!dest) return;
+
+  const status = document.getElementById('status');
+  const raw = document.getElementById('raw');
+  const grid = document.getElementById('grid');
+
+  status.textContent = 'Calling ' + BACKEND + '/api/spots?destination=' + encodeURIComponent(dest) + ' ...';
+  status.className = '';
+  raw.style.display = 'none';
+  grid.innerHTML = '';
+
+  const t0 = Date.now();
+  try {
+    const r = await fetch(BACKEND + '/api/spots?destination=' + encodeURIComponent(dest), {
+      signal: AbortSignal.timeout(25000)
+    });
+    const elapsed = Date.now() - t0;
+    status.textContent = 'HTTP ' + r.status + ' in ' + elapsed + 'ms';
+    status.className = r.ok ? 'ok' : 'err';
+
+    const text = await r.text();
+    raw.textContent = text;
+    raw.style.display = 'block';
+
+    if (!r.ok) return;
+
+    const { spots } = JSON.parse(text);
+    if (!spots || !spots.length) {
+      status.textContent += ' — spots array is EMPTY';
+      status.className = 'err';
+      return;
+    }
+
+    status.textContent += ' — ' + spots.length + ' spots returned. Loading photos...';
+
+    for (const s of spots) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = '<img src="" alt="' + s.name + '"><div class="card-body"><div class="card-name">' + s.name + '</div><div class="card-cat">' + (s.category || '') + '</div><div class="card-desc">' + (s.description || '') + '</div><div class="card-wiki">wiki: ' + (s.wikiSlug || '?') + '</div></div>';
+      grid.appendChild(card);
+
+      const img = card.querySelector('img');
+      if (s.wikiSlug) {
+        fetchWikiPhoto(s.wikiSlug).then(url => {
+          if (url) img.src = url;
+          else img.style.background = '#333';
+        });
+      }
+    }
+  } catch (e) {
+    status.textContent = 'ERROR: ' + e.message;
+    status.className = 'err';
+  }
+}
+</script>
+</body>
+</html>

@@ -254,6 +254,39 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 .auth-submit-btn{display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:16px}
 .auth-skip{display:block;text-align:center;font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;padding:8px 0}
 .auth-skip:hover{color:rgba(255,255,255,.7)}
+
+/* ── SPOT SELECTOR ────────────────────────────────────────────────────────── */
+#spotScreen{display:none;min-height:100vh;background:var(--bg);padding-bottom:120px;margin-left:-20px;margin-right:-20px}
+.spot-hdr{padding:28px 20px 18px;text-align:center;max-width:520px;margin:0 auto}
+.spot-hdr-title{font-size:clamp(20px,5vw,28px);font-weight:900;letter-spacing:-.5px;margin-bottom:6px;color:var(--text)}
+.spot-hdr-sub{font-size:13px;color:var(--muted);line-height:1.5;max-width:300px;margin:0 auto}
+.spot-dest-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.3);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:800;color:var(--accent2);margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
+.spot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:4px 10px}
+@media(min-width:580px){.spot-grid{grid-template-columns:repeat(3,1fr);padding:4px 14px}}
+.spot-card{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;background:var(--surface);border:2.5px solid transparent;transition:border-color .18s,transform .15s;aspect-ratio:3/4}
+.spot-card:active{transform:scale(.95)}
+.spot-card.sel{border-color:#7c6af7}
+.spot-skel{position:absolute;inset:0;background:linear-gradient(110deg,#1c1c28 30%,#252535 50%,#1c1c28 70%);background-size:300% 100%;animation:skel-shift 1.4s infinite linear}
+@keyframes skel-shift{0%{background-position:300% 0}100%{background-position:-300% 0}}
+.spot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
+.spot-img.loaded{opacity:1}
+.spot-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.35) 55%,rgba(0,0,0,.05) 100%);pointer-events:none;transition:background .18s}
+.spot-card.sel .spot-grad{background:linear-gradient(to top,rgba(100,80,240,.8) 0%,rgba(100,80,240,.2) 55%,rgba(0,0,0,.05) 100%)}
+.spot-body{position:absolute;bottom:0;left:0;right:0;padding:10px 11px 13px;pointer-events:none}
+.spot-cat{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);border-radius:5px;padding:2px 6px;color:#fff;margin-bottom:5px}
+.spot-name{font-size:13px;font-weight:900;color:#fff;line-height:1.25;margin-bottom:2px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.spot-desc{font-size:10.5px;color:rgba(255,255,255,.65);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.spot-tick{position:absolute;top:9px;right:9px;width:26px;height:26px;border-radius:50%;background:#7c6af7;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;opacity:0;transform:scale(.5) rotate(-30deg);transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 2px 8px rgba(124,106,247,.5)}
+.spot-card.sel .spot-tick{opacity:1;transform:scale(1) rotate(0deg)}
+.spot-footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(10,10,18,.99) 65%,transparent);padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));z-index:200}
+.spot-count-row{text-align:center;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:700;letter-spacing:.2px}
+.spot-count-row .spot-count-n{color:var(--accent2)}
+.spot-go-btn{width:100%;background:linear-gradient(135deg,#7c6af7,#6d5ee0);border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:-.2px;box-shadow:0 4px 20px rgba(124,106,247,.35);transition:transform .15s,box-shadow .15s;margin-bottom:8px}
+.spot-go-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(124,106,247,.45)}
+.spot-go-btn:active{transform:scale(.97)}
+.spot-skip{display:block;text-align:center;font-size:12px;color:var(--muted);cursor:pointer;padding:3px}
+.spot-skip:hover{color:var(--text2)}
+.spot-no-match{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
 </style>
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
 <style>
@@ -529,6 +562,21 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     
   </div>
 
+  <!-- Spot selector screen -->
+  <div id="spotScreen">
+    <div class="spot-hdr">
+      <div class="spot-dest-pill">📍 <span id="spotDestLabel"></span></div>
+      <div class="spot-hdr-title">Pick your highlights</div>
+      <div class="spot-hdr-sub">Choose the places you want to experience — we'll build your trip around them</div>
+    </div>
+    <div class="spot-grid" id="spotGrid"></div>
+    <div class="spot-footer">
+      <div class="spot-count-row" id="spotCountRow">Select places that excite you</div>
+      <button class="spot-go-btn" id="spotGoBtn" onclick="continueWithSpots()">Plan my trip ✨</button>
+      <span class="spot-skip" onclick="skipSpots()">Skip — plan without picking</span>
+    </div>
+  </div>
+
   <!-- Generation screen -->
   <div class="gen-screen" id="genScreen">
     <div class="gen-hero">
@@ -774,6 +822,429 @@ function addLog(icon, text, cls) {
   return el;
 }
 
+// ── Spot selector ──────────────────────────────────────────────────────────
+
+const SPOT_DATA = {
+  'rome':['Colosseum','Trevi_Fountain','Vatican_Museums','Pantheon,_Rome','Roman_Forum','Borghese_Gallery','Trastevere','Spanish_Steps','Castel_Sant\'Angelo','Palatine_Hill'].map((w,i)=>([
+    {name:'Colosseum',wiki:'Colosseum',cat:'landmark',desc:'Where gladiators fought before 80,000 roaring Romans',fl:'colosseum rome ancient'},
+    {name:'Trevi Fountain',wiki:'Trevi_Fountain',cat:'landmark',desc:'Toss a coin, make a wish — most beautiful fountain on earth',fl:'trevi fountain rome'},
+    {name:'Vatican Museums',wiki:'Vatican_Museums',cat:'culture',desc:"Michelangelo's Sistine Chapel ceiling — stops you in your tracks",fl:'vatican sistine chapel rome'},
+    {name:'Pantheon',wiki:'Pantheon,_Rome',cat:'landmark',desc:'2,000-year-old temple still open — architecture that defies belief',fl:'pantheon rome interior dome'},
+    {name:'Roman Forum',wiki:'Roman_Forum',cat:'landmark',desc:'Walk where Julius Caesar once ruled the ancient world',fl:'roman forum rome ruins'},
+    {name:'Borghese Gallery',wiki:'Borghese_Gallery',cat:'museum',desc:'Bernini sculptures so real you forget they are marble',fl:'borghese gallery rome baroque'},
+    {name:'Trastevere',wiki:'Trastevere',cat:'street',desc:'Cobblestone alleys, ivy-covered walls, best aperitivo in Rome',fl:'trastevere rome evening streets'},
+    {name:'Spanish Steps',wiki:'Spanish_Steps',cat:'landmark',desc:'135 steps of elegance — iconic Rome from every angle',fl:'spanish steps rome piazza'},
+    {name:"Castel Sant'Angelo",wiki:"Castel_Sant'Angelo",cat:'landmark',desc:'A fortress on the Tiber with views that will floor you',fl:'castel sant angelo rome river'},
+    {name:'Palatine Hill',wiki:'Palatine_Hill',cat:'landmark',desc:'The birthplace of Rome — eerily peaceful above the Forum',fl:'palatine hill rome ruins view'},
+  ])[i]),
+  'paris':['Eiffel_Tower','Louvre','Montmartre','Notre-Dame_de_Paris','Musée_d\'Orsay','Palace_of_Versailles','Sainte-Chapelle','Le_Marais','Seine','Centre_Georges_Pompidou'].map((w,i)=>([
+    {name:'Eiffel Tower',wiki:'Eiffel_Tower',cat:'landmark',desc:'Nothing prepares you for how magical it looks at night',fl:'eiffel tower paris night lights'},
+    {name:'Louvre Museum',wiki:'Louvre',cat:'museum',desc:'The Mona Lisa, Winged Victory — art that defines civilization',fl:'louvre museum paris pyramid'},
+    {name:'Montmartre',wiki:'Montmartre',cat:'view',desc:'Cobbled village above Paris where modern art was born',fl:'montmartre paris sacre coeur steps'},
+    {name:'Notre-Dame Cathedral',wiki:'Notre-Dame_de_Paris',cat:'landmark',desc:'Gothic masterpiece being reborn — a phoenix of stone and light',fl:'notre dame paris cathedral gothic'},
+    {name:"Musée d'Orsay",wiki:"Musée_d'Orsay",cat:'museum',desc:'Impressionist masterpieces in a stunning railway station',fl:'musee orsay paris impressionist monet'},
+    {name:'Palace of Versailles',wiki:'Palace_of_Versailles',cat:'landmark',desc:'The Hall of Mirrors alone is worth the day trip',fl:'versailles hall mirrors palace'},
+    {name:'Sainte-Chapelle',wiki:'Sainte-Chapelle',cat:'landmark',desc:"15 stories of stained glass — France's most jaw-dropping interior",fl:'sainte chapelle paris stained glass'},
+    {name:'Le Marais',wiki:'Le_Marais',cat:'street',desc:'Medieval meets hip: galleries, falafel, Place des Vosges',fl:'le marais paris street cafe'},
+    {name:'Seine River Cruise',wiki:'Seine',cat:'view',desc:'Paris glides past on both banks — most romantic hour in Europe',fl:'seine river paris cruise night'},
+    {name:'Centre Pompidou',wiki:'Centre_Georges_Pompidou',cat:'culture',desc:'Modern art inside a building that IS the art',fl:'centre pompidou paris modern art'},
+  ])[i]),
+  'barcelona':['Sagrada_Família','Park_Güell','Gothic_Quarter,_Barcelona','Barceloneta','La_Boqueria','Palau_de_la_Música_Catalana','Montjuïc','Camp_Nou','El_Born','Tibidabo'].map((w,i)=>([
+    {name:'Sagrada Família',wiki:'Sagrada_Família',cat:'landmark',desc:"Gaudí's unfinished masterpiece — more astonishing inside than out",fl:'sagrada familia barcelona interior'},
+    {name:'Park Güell',wiki:'Park_Güell',cat:'view',desc:'Mosaic terraces and dragon stairways overlooking the whole city',fl:'park guell barcelona mosaic gaudi'},
+    {name:'Gothic Quarter',wiki:'Gothic_Quarter,_Barcelona',cat:'street',desc:'2,000 years of history in streets you can get happily lost in',fl:'gothic quarter barcelona medieval streets'},
+    {name:'Barceloneta Beach',wiki:'Barceloneta',cat:'beach',desc:'Golden sand, paella, Mediterranean at its finest',fl:'barceloneta beach barcelona sun sea'},
+    {name:'La Boqueria Market',wiki:'La_Boqueria',cat:'market',desc:"Freshest jamón, exotic fruits, and the world's best pintxos",fl:'boqueria market barcelona colourful food'},
+    {name:'Palau de la Música',wiki:'Palau_de_la_Música_Catalana',cat:'culture',desc:"The most gloriously over-the-top concert hall you'll ever see",fl:'palau musica barcelona stained glass interior'},
+    {name:'Montjuïc',wiki:'Montjuïc',cat:'view',desc:'Castle, gardens, and cable car with panoramic city views',fl:'montjuic barcelona view cable car'},
+    {name:'Camp Nou',wiki:'Camp_Nou',cat:'culture',desc:'Stand where Messi played — the cathedral of football',fl:'camp nou barcelona stadium pitch'},
+    {name:'El Born',wiki:'El_Born',cat:'street',desc:'Boutiques, craft cocktails, and the best tapas crawl in the city',fl:'el born barcelona tapas street'},
+    {name:'Tibidabo',wiki:'Tibidabo',cat:'view',desc:'Fairground rides on a mountain with views of the whole coastline',fl:'tibidabo barcelona fairground view'},
+  ])[i]),
+  'amsterdam':['Anne_Frank_House','Rijksmuseum','Van_Gogh_Museum','Grachtengordel','Jordaan','Vondelpark','Keukenhof','Heineken_Experience','NDSM_wharf','Stedelijk_Museum_Amsterdam'].map((w,i)=>([
+    {name:'Anne Frank House',wiki:'Anne_Frank_House',cat:'culture',desc:"One of history's most moving places — book months ahead",fl:'anne frank house amsterdam museum'},
+    {name:'Rijksmuseum',wiki:'Rijksmuseum',cat:'museum',desc:"Rembrandt's Night Watch in a palace built for art",fl:'rijksmuseum amsterdam night watch'},
+    {name:'Van Gogh Museum',wiki:'Van_Gogh_Museum',cat:'museum',desc:'250 originals — walking through the mind of a genius',fl:'van gogh museum amsterdam sunflowers'},
+    {name:'Amsterdam Canals',wiki:'Grachtengordel',cat:'view',desc:'7,000 bicycles, 165 canals, one perfectly picturesque city',fl:'amsterdam canal ring bridge houses'},
+    {name:'Jordaan',wiki:'Jordaan',cat:'street',desc:"Indie cafés, vintage bookshops, and the soul of old Amsterdam",fl:'jordaan amsterdam canal cafe street'},
+    {name:'Vondelpark',wiki:'Vondelpark',cat:'park',desc:'On sunny Sundays half of Amsterdam comes here — pure city joy',fl:'vondelpark amsterdam park sunny people'},
+    {name:'Keukenhof Gardens',wiki:'Keukenhof',cat:'nature',desc:'7 million tulip bulbs blooming at once — a natural wonder',fl:'keukenhof tulip gardens amsterdam spring'},
+    {name:'Heineken Experience',wiki:'Heineken_Experience',cat:'culture',desc:"Where 150 years of brewing history gets deliciously interactive",fl:'heineken experience amsterdam brewery'},
+    {name:'NDSM Wharf',wiki:'NDSM_wharf',cat:'culture',desc:"Amsterdam's creative rebel HQ in a vast former shipyard",fl:'ndsm amsterdam creative arts wharf'},
+    {name:'Stedelijk Museum',wiki:'Stedelijk_Museum_Amsterdam',cat:'museum',desc:"Modern and contemporary art in one of Europe's finest collections",fl:'stedelijk museum amsterdam modern art'},
+  ])[i]),
+  'london':['Tower_of_London','British_Museum','Tate_Modern','Borough_Market','Buckingham_Palace','Greenwich','Hyde_Park,_London','Notting_Hill','The_Shard','Covent_Garden'].map((w,i)=>([
+    {name:'Tower of London',wiki:'Tower_of_London',cat:'landmark',desc:'900 years of royal intrigue — home of the Crown Jewels',fl:'tower of london historic fortress'},
+    {name:'British Museum',wiki:'British_Museum',cat:'museum',desc:'The Rosetta Stone, Egyptian mummies, Elgin Marbles — all free',fl:'british museum london great court'},
+    {name:'Tate Modern',wiki:'Tate_Modern',cat:'culture',desc:'Turbine Hall installations that make art physical and emotional',fl:'tate modern london turbine hall art'},
+    {name:'Borough Market',wiki:'Borough_Market',cat:'market',desc:"London's finest food market — gourmet cheese, street food",fl:'borough market london food stalls'},
+    {name:'Buckingham Palace',wiki:'Buckingham_Palace',cat:'landmark',desc:'Watch the Changing of the Guard — a British ceremony since 1660',fl:'buckingham palace london guards ceremony'},
+    {name:'Greenwich',wiki:'Greenwich',cat:'view',desc:'Stand on the Prime Meridian and see both hemispheres at once',fl:'greenwich london observatory park'},
+    {name:'Hyde Park',wiki:'Hyde_Park,_London',cat:'park',desc:"350 acres of city park — London's great green escape",fl:'hyde park london lake boating'},
+    {name:'Notting Hill',wiki:'Notting_Hill',cat:'street',desc:'Pastel houses, Portobello Road antiques, iconic London charm',fl:'notting hill london pastel houses'},
+    {name:'The Shard',wiki:'The_Shard',cat:'view',desc:'72 floors up: London laid out like a map below your feet',fl:'the shard london skyline view night'},
+    {name:'Covent Garden',wiki:'Covent_Garden',cat:'market',desc:'Street performers, boutiques, and best brunch scene in London',fl:'covent garden london market street performers'},
+  ])[i]),
+  'tokyo':['Shibuya_scramble_crossing','Sensō-ji','Shinjuku','Harajuku','TeamLab_Borderless','Tsukiji_outer_market','Meiji_Shrine','Tokyo_Skytree','Akihabara','Ueno_Park'].map((w,i)=>([
+    {name:'Shibuya Crossing',wiki:'Shibuya_scramble_crossing',cat:'view',desc:"3,000 people crossing at once — the world's most electric intersection",fl:'shibuya crossing tokyo night neon'},
+    {name:'Senso-ji Temple',wiki:'Sensō-ji',cat:'temple',desc:'A 7th-century Buddhist temple in the neon heart of Tokyo',fl:'sensoji temple asakusa tokyo pagoda'},
+    {name:'Shinjuku',wiki:'Shinjuku',cat:'street',desc:"Neon signs, izakayas, and Tokyo nightlife at its most alive",fl:'shinjuku tokyo neon night izakaya'},
+    {name:'Harajuku',wiki:'Harajuku',cat:'street',desc:"Where Tokyo's wildest fashion subcultures explode into full colour",fl:'harajuku tokyo street fashion colorful'},
+    {name:'teamLab Borderless',wiki:'Teamlab_Borderless',cat:'culture',desc:'Walk inside digital art that breathes, moves and responds to you',fl:'teamlab digital art tokyo immersive light'},
+    {name:'Tsukiji Market',wiki:'Tsukiji_outer_market',cat:'market',desc:'Best sushi breakfast of your life — straight from the source',fl:'tsukiji market tokyo sushi seafood fresh'},
+    {name:'Meiji Shrine',wiki:'Meiji_Shrine',cat:'temple',desc:'Ancient cedar forest and shrine in the heart of central Tokyo',fl:'meiji shrine tokyo forest torii gate'},
+    {name:'Tokyo Skytree',wiki:'Tokyo_Skytree',cat:'view',desc:'The tallest tower in Japan — Tokyo stretches to the horizon',fl:'tokyo skytree tower view panorama'},
+    {name:'Akihabara',wiki:'Akihabara',cat:'street',desc:"Japan's neon temple to electronics, anime and pop culture",fl:'akihabara tokyo neon electronics anime'},
+    {name:'Ueno Park',wiki:'Ueno_Park',cat:'park',desc:'Cherry blossoms in spring, pandas year-round, museums everywhere',fl:'ueno park tokyo cherry blossom spring'},
+  ])[i]),
+  'kyoto':['Fushimi_Inari-taisha','Sagano_Bamboo_Forest','Kinkaku-ji','Gion,_Kyoto','Nishiki_Market','Kiyomizu-dera',"Philosopher's_Path",'Nijō_Castle'].map((w,i)=>([
+    {name:'Fushimi Inari',wiki:'Fushimi_Inari-taisha',cat:'temple',desc:'10,000 vermilion torii gates winding up a sacred mountain',fl:'fushimi inari torii gates kyoto orange'},
+    {name:'Arashiyama Bamboo',wiki:'Sagano_Bamboo_Forest',cat:'nature',desc:'Walk through a cathedral of bamboo that sways and sighs',fl:'arashiyama bamboo forest kyoto path'},
+    {name:'Kinkaku-ji',wiki:'Kinkaku-ji',cat:'temple',desc:'Golden Pavilion reflected perfectly in still water — pure Japan',fl:'kinkakuji golden pavilion kyoto reflection'},
+    {name:'Gion',wiki:'Gion,_Kyoto',cat:'street',desc:'Spot geishas on ancient lantern-lit streets at dusk',fl:'gion kyoto geisha lantern evening'},
+    {name:'Nishiki Market',wiki:'Nishiki_Market',cat:'market',desc:"Kyoto's kitchen — 400 years old, 100 stalls, incredible food",fl:'nishiki market kyoto food street'},
+    {name:'Kiyomizu-dera',wiki:'Kiyomizu-dera',cat:'temple',desc:'Wooden stage temple jutting over forested hillside — iconic',fl:'kiyomizudera temple kyoto forest hillside'},
+    {name:"Philosopher's Path",wiki:"Philosopher's_Path",cat:'view',desc:"Canal path lined with cherry trees — Japan's most meditative walk",fl:"philosopher's path kyoto canal cherry blossom"},
+    {name:'Nijo Castle',wiki:'Nijō_Castle',cat:'landmark',desc:'Squeaking nightingale floors — 17th-century Shogun fortress',fl:'nijo castle kyoto garden moat'},
+  ])[i]),
+  'bali':['Tegallalang_Rice_Terrace','Pura_Luhur_Uluwatu','Tanah_Lot','Mandala_Suci_Wenara_Wana','Mount_Batur','Seminyak','Tirta_Gangga','Ubud','Nusa_Penida','Jatiluwih_rice_terraces'].map((w,i)=>([
+    {name:'Tegalalang Terraces',wiki:'Tegallalang_Rice_Terrace',cat:'nature',desc:'Emerald green terraces cascading down the valley — pure Bali',fl:'tegalalang rice terraces bali green'},
+    {name:'Uluwatu Temple',wiki:'Pura_Luhur_Uluwatu',cat:'temple',desc:'Clifftop temple at sunset with monkeys and Kecak fire dance',fl:'uluwatu temple bali cliff sunset ocean'},
+    {name:'Tanah Lot',wiki:'Tanah_Lot',cat:'temple',desc:'A sea temple on a rock — silhouetted at golden hour',fl:'tanah lot bali temple sunset ocean'},
+    {name:'Sacred Monkey Forest',wiki:'Mandala_Suci_Wenara_Wana',cat:'nature',desc:'700 Balinese long-tailed macaques in a lush jungle temple',fl:'monkey forest ubud bali jungle'},
+    {name:'Mount Batur Sunrise',wiki:'Mount_Batur',cat:'adventure',desc:'3am hike to watch the sun rise above the clouds — unforgettable',fl:'mount batur sunrise bali volcano'},
+    {name:'Seminyak Beach',wiki:'Seminyak',cat:'beach',desc:'Sunset cocktails, world-class surf, and beach clubs at their best',fl:'seminyak beach bali sunset cocktail'},
+    {name:'Tirta Gangga',wiki:'Tirta_Gangga',cat:'landmark',desc:'Royal water palace of stepping stones and lotus ponds',fl:'tirta gangga bali water palace lotus'},
+    {name:'Ubud Art Market',wiki:'Ubud',cat:'market',desc:'Batik sarongs, woodcarvings, silver from Balinese artisans',fl:'ubud market bali crafts art wood'},
+    {name:'Nusa Penida',wiki:'Nusa_Penida',cat:'view',desc:"Kelingking Beach's T-rex cliff — Instagram's most dramatic shot",fl:'nusa penida kelingking beach bali cliff'},
+    {name:'Jatiluwih Rice Fields',wiki:'Jatiluwih_rice_terraces',cat:'nature',desc:'UNESCO terraces so vast and green they feel impossible',fl:'jatiluwih rice terraces bali wide panorama'},
+  ])[i]),
+  'bangkok':['Grand_Palace','Wat_Pho','Wat_Arun','Chatuchak_Weekend_Market','Chao_Phraya','Khao_San_Road','Lumphini_Park','Asiatique_the_Riverfront'].map((w,i)=>([
+    {name:'Grand Palace',wiki:'Grand_Palace',cat:'landmark',desc:'1782 royal palace of gold and glittering mosaic — overwhelming beauty',fl:'grand palace bangkok gold thailand'},
+    {name:'Wat Pho',wiki:'Wat_Pho',cat:'temple',desc:'46-metre reclining gold Buddha — birthplace of Thai massage',fl:'wat pho bangkok reclining buddha gold'},
+    {name:'Wat Arun',wiki:'Wat_Arun',cat:'temple',desc:'Temple of Dawn — porcelain mosaics shimmering across the river',fl:'wat arun bangkok river temple dawn'},
+    {name:'Chatuchak Market',wiki:'Chatuchak_Weekend_Market',cat:'market',desc:"15,000 stalls — the world's biggest outdoor shopping experience",fl:'chatuchak market bangkok weekend shopping'},
+    {name:'Chao Phraya River',wiki:'Chao_Phraya',cat:'view',desc:'The city\'s living artery — temples, boats, and skyline at once',fl:'chao phraya river bangkok sunset boat temple'},
+    {name:'Khao San Road',wiki:'Khao_San_Road',cat:'street',desc:"Southeast Asia's most legendary street — come for one night",fl:'khao san road bangkok nightlife street'},
+    {name:'Lumphini Park',wiki:'Lumphini_Park',cat:'park',desc:'Morning tai chi, monitor lizards, green escape from the heat',fl:'lumphini park bangkok green lake'},
+    {name:'Asiatique Riverfront',wiki:'Asiatique_the_Riverfront',cat:'market',desc:'Night market on the Chao Phraya — Ferris wheel, food, and craft',fl:'asiatique bangkok night market ferris wheel river'},
+  ])[i]),
+  'singapore':['Gardens_by_the_Bay','Marina_Bay_Sands','Hawker_centre','Sentosa','Chinatown,_Singapore','Little_India,_Singapore','Singapore_Zoo','Merlion'].map((w,i)=>([
+    {name:'Gardens by the Bay',wiki:'Gardens_by_the_Bay',cat:'nature',desc:'Supertrees that glow at night like alien forest — pure wonder',fl:'gardens by the bay singapore supertrees night glow'},
+    {name:'Marina Bay Sands',wiki:'Marina_Bay_Sands',cat:'view',desc:'Infinity pool 200m up with the whole city at your feet',fl:'marina bay sands singapore infinity pool skyline'},
+    {name:'Hawker Centres',wiki:'Hawker_centre',cat:'food',desc:"Char kway teow, laksa, chicken rice — world's best cheap eats",fl:'singapore hawker centre food stalls colourful'},
+    {name:'Sentosa Island',wiki:'Sentosa',cat:'beach',desc:'Universal Studios, beaches, and cable cars — island within an island',fl:'sentosa island singapore beach cable car'},
+    {name:'Chinatown',wiki:'Chinatown,_Singapore',cat:'street',desc:'Temples, red lanterns, and the best bak kut teh in Singapore',fl:'chinatown singapore lanterns red streets temple'},
+    {name:'Little India',wiki:'Little_India,_Singapore',cat:'street',desc:'Jasmine garlands, sari shops, and banana-leaf curry that hits the soul',fl:'little india singapore colourful streets flowers'},
+    {name:'Singapore Zoo',wiki:'Singapore_Zoo',cat:'nature',desc:"World's finest open-concept zoo — breakfast with orangutans",fl:'singapore zoo orangutan breakfast nature'},
+    {name:'Merlion Park',wiki:'Merlion',cat:'landmark',desc:"The city's mythic guardian — iconic skyline backdrop",fl:'merlion park singapore marina bay fountain'},
+  ])[i]),
+  'new york':['Central_Park','Empire_State_Building','Brooklyn_Bridge','High_Line_(New_York_City)','Museum_of_Modern_Art','Times_Square','Statue_of_Liberty','DUMBO,_Brooklyn','Williamsburg,_Brooklyn','One_World_Trade_Center'].map((w,i)=>([
+    {name:'Central Park',wiki:'Central_Park',cat:'park',desc:"843 acres of greenery in the world's most vertical city",fl:'central park new york skyline green'},
+    {name:'Empire State Building',wiki:'Empire_State_Building',cat:'view',desc:'Manhattan at your feet — 86 floors of pure New York drama',fl:'empire state building new york view skyline'},
+    {name:'Brooklyn Bridge',wiki:'Brooklyn_Bridge',cat:'landmark',desc:'Walk across and watch the city skyline unfold — totally free',fl:'brooklyn bridge new york skyline walk'},
+    {name:'The High Line',wiki:'High_Line_(New_York_City)',cat:'view',desc:'Aerial park on a disused railway track above the Hudson Yards',fl:'high line new york park manhattan elevated'},
+    {name:'MoMA',wiki:'Museum_of_Modern_Art',cat:'museum',desc:"Starry Night, Campbell's Soup, Pollock — modern art's greatest hits",fl:'moma new york modern art gallery'},
+    {name:'Times Square',wiki:'Times_Square',cat:'view',desc:'Overwhelming, garish, absurd — and somehow magnificent after dark',fl:'times square new york night neon billboards'},
+    {name:'Statue of Liberty',wiki:'Statue_of_Liberty',cat:'landmark',desc:'The symbol of freedom that welcomed millions to a new world',fl:'statue of liberty new york harbor'},
+    {name:'DUMBO Brooklyn',wiki:'DUMBO,_Brooklyn',cat:'view',desc:'Manhattan Bridge framing the skyline — most photographed spot in NYC',fl:'dumbo brooklyn bridge manhattan view'},
+    {name:'Williamsburg',wiki:'Williamsburg,_Brooklyn',cat:'street',desc:'Rooftop bars, murals, and the best bagels in Brooklyn',fl:'williamsburg brooklyn street art mural'},
+    {name:'One World Trade',wiki:'One_World_Trade_Center',cat:'landmark',desc:'Rise from Ground Zero to the tallest tower in the Western Hemisphere',fl:'one world trade center new york sunset'},
+  ])[i]),
+  'dubai':['Burj_Khalifa','Dubai_Mall','Palm_Jumeirah','Arabian_Desert','Gold_Souk,_Dubai','Jumeirah','Museum_of_the_Future','Egyptian_Bazaar'].map((w,i)=>([
+    {name:'Burj Khalifa',wiki:'Burj_Khalifa',cat:'view',desc:"World's tallest building — sunset from level 148 is otherworldly",fl:'burj khalifa dubai sunset top view'},
+    {name:'Dubai Mall',wiki:'Dubai_Mall',cat:'landmark',desc:'An indoor ski slope, aquarium, and ice rink — welcome to excess',fl:'dubai mall aquarium shark indoor'},
+    {name:'Palm Jumeirah',wiki:'Palm_Jumeirah',cat:'view',desc:'A man-made island shaped like a palm tree — see it from above',fl:'palm jumeirah dubai aerial view island'},
+    {name:'Desert Safari',wiki:'Arabian_Desert',cat:'adventure',desc:'Dunes at sunset, then Bedouin dinner under the desert stars',fl:'dubai desert safari dunes sunset camel'},
+    {name:'Dubai Creek & Gold Souk',wiki:'Gold_Souk,_Dubai',cat:'market',desc:'Cross by abra boat, then lose yourself in 300 gold shops',fl:'dubai creek gold souk boats water'},
+    {name:'Jumeirah Beach',wiki:'Jumeirah',cat:'beach',desc:'Turquoise Gulf water with the Burj Al Arab as your backdrop',fl:'jumeirah beach dubai burj al arab'},
+    {name:'Museum of the Future',wiki:'Museum_of_the_Future',cat:'culture',desc:"Dubai's most beautiful building tells stories of 2071 — mind-bending",fl:'museum of the future dubai architecture torus'},
+    {name:'Spice Souk',wiki:'Egyptian_Bazaar',cat:'market',desc:'Saffron, cardamom, frankincense — ancient trade routes alive today',fl:'spice souk dubai market herbs colours'},
+  ])[i]),
+  'istanbul':['Hagia_Sophia','Sultan_Ahmed_Mosque','Grand_Bazaar,_Istanbul','Topkapi_Palace','Bosphorus','Galata_Tower','Egyptian_Bazaar','Balat'].map((w,i)=>([
+    {name:'Hagia Sophia',wiki:'Hagia_Sophia',cat:'landmark',desc:'1,500 years old — church turned mosque turned history itself',fl:'hagia sophia istanbul interior dome gold'},
+    {name:'Blue Mosque',wiki:'Sultan_Ahmed_Mosque',cat:'temple',desc:'Six minarets and 20,000 Iznik tiles — Istanbul\'s most iconic silhouette',fl:'blue mosque istanbul interior tiles blue'},
+    {name:'Grand Bazaar',wiki:'Grand_Bazaar,_Istanbul',cat:'market',desc:'4,000 shops, 600 years old — the world\'s first shopping mall',fl:'grand bazaar istanbul covered market lanterns'},
+    {name:'Topkapi Palace',wiki:'Topkapi_Palace',cat:'landmark',desc:'Where sultans ruled an empire — harem, treasury, Bosphorus views',fl:'topkapi palace istanbul courtyard bosphorus'},
+    {name:'Bosphorus Cruise',wiki:'Bosphorus',cat:'view',desc:'Two continents on either side — most dramatic strait on Earth',fl:'bosphorus strait istanbul bridge continents'},
+    {name:'Galata Tower',wiki:'Galata_Tower',cat:'view',desc:'700-year-old stone tower watching over the entire city',fl:'galata tower istanbul city view medieval'},
+    {name:'Spice Bazaar',wiki:'Egyptian_Bazaar',cat:'market',desc:'Mounds of crimson sumac, golden saffron, and rose petals',fl:'spice bazaar istanbul colours herbs market'},
+    {name:'Balat',wiki:'Balat',cat:'street',desc:'Rainbow-coloured old houses and the hippest café scene in Istanbul',fl:'balat istanbul colourful houses street cafe'},
+  ])[i]),
+  'prague':['Prague_Castle','Charles_Bridge','Old_Town_Square,_Prague','Josefov','Petřín','Vinohrady','St._Vitus_Cathedral'].map((w,i)=>([
+    {name:'Prague Castle',wiki:'Prague_Castle',cat:'landmark',desc:"World's largest ancient castle — the city lay beneath its feet",fl:'prague castle hill cityview panorama'},
+    {name:'Charles Bridge',wiki:'Charles_Bridge',cat:'landmark',desc:'30 baroque saints standing watch over the Vltava at golden hour',fl:'charles bridge prague river dawn statues'},
+    {name:'Old Town Square',wiki:'Old_Town_Square,_Prague',cat:'landmark',desc:'Astronomical clock, Gothic churches, fairy-tale architecture',fl:'old town square prague astronomical clock'},
+    {name:'Jewish Quarter',wiki:'Josefov',cat:'culture',desc:"Europe's best-preserved Jewish ghetto — six synagogues and a haunting cemetery",fl:'jewish quarter prague synagogue cemetery'},
+    {name:'Petřín Hill',wiki:'Petřín',cat:'view',desc:'Mini Eiffel Tower and rose gardens above the entire city',fl:'petrin hill prague tower view city'},
+    {name:'Vinohrady',wiki:'Vinohrady',cat:'street',desc:'Art Nouveau buildings, wine bars, the real Prague away from tourists',fl:'vinohrady prague art nouveau cafe street'},
+    {name:'St. Vitus Cathedral',wiki:'St._Vitus_Cathedral',cat:'landmark',desc:'Gothic cathedral 600 years in the making — jewel box of stained glass',fl:'st vitus cathedral prague gothic stained glass'},
+  ])[i]),
+  'lisbon':['Belém_Tower','Jerónimos_Monastery','Alfama','Sintra','LX_Factory','Graça,_Lisbon','Time_Out_Market_Lisbon','Trams_in_Lisbon'].map((w,i)=>([
+    {name:'Belém Tower',wiki:'Belém_Tower',cat:'landmark',desc:'Manueline fortress on the Tagus — where the Age of Discovery began',fl:'belem tower lisbon tagus river sunset'},
+    {name:'Jerónimos Monastery',wiki:'Jerónimos_Monastery',cat:'landmark',desc:"Portugal's greatest building — lace-like stone and twisted columns",fl:'jeronimos monastery lisbon interior cloister stone'},
+    {name:'Alfama',wiki:'Alfama',cat:'street',desc:'Fado music drifts from tiled houses up the oldest hills in Lisbon',fl:'alfama lisbon tram tiles fado street'},
+    {name:'Sintra',wiki:'Sintra',cat:'landmark',desc:"Fairy-tale palaces in the hills — a UNESCO world wonder 40 min away",fl:'sintra portugal pena palace colourful fairy tale'},
+    {name:'LX Factory',wiki:'LX_Factory',cat:'culture',desc:'Creative hub in a 19th-century factory — art, brunch, Sunday market',fl:'lx factory lisbon creative market weekend'},
+    {name:'Miradouro Graça',wiki:'Graça,_Lisbon',cat:'view',desc:'The best sunset viewpoint in Lisbon — locals, wine, whole city',fl:'lisbon miradouro viewpoint sunset city'},
+    {name:'Time Out Market',wiki:'Time_Out_Market_Lisbon',cat:'food',desc:"Lisbon's best chefs under one roof — the world's finest food hall",fl:'timeout market lisbon food stalls hall'},
+    {name:'Tram 28',wiki:'Trams_in_Lisbon',cat:'street',desc:'Most scenic public transport ride in Europe — Lisbon\'s yellow icon',fl:'tram 28 lisbon yellow alfama street'},
+  ])[i]),
+  'santorini':['Oia,_Santorini','Santorini','Red_Beach_(Santorini)','Akrotiri_(Santorini)','Amoudi_Bay','Fira','Pyrgos,_Santorini'].map((w,i)=>([
+    {name:'Oia Village',wiki:'Oia,_Santorini',cat:'view',desc:'The sunset that inspired a thousand paintings — and your best photo ever',fl:'oia santorini sunset caldera white blue domes'},
+    {name:'Caldera View',wiki:'Santorini',cat:'view',desc:'Rim of a volcanic crater — the sea sits 300 metres below your feet',fl:'santorini caldera view blue domes white'},
+    {name:'Red Beach',wiki:'Red_Beach_(Santorini)',cat:'beach',desc:'Volcanic red cliffs plunge into crystal-clear waters — dramatic swimming',fl:'red beach santorini volcanic cliff swimming'},
+    {name:'Akrotiri Ruins',wiki:'Akrotiri_(Santorini)',cat:'culture',desc:'A Bronze Age city preserved by the same volcano that made the island',fl:'akrotiri santorini ancient ruins excavation'},
+    {name:'Amoudi Bay',wiki:'Amoudi_Bay',cat:'beach',desc:'Cliff-jump into the Aegean then eat grilled octopus at the water\'s edge',fl:'amoudi bay santorini cliff swimming octopus'},
+    {name:'Fira Town',wiki:'Fira',cat:'view',desc:'Cable car down to the old port — whitewashed buildings at caldera\'s edge',fl:'fira santorini town caldera white buildings'},
+    {name:'Pyrgos Village',wiki:'Pyrgos,_Santorini',cat:'view',desc:"The island's highest point — 360° views, zero tourist crowds",fl:'pyrgos santorini village hilltop view panorama'},
+  ])[i]),
+  'seoul':['Gyeongbokgung','Bukchon_Hanok_Village','Myeong-dong','Dongdaemun_Design_Plaza','N_Seoul_Tower','Insadon','Han_River_(South_Korea)','Hongik_University_station'].map((w,i)=>([
+    {name:'Gyeongbokgung Palace',wiki:'Gyeongbokgung',cat:'landmark',desc:'Joseon dynasty palace with changing of the guard in full ceremonial dress',fl:'gyeongbokgung palace seoul traditional guard mountains'},
+    {name:'Bukchon Hanok Village',wiki:'Bukchon_Hanok_Village',cat:'street',desc:'600-year-old traditional Korean houses on a hill — dawn is magical',fl:'bukchon hanok village seoul traditional morning'},
+    {name:'Myeongdong',wiki:'Myeong-dong',cat:'market',desc:'Korea\'s beauty capital: K-beauty brands, street food, and neon chaos',fl:'myeongdong seoul shopping street food night'},
+    {name:'Dongdaemun Design Plaza',wiki:'Dongdaemun_Design_Plaza',cat:'culture',desc:'Zaha Hadid\'s UFO landed in Seoul — open 24 hours, sells everything',fl:'dongdaemun design plaza seoul night ddp futuristic'},
+    {name:'N Seoul Tower',wiki:'N_Seoul_Tower',cat:'view',desc:'City lights stretching to the horizon — a million love padlocks',fl:'n seoul tower view night panorama'},
+    {name:'Insadong',wiki:'Insadon',cat:'market',desc:'Traditional crafts, indie galleries, and the best hanji paper in Korea',fl:'insadong seoul traditional market arts craft'},
+    {name:'Han River Parks',wiki:'Han_River_(South_Korea)',cat:'park',desc:"Picnic, cycle, and watch the sunset over Korea's great river",fl:'han river seoul park sunset cycling bridge'},
+    {name:'Hongdae',wiki:'Hongik_University_station',cat:'street',desc:'Street performers, indie music clubs, hippest cafés in Seoul',fl:'hongdae seoul street music art cafe young'},
+  ])[i]),
+  'sydney':['Sydney_Opera_House','Bondi_Beach','Sydney_Harbour_Bridge','Royal_Botanic_Garden_Sydney','Manly,_New_South_Wales','The_Rocks,_Sydney','Blue_Mountains_(New_South_Wales)','Darling_Harbour'].map((w,i)=>([
+    {name:'Sydney Opera House',wiki:'Sydney_Opera_House',cat:'landmark',desc:'The greatest building of the 20th century — sail-shells over the harbour',fl:'sydney opera house harbour bridge sunset'},
+    {name:'Bondi Beach',wiki:'Bondi_Beach',cat:'beach',desc:"World-famous waves, coastal walk, and pure Australian summer",fl:'bondi beach sydney surf waves golden'},
+    {name:'Harbour Bridge Climb',wiki:'Sydney_Harbour_Bridge',cat:'adventure',desc:'Walk to the top of the arch and see 360° of Sydney from above',fl:'sydney harbour bridge climb view panorama'},
+    {name:'Royal Botanic Garden',wiki:'Royal_Botanic_Garden_Sydney',cat:'park',desc:'65 hectares on the harbour — free entry, bats, and opera house views',fl:'royal botanic garden sydney harbour opera house'},
+    {name:'Manly Beach',wiki:'Manly,_New_South_Wales',cat:'beach',desc:'Ferry across the harbour, then surf and fish and chips — perfect day',fl:'manly beach sydney ferry surf blue'},
+    {name:'The Rocks',wiki:'The_Rocks,_Sydney',cat:'street',desc:"Sydney's oldest neighbourhood — cobblestones, weekend markets, craft beer",fl:'the rocks sydney historic market cobblestone'},
+    {name:'Blue Mountains',wiki:'Blue_Mountains_(New_South_Wales)',cat:'nature',desc:'Three Sisters rock formation in blue-hazed eucalyptus wilderness',fl:'blue mountains three sisters sydney rock formation'},
+    {name:'Darling Harbour',wiki:'Darling_Harbour',cat:'view',desc:'Waterfront restaurants, SEA LIFE aquarium, and fireworks on Fridays',fl:'darling harbour sydney waterfront night fireworks'},
+  ])[i]),
+  'maldives':['Overwater_bungalow','Maldives','Bioluminescence','Malé'].map((w,i)=>([
+    {name:'Overwater Bungalow',wiki:'Overwater_bungalow',cat:'view',desc:'Your floor is crystal water — step off your deck into a coral reef',fl:'maldives overwater bungalow turquoise lagoon'},
+    {name:'Snorkelling & Diving',wiki:'Maldives',cat:'adventure',desc:'Whale sharks, manta rays, and 2,000 species of fish',fl:'maldives snorkeling coral reef fish colourful'},
+    {name:'Sunset Dhow Cruise',wiki:'Maldives',cat:'view',desc:'Dolphins racing the boat at sunset on a gold and violet Indian Ocean',fl:'maldives sunset dhow cruise dolphin ocean'},
+    {name:'Bioluminescent Beach',wiki:'Bioluminescence',cat:'view',desc:'At night the waves glow electric blue — one of Earth\'s great natural shows',fl:'bioluminescent beach maldives night glow blue'},
+  ])[i]),
+  'penang':['George_Town,_Penang','Kek_Lok_Si_Temple','Penang_Hill','Batu_Ferringhi','Clan_Jetties,_Penang','Penang_Street_Art','Gurney_Drive'].map((w,i)=>([
+    {name:'George Town Heritage',wiki:'George_Town,_Penang',cat:'street',desc:'UNESCO streets of clan houses, temples, and the world\'s best street food',fl:'george town penang heritage street food colourful'},
+    {name:'Kek Lok Si Temple',wiki:'Kek_Lok_Si_Temple',cat:'temple',desc:'Malaysia\'s largest Buddhist temple glowing with 10,000 lanterns at night',fl:'kek lok si temple penang pagoda lights night'},
+    {name:'Penang Hill',wiki:'Penang_Hill',cat:'view',desc:'Funicular ride up to sweeping 360° views over the whole island',fl:'penang hill funicular view panorama sunrise'},
+    {name:'Batu Ferringhi Beach',wiki:'Batu_Ferringhi',cat:'beach',desc:'Palm-fringed sunset beach with hawker stalls lighting up after dark',fl:'batu ferringhi beach penang sunset palm'},
+    {name:'Clan Jetties',wiki:'Clan_Jetties,_Penang',cat:'culture',desc:'Wooden homes built over the sea — a 200-year-old fishing clan village',fl:'clan jetties penang water village heritage'},
+    {name:'Penang Street Art',wiki:'Penang_Street_Art',cat:'street',desc:'Hunt for Zacharevic\'s famous murals hidden through Georgetown\'s lanes',fl:'penang street art mural bicycle george town'},
+    {name:'Gurney Drive',wiki:'Gurney_Drive',cat:'food',desc:'The legendary seaside hawker strip — char kway teow and cendol at dusk',fl:'gurney drive penang hawker food seafront night'},
+  ])[i]),
+  'kuala lumpur':['Petronas_Twin_Towers','Batu_Caves','Central_Market,_Kuala_Lumpur','Bukit_Bintang','KL_Forest_Eco_Park','Jalan_Alor','Masjid_Negara'].map((w,i)=>([
+    {name:'Petronas Twin Towers',wiki:'Petronas_Twin_Towers',cat:'view',desc:'The world\'s tallest twin towers — dazzling from the bridge at night',fl:'petronas twin towers kuala lumpur night skyline'},
+    {name:'Batu Caves',wiki:'Batu_Caves',cat:'temple',desc:'272 rainbow steps to a Hindu cave shrine with Lord Murugan at the gate',fl:'batu caves kuala lumpur rainbow steps statue'},
+    {name:'Central Market',wiki:'Central_Market,_Kuala_Lumpur',cat:'market',desc:'Art Deco building packed with batik, pewter, and Malaysian crafts',fl:'central market kuala lumpur handicraft art deco'},
+    {name:'Bukit Bintang',wiki:'Bukit_Bintang',cat:'street',desc:'KL\'s glittering heart — sky bridges, rooftop bars, and endless hawker lanes',fl:'bukit bintang kuala lumpur neon night shopping'},
+    {name:'KL Forest Eco Park',wiki:'KL_Forest_Eco_Park',cat:'nature',desc:'Ancient rainforest canopy walk in the middle of the city — surreal',fl:'kl forest eco park canopy walk trees kuala lumpur'},
+    {name:'Jalan Alor',wiki:'Jalan_Alor',cat:'food',desc:'The greatest hawker street in Malaysia — satay smoke and durian at midnight',fl:'jalan alor kuala lumpur night hawker food street'},
+    {name:'Masjid Negara',wiki:'Masjid_Negara',cat:'temple',desc:'Malaysia\'s National Mosque — serene courtyard and iconic folded-star dome',fl:'masjid negara kuala lumpur mosque blue dome'},
+  ])[i]),
+  'phuket':['Patong_Beach','Phi_Phi_Islands','Big_Buddha,_Phuket','Old_Phuket_Town','Kata_Beach','Phang_Nga_Bay','Bangla_Road'].map((w,i)=>([
+    {name:'Phi Phi Islands',wiki:'Phi_Phi_Islands',cat:'beach',desc:'Turquoise lagoons and limestone cliffs — the most beautiful islands in Thailand',fl:'phi phi islands phuket turquoise lagoon limestone'},
+    {name:'Big Buddha',wiki:'Big_Buddha,_Phuket',cat:'landmark',desc:'45-metre white marble Buddha watching over the whole island from the hilltop',fl:'big buddha phuket hilltop white marble view'},
+    {name:'Phang Nga Bay',wiki:'Phang_Nga_Bay',cat:'view',desc:'James Bond Island — karst towers rising from jade-green water',fl:'phang nga bay limestone cliffs james bond island'},
+    {name:'Old Phuket Town',wiki:'Old_Phuket_Town',cat:'street',desc:'Peranakan shophouses, street art, and the best coffee in all of Phuket',fl:'old phuket town colourful shophouses street art'},
+    {name:'Patong Beach',wiki:'Patong_Beach',cat:'beach',desc:'The biggest party beach in Southeast Asia — sunsets worth staying for',fl:'patong beach phuket sunset sea people'},
+    {name:'Kata Beach',wiki:'Kata_Beach',cat:'beach',desc:'Laid-back alternative to Patong — cleaner water, better sunsets',fl:'kata beach phuket calm clear water palm'},
+    {name:'Bangla Road Nightlife',wiki:'Bangla_Road',cat:'street',desc:'Neon, music, and the most electric night out in the whole of Thailand',fl:'bangla road phuket neon night clubs colourful'},
+  ])[i]),
+  'florence':['Uffizi_Gallery','Florence_Cathedral','Ponte_Vecchio','Piazzale_Michelangelo','Accademia_Gallery','Palazzo_Pitti','Mercato_Centrale'].map((w,i)=>([
+    {name:'Uffizi Gallery',wiki:'Uffizi_Gallery',cat:'museum',desc:'Botticelli\'s Birth of Venus — one painting that justifies the whole trip',fl:'uffizi gallery florence botticelli renaissance art'},
+    {name:'Duomo',wiki:'Florence_Cathedral',cat:'landmark',desc:'Brunelleschi\'s dome still defies engineering logic 600 years later',fl:'florence cathedral duomo dome sunset golden'},
+    {name:'Ponte Vecchio',wiki:'Ponte_Vecchio',cat:'landmark',desc:'Medieval bridge of goldsmiths over the Arno — most romantic crossing in Italy',fl:'ponte vecchio florence arno bridge golden sunset'},
+    {name:'Piazzale Michelangelo',wiki:'Piazzale_Michelangelo',cat:'view',desc:'The one viewpoint where all of Florence fits in one golden frame',fl:'piazzale michelangelo florence panorama skyline sunset'},
+    {name:"Accademia — David",wiki:'Accademia_Gallery',cat:'museum',desc:"Michelangelo's David in person — nothing prepares you for the scale",fl:'accademia gallery florence michelangelo david statue'},
+    {name:'Palazzo Pitti Gardens',wiki:'Palazzo_Pitti',cat:'landmark',desc:'Royal palace with terraced Boboli Gardens above the Arno valley',fl:'palazzo pitti florence boboli garden fountain'},
+    {name:'Mercato Centrale',wiki:'Mercato_Centrale',cat:'market',desc:'Florence\'s covered food market — lampredotto, fresh pasta, and Chianti',fl:'mercato centrale florence market food italian'},
+  ])[i]),
+  'vienna':['Schönbrunn_Palace','Kunsthistorisches_Museum','St._Stephen\'s_Cathedral','Naschmarkt','Belvedere_Palace','Prater','Vienna_State_Opera'].map((w,i)=>([
+    {name:"Schönbrunn Palace",wiki:'Schönbrunn_Palace',cat:'landmark',desc:'1,441 rooms, 40 acres of gardens — Hapsburg empire in full baroque glory',fl:'schonbrunn palace vienna baroque garden fountain'},
+    {name:'Kunsthistorisches Museum',wiki:'Kunsthistorisches_Museum',cat:'museum',desc:'Vermeer, Rembrandt, Raphael — one of the greatest art collections on Earth',fl:'kunsthistorisches museum vienna art gallery interior'},
+    {name:"St. Stephen's Cathedral",wiki:"St._Stephen's_Cathedral",cat:'landmark',desc:'Gothic masterpiece at Vienna\'s heart — climb the tower for rooftop views',fl:'st stephens cathedral vienna gothic spire roof'},
+    {name:'Naschmarkt',wiki:'Naschmarkt',cat:'market',desc:'Vienna\'s famous open-air market — olives, cheeses, and Viennese sausages',fl:'naschmarkt vienna market food stalls colourful'},
+    {name:'Belvedere Palace',wiki:'Belvedere_Palace',cat:'landmark',desc:"Klimt's The Kiss — the most romantic painting in the most romantic city",fl:'belvedere palace vienna klimt garden baroque'},
+    {name:'Prater & Riesenrad',wiki:'Prater',cat:'view',desc:'The giant Ferris wheel from The Third Man — iconic Vienna in one ride',fl:'prater ferris wheel vienna giant riesenrad'},
+    {name:'Vienna State Opera',wiki:'Vienna_State_Opera',cat:'culture',desc:'Standing tickets from €3 — Mozart and Verdi where they were first performed',fl:'vienna state opera house interior gold performance'},
+  ])[i]),
+};
+
+// Destination aliases — maps alternate names to canonical SPOT_DATA keys
+const DEST_ALIASES = {'kl':'kuala lumpur','george town':'penang','georgetown':'penang','ko phuket':'phuket','isle of phuket':'phuket','bkk':'bangkok','nyc':'new york','new york city':'new york','hcmc':'ho chi minh','saigon':'ho chi minh'};
+
+const CAT_ICONS = {landmark:'🏛️',museum:'🖼️',culture:'🎨',nature:'🌿',view:'🌅',beach:'🏖️',market:'🛍️',temple:'⛩️',park:'🌳',street:'🚶',adventure:'⛰️',food:'🍴'};
+
+let _spotInput = null;
+let _spotSel = new Set();
+let _spotList = [];
+let _spotDest = '';
+
+function _matchDest(dest) {
+  const d = (dest || '').toLowerCase().trim();
+  // Check alias table first (KL → kuala lumpur, etc.)
+  for (const [alias, canonical] of Object.entries(DEST_ALIASES)) {
+    if (d.includes(alias) && SPOT_DATA[canonical]) return canonical;
+  }
+  // Pass 1: direct substring — catches "Tokyo, Japan" → 'tokyo'
+  for (const key of Object.keys(SPOT_DATA)) {
+    if (d.includes(key)) return key;
+  }
+  // Pass 2: try each comma/slash/plus/ampersand/space segment
+  const segs = d.split(/[,\/\+\&]/).map(s => s.trim()).filter(Boolean);
+  for (const seg of segs) {
+    // Check aliases per segment too
+    for (const [alias, canonical] of Object.entries(DEST_ALIASES)) {
+      if (seg.includes(alias) && SPOT_DATA[canonical]) return canonical;
+    }
+    for (const key of Object.keys(SPOT_DATA)) {
+      if (seg.includes(key) || key.includes(seg)) return key;
+    }
+  }
+  return null;
+}
+
+async function _fetchWikiPhoto(wikiSlug) {
+  try {
+    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(wikiSlug), {signal: AbortSignal.timeout(5000)});
+    if (!r.ok) return null;
+    const d = await r.json();
+    const src = d.thumbnail?.source;
+    if (!src) return null;
+    return src.replace(/\/\d+px-/, '/800px-');
+  } catch { return null; }
+}
+
+// Fetch spots for any destination dynamically from Wikipedia
+async function _fetchSpotsForDest(dest) {
+  try {
+    const r = await fetch(BACKEND + '/api/spots?destination=' + encodeURIComponent(dest), {
+      signal: AbortSignal.timeout(22000)
+    });
+    if (!r.ok) return [];
+    const { spots } = await r.json();
+    return (spots || []).map(s => ({
+      name: s.name,
+      wiki: s.wikiSlug,
+      cat: s.category,
+      desc: s.description,
+      photoUrl: null,
+      fl: s.name.toLowerCase(),
+    }));
+  } catch { return []; }
+}
+
+async function showSpotSelector(dest) {
+  _spotSel.clear();
+  _spotDest = dest;
+  document.getElementById('spotDestLabel').textContent = dest;
+  document.getElementById('planForm').style.display = 'none';
+  document.getElementById('spotScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  _updateSpotFooter();
+
+  const key = _matchDest(dest);
+  if (key) {
+    // Fast path — use curated data, photos load async per-card
+    _spotList = SPOT_DATA[key];
+    _renderSpotGrid();
+  } else {
+    // Dynamic path — show loading skeleton, fetch from backend AI
+    _showSpotSkeleton();
+    const spots = await _fetchSpotsForDest(dest);
+    if (!spots.length) {
+      // Show error state — don't silently skip to generation
+      const g = document.getElementById('spotGrid');
+      g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:rgba(255,255,255,.5)">' +
+        '<div style="font-size:32px;margin-bottom:12px">⚠️</div>' +
+        '<div style="font-size:15px;margin-bottom:20px">Couldn\'t load highlights for ' + dest + '</div>' +
+        '<button onclick="proceedToGeneration()" style="background:#7c6af7;border:none;border-radius:12px;padding:12px 24px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-right:8px">Generate anyway</button>' +
+        '<button onclick="showSpotSelector(_spotDest)" style="background:rgba(255,255,255,.08);border:none;border-radius:12px;padding:12px 24px;color:#fff;font-size:14px;cursor:pointer">Retry</button>' +
+        '</div>';
+      _updateSpotFooter();
+      return;
+    }
+    _spotList = spots;
+    _renderSpotGrid();
+    _updateSpotFooter();
+  }
+}
+
+function _showSpotSkeleton() {
+  const g = document.getElementById('spotGrid');
+  g.innerHTML = Array.from({ length: 6 }, () =>
+    '<div class="spot-card" style="pointer-events:none"><div class="spot-skel" style="position:absolute;inset:0;border-radius:12px"></div></div>'
+  ).join('');
+  document.getElementById('spotCountRow').innerHTML = 'Finding highlights…';
+}
+
+function _renderSpotGrid() {
+  const g = document.getElementById('spotGrid');
+  g.innerHTML = '';
+  _spotList.forEach((spot, i) => {
+    const c = document.createElement('div');
+    c.className = 'spot-card';
+    c.dataset.i = i;
+    c.innerHTML =
+      '<div class="spot-skel" id="_sk'+i+'"></div>' +
+      '<img class="spot-img" id="_si'+i+'" alt="' + spot.name + '">' +
+      '<div class="spot-grad"></div>' +
+      '<div class="spot-body">' +
+        '<div class="spot-cat">' + (CAT_ICONS[spot.cat] || '📍') + ' ' + spot.cat + '</div>' +
+        '<div class="spot-name">' + spot.name + '</div>' +
+        '<div class="spot-desc">' + spot.desc + '</div>' +
+      '</div>' +
+      '<div class="spot-tick">✓</div>';
+    c.onclick = () => _toggleSpot(i, c);
+    g.appendChild(c);
+    // Use pre-fetched photoUrl (dynamic) or fetch via wiki slug (curated)
+    const photoP = spot.photoUrl ? Promise.resolve(spot.photoUrl) : _fetchWikiPhoto(spot.wiki);
+    photoP.then(url => {
+      const fallback = 'https://loremflickr.com/800/600/' + encodeURIComponent(spot.fl || spot.name);
+      const final = url || fallback;
+      const img = document.getElementById('_si'+i);
+      const sk = document.getElementById('_sk'+i);
+      if (!img) return;
+      img.onload = () => { img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
+      img.onerror = () => { img.src = fallback; };
+      img.src = final;
+    });
+  });
+}
+
+function _toggleSpot(i, card) {
+  if (_spotSel.has(i)) { _spotSel.delete(i); card.classList.remove('sel'); }
+  else { _spotSel.add(i); card.classList.add('sel'); }
+  _updateSpotFooter();
+}
+
+function _updateSpotFooter() {
+  const n = _spotSel.size;
+  const row = document.getElementById('spotCountRow');
+  const btn = document.getElementById('spotGoBtn');
+  if (n === 0) {
+    row.innerHTML = 'Select places that excite you';
+    btn.textContent = 'Plan my trip ✨';
+  } else {
+    row.innerHTML = '<span class="spot-count-n">' + n + ' place' + (n===1?'':'s') + '</span> selected — we\'ll include these in your trip';
+    btn.textContent = 'Plan around my picks ✨';
+  }
+}
+
+function continueWithSpots() {
+  window._selectedSpots = [..._spotSel].map(i => ({ name: _spotList[i].name, category: _spotList[i].cat, description: _spotList[i].desc }));
+  document.getElementById('spotScreen').style.display = 'none';
+  proceedToGeneration();
+}
+
+function skipSpots() {
+  window._selectedSpots = [];
+  document.getElementById('spotScreen').style.display = 'none';
+  proceedToGeneration();
+}
+
 // ── Submit ─────────────────────────────────────────────────────────────────
 function _pickVal(groupAttr){
   const sel = document.querySelector('.arch-fields.active .chip-group[data-group="'+groupAttr+'"] .chip-pick.sel');
@@ -840,6 +1311,15 @@ async function submitTrip() {
   if (!budget) { showToast('&#9888; Enter your budget'); return; }
   if (!interests.length) { showToast('&#9888; Pick at least one interest'); return; }
 
+  // Store form values and let spot selector intercept before generation
+  _spotInput = { dest, start, end, budget, style, home, interests, archData };
+  showSpotSelector(dest);
+}
+
+async function proceedToGeneration() {
+  const { dest, start, end, budget, style, home, interests, archData } = _spotInput;
+  const selectedSpots = window._selectedSpots || [];
+
   // Show gen screen
   document.getElementById('planForm').style.display = 'none';
   const gs = document.getElementById('genScreen');
@@ -878,7 +1358,7 @@ async function submitTrip() {
     const response = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({ destination: dest, startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests }, archData)),
+      body: JSON.stringify(Object.assign({ destination: dest, startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots }, archData)),
     });
 
     if (!response.ok) {
