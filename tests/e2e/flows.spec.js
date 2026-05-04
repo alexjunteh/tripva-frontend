@@ -178,8 +178,8 @@ test.describe('Tripva E2E flows', () => {
     // Spot cards must render
     await expect(page.locator('#spotGrid .spot-card')).toHaveCount(8, { timeout: 10_000 });
 
-    // Cards must NOT be blank — every card must have a non-empty img src (loremflickr at minimum)
-    await expect(page.locator('#spotGrid .spot-card img.loaded').first()).toBeVisible({ timeout: 8_000 });
+    // At least one card must load a photo within 15s (Wikipedia or loremflickr fallback)
+    await expect(page.locator('#spotGrid .spot-card img.loaded').first()).toBeVisible({ timeout: 15_000 });
 
     // The "Generate" button in spot footer should be visible
     await expect(page.locator('.spot-go-btn')).toBeVisible();

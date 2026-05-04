@@ -1210,23 +1210,29 @@ function _renderSpotGrid() {
     g.appendChild(c);
     const img = document.getElementById('_si'+i);
     const sk = document.getElementById('_sk'+i);
-    const fallback = 'https://loremflickr.com/800/600/' + encodeURIComponent(spot.fl || spot.name);
-    // Show loremflickr immediately so card is never blank, then upgrade to Wikipedia
     const showImg = (src) => {
       if (!img) return;
       img.onload = () => { img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
-      img.onerror = () => { if (img.src !== fallback) img.src = fallback; };
+      img.onerror = () => { if (sk) sk.style.opacity = '0.3'; }; // dim skeleton on failure
       img.src = src;
     };
     if (spot.photoUrl) {
       showImg(spot.photoUrl);
+    } else if (spot.wiki) {
+      // Fetch Wikipedia first — loremflickr tags are unreliable (e.g. "colosseum" matches theaters)
+      // Keep skeleton shimmer visible while fetching; only fall back to loremflickr on failure
+      _fetchWikiPhoto(spot.wiki).then(url => {
+        if (url && img && img.isConnected) {
+          showImg(url);
+        } else if (img && img.isConnected) {
+          // Use specific multi-word keyword so loremflickr returns relevant travel photos
+          const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
+          showImg('https://loremflickr.com/800/600/' + kw);
+        }
+      });
     } else {
-      showImg(fallback); // instant placeholder
-      if (spot.wiki) {
-        _fetchWikiPhoto(spot.wiki).then(url => {
-          if (url && img && img.isConnected) { img.classList.remove('loaded'); img.src = url; }
-        });
-      }
+      const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
+      showImg('https://loremflickr.com/800/600/' + kw);
     }
   });
 }
