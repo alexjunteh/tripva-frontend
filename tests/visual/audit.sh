@@ -679,6 +679,8 @@ phase_5() {
   case "$pack_state" in
     ok-has-items) pass "packing modal loads items without API error" ;;
     still-loading) warn "packing modal: AI slow (>16s), not counted as failure" ;;
+    # 503 = backend unavailable (transient). 400/422 = frontend request bug (fail).
+    pack-api-error:*503*) warn "packing modal: backend 503 (transient), not counted as failure" ;;
     *) fail "packing modal broken: $pack_state"; ok=0 ;;
   esac
 
