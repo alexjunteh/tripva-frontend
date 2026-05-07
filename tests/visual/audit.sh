@@ -466,7 +466,13 @@ phase_3() {
   local ok=1
   "$B" viewport 390x844 >/dev/null 2>&1
   "$B" goto "https://tripva.app/plan?archetype=family&v=$t&phase=3" >/dev/null 2>&1
-  sleep 3
+  sleep 6
+
+  # Guard: if DOM isn't ready yet (cold browser), force-activate family archetype
+  local dom_ready; dom_ready=$("$B" js "document.querySelector('.arch-pill') !== null" 2>/dev/null | tail -1)
+  if [ "$dom_ready" != "true" ]; then sleep 4; fi
+  "$B" js "typeof setArchetype === 'function' && document.querySelector('.arch-pill.active')?.dataset?.arch !== 'family' && setArchetype('family'); true" >/dev/null 2>&1
+  sleep 1
 
   # Archetype pill check
   local active; active=$("$B" js "document.querySelector('.arch-pill.active')?.dataset?.arch" 2>/dev/null | tail -1 | tr -d '"')
