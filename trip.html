@@ -2467,13 +2467,15 @@ function closePackModal() {
 }
 
 let _spotsLoaded = false;
-function loadPhotoSpots(force) {
-  if (_spotsLoaded && !force) return;
+let _spotsLoading = false;
+async function loadPhotoSpots(force) {
+  if ((_spotsLoaded && !force) || _spotsLoading) return;
+  _spotsLoading = true;
 
   const skelEl = document.getElementById('spots-skeleton');
   const errEl  = document.getElementById('spots-error');
   const gridEl = document.getElementById('spots-grid');
-  if (!skelEl || !errEl || !gridEl) return; // DOM not ready
+  if (!skelEl || !errEl || !gridEl) { _spotsLoading = false; return; }
 
   const dest = plan?.trip?.destination || plan?.trip?.city ||
     (()=>{ try { const nm=plan?.trip?.name||''; const m=nm.match(/\b(?:in|to|at)\s+([A-Z][^,()]+?)(?:\s*[,(]|$)/i); return m?m[1].trim():''; } catch(e){ return ''; } })();
@@ -2488,11 +2490,11 @@ function loadPhotoSpots(force) {
     });
   } catch(e) { /* ignore */ }
 
-  skelEl.style.display = 'none';
-  errEl.style.display  = 'none';
+  errEl.style.display = 'none';
 
   if (spots.length) {
-    // Render plan spots immediately
+    // Render plan spots immediately — skeleton hides right away
+    skelEl.style.display = 'none';
     gridEl.innerHTML = spots.map(({ tl, dayIdx, dayNum }) => {
       const cleanName = (tl.title || '').replace(/^[^\w]*photospot:\s*/i, '').trim() || (tl.title || '');
       const mapQuery  = tl.mapQuery || (cleanName + (dest ? ', ' + dest : ''));
@@ -2511,47 +2513,63 @@ function loadPhotoSpots(force) {
     }).join('');
     gridEl.style.display = 'flex';
     _spotsLoaded = true;
+    _spotsLoading = false;
     _populateSpotsPhotos(gridEl, dest);
-    // Always pad to at least 6 cards with destination gallery
-    if (dest) _buildDestGallery(gridEl, errEl, dest, 6 - spots.length, true);
+    // Pad to at least 6 cards with destination gallery
+    if (dest) await _buildDestGallery(gridEl, errEl, dest, 6 - spots.length, true);
   } else if (dest) {
-    // No plan spots — build a full destination gallery from Commons
-    _buildDestGallery(gridEl, errEl, dest, 6, false);
+    // No plan spots — keep skeleton visible while fetching gallery in parallel
+    skelEl.style.display = 'flex';
+    await _buildDestGallery(gridEl, errEl, dest, 6, false);
+    skelEl.style.display = 'none';
+    _spotsLoading = false;
   } else {
-    errEl.style.display = 'block';
+    skelEl.style.display = 'none';
+    errEl.style.display  = 'block';
+    _spotsLoading = false;
   }
 }
 
 async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   if ((maxCards || 6) <= 0) return;
+  const max = maxCards || 6;
+  const SKIP = /flag|coat_of_arms|logo|icon|map|diagram|\.svg/i;
   const queries = [
     dest + ' landmark', dest + ' travel', dest + ' scenic',
     dest + ' architecture', dest + ' street', dest + ' view',
   ];
-  const urls = [];
-  const max = maxCards || 6;
-  for (const q of queries) {
-    if (urls.length >= max) break;
-    try {
-      const url = 'https://commons.wikimedia.org/w/api.php?action=query' +
+
+  // Fire all queries in parallel — 6× faster than sequential awaits
+  const settled = await Promise.allSettled(
+    queries.map(async q => {
+      const apiUrl = 'https://commons.wikimedia.org/w/api.php?action=query' +
         '&generator=search&gsrnamespace=6&gsrsearch=' + encodeURIComponent(q + ' filetype:bitmap') +
         '&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=600&format=json&origin=*';
-      const r = await fetch(url);
-      if (!r.ok) continue;
+      const r = await fetch(apiUrl, { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) return [];
       const data = await r.json();
       const pages = data?.query?.pages;
-      if (!pages) continue;
-      const SKIP = /flag|coat_of_arms|logo|icon|map|diagram|\.svg/i;
-      for (const p of Object.values(pages)) {
+      if (!pages) return [];
+      return Object.values(pages)
+        .map(p => p.imageinfo?.[0])
+        .filter(Boolean)
+        .map(ii => ii.thumburl || ii.url || '')
+        .filter(t => t && /\.(jpg|jpeg|png|webp)/i.test(t) && !SKIP.test(t));
+    })
+  );
+
+  // Collect unique URLs up to max, preserving query order
+  const urls = [];
+  for (const r of settled) {
+    if (r.status === 'fulfilled') {
+      for (const t of r.value) {
         if (urls.length >= max) break;
-        const ii = p.imageinfo?.[0];
-        const thumb = ii?.thumburl || ii?.url || '';
-        if (thumb && /\.(jpg|jpeg|png|webp)/i.test(thumb) && !SKIP.test(thumb) && !urls.includes(thumb)) {
-          urls.push(thumb);
-        }
+        if (!urls.includes(t)) urls.push(t);
       }
-    } catch(e) { /* silent */ }
+    }
+    if (urls.length >= max) break;
   }
+
   if (!urls.length) { if (!append) errEl.style.display = 'block'; return; }
   const html = urls.map(u => `
     <div class="spot-card">
