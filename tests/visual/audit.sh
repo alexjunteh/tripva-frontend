@@ -706,6 +706,37 @@ phase_5() {
     && pass "no invisible touch-blockers (opacity:0 + pointer-events:all)" \
     || { fail "invisible touch-blocker(s) found: $touch_blockers"; ok=0; }
 
+  # ── Spots tab loads real cards (not just skeleton/header) ─────────────
+  # Catches: async fetch never fires, skeleton stays forever, empty-gallery bug.
+  # Uses the real backend trip so the gallery fetch hits Wikimedia Commons.
+  "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5spots" >/dev/null 2>&1; sleep 5
+  "$B" js "switchTab('spots'); loadPhotoSpots(); true" >/dev/null 2>&1
+  sleep 8  # allow parallel Wikimedia Commons fetches to complete
+  local spots_cards; spots_cards=$("$B" js "document.querySelectorAll('#spots-grid .spot-card').length" 2>/dev/null | tail -1)
+  spots_cards="${spots_cards:-0}"
+  [ "$spots_cards" -ge "1" ] 2>/dev/null \
+    && pass "spots tab renders cards after load ($spots_cards cards)" \
+    || { fail "spots tab empty after 8s — #spots-grid has 0 cards"; ok=0; }
+
+  # ── Day plan timeline has events (non-empty for fixture trip) ──────────
+  # Catches: AI truncation leaving days with timeline:[], rendering a silent void.
+  # Uses the same fixture trip so result is deterministic.
+  local day_tl_empty; day_tl_empty=$("$B" js "
+    (() => {
+      const days = window.plan?.days || [];
+      const emptyDays = days.filter(d => !(d.timeline && d.timeline.length));
+      if (!days.length) return 'no-days';
+      if (emptyDays.length === days.length) return 'all-empty:' + days.length + '-days';
+      if (emptyDays.length > 0) return 'partial:' + emptyDays.length + '-of-' + days.length + '-empty';
+      return 'ok:' + days.reduce((a,d)=>a+(d.timeline||[]).length,0) + '-events-across-' + days.length + '-days';
+    })()
+  " 2>/dev/null | tail -1 | tr -d '"')
+  case "$day_tl_empty" in
+    ok:*) pass "day timelines non-empty ($day_tl_empty)" ;;
+    partial:*) warn "some days have empty timelines: $day_tl_empty" ;;  # warn not fail — backend may legitimately omit
+    *) fail "day timelines broken: $day_tl_empty"; ok=0 ;;
+  esac
+
   # Cormorant Garamond actually loaded on trip page
   "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5b" >/dev/null 2>&1; sleep 6
   local font; font=$("$B" js "document.fonts ? [...document.fonts].filter(f=>/Cormorant/i.test(f.family)).length : 0" 2>/dev/null | tail -1)
