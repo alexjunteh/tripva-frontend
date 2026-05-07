@@ -5215,6 +5215,15 @@ function renderDaySheet(idx) {
   // ── TIMELINE ──
   html+=`<div class="tl-section-hdr">📍 Hour-by-hour plan</div>`;
 
+  // Empty timeline — show actionable message instead of a silent void
+  if (!(d.timeline && d.timeline.length)) {
+    html += `<div style="text-align:center;padding:28px 20px 20px;color:rgba(255,255,255,.42)">
+      <div style="font-size:28px;margin-bottom:10px">📋</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px;color:rgba(255,255,255,.6)">No activities generated for this day</div>
+      <div style="font-size:12px;line-height:1.6;margin-bottom:16px">The AI may have skipped this day. Tap <strong>🤖 Edit</strong> below to regenerate it, or use + to add your own activities.</div>
+    </div>`;
+  }
+
   // Build activity booking URL — prefer server-enriched bookUrl, else build GYG search client-side
   const makeActivityBookUrl = (tl, dayTitle) => {
     if (tl.bookUrl) return tl.bookUrl;
