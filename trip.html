@@ -2579,7 +2579,7 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
     const t = text.toLowerCase();
     return destTokens.some(tok => t.includes(tok));
   };
-  const GENERIC_BAD = /^(tourist attraction|travel|tourism|landmark|attraction|sightseeing|holiday)s?$|^(list|lists) of |^index of |^outline of /i;
+  const GENERIC_BAD = /^(tourist attraction|travel|tourism|landmark|attraction|sightseeing|holiday)s?$|^(list|lists) of |^index of |^outline of |\bsyndrome\b|^(history|tourism|geography|demographics|economy|culture|transport|architecture|cuisine) (of|in) |^(history|tourism|geography|demographics|economy|architecture|cuisine|transport)$/i;
   const seenImgs = new Set(), seenNames = new Set();
   const items = [];
   for (const r of settled) {
