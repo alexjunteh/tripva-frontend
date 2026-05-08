@@ -2533,51 +2533,66 @@ async function loadPhotoSpots(force) {
 async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   if ((maxCards || 6) <= 0) return;
   const max = maxCards || 6;
-  const SKIP = /flag|coat_of_arms|logo|icon|map|diagram|\.svg/i;
+
+  // Strategy: Wikipedia article search → lead image. Lead images are curated,
+  // high-quality, and named (Sagrada Família, Pearl Tower, etc.) — far better
+  // than random Commons file search which returns flags, maps, and signs.
   const queries = [
-    dest + ' landmark', dest + ' travel', dest + ' scenic',
-    dest + ' architecture', dest + ' street', dest + ' view',
+    'tourist attractions in ' + dest,
+    'landmarks of ' + dest,
+    dest + ' tourism',
+    'museums in ' + dest,
+    'parks in ' + dest,
   ];
 
-  // Fire all queries in parallel — 6× faster than sequential awaits
   const settled = await Promise.allSettled(
     queries.map(async q => {
-      const apiUrl = 'https://commons.wikimedia.org/w/api.php?action=query' +
-        '&generator=search&gsrnamespace=6&gsrsearch=' + encodeURIComponent(q + ' filetype:bitmap') +
-        '&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=600&format=json&origin=*';
-      const r = await fetch(apiUrl, { signal: AbortSignal.timeout(12000) });
+      const apiUrl = 'https://en.wikipedia.org/w/api.php?action=query' +
+        '&generator=search&gsrsearch=' + encodeURIComponent(q) +
+        '&gsrlimit=6&prop=pageimages|description&piprop=thumbnail' +
+        '&pithumbsize=800&format=json&origin=*';
+      const r = await fetch(apiUrl, { signal: AbortSignal.timeout(10000) });
       if (!r.ok) return [];
       const data = await r.json();
       const pages = data?.query?.pages;
       if (!pages) return [];
       return Object.values(pages)
-        .map(p => p.imageinfo?.[0])
-        .filter(Boolean)
-        .map(ii => ii.thumburl || ii.url || '')
-        .filter(t => t && /\.(jpg|jpeg|png|webp)/i.test(t) && !SKIP.test(t));
+        .map(p => ({
+          name: p.title,
+          desc: p.description || '',
+          img: p.thumbnail?.source || '',
+          idx: p.index || 99,
+        }))
+        .filter(x => x.img && /\.(jpg|jpeg|png|webp)/i.test(x.img))
+        .sort((a, b) => a.idx - b.idx);
     })
   );
 
-  // Collect unique URLs up to max, preserving query order
-  const urls = [];
+  // Dedupe by image URL AND by name; preserve query priority
+  const seenImgs = new Set(), seenNames = new Set();
+  const items = [];
   for (const r of settled) {
-    if (r.status === 'fulfilled') {
-      for (const t of r.value) {
-        if (urls.length >= max) break;
-        if (!urls.includes(t)) urls.push(t);
-      }
+    if (r.status !== 'fulfilled') continue;
+    for (const it of r.value) {
+      if (items.length >= max) break;
+      if (seenImgs.has(it.img) || seenNames.has(it.name.toLowerCase())) continue;
+      // Skip "List of …" articles — they look like documentation
+      if (/^list of /i.test(it.name)) continue;
+      seenImgs.add(it.img); seenNames.add(it.name.toLowerCase());
+      items.push(it);
     }
-    if (urls.length >= max) break;
+    if (items.length >= max) break;
   }
 
-  if (!urls.length) { if (!append) errEl.style.display = 'block'; return; }
-  const html = urls.map(u => `
+  if (!items.length) { if (!append) errEl.style.display = 'block'; return; }
+  const html = items.map(it => `
     <div class="spot-card">
       <div class="spot-card-img-wrap">
-        <img src="${u}" alt="${esc(dest)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.closest('.spot-card').style.display='none'">
+        <img src="${it.img}" alt="${esc(it.name)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.closest('.spot-card').style.display='none'">
       </div>
       <div style="padding:10px 14px 12px">
-        <div class="spot-card-name">📍 ${esc(dest)}</div>
+        <div class="spot-card-name">📍 ${esc(it.name)}</div>
+        ${it.desc ? `<div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:3px">${esc(it.desc)}</div>` : ''}
       </div>
     </div>`).join('');
   if (append) { gridEl.insertAdjacentHTML('beforeend', html); }
@@ -3057,20 +3072,47 @@ async function fetchWikiImage(seed){
 }
 
 // Build a list of candidate Wikipedia search terms for a day, ordered best-first.
-function _wikiSeedsForDay(day){
+// Goal: each day's seeds should pull a DIFFERENT Wikipedia article so day-card
+// hero photos vary. Bias toward day-specific tokens (activity titles, headline
+// landmarks) before falling back to the destination, which would dupe across days.
+function _wikiSeedsForDay(day, idx){
   const out = [];
-  const push = (s) => { const t = (s||'').toString().trim(); if (t && !out.includes(t)) out.push(t); };
+  const push = (s) => {
+    const t = (s||'').toString().replace(/[^\w\s\-]/g,'').trim();
+    if (t && t.length > 2 && !out.includes(t)) out.push(t);
+  };
+  const dest = (plan && plan.trip && (plan.trip.destination || plan.trip.name)) || '';
+  const destFirstWord = dest.split(/[\s,&-]+/)[0] || '';
+  // 1. Headline activity from timeline — usually a named landmark (best signal)
+  if (day && Array.isArray(day.timeline)) {
+    const namedActs = day.timeline
+      .filter(t => t && t.title && /(museum|temple|tower|park|palace|cathedral|garden|market|district|island|mountain|bridge|square|street|beach|lake)/i.test(t.title))
+      .slice(0, 2);
+    for (const a of namedActs) {
+      // Pair landmark with destination so search disambiguates ("Pearl River" → Pearl River Guangzhou)
+      const cleanTitle = String(a.title).replace(/^(visit|explore|see|tour|walk|breakfast at|lunch at|dinner at)\s+/i, '').replace(/[:,—–-].*$/, '').trim();
+      if (cleanTitle && cleanTitle.length > 3) {
+        push(cleanTitle + ' ' + destFirstWord);
+        push(cleanTitle);
+      }
+    }
+  }
+  // 2. heroSeed — backend hint
   if (day && day.heroSeed) push(day.heroSeed);
+  // 3. Day title (cleaned) — combined with destination
   if (day && day.title) {
-    const title = String(day.title).replace(/Arrival in |Depart(?:ure|ing).* |Final day in /i, '').trim();
-    push(title);
-    // Split "Barcelona Adventures" → "Barcelona"
-    push(title.split(/\s+/)[0]);
+    const title = String(day.title).replace(/Arrival in |Depart(?:ure|ing).* |Final day in |Day \d+:?\s*/i, '').trim();
+    if (title) {
+      push(title + ' ' + destFirstWord);
+      push(title);
+      const firstWord = title.split(/\s+/)[0];
+      if (firstWord && firstWord.length > 3) push(firstWord + ' ' + destFirstWord);
+    }
   }
-  if (plan && plan.trip) {
-    push(plan.trip.destination);
-    push(plan.trip.name);
-  }
+  // 4. Destination + day-index keyword as last resort to keep photos distinct
+  const indexQualifier = ['skyline','landmarks','district','culture','food'][((idx||0) % 5)];
+  if (dest) push(dest + ' ' + indexQualifier);
+  if (dest) push(dest);
   return out.filter(Boolean);
 }
 
@@ -3081,19 +3123,22 @@ async function upgradeTripImages(){
   if (_wikiUpgradeRunning) return;
   if (!plan || !plan.days || !plan.days.length) return;
   _wikiUpgradeRunning = true;
+  // Track images we've already used on THIS trip so two days never share a photo
+  const usedImgs = new Set();
   try {
     for (let i = 0; i < plan.days.length; i++) {
       const d = plan.days[i];
       // Skip only if day already has a real (non-loremflickr) image
-      if (d.imageUrl && !d.imageUrl.includes('loremflickr')) continue;
-      if (d.heroImg && !d.heroImg.includes('loremflickr')) continue;
-      const seeds = _wikiSeedsForDay(d);
+      if (d.imageUrl && !d.imageUrl.includes('loremflickr')) { usedImgs.add(d.imageUrl); continue; }
+      if (d.heroImg && !d.heroImg.includes('loremflickr')) { usedImgs.add(d.heroImg); continue; }
+      const seeds = _wikiSeedsForDay(d, i);
       let img = null;
       for (const s of seeds) {
-        img = await fetchWikiImage(s);
-        if (img) break;
+        const candidate = await fetchWikiImage(s);
+        if (candidate && !usedImgs.has(candidate)) { img = candidate; break; }
       }
       if (!img) continue;
+      usedImgs.add(img);
       // Stash on the day object so subsequent renders (FocusCard state swap,
       // Days-sheet reopen) pick it up without another fetch.
       try { d.heroImg = img; } catch(e){}

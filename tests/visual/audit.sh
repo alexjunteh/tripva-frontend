@@ -482,9 +482,13 @@ phase_3() {
   local fam; fam=$("$B" js "!!document.querySelector('.arch-fields[data-arch=family].active')" 2>/dev/null | tail -1)
   [ "$fam" = "true" ] && pass "family conditional fields visible" || { fail "family fields hidden"; ok=0; }
 
-  # Child-age repeater
-  local child_count; child_count=$("$B" js "document.querySelectorAll('.child-age-pill').length" 2>/dev/null | tail -1)
-  [ "$child_count" -ge "1" ] && pass "child-age repeater present ($child_count)" || { fail "child repeater missing"; ok=0; }
+  # Child-age repeater — children are OPTIONAL; verify add button works
+  local before_count; before_count=$("$B" js "document.querySelectorAll('.child-age-pill').length" 2>/dev/null | tail -1)
+  "$B" js "document.getElementById('addChildBtn')?.click(); true" >/dev/null 2>&1; sleep 0
+  local after_count; after_count=$("$B" js "document.querySelectorAll('.child-age-pill').length" 2>/dev/null | tail -1)
+  [ "$after_count" -gt "${before_count:-0}" ] 2>/dev/null \
+    && pass "child-age repeater add works ($before_count→$after_count, optional)" \
+    || { fail "child-age add button broken (was $before_count, now $after_count)"; ok=0; }
 
   # Switch archetype and re-check
   "$B" js "setArchetype && setArchetype('solo'); true" >/dev/null 2>&1
