@@ -408,15 +408,10 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     <!-- FAMILY -->
     <div class="arch-fields" data-arch="family">
       <div class="form-section">
-        <label class="form-label">Ages of kids</label>
-        <div class="child-ages-wrap" id="childAges">
-          <div class="child-age-pill" data-child-row="1">
-            <input type="number" class="child-age-input" min="0" max="17" value="7" aria-label="Child 1 age">
-            <span style="font-size:11px;color:rgba(255,255,255,.45)">yrs</span>
-            <button type="button" class="child-age-rm" aria-label="Remove child">×</button>
-          </div>
-        </div>
-        <button type="button" class="child-age-add" id="addChildBtn" style="margin-top:10px">+ Add child</button>
+        <label class="form-label">Ages of kids <span style="font-weight:400;color:rgba(255,255,255,.5);font-size:12px">(optional)</span></label>
+        <div class="child-ages-wrap" id="childAges"></div>
+        <div id="noChildrenHint" style="font-size:13px;color:rgba(255,255,255,.5);margin:4px 0 10px">No kids on this trip — that's fine. Tap below to add ages if you'd like kid-aware pacing.</div>
+        <button type="button" class="child-age-add" id="addChildBtn" style="margin-top:0">+ Add child</button>
       </div>
       <div class="form-section">
         <div class="toggle-row">
@@ -770,6 +765,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Child age repeater (family archetype)
   const addChildBtn = document.getElementById('addChildBtn');
   if (addChildBtn) {
+    const _syncChildHint = () => {
+      const wrap = document.getElementById('childAges');
+      const hint = document.getElementById('noChildrenHint');
+      if (!wrap || !hint) return;
+      hint.style.display = wrap.querySelectorAll('.child-age-pill').length === 0 ? 'block' : 'none';
+    };
     addChildBtn.onclick = () => {
       const wrap = document.getElementById('childAges');
       const count = wrap.querySelectorAll('.child-age-pill').length;
@@ -779,15 +780,15 @@ document.addEventListener('DOMContentLoaded', () => {
       pill.dataset.childRow = String(count + 1);
       pill.innerHTML = '<input type="number" class="child-age-input" min="0" max="17" value="5" aria-label="Child age"><span style="font-size:11px;color:rgba(255,255,255,.45)">yrs</span><button type="button" class="child-age-rm" aria-label="Remove child">×</button>';
       wrap.appendChild(pill);
+      _syncChildHint();
     };
     document.getElementById('childAges').addEventListener('click', e => {
       const rm = e.target.closest('.child-age-rm');
       if (!rm) return;
-      const pill = rm.closest('.child-age-pill');
-      const remaining = document.getElementById('childAges').querySelectorAll('.child-age-pill').length;
-      if (remaining <= 1) { showToast('&#9888; Keep at least one child'); return; }
-      pill.remove();
+      rm.closest('.child-age-pill').remove();
+      _syncChildHint();
     });
+    _syncChildHint();
   }
 
   document.getElementById('authSubmitBtn').onclick = sendMagicLink;
