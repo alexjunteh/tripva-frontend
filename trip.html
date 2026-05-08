@@ -2568,7 +2568,18 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
     })
   );
 
-  // Dedupe by image URL AND by name; preserve query priority
+  // Dedupe by image URL AND by name; preserve query priority.
+  // Quality filter: drop generic concept articles AND results that don't
+  // mention the actual destination (Wikipedia search drift surfaces "Vienna"
+  // when searching Paris — bad UX).
+  const destLower = dest.toLowerCase();
+  const destTokens = destLower.split(/[\s,&-]+/).filter(t => t.length > 2);
+  const matchesDest = (text) => {
+    if (!text) return false;
+    const t = text.toLowerCase();
+    return destTokens.some(tok => t.includes(tok));
+  };
+  const GENERIC_BAD = /^(tourist attraction|travel|tourism|landmark|attraction|sightseeing|holiday)s?$|^(list|lists) of |^index of |^outline of /i;
   const seenImgs = new Set(), seenNames = new Set();
   const items = [];
   for (const r of settled) {
@@ -2576,8 +2587,9 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
     for (const it of r.value) {
       if (items.length >= max) break;
       if (seenImgs.has(it.img) || seenNames.has(it.name.toLowerCase())) continue;
-      // Skip "List of …" articles — they look like documentation
-      if (/^list of /i.test(it.name)) continue;
+      if (GENERIC_BAD.test(it.name)) continue;
+      // Require destination relevance — name OR description must mention it
+      if (!matchesDest(it.name) && !matchesDest(it.desc)) continue;
       seenImgs.add(it.img); seenNames.add(it.name.toLowerCase());
       items.push(it);
     }
