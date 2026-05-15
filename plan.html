@@ -292,6 +292,16 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 <style>
   .sticky-btn-wrap{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:14px 20px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,rgba(10,10,18,.97) 70%,transparent);pointer-events:none}
   .sticky-btn-wrap .form-submit-btn{pointer-events:all;width:100%;background:linear-gradient(135deg,#7c6af7,#6d5ee0);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:-.2px}
+.dest-builder{background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;transition:border-color .2s,box-shadow .2s}
+.dest-builder:focus-within{border-color:var(--purple);box-shadow:0 0 0 3px rgba(149,184,255,.1)}
+.dest-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.dest-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(124,106,247,.15);border:1.5px solid rgba(124,106,247,.4);border-radius:999px;padding:5px 8px 5px 12px;font-size:13px;font-weight:700;color:var(--purple-light)}
+.dest-chip-rm{background:rgba(255,255,255,.1);border:none;border-radius:50%;width:18px;height:18px;color:#fff;cursor:pointer;font-size:12px;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+.dest-input-row{display:flex;gap:8px;align-items:center}
+.dest-text-input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:15px;font-family:inherit;padding:4px 0;width:0}
+.dest-text-input::placeholder{color:rgba(255,255,255,.38)}
+.dest-add-btn{background:var(--purple);border:none;border-radius:8px;width:32px;height:32px;color:#fff;font-size:20px;font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+.dest-add-btn.show{display:flex}
 </style></head>
 <body>
 <nav>
@@ -318,7 +328,14 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 
     <div class="form-section" style="margin-top:16px">
       <label class="form-label">Where to?</label>
-      <input class="form-input" id="f-dest" type="text" placeholder="e.g. Japan, Italy + Switzerland" autocomplete="off">
+      <div class="dest-builder" id="destBuilder">
+        <div class="dest-chips" id="destChips" style="display:none"></div>
+        <div class="dest-input-row">
+          <input class="dest-text-input" id="f-dest" type="text" placeholder="e.g. Tokyo, Japan" autocomplete="off">
+          <button type="button" class="dest-add-btn" id="destAddBtn" title="Add another destination">+</button>
+        </div>
+      </div>
+      <div id="destHint" style="font-size:12px;color:rgba(255,255,255,.38);margin-top:6px">Press Enter or + to add multiple destinations</div>
     </div>
     <div class="form-section">
       <label class="form-label">When?</label>
@@ -633,6 +650,52 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 <script>
 const BACKEND = 'https://tripai-backend.vercel.app';
 let travellers = 2;
+let _destinations = [];
+
+function _addDest(val) {
+  const v = (val || '').trim().replace(/\s+/g, ' ');
+  if (!v) return;
+  if (_destinations.some(d => d.toLowerCase() === v.toLowerCase())) {
+    showToast('Already added'); return;
+  }
+  if (_destinations.length >= 6) { showToast('⚠️ 6 destinations max'); return; }
+  _destinations.push(v);
+  const inp = document.getElementById('f-dest');
+  if (inp) inp.value = '';
+  _renderDestChips();
+}
+
+function _removeDest(idx) {
+  _destinations.splice(idx, 1);
+  _renderDestChips();
+}
+
+function _renderDestChips() {
+  const chipsEl = document.getElementById('destChips');
+  const addBtn  = document.getElementById('destAddBtn');
+  const hint    = document.getElementById('destHint');
+  const inp     = document.getElementById('f-dest');
+  if (!chipsEl) return;
+  const hasChips = _destinations.length > 0;
+  chipsEl.style.display = hasChips ? 'flex' : 'none';
+  chipsEl.innerHTML = _destinations.map((d, i) =>
+    '<div class="dest-chip">' +
+      '<span>' + esc(d) + '</span>' +
+      '<button type="button" class="dest-chip-rm" data-rm-dest="' + i + '">\xd7</button>' +
+    '</div>'
+  ).join('');
+  if (addBtn) addBtn.classList.toggle('show', hasChips && !!(inp && inp.value.trim()));
+  if (inp) inp.placeholder = hasChips ? 'Add another stop…' : 'e.g. Tokyo, Japan';
+  if (hint) hint.style.display = hasChips ? 'none' : 'block';
+}
+
+function _getDestinationString() {
+  const typed = (document.getElementById('f-dest')?.value || '').trim();
+  const all = [..._destinations];
+  if (typed && !all.some(d => d.toLowerCase() === typed.toLowerCase())) all.push(typed);
+  return all.join(' + ');
+}
+
 let _tripState = null;
 let _shareUrl = null;
 
@@ -690,7 +753,15 @@ function setArchetype(arch){
 // ── Setup ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const p = new URLSearchParams(location.search);
-  if (p.get('dest')) document.getElementById('f-dest').value = p.get('dest');
+  if (p.get('dest')) {
+    const destParam = p.get('dest');
+    const parts = destParam.split(/\s*\+\s*/).filter(Boolean);
+    if (parts.length > 1) {
+      parts.forEach(part => _addDest(part));
+    } else {
+      document.getElementById('f-dest').value = destParam;
+    }
+  }
   if (p.get('start')) document.getElementById('f-start').value = p.get('start');
   if (p.get('end')) document.getElementById('f-end').value = p.get('end');
   if (p.get('budget')) document.getElementById('f-budget').value = p.get('budget');
@@ -823,6 +894,27 @@ document.addEventListener('DOMContentLoaded', () => {
     customSpotList.addEventListener('click', e => {
       const btn = e.target.closest('[data-rm]');
       if (btn) _removeCustomSpot(btn.dataset.rm);
+    });
+  }
+
+  // Multi-destination builder
+  const destInp = document.getElementById('f-dest');
+  const destAddBtnEl = document.getElementById('destAddBtn');
+  if (destInp) {
+    destInp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); _addDest(destInp.value); }
+      if (e.key === ',')     { e.preventDefault(); _addDest(destInp.value); }
+    });
+    destInp.addEventListener('input', () => {
+      if (destAddBtnEl) destAddBtnEl.classList.toggle('show', destInp.value.trim().length > 0 && _destinations.length > 0);
+    });
+  }
+  if (destAddBtnEl) destAddBtnEl.addEventListener('click', () => _addDest(document.getElementById('f-dest').value));
+  const destChipsEl = document.getElementById('destChips');
+  if (destChipsEl) {
+    destChipsEl.addEventListener('click', e => {
+      const btn = e.target.closest('[data-rm-dest]');
+      if (btn) _removeDest(+btn.dataset.rmDest);
     });
   }
 });
@@ -1234,18 +1326,18 @@ async function _fetchSpotsForDest(dest) {
   } catch { return []; }
 }
 
-async function showSpotSelector(dest) {
+async function showSpotSelector(dest, primaryDest) {
   _spotSel.clear();
   _customSpots = [];
   _renderCustomSpots();
-  _spotDest = dest;
+  _spotDest = primaryDest || dest;
   document.getElementById('spotDestLabel').textContent = dest;
   document.getElementById('planForm').style.display = 'none';
   document.getElementById('spotScreen').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   _updateSpotFooter();
 
-  const key = _matchDest(dest);
+  const key = _matchDest(primaryDest || dest);
   if (key) {
     // Fast path — use curated data, photos load async per-card
     _spotList = SPOT_DATA[key];
@@ -1253,7 +1345,7 @@ async function showSpotSelector(dest) {
   } else {
     // Dynamic path — show loading skeleton, fetch from backend AI
     _showSpotSkeleton();
-    const spots = await _fetchSpotsForDest(dest);
+    const spots = await _fetchSpotsForDest(primaryDest || dest);
     if (!spots.length) {
       // Show error state — don't silently skip to generation
       const g = document.getElementById('spotGrid');
@@ -1412,7 +1504,10 @@ function gatherArchetypeData(){
   return data;
 }
 async function submitTrip() {
-  const dest = document.getElementById('f-dest').value.trim();
+  const typedDest = (document.getElementById('f-dest').value || '').trim();
+  if (typedDest) _addDest(typedDest);
+  const dest = _getDestinationString();
+  const destinations = _destinations.length > 0 ? [..._destinations] : null;
   const start = document.getElementById('f-start').value;
   const end = document.getElementById('f-end').value;
   const budget = document.getElementById('f-budget').value.trim();
@@ -1428,12 +1523,13 @@ async function submitTrip() {
   if (!interests.length) { showToast('&#9888; Pick at least one interest'); return; }
 
   // Store form values and let spot selector intercept before generation
-  _spotInput = { dest, start, end, budget, style, home, interests, archData };
-  showSpotSelector(dest);
+  _spotInput = { dest, destinations, start, end, budget, style, home, interests, archData };
+  const primaryDest = (_destinations[0] || dest).trim();
+  showSpotSelector(dest, primaryDest);
 }
 
 async function proceedToGeneration() {
-  const { dest, start, end, budget, style, home, interests, archData } = _spotInput;
+  const { dest, destinations, start, end, budget, style, home, interests, archData } = _spotInput;
   const selectedSpots = window._selectedSpots || [];
 
   // Show gen screen
@@ -1474,7 +1570,7 @@ async function proceedToGeneration() {
     const response = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({ destination: dest, startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots }, archData)),
+      body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots }, archData)),
     });
 
     if (!response.ok) {
