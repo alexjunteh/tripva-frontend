@@ -335,7 +335,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
           <button type="button" class="dest-add-btn" id="destAddBtn" title="Add another destination">+</button>
         </div>
       </div>
-      <div id="destHint" style="font-size:12px;color:rgba(255,255,255,.38);margin-top:6px">Press Enter or + to add multiple destinations</div>
+      <div id="destHint" style="font-size:12px;color:rgba(255,255,255,.38);margin-top:6px">Press Enter, comma, or + to add multiple destinations</div>
     </div>
     <div class="form-section">
       <label class="form-label">When?</label>
@@ -1625,6 +1625,7 @@ async function proceedToGeneration() {
     }
   } catch(err) {
     try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
+    _destinations = []; _renderDestChips();
     document.getElementById('planForm').style.display = 'block';
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('genLog').innerHTML = '';
@@ -1809,6 +1810,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
     case 'error': {
       try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
       showToast('&#9888; ' + (evt.message || 'Generation failed'), 5000);
+      _destinations = []; _renderDestChips();
       document.getElementById('planForm').style.display = 'block';
       document.getElementById('genScreen').style.display = 'none';
       break;
