@@ -1336,7 +1336,7 @@ const _FS_CITY_IATA = {
 function _fsToIata(name) {
   if (!name) return null;
   const t = name.trim();
-  if (/^[A-Z]{3}$/.test(t)) return t;
+  if (/^[A-Za-z]{3}$/.test(t)) return t.toUpperCase();
   return _FS_CITY_IATA[t.toLowerCase()] || null;
 }
 
