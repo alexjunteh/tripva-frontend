@@ -565,6 +565,19 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       <div class="spot-hdr-sub">Choose the places you want to experience — we'll build your trip around them</div>
     </div>
     <div class="spot-grid" id="spotGrid"></div>
+    <!-- Custom spot input -->
+    <div id="customSpotSection" style="padding:14px 20px 0;max-width:520px;margin:0 auto">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px">Don't see your spot?</div>
+      <div style="display:flex;gap:8px">
+        <input id="customSpotInput" type="text" placeholder="Type a place name…" autocomplete="off"
+          style="flex:1;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:14px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none">
+        <button type="button" id="customSpotAddBtn"
+          style="background:rgba(124,106,247,.15);border:1.5px solid rgba(124,106,247,.4);border-radius:12px;padding:10px 16px;color:var(--purple-light);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">
+          + Add
+        </button>
+      </div>
+      <div id="customSpotList" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+    </div>
     <div class="spot-footer">
       <div class="spot-count-row" id="spotCountRow">Select places that excite you</div>
       <button class="spot-go-btn" id="spotGoBtn" onclick="continueWithSpots()">Plan my trip ✨</button>
@@ -796,6 +809,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('genDoneBtn').onclick = openGeneratedTrip;
   var submitBtn = document.getElementById('submitBtn');
   if (submitBtn) submitBtn.onclick = submitTrip;
+
+  const customSpotAddBtn = document.getElementById('customSpotAddBtn');
+  const customSpotInput = document.getElementById('customSpotInput');
+  if (customSpotAddBtn) customSpotAddBtn.addEventListener('click', _addCustomSpot);
+  if (customSpotInput) {
+    customSpotInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); _addCustomSpot(); }
+    });
+  }
 });
 
 function adjTrav(d) {
@@ -1079,9 +1101,44 @@ const DEST_ALIASES = {'kl':'kuala lumpur','george town':'penang','georgetown':'p
 const CAT_ICONS = {landmark:'🏛️',museum:'🖼️',culture:'🎨',nature:'🌿',view:'🌅',beach:'🏖️',market:'🛍️',temple:'⛩️',park:'🌳',street:'🚶',adventure:'⛰️',food:'🍴'};
 
 let _spotInput = null;
+let _customSpots = []; // { name: string }[]
 let _spotSel = new Set();
 let _spotList = [];
 let _spotDest = '';
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function _addCustomSpot() {
+  const inp = document.getElementById('customSpotInput');
+  const name = (inp ? inp.value : '').trim();
+  if (!name) return;
+  if (_customSpots.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+    showToast('Already added'); inp.value = ''; return;
+  }
+  if (_customSpots.length >= 10) { showToast('⚠️ 10 custom spots max'); return; }
+  _customSpots.push({ name });
+  inp.value = '';
+  _renderCustomSpots();
+  _updateSpotFooter();
+}
+
+function _removeCustomSpot(name) {
+  _customSpots = _customSpots.filter(s => s.name !== name);
+  _renderCustomSpots();
+  _updateSpotFooter();
+}
+
+function _renderCustomSpots() {
+  const el = document.getElementById('customSpotList');
+  if (!el) return;
+  el.innerHTML = _customSpots.map(s =>
+    '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(124,106,247,.18);border:1.5px solid rgba(124,106,247,.4);border-radius:999px;padding:6px 8px 6px 12px;font-size:13px;font-weight:700;color:var(--purple-light)">' +
+      '<span>' + esc(s.name) + '</span>' +
+      '<button type="button" onclick="_removeCustomSpot(\'' + s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')"' +
+        ' style="background:rgba(255,255,255,.1);border:none;border-radius:50%;width:18px;height:18px;color:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1">\xd7</button>' +
+    '</div>'
+  ).join('');
+}
 
 function _matchDest(dest) {
   const d = (dest || '').toLowerCase().trim();
@@ -1172,6 +1229,8 @@ async function _fetchSpotsForDest(dest) {
 
 async function showSpotSelector(dest) {
   _spotSel.clear();
+  _customSpots = [];
+  _renderCustomSpots();
   _spotDest = dest;
   document.getElementById('spotDestLabel').textContent = dest;
   document.getElementById('planForm').style.display = 'none';
@@ -1269,7 +1328,7 @@ function _toggleSpot(i, card) {
 }
 
 function _updateSpotFooter() {
-  const n = _spotSel.size;
+  const n = _spotSel.size + _customSpots.length;
   const row = document.getElementById('spotCountRow');
   const btn = document.getElementById('spotGoBtn');
   if (n === 0) {
@@ -1282,13 +1341,15 @@ function _updateSpotFooter() {
 }
 
 function continueWithSpots() {
-  window._selectedSpots = [..._spotSel].map(i => ({ name: _spotList[i].name, category: _spotList[i].cat, description: _spotList[i].desc }));
+  const curated = [..._spotSel].map(i => ({ name: _spotList[i].name, category: _spotList[i].cat, description: _spotList[i].desc }));
+  const custom = _customSpots.map(s => ({ name: s.name, category: 'custom', description: '' }));
+  window._selectedSpots = [...curated, ...custom];
   document.getElementById('spotScreen').style.display = 'none';
   proceedToGeneration();
 }
 
 function skipSpots() {
-  window._selectedSpots = [];
+  window._selectedSpots = _customSpots.map(s => ({ name: s.name, category: 'custom', description: '' }));
   document.getElementById('spotScreen').style.display = 'none';
   proceedToGeneration();
 }
