@@ -558,6 +558,29 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       <div class="interests-fade"></div>
     </div>
 
+    <!-- Booking anchors upload (optional) -->
+    <div class="form-section" id="bookingSection">
+      <label class="form-label">Already booked flights or hotels? <span style="font-weight:400;color:rgba(255,255,255,.5);font-size:12px">(optional)</span></label>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:10px;line-height:1.5">Paste your confirmation email — we'll plan the itinerary around your fixed dates and cities.</div>
+      <div id="bookingAnchorCards" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
+      <div style="background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden">
+        <textarea id="bookingText" rows="3"
+          placeholder="Paste confirmation text here… (flight number, dates, hotel name, reference)"
+          style="width:100%;background:transparent;border:none;outline:none;padding:12px 14px;font-size:13px;color:rgba(255,255,255,.85);font-family:inherit;resize:vertical;min-height:72px;box-sizing:border-box"></textarea>
+        <div style="border-top:1px solid rgba(255,255,255,.07);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <label for="bookingFilePicker" style="font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">
+            &#128206; Upload PDF
+          </label>
+          <input type="file" id="bookingFilePicker" accept=".pdf,application/pdf" style="display:none">
+          <button type="button" id="bookingParseBtn"
+            style="background:rgba(124,106,247,.15);border:1.5px solid rgba(124,106,247,.4);border-radius:10px;padding:7px 14px;color:var(--purple-light);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">
+            Extract dates &#10024;
+          </button>
+        </div>
+      </div>
+      <div id="bookingStatus" style="font-size:12px;color:rgba(255,255,255,.45);margin-top:6px;display:none"></div>
+    </div>
+
     <!-- Optional free-text style (collapses to archetype context) -->
     <div class="form-section">
       <label class="form-label">Anything else? (optional)</label>
@@ -897,6 +920,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Booking upload
+  const bookingParseBtn = document.getElementById('bookingParseBtn');
+  if (bookingParseBtn) {
+    bookingParseBtn.addEventListener('click', () => {
+      _parseBookingText(document.getElementById('bookingText').value);
+    });
+  }
+  const bookingFilePicker = document.getElementById('bookingFilePicker');
+  if (bookingFilePicker) {
+    bookingFilePicker.addEventListener('change', e => {
+      const file = e.target.files?.[0];
+      if (file) { _parsePDF(file); e.target.value = ''; }
+    });
+  }
+  const bookingAnchorCards = document.getElementById('bookingAnchorCards');
+  if (bookingAnchorCards) {
+    bookingAnchorCards.addEventListener('click', e => {
+      const btn = e.target.closest('[data-rm-anchor]');
+      if (btn) _removeAnchor(+btn.dataset.rmAnchor);
+    });
+  }
+
   // Multi-destination builder
   const destInp = document.getElementById('f-dest');
   const destAddBtnEl = document.getElementById('destAddBtn');
@@ -1201,6 +1246,92 @@ const CAT_ICONS = {landmark:'🏛️',museum:'🖼️',culture:'🎨',nature:'�
 
 let _spotInput = null;
 let _customSpots = []; // { name: string }[]
+let _bookingAnchors = [];
+
+function _renderBookingAnchorCards() {
+  const el = document.getElementById('bookingAnchorCards');
+  if (!el) return;
+  el.innerHTML = _bookingAnchors.map((a, i) =>
+    '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(124,106,247,.08);border:1px solid rgba(124,106,247,.25);border-radius:12px;padding:10px 12px">' +
+      '<span style="font-size:18px;flex-shrink:0;margin-top:1px">' + ({ flight: '✈️', hotel: '🏨', train: '🚆' }[a.type] || '📋') + '</span>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:700;color:#fff">' + esc(a.summary || a.type) + '</div>' +
+        (a.confirmationRef ? '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px">Ref: ' + esc(a.confirmationRef) + '</div>' : '') +
+      '</div>' +
+      '<button type="button" data-rm-anchor="' + i + '" style="background:rgba(255,255,255,.08);border:none;border-radius:50%;width:22px;height:22px;color:rgba(255,255,255,.6);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;line-height:1">\xd7</button>' +
+    '</div>'
+  ).join('');
+}
+
+function _removeAnchor(idx) {
+  _bookingAnchors.splice(idx, 1);
+  _renderBookingAnchorCards();
+}
+
+async function _parseBookingText(text) {
+  const statusEl = document.getElementById('bookingStatus');
+  const parseBtn = document.getElementById('bookingParseBtn');
+  if (!text || text.trim().length < 20) { showToast('⚠️ Paste more booking text first'); return; }
+  if (statusEl) { statusEl.textContent = 'Extracting…'; statusEl.style.display = 'block'; }
+  if (parseBtn) { parseBtn.disabled = true; parseBtn.textContent = 'Extracting…'; }
+  try {
+    const r = await fetch(BACKEND + '/api/parse-booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+      signal: AbortSignal.timeout(20000),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Parse failed');
+    const newAnchors = Array.isArray(data.anchors) ? data.anchors : [];
+    if (!newAnchors.length) {
+      if (statusEl) { statusEl.textContent = '⚠️ No booking details found — try pasting more of the email'; statusEl.style.display = 'block'; }
+      return;
+    }
+    _bookingAnchors.push(...newAnchors);
+    _renderBookingAnchorCards();
+    document.getElementById('bookingText').value = '';
+    if (statusEl) { statusEl.textContent = '✓ ' + newAnchors.length + ' booking' + (newAnchors.length > 1 ? 's' : '') + ' added'; statusEl.style.display = 'block'; }
+    setTimeout(() => { if (statusEl) statusEl.style.display = 'none'; }, 3000);
+  } catch (err) {
+    if (statusEl) { statusEl.textContent = '⚠️ ' + (err.message || 'Failed to parse'); statusEl.style.display = 'block'; }
+  } finally {
+    if (parseBtn) { parseBtn.disabled = false; parseBtn.textContent = 'Extract dates ✨'; }
+  }
+}
+
+async function _parsePDF(file) {
+  const statusEl = document.getElementById('bookingStatus');
+  if (statusEl) { statusEl.textContent = 'Reading PDF…'; statusEl.style.display = 'block'; }
+  try {
+    if (!window.pdfjsLib) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    const buf = await file.arrayBuffer();
+    const pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+    let text = '';
+    for (let i = 1; i <= Math.min(pdf.numPages, 10); i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    if (text.trim().length < 20) {
+      if (statusEl) { statusEl.textContent = '⚠️ PDF text unreadable — try pasting the email instead'; statusEl.style.display = 'block'; }
+      return;
+    }
+    await _parseBookingText(text);
+  } catch (err) {
+    if (statusEl) { statusEl.textContent = '⚠️ Failed to read PDF: ' + err.message; statusEl.style.display = 'block'; }
+  }
+}
+
 let _spotSel = new Set();
 let _spotList = [];
 let _spotDest = '';
@@ -1523,13 +1654,13 @@ async function submitTrip() {
   if (!interests.length) { showToast('&#9888; Pick at least one interest'); return; }
 
   // Store form values and let spot selector intercept before generation
-  _spotInput = { dest, destinations, start, end, budget, style, home, interests, archData };
+  _spotInput = { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors: _bookingAnchors.length ? [..._bookingAnchors] : null };
   const primaryDest = (_destinations[0] || dest).trim();
   showSpotSelector(dest, primaryDest);
 }
 
 async function proceedToGeneration() {
-  const { dest, destinations, start, end, budget, style, home, interests, archData } = _spotInput;
+  const { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors } = _spotInput;
   const selectedSpots = window._selectedSpots || [];
 
   // Show gen screen
@@ -1570,7 +1701,7 @@ async function proceedToGeneration() {
     const response = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots }, archData)),
+      body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), ...(bookingAnchors && bookingAnchors.length && { bookingAnchors }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots }, archData)),
     });
 
     if (!response.ok) {
@@ -1626,6 +1757,7 @@ async function proceedToGeneration() {
   } catch(err) {
     try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
     _destinations = []; _renderDestChips();
+    _bookingAnchors = []; _renderBookingAnchorCards();
     document.getElementById('planForm').style.display = 'block';
     document.getElementById('genScreen').style.display = 'none';
     document.getElementById('genLog').innerHTML = '';
@@ -1811,6 +1943,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
       try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
       showToast('&#9888; ' + (evt.message || 'Generation failed'), 5000);
       _destinations = []; _renderDestChips();
+      _bookingAnchors = []; _renderBookingAnchorCards();
       document.getElementById('planForm').style.display = 'block';
       document.getElementById('genScreen').style.display = 'none';
       break;
