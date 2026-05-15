@@ -1343,6 +1343,7 @@ function _fsToIata(name) {
 let _lastFlights = [];
 let _fsPendingDest = '';
 let _fsPendingPrimaryDest = '';
+let _fsSearching = false;
 
 function maybeShowFlightSearch(dest, primaryDest) {
   _fsPendingDest = dest;
@@ -1351,6 +1352,8 @@ function maybeShowFlightSearch(dest, primaryDest) {
     showSpotSelector(dest, primaryDest);
     return;
   }
+  document.getElementById('fsResults').innerHTML = '';
+  _lastFlights = [];
   // Pre-fill destination
   const toInput = document.getElementById('fsTo');
   if (toInput && dest) toInput.value = dest;
@@ -1381,79 +1384,96 @@ function skipFlightSearch() {
 }
 
 async function searchFlights() {
-  const fromRaw = document.getElementById('fsFrom').value.trim();
-  const toRaw   = document.getElementById('fsTo').value.trim();
-  const date    = document.getElementById('fsDate').value;
-  const travelers = parseInt(document.getElementById('fsTravelers').value) || 2;
-  const resultsDiv = document.getElementById('fsResults');
-
-  const from = _fsToIata(fromRaw);
-  const to   = _fsToIata(toRaw);
-
-  if (!from) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(fromRaw)}". Try the IATA code (e.g. KUL).</p>`; return; }
-  if (!to)   { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(toRaw)}". Try the IATA code (e.g. NRT).</p>`; return; }
-  if (!date) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Please select a departure date.</p>`; return; }
-
-  resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">Searching flights…</div>`;
+  if (_fsSearching) return;
+  _fsSearching = true;
+  const _fsBtn = document.querySelector('#flightSearchScreen button[onclick="searchFlights()"]');
+  if (_fsBtn) _fsBtn.disabled = true;
 
   try {
-    const resp = await fetch(BACKEND + '/api/flights', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to, date, travelers }),
-    });
-    const data = await resp.json();
+    const fromRaw = document.getElementById('fsFrom').value.trim();
+    const toRaw   = document.getElementById('fsTo').value.trim();
+    const date    = document.getElementById('fsDate').value;
+    const travelers = parseInt(document.getElementById('fsTravelers').value) || 2;
+    const resultsDiv = document.getElementById('fsResults');
 
-    if (!resp.ok || !Array.isArray(data.flights)) {
-      resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Flight search failed. Try again or skip.</p>`;
-      return;
-    }
-    if (data.flights.length === 0) {
-      resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">No flights found for these dates.<br><span style="font-size:13px">Try different dates or skip.</span></div>`;
-      return;
-    }
+    const from = _fsToIata(fromRaw);
+    const to   = _fsToIata(toRaw);
 
-    _lastFlights = data.flights;
-    resultsDiv.innerHTML = data.flights.map((f, i) => {
-      const depTime = f.departure?.time ? f.departure.time.slice(11,16) : '—';
-      const arrTime = f.arrival?.time   ? f.arrival.time.slice(11,16)   : '—';
-      const hrs  = f.durationSec ? Math.floor(f.durationSec / 3600) : null;
-      const mins = f.durationSec ? Math.floor((f.durationSec % 3600) / 60) : null;
-      const dur  = hrs !== null ? `${hrs}h ${mins}m` : '';
-      const stopLabel = f.stops === 0 ? 'Direct' : `${f.stops} stop${f.stops > 1 ? 's' : ''}`;
-      return `<div style="background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-          <div>
-            <span style="font-size:1.4rem;font-weight:800;color:#fff">$${f.price}</span>
-            <span style="font-size:12px;color:rgba(255,255,255,.4);margin-left:4px">${f.currency}</span>
+    if (!from) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(fromRaw)}". Try the IATA code (e.g. KUL).</p>`; return; }
+    if (!to)   { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(toRaw)}". Try the IATA code (e.g. NRT).</p>`; return; }
+    if (!date) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Please select a departure date.</p>`; return; }
+
+    resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">Searching flights…</div>`;
+
+    try {
+      const resp = await fetch(BACKEND + '/api/flights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from, to, date, travelers }),
+      });
+      const data = await resp.json();
+
+      if (!resp.ok || !Array.isArray(data.flights)) {
+        resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Flight search failed. Try again or skip.</p>`;
+        return;
+      }
+      if (data.flights.length === 0) {
+        resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">No flights found for these dates.<br><span style="font-size:13px">Try different dates or skip.</span></div>`;
+        return;
+      }
+
+      _lastFlights = data.flights;
+      resultsDiv.innerHTML = data.flights.map((f, i) => {
+        const airline     = esc((f.airlines||[]).join(' · '));
+        const depIata     = esc(f.departure?.iata || from);
+        const arrIata     = esc(f.arrival?.iata   || to);
+        const safePrice   = esc(String(f.price ?? '?'));
+        const safeCurr    = esc(f.currency || 'USD');
+        const safeKiwi    = /^https:\/\/www\.kiwi\.com\//.test(f.kiwiLink)    ? f.kiwiLink    : '#';
+        const safeTripcom = /^https:\/\/www\.trip\.com\//.test(f.tripcomLink) ? f.tripcomLink : '#';
+        const depTime = f.departure?.time ? f.departure.time.slice(11,16) : '—';
+        const arrTime = f.arrival?.time   ? f.arrival.time.slice(11,16)   : '—';
+        const hrs  = f.durationSec ? Math.floor(f.durationSec / 3600) : null;
+        const mins = f.durationSec ? Math.floor((f.durationSec % 3600) / 60) : null;
+        const dur  = hrs !== null ? `${hrs}h ${mins}m` : '';
+        const stopLabel = f.stops === 0 ? 'Direct' : `${f.stops} stop${f.stops > 1 ? 's' : ''}`;
+        return `<div style="background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <div>
+              <span style="font-size:1.4rem;font-weight:800;color:#fff">$${safePrice}</span>
+              <span style="font-size:12px;color:rgba(255,255,255,.4);margin-left:4px">${safeCurr}</span>
+            </div>
+            <span style="font-size:12px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:3px 8px;border-radius:6px">${stopLabel}</span>
           </div>
-          <span style="font-size:12px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:3px 8px;border-radius:6px">${stopLabel}</span>
-        </div>
-        <div style="font-size:15px;color:rgba(255,255,255,.85);margin-bottom:4px">
-          ${f.departure?.iata || from} <span style="color:rgba(255,255,255,.35)">${depTime}</span>
-          &nbsp;→&nbsp;
-          ${f.arrival?.iata || to} <span style="color:rgba(255,255,255,.35)">${arrTime}</span>
-          ${dur ? `<span style="font-size:12px;color:rgba(255,255,255,.35);margin-left:8px">${dur}</span>` : ''}
-        </div>
-        <div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:14px">${(f.airlines||[]).join(' · ')}</div>
-        <div style="display:flex;gap:8px">
-          <button onclick="selectFlight(${i})"
-            style="flex:1;padding:11px;background:#7c6af7;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
-            Select ✓
-          </button>
-          <a href="${f.kiwiLink}" target="_blank" rel="noopener"
-            style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
-            Kiwi
-          </a>
-          <a href="${f.tripcomLink}" target="_blank" rel="noopener"
-            style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
-            Trip.com
-          </a>
-        </div>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Connection error. Please try again or skip.</p>`;
+          <div style="font-size:15px;color:rgba(255,255,255,.85);margin-bottom:4px">
+            ${depIata} <span style="color:rgba(255,255,255,.35)">${depTime}</span>
+            &nbsp;→&nbsp;
+            ${arrIata} <span style="color:rgba(255,255,255,.35)">${arrTime}</span>
+            ${dur ? `<span style="font-size:12px;color:rgba(255,255,255,.35);margin-left:8px">${dur}</span>` : ''}
+          </div>
+          <div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:14px">${airline}</div>
+          <div style="display:flex;gap:8px">
+            <button onclick="selectFlight(${i})"
+              style="flex:1;padding:11px;background:#7c6af7;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
+              Select ✓
+            </button>
+            <a href="${safeKiwi}" target="_blank" rel="noopener"
+              style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
+              Kiwi
+            </a>
+            <a href="${safeTripcom}" target="_blank" rel="noopener"
+              style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
+              Trip.com
+            </a>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Connection error. Please try again or skip.</p>`;
+    }
+  } finally {
+    _fsSearching = false;
+    if (_fsBtn) _fsBtn.disabled = false;
   }
 }
 
@@ -1468,6 +1488,7 @@ function selectFlight(index) {
     departureTime: f.departure?.time ? f.departure.time.slice(11,16) : null,
     arrivalTime:   f.arrival?.time   ? f.arrival.time.slice(11,16)   : null,
     summary:       `${(f.airlines||[]).join('/')} ${f.departure?.iata||''}→${f.arrival?.iata||''} $${f.price}`,
+    bookingUrl:    f.kiwiLink || '',
   };
   _bookingAnchors.push(anchor);
   _renderBookingAnchorCards();
