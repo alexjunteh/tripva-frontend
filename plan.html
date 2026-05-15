@@ -597,6 +597,51 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     
   </div>
 
+  <!-- ── Flight search screen ──────────────────────────────────────────── -->
+  <div id="flightSearchScreen" style="display:none;min-height:100vh;background:var(--bg);padding:0 0 120px">
+    <div style="max-width:480px;margin:0 auto;padding:32px 20px 0">
+      <button onclick="backToFlightForm()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;padding:0;margin-bottom:24px;display:flex;align-items:center;gap:6px">&#8592; Back</button>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:#fff;margin:0 0 6px">Find flights</h2>
+      <p style="color:rgba(255,255,255,.45);font-size:0.9rem;margin:0 0 28px;line-height:1.5">We'll find options that fit your budget and lock in your exact travel dates.</p>
+
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px">Flying from</label>
+          <input id="fsFrom" type="text" placeholder="City or airport code (e.g. Kuala Lumpur)"
+            style="width:100%;padding:13px 15px;background:#1a1a28;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px">Flying to</label>
+          <input id="fsTo" type="text" placeholder="Destination (e.g. Tokyo)"
+            style="width:100%;padding:13px 15px;background:#1a1a28;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px">Depart</label>
+            <input id="fsDate" type="date"
+              style="width:100%;padding:13px 15px;background:#1a1a28;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px">Travelers</label>
+            <input id="fsTravelers" type="number" min="1" max="9" value="2"
+              style="width:100%;padding:13px 15px;background:#1a1a28;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
+          </div>
+        </div>
+      </div>
+
+      <button onclick="searchFlights()"
+        style="width:100%;padding:16px;background:var(--purple,#7c6af7);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px">
+        Search flights ✈️
+      </button>
+      <button onclick="skipFlightSearch()"
+        style="width:100%;padding:14px;background:transparent;color:rgba(255,255,255,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+        Skip — I'll book separately
+      </button>
+
+      <div id="fsResults" style="margin-top:28px"></div>
+    </div>
+  </div>
+
   <!-- Spot selector screen -->
   <div id="spotScreen">
     <div class="spot-hdr">
@@ -1268,6 +1313,168 @@ function _removeAnchor(idx) {
   _renderBookingAnchorCards();
 }
 
+// ── Flight search screen ─────────────────────────────────────────────────────
+
+const _FS_CITY_IATA = {
+  'kuala lumpur':'KUL','kl':'KUL','singapore':'SIN','bangkok':'BKK',
+  'phuket':'HKT','chiang mai':'CNX','jakarta':'CGK','bali':'DPS','denpasar':'DPS',
+  'ho chi minh city':'SGN','saigon':'SGN','hanoi':'HAN','da nang':'DAD',
+  'manila':'MNL','cebu':'CEB','yangon':'RGN','phnom penh':'PNH',
+  'siem reap':'REP','vientiane':'VTE','colombo':'CMB','kathmandu':'KTM',
+  'tokyo':'TYO','osaka':'OSA','kyoto':'OSA','seoul':'SEL','busan':'PUS',
+  'beijing':'BJS','shanghai':'SHA','hong kong':'HKG','taipei':'TPE',
+  'delhi':'DEL','new delhi':'DEL','mumbai':'BOM','bangalore':'BLR','goa':'GOI',
+  'dubai':'DXB','abu dhabi':'AUH','doha':'DOH','istanbul':'IST',
+  'london':'LON','paris':'PAR','amsterdam':'AMS','frankfurt':'FRA',
+  'berlin':'BER','madrid':'MAD','barcelona':'BCN','rome':'ROM','milan':'MIL',
+  'vienna':'VIE','zurich':'ZRH','lisbon':'LIS','athens':'ATH','prague':'PRG',
+  'new york':'JFK','nyc':'JFK','los angeles':'LAX','miami':'MIA',
+  'toronto':'YYZ','sydney':'SYD','melbourne':'MEL','auckland':'AKL',
+  'maldives':'MLE','male':'MLE',
+};
+
+function _fsToIata(name) {
+  if (!name) return null;
+  const t = name.trim();
+  if (/^[A-Z]{3}$/.test(t)) return t;
+  return _FS_CITY_IATA[t.toLowerCase()] || null;
+}
+
+let _lastFlights = [];
+let _fsPendingDest = '';
+let _fsPendingPrimaryDest = '';
+
+function maybeShowFlightSearch(dest, primaryDest) {
+  _fsPendingDest = dest;
+  _fsPendingPrimaryDest = primaryDest;
+  if (_bookingAnchors.length > 0) {
+    showSpotSelector(dest, primaryDest);
+    return;
+  }
+  // Pre-fill destination
+  const toInput = document.getElementById('fsTo');
+  if (toInput && dest) toInput.value = dest;
+  // Pre-fill departure date from form
+  const startDate = document.getElementById('f-start')?.value;
+  if (startDate) { const d = document.getElementById('fsDate'); if (d) d.value = startDate; }
+  // Pre-fill travelers
+  const travCount = document.getElementById('f-travelers')?.value || document.getElementById('f-pax')?.value;
+  if (travCount) { const t = document.getElementById('fsTravelers'); if (t) t.value = travCount; }
+  // Pre-fill home city as "from"
+  const home = document.getElementById('f-home')?.value.trim();
+  if (home) { const f = document.getElementById('fsFrom'); if (f) f.value = home; }
+
+  document.getElementById('planForm').style.display = 'none';
+  document.getElementById('flightSearchScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToFlightForm() {
+  document.getElementById('flightSearchScreen').style.display = 'none';
+  document.getElementById('planForm').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function skipFlightSearch() {
+  document.getElementById('flightSearchScreen').style.display = 'none';
+  showSpotSelector(_fsPendingDest, _fsPendingPrimaryDest);
+}
+
+async function searchFlights() {
+  const fromRaw = document.getElementById('fsFrom').value.trim();
+  const toRaw   = document.getElementById('fsTo').value.trim();
+  const date    = document.getElementById('fsDate').value;
+  const travelers = parseInt(document.getElementById('fsTravelers').value) || 2;
+  const resultsDiv = document.getElementById('fsResults');
+
+  const from = _fsToIata(fromRaw);
+  const to   = _fsToIata(toRaw);
+
+  if (!from) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(fromRaw)}". Try the IATA code (e.g. KUL).</p>`; return; }
+  if (!to)   { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(toRaw)}". Try the IATA code (e.g. NRT).</p>`; return; }
+  if (!date) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Please select a departure date.</p>`; return; }
+
+  resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">Searching flights…</div>`;
+
+  try {
+    const resp = await fetch(BACKEND + '/api/flights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from, to, date, travelers }),
+    });
+    const data = await resp.json();
+
+    if (!resp.ok || !Array.isArray(data.flights)) {
+      resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Flight search failed. Try again or skip.</p>`;
+      return;
+    }
+    if (data.flights.length === 0) {
+      resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">No flights found for these dates.<br><span style="font-size:13px">Try different dates or skip.</span></div>`;
+      return;
+    }
+
+    _lastFlights = data.flights;
+    resultsDiv.innerHTML = data.flights.map((f, i) => {
+      const depTime = f.departure?.time ? f.departure.time.slice(11,16) : '—';
+      const arrTime = f.arrival?.time   ? f.arrival.time.slice(11,16)   : '—';
+      const hrs  = f.durationSec ? Math.floor(f.durationSec / 3600) : null;
+      const mins = f.durationSec ? Math.floor((f.durationSec % 3600) / 60) : null;
+      const dur  = hrs !== null ? `${hrs}h ${mins}m` : '';
+      const stopLabel = f.stops === 0 ? 'Direct' : `${f.stops} stop${f.stops > 1 ? 's' : ''}`;
+      return `<div style="background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div>
+            <span style="font-size:1.4rem;font-weight:800;color:#fff">$${f.price}</span>
+            <span style="font-size:12px;color:rgba(255,255,255,.4);margin-left:4px">${f.currency}</span>
+          </div>
+          <span style="font-size:12px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:3px 8px;border-radius:6px">${stopLabel}</span>
+        </div>
+        <div style="font-size:15px;color:rgba(255,255,255,.85);margin-bottom:4px">
+          ${f.departure?.iata || from} <span style="color:rgba(255,255,255,.35)">${depTime}</span>
+          &nbsp;→&nbsp;
+          ${f.arrival?.iata || to} <span style="color:rgba(255,255,255,.35)">${arrTime}</span>
+          ${dur ? `<span style="font-size:12px;color:rgba(255,255,255,.35);margin-left:8px">${dur}</span>` : ''}
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:14px">${(f.airlines||[]).join(' · ')}</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="selectFlight(${i})"
+            style="flex:1;padding:11px;background:#7c6af7;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
+            Select ✓
+          </button>
+          <a href="${f.kiwiLink}" target="_blank" rel="noopener"
+            style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
+            Kiwi
+          </a>
+          <a href="${f.tripcomLink}" target="_blank" rel="noopener"
+            style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
+            Trip.com
+          </a>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Connection error. Please try again or skip.</p>`;
+  }
+}
+
+function selectFlight(index) {
+  const f = _lastFlights[index];
+  if (!f) return;
+  const anchor = {
+    type: 'flight',
+    from:          f.departure?.iata || '',
+    to:            f.arrival?.iata   || '',
+    date:          f.departure?.time ? f.departure.time.slice(0,10) : '',
+    departureTime: f.departure?.time ? f.departure.time.slice(11,16) : null,
+    arrivalTime:   f.arrival?.time   ? f.arrival.time.slice(11,16)   : null,
+    summary:       `${(f.airlines||[]).join('/')} ${f.departure?.iata||''}→${f.arrival?.iata||''} $${f.price}`,
+  };
+  _bookingAnchors.push(anchor);
+  _renderBookingAnchorCards();
+  document.getElementById('flightSearchScreen').style.display = 'none';
+  showSpotSelector(_fsPendingDest, _fsPendingPrimaryDest);
+}
+
 async function _parseBookingText(text) {
   const statusEl = document.getElementById('bookingStatus');
   const parseBtn = document.getElementById('bookingParseBtn');
@@ -1656,7 +1863,7 @@ async function submitTrip() {
   // Store form values and let spot selector intercept before generation
   _spotInput = { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors: _bookingAnchors.length ? [..._bookingAnchors] : null };
   const primaryDest = (_destinations[0] || dest).trim();
-  showSpotSelector(dest, primaryDest);
+  maybeShowFlightSearch(dest, primaryDest);
 }
 
 async function proceedToGeneration() {
