@@ -1351,7 +1351,7 @@ async function showSpotSelector(dest, primaryDest) {
       const g = document.getElementById('spotGrid');
       g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:rgba(255,255,255,.5)">' +
         '<div style="font-size:32px;margin-bottom:12px">⚠️</div>' +
-        '<div style="font-size:15px;margin-bottom:20px">Couldn\'t load highlights for ' + dest + '</div>' +
+        '<div style="font-size:15px;margin-bottom:20px">Couldn\'t load highlights for ' + esc(dest) + '</div>' +
         '<button onclick="proceedToGeneration()" style="background:#7c6af7;border:none;border-radius:12px;padding:12px 24px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-right:8px">Generate anyway</button>' +
         '<button onclick="showSpotSelector(_spotDest)" style="background:rgba(255,255,255,.08);border:none;border-radius:12px;padding:12px 24px;color:#fff;font-size:14px;cursor:pointer">Retry</button>' +
         '</div>';
