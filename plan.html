@@ -569,7 +569,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     <div id="customSpotSection" style="padding:14px 20px 0;max-width:520px;margin:0 auto">
       <div style="font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px">Don't see your spot?</div>
       <div style="display:flex;gap:8px">
-        <input id="customSpotInput" type="text" placeholder="Type a place name…" autocomplete="off"
+        <input id="customSpotInput" type="text" placeholder="Type a place name…" autocomplete="off" maxlength="80"
           style="flex:1;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:14px;color:#fff;font-family:inherit;outline:none;-webkit-appearance:none">
         <button type="button" id="customSpotAddBtn"
           style="background:rgba(124,106,247,.15);border:1.5px solid rgba(124,106,247,.4);border-radius:12px;padding:10px 16px;color:var(--purple-light);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">
@@ -816,6 +816,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (customSpotInput) {
     customSpotInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') { e.preventDefault(); _addCustomSpot(); }
+    });
+  }
+  const customSpotList = document.getElementById('customSpotList');
+  if (customSpotList) {
+    customSpotList.addEventListener('click', e => {
+      const btn = e.target.closest('[data-rm]');
+      if (btn) _removeCustomSpot(btn.dataset.rm);
     });
   }
 });
@@ -1134,7 +1141,7 @@ function _renderCustomSpots() {
   el.innerHTML = _customSpots.map(s =>
     '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(124,106,247,.18);border:1.5px solid rgba(124,106,247,.4);border-radius:999px;padding:6px 8px 6px 12px;font-size:13px;font-weight:700;color:var(--purple-light)">' +
       '<span>' + esc(s.name) + '</span>' +
-      '<button type="button" onclick="_removeCustomSpot(\'' + s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')"' +
+      '<button type="button" data-rm="' + esc(s.name) + '"' +
         ' style="background:rgba(255,255,255,.1);border:none;border-radius:50%;width:18px;height:18px;color:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1">\xd7</button>' +
     '</div>'
   ).join('');
