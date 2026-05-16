@@ -2613,6 +2613,20 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   _spotsLoaded = true;
 }
 
+async function _fetchWikiLeadPhoto(name) {
+  try {
+    const slug = name.trim().replace(/ /g, '_');
+    const r = await fetch(
+      'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(slug),
+      { signal: AbortSignal.timeout(6000), headers: { Accept: 'application/json' } }
+    );
+    if (!r.ok) return null;
+    const d = await r.json();
+    if (d.type === 'disambiguation') return null;
+    return d.thumbnail?.source || null;
+  } catch { return null; }
+}
+
 async function _populateSpotsPhotos(container, dest) {
   const cards = Array.from(container.querySelectorAll('.spot-card[data-wiki-spot]'));
   await Promise.all(cards.map(async card => {
@@ -2622,7 +2636,12 @@ async function _populateSpotsPhotos(container, dest) {
     const alreadyHasDest = dest && query.toLowerCase().includes(dest.toLowerCase());
     const fullQuery = alreadyHasDest ? query : (dest ? `${query} ${dest}` : query);
     let url = await _fetchCommonsThumb(fullQuery);
-    if (!url && dest) url = await _fetchCommonsThumb(dest + ' beach landscape');
+    if (!url) {
+      // Fallback: Wikipedia REST API lead image (better coverage for Asian landmarks)
+      const spotName = query.split(',')[0].trim();
+      url = await _fetchWikiLeadPhoto(spotName);
+    }
+    if (!url && dest) url = await _fetchCommonsThumb(dest + ' landmark');
     if (!url) { wrap.style.display = 'none'; return; }
     const img = document.createElement('img');
     img.src = url; img.alt = query; img.loading = 'lazy';
@@ -5226,8 +5245,11 @@ async function _populateWikiPhotos(container) {
     const query = alreadyHasDest ? cleanSpot : (dest ? `${cleanSpot} ${dest}` : cleanSpot);
     let url = await _fetchCommonsThumb(query);
     if (_wikiGenId !== myGen) return; // user navigated away, discard
-    // Fallback: try destination only (generic but better than nothing)
-    if (!url && dest) url = await _fetchCommonsThumb(dest + ' beach landscape');
+    if (!url) {
+      const spotName = spot.split(',')[0].trim();
+      url = await _fetchWikiLeadPhoto(spotName);
+    }
+    if (!url && dest) url = await _fetchCommonsThumb(dest + ' landmark');
     if (_wikiGenId !== myGen || !url) return;
     const img = document.createElement('img');
     img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
