@@ -1740,12 +1740,12 @@ function _renderSpotGrid() {
     c.dataset.i = i;
     c.innerHTML =
       '<div class="spot-skel" id="_sk'+i+'"></div>' +
-      '<img class="spot-img" id="_si'+i+'" alt="' + spot.name + '">' +
+      '<img class="spot-img" id="_si'+i+'" alt="' + esc(spot.name) + '">' +
       '<div class="spot-grad"></div>' +
       '<div class="spot-body">' +
-        '<div class="spot-cat">' + (CAT_ICONS[spot.cat] || '📍') + ' ' + spot.cat + '</div>' +
-        '<div class="spot-name">' + spot.name + '</div>' +
-        '<div class="spot-desc">' + spot.desc + '</div>' +
+        '<div class="spot-cat">' + (CAT_ICONS[spot.cat] || '📍') + ' ' + esc(spot.cat || '') + '</div>' +
+        '<div class="spot-name">' + esc(spot.name || '') + '</div>' +
+        '<div class="spot-desc">' + esc(spot.desc || '') + '</div>' +
       '</div>' +
       '<div class="spot-tick">✓</div>';
     c.onclick = () => _toggleSpot(i, c);
@@ -1769,12 +1769,12 @@ function _renderSpotGrid() {
         } else if (img && img.isConnected) {
           // Use specific multi-word keyword so loremflickr returns relevant travel photos
           const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
-          showImg('https://loremflickr.com/800/600/' + kw);
+          showImg('https://source.unsplash.com/800x600/?' + kw);
         }
       });
     } else {
       const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
-      showImg('https://loremflickr.com/800/600/' + kw);
+      showImg('https://source.unsplash.com/800x600/?' + kw);
     }
   });
 }
@@ -2053,7 +2053,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
         hotels.forEach(h => {
           const card = document.createElement('div');
           card.className = 'gen-hotel-card';
-          card.innerHTML = '<span class="gen-hotel-icon">&#127969;</span><div class="gen-hotel-info"><div class="gen-hotel-name">' + (h.name || '') + '</div><div class="gen-hotel-meta">' + (h.city || '') + (h.nights ? ' &middot; ' + h.nights + 'n' : '') + (h.checkin ? ' &middot; ' + h.checkin : '') + '</div></div>' + (h.price ? '<span class="gen-hotel-price">' + h.price + '</span>' : '');
+          card.innerHTML = '<span class="gen-hotel-icon">&#127969;</span><div class="gen-hotel-info"><div class="gen-hotel-name">' + esc(h.name || '') + '</div><div class="gen-hotel-meta">' + esc(h.city || '') + (h.nights ? ' &middot; ' + esc(String(h.nights)) + 'n' : '') + (h.checkin ? ' &middot; ' + esc(String(h.checkin)) : '') + '</div></div>' + (h.price ? '<span class="gen-hotel-price">' + esc(String(h.price)) + '</span>' : '');
           hotelsEl.appendChild(card);
         });
         setProgress(30);
@@ -2067,7 +2067,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
           const card = document.createElement('div');
           card.className = 'gen-day-card';
           card.id = 'gday-' + d.day;
-          card.innerHTML = '<div class="gen-day-header"><span class="gen-day-num">DAY ' + d.day + '</span><span class="gen-day-title">' + (d.title || '') + '</span><span class="gen-day-status" id="gday-stat-' + d.day + '">&#8987;</span></div><div class="gen-day-timeline" id="gday-tl-' + d.day + '"><div class="gen-tl-item" id="gday-tl-load-' + d.day + '"><span class="gen-tl-dot"></span><span class="shimmer-line" style="width:120px;height:8px;display:inline-block;border-radius:4px"></span></div></div>';
+          card.innerHTML = '<div class="gen-day-header"><span class="gen-day-num">DAY ' + d.day + '</span><span class="gen-day-title">' + esc(d.title || '') + '</span><span class="gen-day-status" id="gday-stat-' + d.day + '">&#8987;</span></div><div class="gen-day-timeline" id="gday-tl-' + d.day + '"><div class="gen-tl-item" id="gday-tl-load-' + d.day + '"><span class="gen-tl-dot"></span><span class="shimmer-line" style="width:120px;height:8px;display:inline-block;border-radius:4px"></span></div></div>';
           daysEl.appendChild(card);
         });
       }
@@ -2118,7 +2118,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
             const icon = icons[item.type] || icons.default;
             const itemEl = document.createElement('div');
             itemEl.className = 'gen-tl-item ready';
-            itemEl.innerHTML = '<span class="gen-tl-dot"></span><span>' + icon + ' ' + (item.title || '') + '</span>';
+            itemEl.innerHTML = '<span class="gen-tl-dot"></span><span>' + icon + ' ' + esc(item.title || '') + '</span>';
             tlEl.appendChild(itemEl);
           });
           if (activities.length > 4) {
