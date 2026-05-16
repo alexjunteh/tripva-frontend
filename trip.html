@@ -2613,6 +2613,23 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   _spotsLoaded = true;
 }
 
+const _PEXELS_KEY = 'lioRl2vc8g8t6lObCUWksmyIha1bAeZdn1OcwtTELL6aaVBP8gtv60ZP';
+const _pexelsCache = {};
+async function _fetchPexelsPhoto(query) {
+  if (_pexelsCache[query] !== undefined) return _pexelsCache[query] || null;
+  try {
+    const r = await fetch(
+      'https://api.pexels.com/v1/search?query=' + encodeURIComponent(query) + '&per_page=1&orientation=landscape',
+      { signal: AbortSignal.timeout(7000), headers: { Authorization: _PEXELS_KEY } }
+    );
+    if (!r.ok) { _pexelsCache[query] = ''; return null; }
+    const d = await r.json();
+    const url = d.photos?.[0]?.src?.large || null;
+    _pexelsCache[query] = url || '';
+    return url;
+  } catch { _pexelsCache[query] = ''; return null; }
+}
+
 async function _fetchWikiLeadPhoto(name) {
   try {
     const slug = name.trim().replace(/ /g, '_');
@@ -2633,15 +2650,11 @@ async function _populateSpotsPhotos(container, dest) {
     const query = card.dataset.wikiSpot || '';
     const wrap  = card.querySelector('.spot-card-img-wrap');
     if (!wrap) return;
-    const alreadyHasDest = dest && query.toLowerCase().includes(dest.toLowerCase());
-    const fullQuery = alreadyHasDest ? query : (dest ? `${query} ${dest}` : query);
-    let url = await _fetchCommonsThumb(fullQuery);
-    if (!url) {
-      // Fallback: Wikipedia REST API lead image (better coverage for Asian landmarks)
-      const spotName = query.split(',')[0].trim();
-      url = await _fetchWikiLeadPhoto(spotName);
-    }
-    if (!url && dest) url = await _fetchCommonsThumb(dest + ' landmark');
+    const spotName = query.split(',')[0].trim();
+    const pexelsQuery = dest ? `${spotName} ${dest}` : spotName;
+    let url = await _fetchPexelsPhoto(pexelsQuery);
+    if (!url) url = await _fetchCommonsThumb(pexelsQuery);
+    if (!url) url = await _fetchWikiLeadPhoto(spotName);
     if (!url) { wrap.style.display = 'none'; return; }
     const img = document.createElement('img');
     img.src = url; img.alt = query; img.loading = 'lazy';
@@ -5243,13 +5256,12 @@ async function _populateWikiPhotos(container) {
     // If dest not already in spot, append it; otherwise use spot directly
     const alreadyHasDest = dest && spot.toLowerCase().includes(dest.toLowerCase());
     const query = alreadyHasDest ? cleanSpot : (dest ? `${cleanSpot} ${dest}` : cleanSpot);
-    let url = await _fetchCommonsThumb(query);
-    if (_wikiGenId !== myGen) return; // user navigated away, discard
-    if (!url) {
-      const spotName = spot.split(',')[0].trim();
-      url = await _fetchWikiLeadPhoto(spotName);
-    }
-    if (!url && dest) url = await _fetchCommonsThumb(dest + ' landmark');
+    const spotName = spot.split(',')[0].trim();
+    let url = await _fetchPexelsPhoto(dest ? `${spotName} ${dest}` : spotName);
+    if (_wikiGenId !== myGen) return;
+    if (!url) url = await _fetchCommonsThumb(query);
+    if (_wikiGenId !== myGen) return;
+    if (!url) url = await _fetchWikiLeadPhoto(spotName);
     if (_wikiGenId !== myGen || !url) return;
     const img = document.createElement('img');
     img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
