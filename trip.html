@@ -554,6 +554,8 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .book-btn{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:11px;padding:11px 12px;background:linear-gradient(135deg,var(--accent),var(--purple));color:var(--text);text-decoration:none;font-size:14px;font-weight:800;border:1px solid rgba(124,106,247,.45)}
 .book-btn.secondary{background:var(--surface2);color:var(--text);border-color:var(--border)}
 .book-btn:active{opacity:.88}
+.book-card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.book-meta-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
 
 /* Hotel cards */
 .hotel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
@@ -1700,13 +1702,12 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
         <button class="flt-btn" id="fltSearchBtn" onclick="searchFlights()">Search</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px">
-        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase(),d=document.getElementById('fltDate').value;if(!f||!t)return alert('Enter From/To codes first');const m=d?d.slice(0,7):(new Date().toISOString().slice(0,7));loadPriceCalendar(f,t,m);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📅 Calendar</button>
-        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase();if(!f||!t)return alert('Enter From/To codes first');loadMonthlyPrices(f,t);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📊 Best Month</button>
-        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase();if(!f)return alert('Enter a From airport code first');loadExploreDestinations(f);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">🗺️ Explore</button>
+        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase(),d=document.getElementById('fltDate').value;if(!f||!t){showToast('⚠️ Enter From/To codes first');return;}const m=d?d.slice(0,7):(new Date().toISOString().slice(0,7));loadPriceCalendar(f,t,m);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📅 Calendar</button>
+        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase();if(!f||!t){showToast('⚠️ Enter From/To codes first');return;}loadMonthlyPrices(f,t);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📊 Best Month</button>
+        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase();if(!f){showToast('⚠️ Enter a From airport code first');return;}loadExploreDestinations(f);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">🗺️ Explore</button>
       </div>
     </div>
   </div>
-  </div><!-- /ticketsFlightPanel -->
   <div id="fltResults"></div>
 
   <!-- ALT TRANSPORT PANELS -->
@@ -6091,9 +6092,9 @@ async function searchFlights() {
   const btn = document.getElementById('fltSearchBtn');
   const box = document.getElementById('fltResults');
 
-  if (!from || from.length < 2) return alert('Enter a departure airport code (e.g. KUL)');
-  if (!to   || to.length < 2)   return alert('Enter an arrival airport code (e.g. NRT)');
-  if (!date) return alert('Select a departure date');
+  if (!from || from.length < 2) { showToast('⚠️ Enter a departure airport code (e.g. KUL)'); return; }
+  if (!to   || to.length < 2)   { showToast('⚠️ Enter an arrival airport code (e.g. NRT)'); return; }
+  if (!date) { showToast('⚠️ Select a departure date'); return; }
 
   btn.disabled = true;
   box.innerHTML = '<div class="flt-spinner">🔍 Searching flights…</div>';
