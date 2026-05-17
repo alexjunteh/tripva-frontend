@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="agd-partner-manual-verification" />
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -516,6 +517,27 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .more-action-primary{background:linear-gradient(135deg,#b8963e,#d4a84b);border-color:transparent;color:#1a1407}
 .more-action-primary:hover{opacity:.92}
 
+/* ─── FLIGHT SEARCH ─── */
+.flt-search-wrap{padding:14px 14px 0}
+.flt-search-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px}
+.flt-search-title{font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.flt-row{display:flex;gap:8px;margin-bottom:8px}
+.flt-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;font-weight:700;color:var(--text);min-width:0;font-family:inherit}
+.flt-input:focus{outline:none;border-color:var(--accent)}
+.flt-btn{background:linear-gradient(135deg,var(--purple),#5b4dd4);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;padding:10px 18px;cursor:pointer;white-space:nowrap}
+.flt-btn:active{opacity:.85}
+.flt-btn:disabled{opacity:.45;cursor:not-allowed}
+.flt-results-wrap{padding:10px 14px 0}
+.flt-result-hdr{font-size:11px;font-weight:800;letter-spacing:.4px;color:rgba(255,255,255,.35);padding:4px 0 8px}
+.flt-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px}
+.flt-card-top{display:flex;align-items:center;justify-content:space-between}
+.flt-route{font-size:15px;font-weight:900;letter-spacing:-.2px}
+.flt-price{font-size:16px;font-weight:900;color:var(--success)}
+.flt-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);font-weight:600}
+.flt-book-btn{align-self:flex-start;background:rgba(149,184,255,.12);border:1px solid rgba(149,184,255,.25);border-radius:20px;color:var(--accent);font-size:11px;font-weight:800;padding:6px 14px;text-decoration:none;cursor:pointer}
+.flt-spinner{text-align:center;padding:14px;color:var(--muted);font-size:13px}
+.flt-error{text-align:center;padding:10px;color:#f87171;font-size:12px;font-weight:700}
+
 /* ─── HOTELS / BUDGET / TIPS (accessed via More) ─── */
 #tab-hotels,#tab-budget,#tab-tips{background:var(--bg)}
 .sub-header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface-alpha)}
@@ -667,6 +689,20 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .planner-interests{display:flex;flex-wrap:wrap;gap:8px}
 .planner-interest{background:var(--surface2);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--text2);cursor:pointer;transition: opacity .15s ease-out, transform .15s ease-out, color .15s ease-out, background-color .15s ease-out;user-select:none}
 .planner-interest.sel{background:rgba(124,106,247,.2);border-color:var(--accent);color:var(--text)}
+/* Transport mode selector */
+.transport-banner{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin:0 14px 0}
+.transport-banner-label{font-size:10px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.transport-banner-chips{display:flex;gap:6px;flex-wrap:wrap}
+.transport-chip{background:var(--surface2);border:1.5px solid rgba(255,255,255,.1);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;transition:background .15s,border-color .15s,color .15s;user-select:none}
+.transport-chip.sel{background:rgba(124,106,247,.2);border-color:var(--accent);color:var(--text)}
+/* Alt transport panels */
+.alt-transport-panel{display:none;padding:14px 14px 0}
+.alt-transport-panel.active{display:block}
+.alt-transport-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px}
+.alt-transport-title{font-size:14px;font-weight:900;color:var(--text);margin-bottom:4px}
+.alt-transport-sub{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px}
+.alt-transport-link{display:inline-block;background:linear-gradient(135deg,var(--purple),#5b4dd4);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;padding:10px 18px;text-decoration:none;margin-bottom:6px}
+.alt-transport-link2{display:inline-block;background:rgba(149,184,255,.12);border:1px solid rgba(149,184,255,.25);border-radius:20px;color:var(--accent);font-size:11px;font-weight:800;padding:6px 14px;text-decoration:none;margin-left:8px}
 .planner-footer{position:fixed;bottom:0;left:0;right:0;padding:16px 20px;padding-bottom:calc(16px + var(--safe-b));background:var(--surface-alpha);border:1px solid var(--border);z-index:601}
 .planner-btn{width:100%;background:linear-gradient(135deg,#95b8ff,var(--purple));border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:900;color:var(--bg);cursor:pointer;letter-spacing:-.2px;transition:opacity .15s}
 .planner-btn:disabled{opacity:.4;cursor:not-allowed}
@@ -1638,6 +1674,72 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 
 <!-- ── 4. TICKETS ── -->
 <div id="tab-tickets" class="tab-content">
+  <!-- TRANSPORT MODE BANNER -->
+  <div class="transport-banner" id="transportBanner" style="margin-top:14px">
+    <div class="transport-banner-label">Getting there by</div>
+    <div class="transport-banner-chips" id="transportBannerChips">
+      <div class="transport-chip sel" data-mode="flight" onclick="setTicketsTransport('flight')">✈️ Flight</div>
+      <div class="transport-chip" data-mode="train" onclick="setTicketsTransport('train')">🚂 Train</div>
+      <div class="transport-chip" data-mode="bus" onclick="setTicketsTransport('bus')">🚌 Bus</div>
+      <div class="transport-chip" data-mode="car" onclick="setTicketsTransport('car')">🚗 Drive</div>
+      <div class="transport-chip" data-mode="ferry" onclick="setTicketsTransport('ferry')">🚢 Ferry</div>
+    </div>
+  </div>
+  <!-- FLIGHT SEARCH -->
+  <div class="flt-search-wrap" id="ticketsFlightPanel">
+    <div class="flt-search-box">
+      <div class="flt-search-title">✈️ Search Flights</div>
+      <div class="flt-row">
+        <input class="flt-input" id="fltFrom" placeholder="From (KUL)" maxlength="4" style="text-transform:uppercase">
+        <input class="flt-input" id="fltTo" placeholder="To (NRT)" maxlength="4" style="text-transform:uppercase">
+      </div>
+      <div class="flt-row">
+        <input class="flt-input" id="fltDate" type="date">
+        <input class="flt-input" id="fltReturnDate" type="date" placeholder="Return (opt)">
+        <input class="flt-input" id="fltTravelers" type="number" min="1" max="9" value="1" style="max-width:64px">
+        <button class="flt-btn" id="fltSearchBtn" onclick="searchFlights()">Search</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px">
+        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase(),d=document.getElementById('fltDate').value;if(!f||!t)return alert('Enter From/To codes first');const m=d?d.slice(0,7):(new Date().toISOString().slice(0,7));loadPriceCalendar(f,t,m);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📅 Calendar</button>
+        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase();if(!f||!t)return alert('Enter From/To codes first');loadMonthlyPrices(f,t);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📊 Best Month</button>
+        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase();if(!f)return alert('Enter a From airport code first');loadExploreDestinations(f);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">🗺️ Explore</button>
+      </div>
+    </div>
+  </div>
+  </div><!-- /ticketsFlightPanel -->
+  <div id="fltResults"></div>
+
+  <!-- ALT TRANSPORT PANELS -->
+  <div class="alt-transport-panel" id="ticketsTrainPanel">
+    <div class="alt-transport-card">
+      <div class="alt-transport-title">🚂 Book Train Tickets</div>
+      <div class="alt-transport-sub">Search and book rail routes across Europe and Asia</div>
+      <a class="alt-transport-link" href="https://www.thetrainline.com" target="_blank" rel="noopener" onclick="trackAffiliateClick('trainline')">Search Trainline →</a>
+      <a class="alt-transport-link2" href="https://rail.ninja/?marker=529721" target="_blank" rel="noopener" onclick="trackAffiliateClick('railninja')">Rail.ninja</a>
+    </div>
+  </div>
+  <div class="alt-transport-panel" id="ticketsBusPanel">
+    <div class="alt-transport-card">
+      <div class="alt-transport-title">🚌 Book Bus Routes</div>
+      <div class="alt-transport-sub">Affordable intercity coach routes across Europe</div>
+      <a class="alt-transport-link" href="https://www.flixbus.com" target="_blank" rel="noopener" onclick="trackAffiliateClick('flixbus')">Search FlixBus →</a>
+    </div>
+  </div>
+  <div class="alt-transport-panel" id="ticketsCarPanel">
+    <div class="alt-transport-card">
+      <div class="alt-transport-title">🚗 Rent a Car</div>
+      <div class="alt-transport-sub">Compare car rental deals at your destination</div>
+      <a class="alt-transport-link" href="https://www.discovercars.com/all?a_aid=529721" target="_blank" rel="noopener" onclick="trackAffiliateClick('discovercars')">Search Discovercars →</a>
+    </div>
+  </div>
+  <div class="alt-transport-panel" id="ticketsFerryPanel">
+    <div class="alt-transport-card">
+      <div class="alt-transport-title">🚢 Book Ferry / Boat</div>
+      <div class="alt-transport-sub">Ferry and boat routes across Asia and beyond</div>
+      <a class="alt-transport-link" href="https://www.12go.asia/en?aff_id=529721" target="_blank" rel="noopener" onclick="trackAffiliateClick('12go')">Search 12Go Asia →</a>
+    </div>
+  </div>
+
   <!-- NEXT TICKET HERO -->
   <div id="nextTicketHero" style="display:none;padding:14px 14px 0">
     <div class="next-tkt-hero">
@@ -1669,6 +1771,26 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
       <div class="es-icon">✅</div><div class="es-title">All good — no urgent actions right now</div>
       <div class="es-text">Hotel and booking links will appear here after generating a trip.</div>
     </div>
+  </div>
+  <!-- Activities & Experiences section -->
+  <div id="activitiesSection" style="display:none;padding:0 14px 14px">
+    <div class="book-group-title" style="margin-top:14px">🎯 ACTIVITIES & EXPERIENCES</div>
+    <div id="activitiesCards"></div>
+  </div>
+  <!-- Airport Transfers section -->
+  <div id="transfersSection" style="display:none;padding:0 14px 14px">
+    <div class="book-group-title" style="margin-top:14px">🚐 AIRPORT TRANSFERS</div>
+    <div id="transfersCards"></div>
+  </div>
+  <!-- Travel Insurance section -->
+  <div id="insuranceSection" style="display:none;padding:0 14px 14px">
+    <div class="book-group-title" style="margin-top:14px">🛡️ TRAVEL INSURANCE</div>
+    <div id="insuranceCards"></div>
+  </div>
+  <!-- eSIM section -->
+  <div id="esimSection" style="display:none;padding:0 14px 14px">
+    <div class="book-group-title" style="margin-top:14px">📱 STAY CONNECTED</div>
+    <div id="esimCards"></div>
   </div>
 </div>
 
@@ -1959,6 +2081,16 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
         <input class="planner-input" id="pln-style" type="text" placeholder="e.g. efficiency-obsessed couple" autocomplete="off">
       </div>
       <div class="planner-section">
+        <div class="planner-label">How are you getting there?</div>
+        <div class="planner-interests" id="pln-transport">
+          <div class="planner-interest sel" data-v="flight">✈️ Flight</div>
+          <div class="planner-interest" data-v="train">🚂 Train</div>
+          <div class="planner-interest" data-v="bus">🚌 Bus</div>
+          <div class="planner-interest" data-v="drive">🚗 Drive</div>
+          <div class="planner-interest" data-v="ferry">🚢 Ferry</div>
+        </div>
+      </div>
+      <div class="planner-section">
         <div class="planner-label">Interests</div>
         <div class="planner-interests" id="pln-interests">
           <div class="planner-interest sel" data-v="food">🍝 Food</div>
@@ -2063,10 +2195,40 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 // ══════════════════════════════════════
 //  AFFILIATE TRACKING
 // ══════════════════════════════════════
+function buildHotellookLink(city, checkIn, checkOut, adults) {
+  const p = new URLSearchParams({ destination: city || '', adults: String(adults || 2), rooms: '1', marker: '529721' });
+  if (checkIn)  p.set('checkIn', checkIn);
+  if (checkOut) p.set('checkOut', checkOut);
+  return 'https://www.hotellook.com/hotels?' + p.toString();
+}
+
+
+function buildGygLink(destination) {
+  return 'https://www.getyourguide.com/s/?q=' + encodeURIComponent(destination || '') + '&partner_id=529721';
+}
+
+function buildKiwitaxiLink(destination) {
+  const base = 'https://kiwitaxi.com/';
+  return base + (destination ? '?marker=529721&location=' + encodeURIComponent(destination) : '?marker=529721');
+}
+
+function buildEktaLink(destination) {
+  return 'https://ekta.world/en/?marker=529721' + (destination ? '&destination=' + encodeURIComponent(destination) : '');
+}
+
+function buildAiraloLink(destination) {
+  return 'https://www.airalo.com/' + (destination ? '?marker=529721&q=' + encodeURIComponent(destination) : '?marker=529721');
+}
+
 function detectAffiliatePartner(url) {
   const s = String(url||'').toLowerCase();
-  if (s.includes('agoda') || s.includes('booking.com')) return 'booking';
+  if (s.includes('jetradar') || s.includes('aviasales')) return 'jetradar';
+  if (s.includes('hotellook')) return 'hotellook';
+  if (s.includes('booking.com') || s.includes('agoda')) return 'booking';
   if (s.includes('getyourguide')) return 'gyg';
+  if (s.includes('kiwitaxi')) return 'kiwitaxi';
+  if (s.includes('ekta')) return 'ekta';
+  if (s.includes('airalo')) return 'airalo';
   if (s.includes('trainline')) return 'trainline';
   if (s.includes('rentalcar')) return 'rentalcars';
   return 'generic';
@@ -3427,6 +3589,7 @@ function openTicket(tktTitle) {
   if (name !== 'plan') document.body.classList.remove('nav-hidden');
   // Re-render Live tab when activated (ensures it always shows fresh data)
   if (name === 'plan' && plan) { try { renderLiveOps(); } catch(e) {} }
+  if (name === 'tickets') { try { _prefillFlightInputs(); _initFlightSearch(); } catch(e) {} }
 }
 
 // Scroll-hide bottom nav on Now tab (DESIGN.md principle 1 — maximize FocusCard).
@@ -3892,6 +4055,12 @@ function populateDashboard(p) {
       </div>`;
   }
 
+  // ── Auto-derive hotels from timeline BEFORE rendering book-now hub ──
+  if (!p.hotels || p.hotels.length === 0) {
+    const derived = deriveHotelsFromTimeline(p);
+    if (derived.length > 0) p.hotels = derived;
+  }
+
   // ── BOOK NOW HUB ──
   {
     const scroll=document.getElementById('hotelsScroll');
@@ -3946,8 +4115,8 @@ function populateDashboard(p) {
       const arrangeWrap=document.createElement('div'); arrangeWrap.className='booknow-segment arrange';
       arrangeWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot arrange"></span>🔍 STILL TO ARRANGE (${unbookedHotels.length})</div>`;
       unbookedHotels.forEach(h=>{
-        const btn=/agoda\.com\/search/.test(h.bookUrl||'')?'Search Agoda →':'Open →';
-        const host=getHost(h.bookUrl||'');
+        const city=h.city||h.name||'';
+        const checkin=h.checkin||''; const checkout=h.checkout||''; const adults=p.trip?.people||2;
         const c=document.createElement('div'); c.className='book-card arrange-card';
         const starsStr = h.stars ? '⭐'.repeat(Math.min(h.stars,5)) : '';
         const ratingStr = h.rating ? `${h.rating}/10` : '';
@@ -3959,21 +4128,88 @@ function populateDashboard(p) {
           ${stayStatus?`<div class="stay-pill-row"><span class="stay-pill ${stayStatus.sourceClass}">${stayStatus.sourceLabel}</span><span class="stay-pill strategy">${esc(stayStatus.strategyLabel)}</span>${h.pricingSourceType?`<span class="stay-pill soft">${esc(h.pricingSourceType)}</span>`:''}</div>`:''}
           <div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div>
           <div class="book-card-budget">${buildHotelBudgetMini('Nightly', nightlyText)}${buildHotelBudgetMini('Stay total', totalText)}${buildHotelBudgetMini('Stay cap', capText)}${buildHotelBudgetMini('Budget fit', h.stayBudgetStatus==='within-cap'?'Within cap':'Over cap')}</div>
-          <div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}${h.pricingProvider?`<span class="book-meta-chip">🧾 ${esc(h.pricingProvider)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">${btn}</a></div>`;
+          <div class="book-actions">
+            <a class="book-btn" href="${buildHotellookLink(city,checkin,checkout,adults)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')" style="background:rgba(99,179,237,.12);border-color:rgba(99,179,237,.3);color:#63b3ed">🏨 Compare Booking.com, Agoda & more →</a>
+          </div>`;
         arrangeWrap.appendChild(c);
       });
       scroll.appendChild(arrangeWrap);
     }
+
+    // ── ACTIVITIES & EXPERIENCES (GetYourGuide affiliate) ──
+    const dest = p.trip?.destination || '';
+    if (dest) {
+      const actSection = document.getElementById('activitiesSection');
+      const actCards   = document.getElementById('activitiesCards');
+      if (actSection && actCards) {
+        actSection.style.display = 'block';
+        const cities = [...new Set([
+          dest,
+          ...(p.hotels || []).map(h => h.city).filter(Boolean),
+          ...(p.days   || []).map(d => d.title?.split(/[→–-]/)[0].trim()).filter(Boolean).slice(0, 3),
+        ])].slice(0, 4);
+        actCards.innerHTML = cities.map(city => `
+          <a class="book-card" href="${buildGygLink(city)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('gyg')" style="text-decoration:none;display:block;margin-bottom:8px">
+            <div class="book-card-title">🎯 ${esc(city)} Activities</div>
+            <div class="book-card-note">Tours, experiences &amp; guided activities</div>
+            <div class="book-actions" style="pointer-events:none"><span class="book-btn" style="display:inline-block">Browse GetYourGuide →</span></div>
+          </a>`).join('');
+      }
+    }
+
+    // ── AIRPORT TRANSFERS (Kiwitaxi — 9–11% commission) ──
+    if (dest) {
+      const transferSec = document.getElementById('transfersSection');
+      const transferCards = document.getElementById('transfersCards');
+      if (transferSec && transferCards) {
+        transferSec.style.display = 'block';
+        transferCards.innerHTML = `
+          <a class="book-card" href="${buildKiwitaxiLink(dest)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('kiwitaxi')" style="text-decoration:none;display:block;margin-bottom:8px">
+            <div class="book-card-title">🚐 Airport Transfer — ${esc(dest)}</div>
+            <div class="book-card-note">Private transfers, meet &amp; greet, fixed price — no surprise taxi fares</div>
+            <div class="book-card-meta"><span class="book-meta-chip">🔗 kiwitaxi.com</span></div>
+            <div class="book-actions" style="pointer-events:none"><span class="book-btn" style="display:inline-block">Search Kiwitaxi →</span></div>
+          </a>`;
+      }
+    }
+
+    // ── TRAVEL INSURANCE (EKTA — 20% commission) always shown ──
+    {
+      const insureSec = document.getElementById('insuranceSection');
+      const insureCards = document.getElementById('insuranceCards');
+      if (insureSec && insureCards) {
+        insureSec.style.display = 'block';
+        insureCards.innerHTML = `
+          <a class="book-card" href="${buildEktaLink(dest)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('ekta')" style="text-decoration:none;display:block;margin-bottom:8px">
+            <div class="book-card-title">🛡️ Travel Insurance</div>
+            <div class="book-card-note">Medical, trip cancellation &amp; delay cover — EKTA covers 200+ countries</div>
+            <div class="book-card-meta"><span class="book-meta-chip">🔗 ekta.world</span><span class="book-meta-chip" style="background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:#4ade80">Recommended</span></div>
+            <div class="book-actions" style="pointer-events:none"><span class="book-btn" style="display:inline-block">Get insured →</span></div>
+          </a>`;
+      }
+    }
+
+    // ── eSIM (Airalo — 12% commission) ──
+    if (dest) {
+      const esimSec = document.getElementById('esimSection');
+      const esimCards = document.getElementById('esimCards');
+      if (esimSec && esimCards) {
+        esimSec.style.display = 'block';
+        esimCards.innerHTML = `
+          <a class="book-card" href="${buildAiraloLink(dest)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('airalo')" style="text-decoration:none;display:block;margin-bottom:8px">
+            <div class="book-card-title">📱 eSIM for ${esc(dest)}</div>
+            <div class="book-card-note">Instant data on arrival — no SIM swap, no roaming charges, from $4.50</div>
+            <div class="book-card-meta"><span class="book-meta-chip">🔗 airalo.com</span></div>
+            <div class="book-actions" style="pointer-events:none"><span class="book-btn" style="display:inline-block">Get eSIM →</span></div>
+          </a>`;
+      }
+    }
   }
 
-  // ── Auto-derive budget + hotels from timeline if empty ──
+  // ── Auto-derive budget from timeline if empty ──
   if (!p.budget || p.budget.length === 0) {
     const derived = deriveBudgetFromTimeline(p);
     if (derived.length > 0) p.budget = derived;
-  }
-  if (!p.hotels || p.hotels.length === 0) {
-    const derived = deriveHotelsFromTimeline(p);
-    if (derived.length > 0) p.hotels = derived;
   }
   // ── BUDGET ──
   try { window.__budgetTrace = (window.__budgetTrace||[]); window.__budgetTrace.push('enter:p.budget.len=' + ((p.budget||[]).length)); } catch(e){}
@@ -5323,7 +5559,7 @@ function renderDaySheet(idx) {
     const mapCity = tl.mapQuery ? (tl.mapQuery.split(',').pop() || '').trim() : '';
     const city = mapCity || dest;
     const q = encodeURIComponent((tl.title || '') + (city ? ' ' + city : ''));
-    return `https://www.getyourguide.com/s/?q=${q}&cmp=tripva`;
+    return `https://www.getyourguide.com/s/?q=${q}&partner_id=529721`;
   };
 
   html+=(d.timeline||[]).map((tl,i)=>{
@@ -5641,7 +5877,300 @@ setTimeout(()=>{if(document.getElementById('tab-trip')&&document.getElementById(
 //  ROAM TRIP PLANNER — BACKEND WIRING
 // ══════════════════════════════════════
 const BACKEND_URL = 'https://tripai-backend.vercel.app';
+
+// ── FLIGHT SEARCH ──────────────────────────────────────────────────────────
+function _prefillFlightInputs() {
+  if (!plan) return;
+  const d = plan.days?.[0];
+  if (!d) return;
+  // Guess departure date from first day
+  const firstDateStr = plan.trip?.dates || '';
+  const m = firstDateStr.match(/(\d{4}-\d{2}-\d{2})/);
+  if (m) document.getElementById('fltDate').value = m[1];
+  // Travelers from plan
+  const pax = plan.trip?.people || 1;
+  document.getElementById('fltTravelers').value = Math.min(9, Math.max(1, pax));
+}
+
+// ── Tickets tab transport mode switcher ───────────────────────────────────
+let _ticketsTransportMode = 'flight';
+
+function setTicketsTransport(mode) {
+  _ticketsTransportMode = mode;
+  // Update banner chips
+  document.querySelectorAll('#transportBannerChips .transport-chip').forEach(c => {
+    c.classList.toggle('sel', c.dataset.mode === mode);
+  });
+  // Show/hide panels
+  const flightPanel = document.getElementById('ticketsFlightPanel');
+  const fltResults  = document.getElementById('fltResults');
+  const trainPanel  = document.getElementById('ticketsTrainPanel');
+  const busPanel    = document.getElementById('ticketsBusPanel');
+  const carPanel    = document.getElementById('ticketsCarPanel');
+  const ferryPanel  = document.getElementById('ticketsFerryPanel');
+  [flightPanel, fltResults].forEach(el => el && (el.style.display = mode === 'flight' ? '' : 'none'));
+  trainPanel && trainPanel.classList.toggle('active', mode === 'train');
+  busPanel   && busPanel.classList.toggle('active', mode === 'bus');
+  carPanel   && carPanel.classList.toggle('active', mode === 'car' || mode === 'drive');
+  ferryPanel && ferryPanel.classList.toggle('active', mode === 'ferry');
+}
+
+// Read ?transport= URL param and pre-select on load
+(function _initTicketsTransportFromUrl() {
+  const urlMode = new URLSearchParams(location.search).get('transport') || 'flight';
+  const normalised = urlMode === 'drive' ? 'car' : urlMode;
+  const validModes = ['flight', 'train', 'bus', 'car', 'ferry'];
+  if (validModes.includes(normalised)) {
+    // Defer until DOM is ready
+    document.addEventListener('DOMContentLoaded', () => setTicketsTransport(normalised), { once: true });
+    // Also fire immediately in case DOMContentLoaded already fired
+    if (document.readyState !== 'loading') setTicketsTransport(normalised);
+  }
+})();
+
+// ── Flight search helpers ──────────────────────────────────────────────────
+const _fmtTime = t => t ? String(t).replace(/:\d{2}(\s|$)/, '$1').split('T').pop().slice(0, 5) : '';
+const _fmtDur  = s => { if (!s) return ''; const h = Math.floor(s/3600), m = Math.floor((s%3600)/60); return h ? `${h}h ${m}m` : `${m}m`; };
+const _fmtPrice = (p, cur) => p != null ? `${cur === 'USD' ? '$' : cur + ' '}${p}` : '—';
+const _esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function _fltBookBtn(link, label, cls = '') {
+  if (!link) return '';
+  return `<a class="flt-book-btn${cls ? ' ' + cls : ''}" href="${_esc(link)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('jetradar')">${label}</a>`;
+}
+
+// ── Places autocomplete ────────────────────────────────────────────────────
+let _acTimer = null;
+function _wireAirportAutocomplete(inputId) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+  const list = document.createElement('div');
+  list.className = 'flt-ac-list';
+  list.style.cssText = 'position:absolute;z-index:999;background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-height:180px;overflow-y:auto;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+  el.parentElement.style.position = 'relative';
+  el.parentElement.appendChild(list);
+
+  el.addEventListener('input', () => {
+    clearTimeout(_acTimer);
+    const q = el.value.trim();
+    if (q.length < 2) { list.style.display = 'none'; return; }
+    _acTimer = setTimeout(async () => {
+      try {
+        const r = await fetch(`https://autocomplete.travelpayouts.com/places2?term=${encodeURIComponent(q)}&locale=en&types[]=airport&types[]=city`, { signal: AbortSignal.timeout(5000) });
+        if (!r.ok) return;
+        const items = await r.json();
+        if (!items.length) { list.style.display = 'none'; return; }
+        list.innerHTML = items.slice(0, 6).map(it => {
+          const code = it.code || (it.cases?.vi) || '';
+          const name = it.name || '';
+          const country = it.country_name || '';
+          return `<div class="flt-ac-item" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px" data-code="${_esc(code.toUpperCase())}">
+            <span style="font-weight:800;color:var(--accent)">${_esc(code.toUpperCase())}</span>
+            <span style="margin-left:6px;color:var(--text)">${_esc(name)}</span>
+            <span style="margin-left:4px;color:var(--muted)">${_esc(country)}</span>
+          </div>`;
+        }).join('');
+        list.style.display = 'block';
+        list.querySelectorAll('.flt-ac-item').forEach(row => {
+          row.addEventListener('mousedown', e => {
+            e.preventDefault();
+            el.value = row.dataset.code;
+            list.style.display = 'none';
+          });
+        });
+      } catch {}
+    }, 250);
+  });
+  el.addEventListener('blur', () => setTimeout(() => { list.style.display = 'none'; }, 200));
+}
+
+// ── Price calendar ─────────────────────────────────────────────────────────
+async function loadPriceCalendar(origin, destination, month) {
+  const box = document.getElementById('fltResults');
+  if (!origin || !destination) return;
+  box.innerHTML = '<div class="flt-spinner">📅 Loading price calendar…</div>';
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/flights/calendar?origin=${origin}&destination=${destination}&month=${month}&currency=usd`, { signal: AbortSignal.timeout(12000) });
+    const data = await r.json();
+    const dates = data.dates || [];
+    if (!dates.length) { box.innerHTML = '<div class="flt-spinner" style="color:var(--muted)">No calendar data for this route.</div>'; return; }
+
+    const prices = dates.map(d => d.price).filter(Boolean);
+    const minP = Math.min(...prices), maxP = Math.max(...prices);
+    const colorBand = p => {
+      const pct = maxP > minP ? (p - minP) / (maxP - minP) : 0;
+      if (pct < 0.33) return '#4ade80';   // cheap - green
+      if (pct < 0.66) return '#fbbf24';   // mid - amber
+      return '#f87171';                   // expensive - red
+    };
+
+    let html = `<div class="flt-results-wrap"><div class="flt-result-hdr">PRICE CALENDAR · ${origin} → ${destination}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding-bottom:12px">`;
+    for (const d of dates) {
+      const dd = d.date.slice(8, 10);
+      const color = colorBand(d.price);
+      const link = d.bookingLinks?.jetradar || d.bookingLinks?.aviasales || '#';
+      html += `<a href="${_esc(link)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('jetradar')" style="text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center;display:flex;flex-direction:column;gap:2px">
+        <span style="font-size:10px;color:var(--muted)">${dd}</span>
+        <span style="font-size:11px;font-weight:800;color:${color}">$${d.price}</span>
+      </a>`;
+    }
+    html += `</div><div style="display:flex;gap:10px;justify-content:center;padding-bottom:10px;font-size:10px;color:var(--muted)"><span style="color:#4ade80">● Cheapest</span><span style="color:#fbbf24">● Mid</span><span style="color:#f87171">● Priciest</span></div></div>`;
+    box.innerHTML = html;
+  } catch (err) {
+    box.innerHTML = `<div class="flt-error">⚠️ ${err.name === 'TimeoutError' ? 'Timed out' : 'Failed to load calendar'}</div>`;
+  }
+}
+
+// ── Monthly cheapest prices ────────────────────────────────────────────────
+async function loadMonthlyPrices(origin, destination) {
+  const box = document.getElementById('fltResults');
+  box.innerHTML = '<div class="flt-spinner">📊 Loading monthly prices…</div>';
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/flights/monthly?origin=${origin}&destination=${destination}&currency=usd`, { signal: AbortSignal.timeout(12000) });
+    const data = await r.json();
+    const months = data.months || [];
+    if (!months.length) { box.innerHTML = '<div class="flt-spinner" style="color:var(--muted)">No monthly data for this route.</div>'; return; }
+
+    const prices = months.map(m => m.price);
+    const minP = Math.min(...prices);
+    let html = `<div class="flt-results-wrap"><div class="flt-result-hdr">BEST MONTH TO FLY · ${origin} → ${destination}</div>`;
+    for (const m of months) {
+      const label = new Date(m.month + '-02').toLocaleString('default', { month: 'short', year: '2-digit' });
+      const barPct = Math.round((m.price / Math.max(...prices)) * 100);
+      const isCheapest = m.price === minP;
+      const link = m.bookingLinks?.jetradar || '#';
+      html += `<a href="${_esc(link)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('jetradar')" style="text-decoration:none;display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;color:var(--muted);min-width:36px">${label}</span>
+        <div style="flex:1;background:var(--surface2);border-radius:4px;height:8px;overflow:hidden">
+          <div style="width:${barPct}%;height:100%;background:${isCheapest ? '#4ade80' : 'var(--purple)'}"></div>
+        </div>
+        <span style="font-size:12px;font-weight:800;color:${isCheapest ? '#4ade80' : 'var(--text)'}">$${m.price}${isCheapest ? ' ✓' : ''}</span>
+      </a>`;
+    }
+    html += '</div>';
+    box.innerHTML = html;
+  } catch (err) {
+    box.innerHTML = `<div class="flt-error">⚠️ Failed to load monthly prices</div>`;
+  }
+}
+
+// ── Explore: cheapest destinations from origin ─────────────────────────────
+async function loadExploreDestinations(origin) {
+  const box = document.getElementById('fltResults');
+  box.innerHTML = '<div class="flt-spinner">🗺️ Finding cheapest destinations…</div>';
+  try {
+    const r = await fetch(`${BACKEND_URL}/api/flights/explore?origin=${origin}&currency=usd`, { signal: AbortSignal.timeout(12000) });
+    const data = await r.json();
+    const dests = (data.destinations || []).slice(0, 12);
+    if (!dests.length) { box.innerHTML = '<div class="flt-spinner" style="color:var(--muted)">No destinations found.</div>'; return; }
+
+    let html = `<div class="flt-results-wrap"><div class="flt-result-hdr">EXPLORE FROM ${origin}</div>`;
+    for (const d of dests) {
+      const link = d.bookingLinks?.jetradar || d.bookingLinks?.aviasales || '#';
+      const stops = d.transfers === 0 ? 'Non-stop' : `${d.transfers} stop${d.transfers>1?'s':''}`;
+      html += `<div class="flt-card">
+        <div class="flt-card-top"><span class="flt-route">${d.destination}</span><span class="flt-price">$${d.price}</span></div>
+        <div class="flt-meta"><span>${d.airline || ''}</span><span>· ${stops}</span></div>
+        ${_fltBookBtn(link, 'Book on Jetradar →')}
+      </div>`;
+    }
+    html += '</div>';
+    box.innerHTML = html;
+  } catch (err) {
+    box.innerHTML = `<div class="flt-error">⚠️ Failed to load destinations</div>`;
+  }
+}
+
+// ── Main flight search (SerpAPI real-time + Jetradar affiliate links) ───────
+async function searchFlights() {
+  const from = (document.getElementById('fltFrom').value || '').trim().toUpperCase();
+  const to   = (document.getElementById('fltTo').value   || '').trim().toUpperCase();
+  const date = document.getElementById('fltDate').value;
+  const returnDate = document.getElementById('fltReturnDate').value;
+  const travelers = parseInt(document.getElementById('fltTravelers').value) || 1;
+  const btn = document.getElementById('fltSearchBtn');
+  const box = document.getElementById('fltResults');
+
+  if (!from || from.length < 2) return alert('Enter a departure airport code (e.g. KUL)');
+  if (!to   || to.length < 2)   return alert('Enter an arrival airport code (e.g. NRT)');
+  if (!date) return alert('Select a departure date');
+
+  btn.disabled = true;
+  box.innerHTML = '<div class="flt-spinner">🔍 Searching flights…</div>';
+
+  try {
+    const body = { from, to, date, travelers };
+    if (returnDate) body.returnDate = returnDate;
+
+    const r = await fetch(BACKEND_URL + '/api/flights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(25000),
+    });
+
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      box.innerHTML = `<div class="flt-error">⚠️ ${e.error || 'Search failed'}</div>`;
+      return;
+    }
+
+    const data = await r.json();
+    const flights = data.flights || [];
+    if (!flights.length) {
+      box.innerHTML = '<div class="flt-spinner" style="color:var(--muted)">No flights found — try different dates or check the calendar below.</div>';
+      return;
+    }
+
+    const month = date.slice(0, 7);
+    let html = '<div class="flt-results-wrap"><div class="flt-result-hdr">AVAILABLE FLIGHTS</div>';
+    for (const f of flights) {
+      const price  = _fmtPrice(f.price, 'USD');
+      const dep    = _fmtTime(f.departure?.time);
+      const arr    = _fmtTime(f.arrival?.time);
+      const route  = `${f.departure?.iata || from} → ${f.arrival?.iata || to}`;
+      const dur    = _fmtDur(f.durationSec);
+      const stops  = f.stops === 0 ? 'Non-stop' : `${f.stops} stop${f.stops>1?'s':''}`;
+      const airline = (f.airlines || []).join(', ') || '—';
+      // Prefer affiliate-tracked Jetradar link over Google Flights (no commission)
+      const bookUrl = f.jetradarLink || f.bookingLink || '#';
+      const bookLabel = f.jetradarLink ? 'Book on Jetradar →' : 'Search Google Flights →';
+      html += `<div class="flt-card">
+  <div class="flt-card-top"><span class="flt-route">${_esc(route)}</span><span class="flt-price">${price}</span></div>
+  <div class="flt-meta">
+    <span>${_esc(dep)}${dep && arr ? ' – ' : ''}${_esc(arr)}</span>
+    ${dur ? `<span>· ${dur}</span>` : ''}
+    <span>· ${stops}</span>
+  </div>
+  <div class="flt-meta"><span>✈ ${_esc(airline)}</span></div>
+  ${_fltBookBtn(bookUrl, bookLabel)}
+</div>`;
+    }
+    // Price calendar link
+    html += `<div style="text-align:center;padding:10px 0 6px">
+      <button onclick="loadPriceCalendar('${from}','${to}','${month}')" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:6px 14px;cursor:pointer">📅 See price calendar →</button>
+      <button onclick="loadMonthlyPrices('${from}','${to}')" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:6px 14px;cursor:pointer;margin-left:6px">📊 Best month →</button>
+    </div>`;
+    html += '</div>';
+    box.innerHTML = html;
+  } catch (err) {
+    box.innerHTML = `<div class="flt-error">⚠️ ${err.name === 'TimeoutError' ? 'Request timed out' : 'Search failed'}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Wire autocomplete on ticket tab open (guard: only once)
+let _fltSearchInited = false;
+function _initFlightSearch() {
+  if (_fltSearchInited) return;
+  _fltSearchInited = true;
+  _wireAirportAutocomplete('fltFrom');
+  _wireAirportAutocomplete('fltTo');
+}
+
 let plannerTravellers = 2;
+let plannerTransportModes = ['flight'];
 
 function openPlanner() {
   document.getElementById('plannerOverlay').classList.add('open');
@@ -5664,6 +6193,18 @@ document.getElementById('pln-interests').addEventListener('click', function(e) {
   const chip = e.target.closest('.planner-interest');
   if (chip) chip.classList.toggle('sel');
 });
+// Toggle transport mode chips
+document.getElementById('pln-transport').addEventListener('click', function(e) {
+  const chip = e.target.closest('.planner-interest');
+  if (!chip) return;
+  chip.classList.toggle('sel');
+  plannerTransportModes = [...document.querySelectorAll('#pln-transport .planner-interest.sel')].map(el => el.dataset.v);
+  // Ensure at least one is selected — re-select if all deselected
+  if (plannerTransportModes.length === 0) {
+    chip.classList.add('sel');
+    plannerTransportModes = [chip.dataset.v];
+  }
+});
 
 async function submitPlan() {
   const dest = document.getElementById('pln-dest').value.trim();
@@ -5673,6 +6214,7 @@ async function submitPlan() {
   const style = document.getElementById('pln-style').value.trim() || 'traveller couple';
   const home = document.getElementById('pln-home').value.trim() || 'Malaysia';
   const interests = [...document.querySelectorAll('.planner-interest.sel')].map(el => el.dataset.v);
+  const transportModes = plannerTransportModes.length > 0 ? plannerTransportModes : ['flight'];
 
   if (!dest) { showToast('⚠️ Where are you going?', 3000); return; }
   if (!start || !end) { showToast('⚠️ Pick your travel dates', 3000); return; }
@@ -5702,7 +6244,7 @@ async function submitPlan() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: _planCtrl.signal,
-      body: JSON.stringify({ destination: dest, startDate: start, endDate: end, travelers: plannerTravellers, budget, style, interests, homeCity: home })
+      body: JSON.stringify({ destination: dest, startDate: start, endDate: end, travelers: plannerTravellers, budget, style, interests, homeCity: home, transportModes })
     });
 
     if (!resp.ok) {
@@ -5760,6 +6302,11 @@ async function submitPlan() {
     updateProgress('🎉 Done!', 'Loading your dashboard…');
     localStorage.setItem('tripva_plan', JSON.stringify(tripState.rawPlan));
     plan = tripState.rawPlan;
+    // Sync planner transport selection to Tickets tab
+    const _primaryTransport = transportModes[0] === 'drive' ? 'car' : transportModes[0];
+    setTimeout(() => {
+      try { setTicketsTransport(_primaryTransport); } catch(e) {}
+    }, 100);
     setTimeout(() => {
       closePlanner();
       populateDashboard(plan);
