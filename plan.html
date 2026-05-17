@@ -1480,8 +1480,8 @@ async function searchFlights() {
         const arrIata     = esc(f.arrival?.iata   || to);
         const safePrice   = esc(String(f.price ?? '?'));
         const safeCurr    = esc(f.currency || 'USD');
-        const safeKiwi    = /^https:\/\/www\.kiwi\.com\//.test(f.kiwiLink)    ? f.kiwiLink    : '#';
-        const safeTripcom = /^https:\/\/www\.trip\.com\//.test(f.tripcomLink) ? f.tripcomLink : '#';
+        const safeJetradar  = /^https:\/\//.test(f.jetradarLink)   ? f.jetradarLink   : (f.bookingLink || '#');
+        const safeAviasales = /^https:\/\//.test(f.aviasalesLink)  ? f.aviasalesLink  : '#';
         const depTime = f.departure?.time ? f.departure.time.slice(11,16) : '—';
         const arrTime = f.arrival?.time   ? f.arrival.time.slice(11,16)   : '—';
         const hrs  = f.durationSec ? Math.floor(f.durationSec / 3600) : null;
@@ -1508,14 +1508,14 @@ async function searchFlights() {
               style="flex:1;padding:11px;background:#7c6af7;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">
               Select ✓
             </button>
-            <a href="${safeKiwi}" target="_blank" rel="noopener"
+            <a href="${safeJetradar}" target="_blank" rel="noopener"
               style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
-              Kiwi
+              Jetradar
             </a>
-            <a href="${safeTripcom}" target="_blank" rel="noopener"
+            ${safeAviasales !== '#' ? `<a href="${safeAviasales}" target="_blank" rel="noopener"
               style="padding:11px 14px;background:rgba(255,255,255,.07);border:none;border-radius:10px;font-size:13px;color:rgba(255,255,255,.7);text-decoration:none;display:flex;align-items:center">
-              Trip.com
-            </a>
+              Aviasales
+            </a>` : ''}
           </div>
         </div>`;
       }).join('');
@@ -1539,7 +1539,7 @@ function selectFlight(index) {
     departureTime: f.departure?.time ? f.departure.time.slice(11,16) : null,
     arrivalTime:   f.arrival?.time   ? f.arrival.time.slice(11,16)   : null,
     summary:       `${(f.airlines||[]).join('/')} ${f.departure?.iata||''}→${f.arrival?.iata||''} $${f.price}`,
-    bookingUrl:    f.kiwiLink || '',
+    bookingUrl:    f.jetradarLink || f.bookingLink || '',
   };
   _bookingAnchors.push(anchor);
   _renderBookingAnchorCards();
