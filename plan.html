@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="agd-partner-manual-verification" />
 <meta name="theme-color" content="#0a0a0f">
 <title>Plan your trip — Tripva</title>
 <link rel="canonical" href="https://tripva.app/plan.html">
@@ -362,6 +363,18 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     <div class="form-section">
       <label class="form-label">Budget (total trip)</label>
       <input class="form-input" id="f-budget" type="text" placeholder="e.g. $3000" autocomplete="off">
+    </div>
+    <div class="form-section" id="transportSection">
+      <label class="form-label">How are you getting there?</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px" id="transportChips">
+        <button type="button" class="chip-pick sel" data-transport="flight" onclick="selectPlanTransport(this)">✈️ Flight</button>
+        <button type="button" class="chip-pick" data-transport="train" onclick="selectPlanTransport(this)">🚂 Train</button>
+        <button type="button" class="chip-pick" data-transport="bus" onclick="selectPlanTransport(this)">🚌 Bus</button>
+        <button type="button" class="chip-pick" data-transport="drive" onclick="selectPlanTransport(this)">🚗 Drive / Car rental</button>
+        <button type="button" class="chip-pick" data-transport="ferry" onclick="selectPlanTransport(this)">🚢 Ferry</button>
+        <button type="button" class="chip-pick" data-transport="transfer" onclick="selectPlanTransport(this)">🚐 Transfer</button>
+      </div>
+      <div id="transportBookingHint" style="margin-top:10px;padding:10px 12px;background:rgba(124,106,247,.08);border:1px solid rgba(124,106,247,.2);border-radius:10px;font-size:12px;color:rgba(255,255,255,.6);display:none"></div>
     </div>
     <!-- Archetype-specific fields (progressive disclosure) -->
 
@@ -738,6 +751,29 @@ function _removeDest(idx) {
   _renderDestChips();
 }
 
+// ── Transport mode ──────────────────────────────────────────────────────────
+let _planTransport = 'flight';
+const _transportHints = {
+  flight:   { text: '✈️ We\'ll find you the cheapest flights on Jetradar with real commission-tracked links.', link: null },
+  train:    { text: '🚂 We\'ll include Trainline + Rail.ninja booking links for your route.', link: null },
+  bus:      { text: '🚌 We\'ll include FlixBus and regional bus booking links.', link: null },
+  drive:    { text: '🚗 We\'ll include Discovercars rental links with affiliate commission.', link: 'https://www.discovercars.com/all?a_aid=529721' },
+  ferry:    { text: '🚢 We\'ll include 12Go Asia and ferry booking links for your route.', link: null },
+  transfer: { text: '🚐 We\'ll include private transfer links via Intui Travel.', link: null },
+};
+
+function selectPlanTransport(btn) {
+  document.querySelectorAll('#transportChips .chip-pick').forEach(c => c.classList.remove('sel'));
+  btn.classList.add('sel');
+  _planTransport = btn.dataset.transport;
+  const hint = _transportHints[_planTransport];
+  const hintEl = document.getElementById('transportBookingHint');
+  if (hintEl && hint) {
+    hintEl.innerHTML = hint.text + (hint.link ? ` <a href="${hint.link}" target="_blank" rel="noopener" style="color:#a78bfa;font-weight:700">Book now →</a>` : '');
+    hintEl.style.display = 'block';
+  }
+}
+
 function _renderDestChips() {
   const chipsEl = document.getElementById('destChips');
   const addBtn  = document.getElementById('destAddBtn');
@@ -835,6 +871,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (p.get('budget')) document.getElementById('f-budget').value = p.get('budget');
   if (p.get('home')) document.getElementById('f-home').value = p.get('home');
   if (p.get('style')) document.getElementById('f-style').value = p.get('style');
+
+  // Transport mode from URL param
+  const transportParam = p.get('transport');
+  if (transportParam && _transportHints[transportParam]) {
+    _planTransport = transportParam;
+    document.querySelectorAll('#transportChips .chip-pick').forEach(c => {
+      c.classList.toggle('sel', c.dataset.transport === transportParam);
+    });
+    const hint = _transportHints[transportParam];
+    const hintEl = document.getElementById('transportBookingHint');
+    if (hintEl && hint) {
+      hintEl.innerHTML = hint.text + (hint.link ? ` <a href="${hint.link}" target="_blank" rel="noopener" style="color:#a78bfa;font-weight:700">Book now →</a>` : '');
+      hintEl.style.display = 'block';
+    }
+  }
 
   // Archetype from URL or default
   const archParam = p.get('archetype');
@@ -1882,13 +1933,13 @@ async function submitTrip() {
   if (!interests.length) { showToast('&#9888; Pick at least one interest'); return; }
 
   // Store form values and let spot selector intercept before generation
-  _spotInput = { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors: _bookingAnchors.length ? [..._bookingAnchors] : null };
+  _spotInput = { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors: _bookingAnchors.length ? [..._bookingAnchors] : null, transport: _planTransport };
   const primaryDest = (_destinations[0] || dest).trim();
   maybeShowFlightSearch(dest, primaryDest);
 }
 
 async function proceedToGeneration() {
-  const { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors } = _spotInput;
+  const { dest, destinations, start, end, budget, style, home, interests, archData, bookingAnchors, transport } = _spotInput;
   const selectedSpots = window._selectedSpots || [];
 
   // Show gen screen
@@ -1929,7 +1980,7 @@ async function proceedToGeneration() {
     const response = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), ...(bookingAnchors && bookingAnchors.length && { bookingAnchors }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots }, archData)),
+      body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), ...(bookingAnchors && bookingAnchors.length && { bookingAnchors }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots, transport: transport || 'flight' }, archData)),
     });
 
     if (!response.ok) {

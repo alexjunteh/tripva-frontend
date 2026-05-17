@@ -32,6 +32,7 @@
 <meta charset="UTF-8">
 <link rel="canonical" href="https://tripva.app/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="agd-partner-manual-verification" />
 <meta name="theme-color" content="#0a0a12">
 <meta name="description" content="Tripva — Trip planning takes 8 hours. Ours takes 30 seconds. AI builds your full day-by-day itinerary with hotels, restaurants, and real-time alerts.">
 <meta property="og:site_name" content="Tripva">
@@ -811,6 +812,75 @@ footer{
   transform:translateX(0);
 }
 
+/* ─── TRANSPORT CHIPS (hero) ──────────────────────────────────────────────── */
+.transport-chips{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  margin-bottom:20px;
+}
+.transport-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.10);border:1.5px solid rgba(255,255,255,.2);
+  border-radius:999px;padding:7px 14px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.85);
+  cursor:pointer;transition:background .18s,border-color .18s,transform .12s;
+  user-select:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.transport-chip:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.transport-chip.active{
+  background:rgba(124,106,247,.28);
+  border-color:var(--purple);
+  color:#fff;
+  box-shadow:0 0 0 2px rgba(124,106,247,.25);
+}
+.transport-chip .chip-icon{font-size:15px;line-height:1}
+
+/* ─── TRANSPORT SECTION ───────────────────────────────────────────────────── */
+.transport-section{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:80px 20px;
+}
+.transport-section .section-inner{text-align:center}
+.transport-section h2.section-h2{margin:0 auto 14px}
+.transport-section .section-sub{margin:0 auto 44px}
+.transport-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:0;
+  text-align:left;
+}
+@media(max-width:900px){
+  .transport-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .transport-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .transport-section{padding:64px 14px}
+}
+.transport-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:24px 20px;
+  display:flex;flex-direction:column;gap:6px;
+  transition:border-color .25s,transform .25s,background .2s;
+  position:relative;overflow:hidden;
+}
+.transport-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 20%,rgba(124,106,247,.06),transparent 60%);
+  pointer-events:none;
+}
+.transport-card:hover{
+  border-color:rgba(124,106,247,.4);
+  background:rgba(124,106,247,.06);
+  transform:translateY(-3px);
+}
+.transport-icon{font-size:36px;line-height:1;margin-bottom:4px}
+.transport-name{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px}
+.transport-partner{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.2px}
+
 /* ─── PROOF & PRICE (merged testimonial + pricing shell) ─────────────────── */
 .proof-strip{
   max-width:1100px;
@@ -873,11 +943,59 @@ footer{
     <h1>Wherever you're going next,<br><em>it's ready.</em></h1>
     <p class="hero-sub">Tell Tripva your dream. The AI builds the whole itinerary — hotels, day-by-day plan, budget, tickets — and you just go.</p>
     <p class="hero-pain">Trip planning takes <b>8 hours</b> everywhere else. Here it takes <b>30 seconds</b>.</p>
+    <div class="transport-chips" role="group" aria-label="Select transport mode">
+      <button class="transport-chip active" data-mode="flight" onclick="selectTransport(this)" type="button"><span class="chip-icon">✈️</span> Flights</button>
+      <button class="transport-chip" data-mode="train" onclick="selectTransport(this)" type="button"><span class="chip-icon">🚂</span> Train</button>
+      <button class="transport-chip" data-mode="bus" onclick="selectTransport(this)" type="button"><span class="chip-icon">🚌</span> Bus</button>
+      <button class="transport-chip" data-mode="drive" onclick="selectTransport(this)" type="button"><span class="chip-icon">🚗</span> Drive</button>
+      <button class="transport-chip" data-mode="ferry" onclick="selectTransport(this)" type="button"><span class="chip-icon">🚢</span> Ferry</button>
+    </div>
     <div class="hero-ctas">
-      <a class="btn-primary" href="plan.html">Start my trip — free →</a>
+      <a class="btn-primary" id="heroPlanBtn" href="plan.html?transport=flight">Start my trip — free →</a>
       <a class="btn-secondary" href="trip.html?id=a2ba2994227e63956443c06529543317" target="_blank">See a real plan ↗</a>
     </div>
     <p class="hero-nudge">No credit card. Any destination. <span id="tripCount" style="font-weight:800;color:#fbbf24">50+</span> travellers planning this month.</p>
+  </div>
+</section>
+
+<!-- ─── TRANSPORT MODES ────────────────────────────────────────────────────── -->
+<section class="transport-section" id="transport">
+  <div class="section-inner">
+    <div class="section-label fade-in">GET THERE YOUR WAY</div>
+    <h2 class="section-h2 fade-in">Every way to travel, <em>one plan</em></h2>
+    <p class="section-sub fade-in">Tripva builds your itinerary around how you want to get there — and books it too.</p>
+    <div class="transport-grid">
+      <div class="transport-card fade-in">
+        <div class="transport-icon">✈️</div>
+        <div class="transport-name">Flights</div>
+        <div class="transport-partner">via Jetradar</div>
+      </div>
+      <div class="transport-card fade-in">
+        <div class="transport-icon">🚂</div>
+        <div class="transport-name">Trains</div>
+        <div class="transport-partner">via Trainline</div>
+      </div>
+      <div class="transport-card fade-in">
+        <div class="transport-icon">🚌</div>
+        <div class="transport-name">Buses</div>
+        <div class="transport-partner">via FlixBus</div>
+      </div>
+      <div class="transport-card fade-in">
+        <div class="transport-icon">🚗</div>
+        <div class="transport-name">Car Rentals</div>
+        <div class="transport-partner">via Discovercars</div>
+      </div>
+      <div class="transport-card fade-in">
+        <div class="transport-icon">🚢</div>
+        <div class="transport-name">Ferries</div>
+        <div class="transport-partner">via 12go.asia</div>
+      </div>
+      <div class="transport-card fade-in">
+        <div class="transport-icon">🛺</div>
+        <div class="transport-name">Private Transfers</div>
+        <div class="transport-partner">via Intui Travel</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1304,6 +1422,16 @@ document.getElementById('pwaDismissBtn').addEventListener('click', function(){
 });
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
+
+// Transport mode chip selector
+function selectTransport(chip) {
+  var chips = document.querySelectorAll('.transport-chip');
+  for (var i = 0; i < chips.length; i++) { chips[i].classList.remove('active'); }
+  chip.classList.add('active');
+  var mode = chip.getAttribute('data-mode');
+  var btn = document.getElementById('heroPlanBtn');
+  if (btn) { btn.href = 'plan.html?transport=' + mode; }
+}
 </script>
 <script>
 (function(){
