@@ -1387,8 +1387,19 @@ const _FS_CITY_IATA = {
 function _fsToIata(name) {
   if (!name) return null;
   const t = name.trim();
-  if (/^[A-Za-z]{3}$/.test(t)) return t.toUpperCase();
+  if (/^[A-Za-z]{2,3}$/.test(t)) return t.toUpperCase();
   return _FS_CITY_IATA[t.toLowerCase()] || null;
+}
+
+async function _fsResolveIata(raw) {
+  const quick = _fsToIata(raw);
+  if (quick) return quick;
+  try {
+    const r = await fetch(`https://autocomplete.travelpayouts.com/places2?term=${encodeURIComponent(raw.trim())}&locale=en&types[]=airport&types[]=city`, { signal: AbortSignal.timeout(5000) });
+    if (!r.ok) return null;
+    const items = await r.json();
+    return items[0]?.code?.toUpperCase() || null;
+  } catch { return null; }
 }
 
 let _lastFlights = [];
@@ -1447,14 +1458,14 @@ async function searchFlights() {
     const travelers = parseInt(document.getElementById('fsTravelers').value) || 2;
     const resultsDiv = document.getElementById('fsResults');
 
-    const from = _fsToIata(fromRaw);
-    const to   = _fsToIata(toRaw);
-
-    if (!from) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(fromRaw)}". Try the IATA code (e.g. KUL).</p>`; return; }
-    if (!to)   { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(toRaw)}". Try the IATA code (e.g. NRT).</p>`; return; }
     if (!date) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Please select a departure date.</p>`; return; }
 
     resultsDiv.innerHTML = `<div style="text-align:center;padding:40px 0;color:rgba(255,255,255,.4);font-size:14px">Searching flights…</div>`;
+
+    const [from, to] = await Promise.all([_fsResolveIata(fromRaw), _fsResolveIata(toRaw)]);
+
+    if (!from) { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(fromRaw)}". Try the IATA code (e.g. KUL).</p>`; return; }
+    if (!to)   { resultsDiv.innerHTML = `<p style="color:#f87;font-size:14px">Couldn't find airport for "${esc(toRaw)}". Try the IATA code (e.g. NRT).</p>`; return; }
 
     try {
       const resp = await fetch(BACKEND + '/api/flights', {

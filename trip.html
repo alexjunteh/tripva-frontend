@@ -1692,8 +1692,8 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
     <div class="flt-search-box">
       <div class="flt-search-title">✈️ Search Flights</div>
       <div class="flt-row">
-        <input class="flt-input" id="fltFrom" placeholder="From (KUL)" maxlength="4" style="text-transform:uppercase">
-        <input class="flt-input" id="fltTo" placeholder="To (NRT)" maxlength="4" style="text-transform:uppercase">
+        <input class="flt-input" id="fltFrom" placeholder="From (city or KUL)" autocomplete="off">
+        <input class="flt-input" id="fltTo" placeholder="To (city or NRT)" autocomplete="off">
       </div>
       <div class="flt-row">
         <input class="flt-input" id="fltDate" type="date">
@@ -1702,9 +1702,9 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
         <button class="flt-btn" id="fltSearchBtn" onclick="searchFlights()">Search</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px">
-        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase(),d=document.getElementById('fltDate').value;if(!f||!t){showToast('⚠️ Enter From/To codes first');return;}const m=d?d.slice(0,7):(new Date().toISOString().slice(0,7));loadPriceCalendar(f,t,m);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📅 Calendar</button>
-        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase(),t=document.getElementById('fltTo').value.trim().toUpperCase();if(!f||!t){showToast('⚠️ Enter From/To codes first');return;}loadMonthlyPrices(f,t);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📊 Best Month</button>
-        <button onclick="(function(){const f=document.getElementById('fltFrom').value.trim().toUpperCase();if(!f){showToast('⚠️ Enter a From airport code first');return;}loadExploreDestinations(f);})()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">🗺️ Explore</button>
+        <button onclick="openPriceCalendar()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📅 Calendar</button>
+        <button onclick="openBestMonth()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">📊 Best Month</button>
+        <button onclick="openExplore()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 12px;cursor:pointer">🗺️ Explore</button>
       </div>
     </div>
   </div>
@@ -6083,21 +6083,73 @@ async function loadExploreDestinations(origin) {
 }
 
 // ── Main flight search (SerpAPI real-time + Jetradar affiliate links) ───────
+async function openPriceCalendar() {
+  const fromRaw = document.getElementById('fltFrom').value.trim();
+  const toRaw   = document.getElementById('fltTo').value.trim();
+  const d       = document.getElementById('fltDate').value;
+  if (!fromRaw || !toRaw) { showToast('⚠️ Enter From and To first'); return; }
+  const [f, t] = await Promise.all([_resolveToIata(fromRaw), _resolveToIata(toRaw)]);
+  if (!f || !t) { showToast('⚠️ Could not resolve city to airport code'); return; }
+  document.getElementById('fltFrom').value = f;
+  document.getElementById('fltTo').value   = t;
+  const m = d ? d.slice(0, 7) : new Date().toISOString().slice(0, 7);
+  loadPriceCalendar(f, t, m);
+}
+
+async function openBestMonth() {
+  const fromRaw = document.getElementById('fltFrom').value.trim();
+  const toRaw   = document.getElementById('fltTo').value.trim();
+  if (!fromRaw || !toRaw) { showToast('⚠️ Enter From and To first'); return; }
+  const [f, t] = await Promise.all([_resolveToIata(fromRaw), _resolveToIata(toRaw)]);
+  if (!f || !t) { showToast('⚠️ Could not resolve city to airport code'); return; }
+  document.getElementById('fltFrom').value = f;
+  document.getElementById('fltTo').value   = t;
+  loadMonthlyPrices(f, t);
+}
+
+async function openExplore() {
+  const fromRaw = document.getElementById('fltFrom').value.trim();
+  if (!fromRaw) { showToast('⚠️ Enter a From city or airport code first'); return; }
+  const f = await _resolveToIata(fromRaw);
+  if (!f) { showToast('⚠️ Could not resolve city to airport code'); return; }
+  document.getElementById('fltFrom').value = f;
+  loadExploreDestinations(f);
+}
+
+async function _resolveToIata(raw) {
+  const t = (raw || '').trim();
+  if (!t) return null;
+  if (/^[A-Za-z]{2,3}$/.test(t)) return t.toUpperCase();
+  try {
+    const r = await fetch(`https://autocomplete.travelpayouts.com/places2?term=${encodeURIComponent(t)}&locale=en&types[]=airport&types[]=city`, { signal: AbortSignal.timeout(5000) });
+    if (!r.ok) return null;
+    const items = await r.json();
+    return items[0]?.code?.toUpperCase() || null;
+  } catch { return null; }
+}
+
 async function searchFlights() {
-  const from = (document.getElementById('fltFrom').value || '').trim().toUpperCase();
-  const to   = (document.getElementById('fltTo').value   || '').trim().toUpperCase();
+  const fromRaw = (document.getElementById('fltFrom').value || '').trim();
+  const toRaw   = (document.getElementById('fltTo').value   || '').trim();
   const date = document.getElementById('fltDate').value;
   const returnDate = document.getElementById('fltReturnDate').value;
   const travelers = parseInt(document.getElementById('fltTravelers').value) || 1;
   const btn = document.getElementById('fltSearchBtn');
   const box = document.getElementById('fltResults');
 
-  if (!from || from.length < 2) { showToast('⚠️ Enter a departure airport code (e.g. KUL)'); return; }
-  if (!to   || to.length < 2)   { showToast('⚠️ Enter an arrival airport code (e.g. NRT)'); return; }
+  if (!fromRaw) { showToast('⚠️ Enter a departure city or airport code'); return; }
+  if (!toRaw)   { showToast('⚠️ Enter an arrival city or airport code'); return; }
   if (!date) { showToast('⚠️ Select a departure date'); return; }
 
   btn.disabled = true;
   box.innerHTML = '<div class="flt-spinner">🔍 Searching flights…</div>';
+
+  const [from, to] = await Promise.all([_resolveToIata(fromRaw), _resolveToIata(toRaw)]);
+  if (!from) { box.innerHTML = `<div class="flt-error">⚠️ Couldn't find airport for "${_esc(fromRaw)}". Try the IATA code (e.g. KUL).</div>`; btn.disabled = false; return; }
+  if (!to)   { box.innerHTML = `<div class="flt-error">⚠️ Couldn't find airport for "${_esc(toRaw)}". Try the IATA code (e.g. NRT).</div>`; btn.disabled = false; return; }
+
+  document.getElementById('fltFrom').value = from;
+  document.getElementById('fltTo').value   = to;
 
   try {
     const body = { from, to, date, travelers };
