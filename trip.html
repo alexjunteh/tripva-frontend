@@ -3056,15 +3056,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // ── CITY HERO IMAGES — shared by populateDashboard + renderLiveOps ──
   // City hero images (Unsplash — curated, 70+ cities)
 
-// Sanitize image URLs — replace dead Unsplash direct URLs with loremflickr
-function sanitizeImgUrl(url, keyword) {
-  if (!url) return null;
-  if (url.includes('unsplash.com')) {
-    const kw = encodeURIComponent((keyword||'travel').replace(/-/g,' '));
-    return 'https://loremflickr.com/900/500/' + kw + ',travel';
-  }
-  return url;
-}
 try { window.__ciStart = (window.__ciStart||0) + 1; window.__ciStartStack = new Error().stack?.slice(0,200); } catch(e){}
 window.CITY_IMGS = {
     // Italy
@@ -5484,30 +5475,8 @@ function renderTransportCard(tl) {
 // Curated photo DB: keyword → verified CDN URL
 // Sources: Flickr (title-verified) + Unsplash (city fallbacks)
 // To update: replace URL for a key; state never stores photoUrls
-const SPOT_PHOTO_DB = {
-  // Venice — Flickr verified
-  'bridge of sighs':      'https://live.staticflickr.com/65535/52493320633_50b8c1396c_b.jpg',
-  'libreria acqua alta':  'https://live.staticflickr.com/4697/39445545884_3792440f92_b.jpg',
-  // Cinque Terre — Flickr verified
-  "vernazza":             'https://live.staticflickr.com/65535/53111656785_b2d2e9bb86_b.jpg',
-  "manarola":             'https://live.staticflickr.com/65535/50543709071_3fc27656cf_b.jpg',
-  // Florence — Flickr verified
-  "piazzale michelangelo":'https://live.staticflickr.com/65535/51524143636_4645131122_b.jpg',
-  "ponte vecchio":        'https://live.staticflickr.com/65535/53897311701_5246910f88_b.jpg',
-  // Rome — Flickr verified
-  "trevi fountain":       'https://live.staticflickr.com/65535/52821162431_efdcb72951_b.jpg',
-  "trevi":                'https://live.staticflickr.com/65535/52821162431_efdcb72951_b.jpg',
-  "pantheon":             'https://live.staticflickr.com/65535/54721824094_8698acd543_b.jpg',
-};
-// Returns a verified photo URL from DB, or null (caller handles async Wikipedia fallback)
-function getSpotPhoto(title, city) {
-  const t = (title||'').toLowerCase();
-  let best = null, bestLen = 0;
-  for(const [kw, url] of Object.entries(SPOT_PHOTO_DB)){
-    if(t.includes(kw) && kw.length > bestLen){ best=url; bestLen=kw.length; }
-  }
-  return best;
-}
+// getSpotPhoto: returns null — async chain (_populateWikiPhotos) handles all photos
+function getSpotPhoto(title, city) { return null; }
 // Extract destination from plan (used for Commons image queries)
 function _planDestination() {
   const dest = plan?.trip?.destination || plan?.trip?.city || '';
@@ -5550,7 +5519,27 @@ async function _populateWikiPhotos(container) {
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
   const imgUrl=getDayImage(d, idx);
-  document.getElementById('sheetHero').style.backgroundImage=`url('${imgUrl}')`;
+  const heroEl=document.getElementById('sheetHero');
+  heroEl.style.backgroundImage=`url('${imgUrl}')`;
+  // Async-upgrade loremflickr/picsum placeholders with Unsplash API
+  if (imgUrl.includes('loremflickr') || imgUrl.includes('picsum')) {
+    const dest = _planDestination() || (plan?.trip?.destination || '');
+    const q = dest ? `${d.title || ''} ${dest}`.trim() : (d.title || dest);
+    if (q) {
+      const ck = 'tripva_hero_' + q.toLowerCase().replace(/\W+/g,'_');
+      const cached = (() => { try { return localStorage.getItem(ck); } catch { return null; } })();
+      if (cached) {
+        heroEl.style.backgroundImage = `url('${cached}')`;
+      } else {
+        _fetchUnsplashPhoto(q).then(url => {
+          if (url) {
+            heroEl.style.backgroundImage = `url('${url}')`;
+            try { localStorage.setItem(ck, url); } catch {}
+          }
+        });
+      }
+    }
+  }
   document.getElementById('sheetBadge').textContent=`Day ${d.day} · ${formatDayDate(d.day)}`;
   document.getElementById('sheetTitle').textContent=(d.emoji||'📅')+' '+(d.title||'');
   document.getElementById('sheetSub').textContent=[formatDayDate(d.day), d.subtitle||''].filter(Boolean).join(' · ');
@@ -5572,7 +5561,7 @@ function renderDaySheet(idx) {
     html += `<div class="day-gallery-hdr">📸 What you'll see</div>
     <div class="day-gallery">
       ${d.photos.map(p => `<div class="day-gallery-item">
-        <img src="${p.url}" alt="${esc(p.caption||'')}" loading="lazy">
+        <img src="${p.url}" alt="${esc(p.caption||'')}" loading="lazy" onerror="this.closest('.day-gallery-item').style.display='none'">
         <div class="day-gallery-caption">
           ${p.time ? `<div class="day-gallery-time">${esc(p.time)}</div>` : ''}
           ${esc(p.caption||'')}
