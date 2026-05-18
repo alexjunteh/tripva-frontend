@@ -285,12 +285,11 @@ async function checkAuth(){
 }
 
 async function runChecks(){
-  const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIyOTM1NywiZXhwIjoyMDkwODA1MzU3fQ.ika7Yvat43O4DQMePIF9UCm4i6HBYebxKYpcu4Rgd8Y';
   const checks=[
     {label:'Backend /api/health',url:BE+'/api/health',fn:d=>d.status==='ok',note:'status ok'},
     {label:'Backend /api/stats',url:BE+'/api/stats',fn:d=>typeof d.trips==='number',note:'trips count'},
     {label:'Supabase Auth (GoTrue)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/auth/v1/health',fn:d=>d.name==='GoTrue',note:'GoTrue v2',h:{apikey:ANON}},
-    {label:'Supabase DB (trips table)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/rest/v1/trips?limit=0',ok2:[200,401],note:'table exists',h:{apikey:ANON,Authorization:'Bearer '+SKEY}},
+    {label:'Supabase DB (trips table)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/rest/v1/trips?limit=0',ok2:[200,401],note:'table exists',h:{apikey:ANON}},
     {label:'Landing page',url:'https://futuriztaos.github.io/trip-planner/',html:true},
     {label:'Plan generator (plan.html)',url:'https://futuriztaos.github.io/trip-planner/plan.html',html:true},
     {label:'My Trips (mytrips.html)',url:'https://futuriztaos.github.io/trip-planner/mytrips.html',html:true},
