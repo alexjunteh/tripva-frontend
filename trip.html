@@ -2196,9 +2196,15 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 // ══════════════════════════════════════
 //  AFFILIATE TRACKING
 // ══════════════════════════════════════
-function buildHotellookLink(city, checkIn, checkOut, adults) {
-  // search.hotellook.com is the live TP redirect → Booking.com with marker=529721 tracked
-  const p = new URLSearchParams({ destination: city || '', adults: String(adults || 2), marker: '529721' });
+function buildHotellookLink(city, checkIn, checkOut, adults, tripDestination) {
+  // If city is a bare single word and we have a trip destination, append country context
+  // e.g. "Bali" + "Bali, Indonesia" → "Bali, Indonesia" to avoid Balikpapan mis-resolution
+  let dest = city || '';
+  if (dest && !dest.includes(',') && tripDestination) {
+    const destCountry = String(tripDestination).split(',').slice(1).join(',').trim();
+    if (destCountry) dest = dest + ', ' + destCountry;
+  }
+  const p = new URLSearchParams({ destination: dest, adults: String(adults || 2), marker: '529721' });
   if (checkIn)  p.set('checkin', checkIn);
   if (checkOut) p.set('checkout', checkOut);
   return 'https://search.hotellook.com/?' + p.toString();
@@ -4133,7 +4139,7 @@ function populateDashboard(p) {
       bookedWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot booked"></span>✅ CONFIRMED STAYS (${bookedHotels.length})</div>`;
       bookedHotels.forEach(h=>{
         const c=document.createElement('div'); c.className='book-card booked-card';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${buildHotellookLink(h.city||h.name,h.checkin,h.checkout,p.trip?.people)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')">🏨 View hotel options →</a></div>`;
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${buildHotellookLink(h.city||h.name,h.checkin,h.checkout,p.trip?.people,p.trip?.destination)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')">🏨 View hotel options →</a></div>`;
         bookedWrap.appendChild(c);
       });
       scroll.appendChild(bookedWrap);
@@ -4159,7 +4165,7 @@ function populateDashboard(p) {
           <div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div>
           <div class="book-card-budget">${buildHotelBudgetMini('Nightly', nightlyText)}${buildHotelBudgetMini('Stay total', totalText)}${buildHotelBudgetMini('Stay cap', capText)}${buildHotelBudgetMini('Budget fit', h.stayBudgetStatus==='within-cap'?'Within cap':'Over cap')}</div>
           <div class="book-actions">
-            <a class="book-btn" href="${buildHotellookLink(city,checkin,checkout,adults)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')" style="background:rgba(99,179,237,.12);border-color:rgba(99,179,237,.3);color:#63b3ed">🏨 Compare Booking.com, Agoda & more →</a>
+            <a class="book-btn" href="${buildHotellookLink(city,checkin,checkout,adults,p.trip?.destination)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')" style="background:rgba(99,179,237,.12);border-color:rgba(99,179,237,.3);color:#63b3ed">🏨 Compare Booking.com, Agoda & more →</a>
           </div>`;
         arrangeWrap.appendChild(c);
       });
