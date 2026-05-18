@@ -205,7 +205,7 @@ test.describe('Tripva E2E flows', () => {
         body: makeSseBody(MOCK_PLAN),
       });
     });
-    await page.route(`${BACKEND}/api/patch**`, async route => {
+    await page.route(`${BACKEND}/api/trip**`, async route => {
       await route.fulfill({ status: 200, body: JSON.stringify(MOCK_PLAN) });
     });
     await page.route(`${BACKEND}/api/user/magic-link**`, async route => {
@@ -239,7 +239,7 @@ test.describe('Tripva E2E flows', () => {
         body: makeSseBody(MOCK_PLAN),
       });
     });
-    await page.route(`${BACKEND}/api/patch**`, async route => {
+    await page.route(`${BACKEND}/api/trip**`, async route => {
       await route.fulfill({ status: 200, body: JSON.stringify(MOCK_PLAN) });
     });
     await page.route(`${BACKEND}/api/user/magic-link**`, async route => {
