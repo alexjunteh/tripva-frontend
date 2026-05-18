@@ -2760,20 +2760,58 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   }
 
   if (!items.length) { if (!append) errEl.style.display = 'block'; return; }
-  const html = items.map(it => `
-    <div class="spot-card">
-      <div class="spot-card-img-wrap">
-        <img src="${it.img}" alt="${esc(it.name)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.closest('.spot-card').style.display='none'">
-      </div>
+
+  // Render cards with placeholder, then async-fill best photo per card
+  const cards = items.map(it => ({
+    name: it.name, desc: it.desc, wikiImg: it.img,
+    id: 'gc-' + Math.random().toString(36).slice(2),
+  }));
+  const html = cards.map(c => `
+    <div class="spot-card" id="${c.id}">
+      <div class="spot-card-img-wrap"><div class="spot-card-img-placeholder"></div></div>
       <div style="padding:10px 14px 12px">
-        <div class="spot-card-name">📍 ${esc(it.name)}</div>
-        ${it.desc ? `<div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:3px">${esc(it.desc)}</div>` : ''}
+        <div class="spot-card-name">📍 ${esc(c.name)}</div>
+        ${c.desc ? `<div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:3px">${esc(c.desc)}</div>` : ''}
       </div>
     </div>`).join('');
   if (append) { gridEl.insertAdjacentHTML('beforeend', html); }
   else { gridEl.innerHTML = html; }
   gridEl.style.display = 'flex';
   _spotsLoaded = true;
+
+  // Async-fill best photo per card: Unsplash → Pexels → Wikipedia thumbnail
+  cards.forEach(async c => {
+    const cardEl = document.getElementById(c.id);
+    if (!cardEl) return;
+    const wrap = cardEl.querySelector('.spot-card-img-wrap');
+    let url = await _fetchUnsplashPhoto(`${c.name} ${dest}`);
+    if (!url) url = await _fetchPexelsPhoto(`${c.name} ${dest}`);
+    if (!url) url = c.wikiImg;
+    if (!url) { wrap.style.display = 'none'; return; }
+    const img = document.createElement('img');
+    img.src = url; img.alt = c.name; img.loading = 'lazy';
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+    img.onerror = () => { wrap.style.display = 'none'; };
+    wrap.querySelector('.spot-card-img-placeholder')?.remove();
+    wrap.appendChild(img);
+  });
+}
+
+const _UNSPLASH_KEY = 'Kr09qHx9IditBKqlbpiST7IZu-cgfoNBu1jZcExxa0g';
+const _unsplashCache = {};
+async function _fetchUnsplashPhoto(query) {
+  if (_unsplashCache[query] !== undefined) return _unsplashCache[query] || null;
+  try {
+    const r = await fetch(
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=3&orientation=landscape&client_id=${_UNSPLASH_KEY}`,
+      { signal: AbortSignal.timeout(7000) }
+    );
+    if (!r.ok) { _unsplashCache[query] = ''; return null; }
+    const d = await r.json();
+    const url = d.results?.[0]?.urls?.regular || null;
+    _unsplashCache[query] = url || '';
+    return url;
+  } catch { _unsplashCache[query] = ''; return null; }
 }
 
 const _PEXELS_KEY = 'lioRl2vc8g8t6lObCUWksmyIha1bAeZdn1OcwtTELL6aaVBP8gtv60ZP';
@@ -2814,9 +2852,10 @@ async function _populateSpotsPhotos(container, dest) {
     const wrap  = card.querySelector('.spot-card-img-wrap');
     if (!wrap) return;
     const spotName = query.split(',')[0].trim();
-    const pexelsQuery = dest ? `${spotName} ${dest}` : spotName;
-    let url = await _fetchPexelsPhoto(pexelsQuery);
-    if (!url) url = await _fetchCommonsThumb(pexelsQuery);
+    const photoQuery = dest ? `${spotName} ${dest}` : spotName;
+    let url = await _fetchUnsplashPhoto(photoQuery);
+    if (!url) url = await _fetchPexelsPhoto(photoQuery);
+    if (!url) url = await _fetchCommonsThumb(photoQuery);
     if (!url) url = await _fetchWikiLeadPhoto(spotName);
     if (!url) { wrap.style.display = 'none'; return; }
     const img = document.createElement('img');
@@ -5494,7 +5533,9 @@ async function _populateWikiPhotos(container) {
     const alreadyHasDest = dest && spot.toLowerCase().includes(dest.toLowerCase());
     const query = alreadyHasDest ? cleanSpot : (dest ? `${cleanSpot} ${dest}` : cleanSpot);
     const spotName = spot.split(',')[0].trim();
-    let url = await _fetchPexelsPhoto(dest ? `${spotName} ${dest}` : spotName);
+    let url = await _fetchUnsplashPhoto(dest ? `${spotName} ${dest}` : spotName);
+    if (_wikiGenId !== myGen) return;
+    if (!url) url = await _fetchPexelsPhoto(dest ? `${spotName} ${dest}` : spotName);
     if (_wikiGenId !== myGen) return;
     if (!url) url = await _fetchCommonsThumb(query);
     if (_wikiGenId !== myGen) return;
