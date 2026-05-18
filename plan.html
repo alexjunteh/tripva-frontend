@@ -1419,6 +1419,12 @@ function maybeShowFlightSearch(dest, primaryDest) {
     showSpotSelector(dest, primaryDest);
     return;
   }
+  // Skip flight search when no home city entered — can't search without an origin
+  const _homeVal = document.getElementById('f-home')?.value.trim();
+  if (!_homeVal) {
+    showSpotSelector(dest, primaryDest);
+    return;
+  }
   document.getElementById('fsResults').innerHTML = '';
   _lastFlights = [];
   // Pre-fill destination
