@@ -2368,8 +2368,8 @@ async function healMissingBudget(p) {
     planVersion: p.planVersion || new Date().toISOString(),
     rawPlan: p.rawPlan || p,
   };
-  const resp = await fetch('https://tripai-backend.vercel.app/api/patch', {
-    method: 'POST',
+  const resp = await fetch('https://tripai-backend.vercel.app/api/trip', {
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       state,
@@ -2797,35 +2797,33 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   });
 }
 
-const _UNSPLASH_KEY = 'Kr09qHx9IditBKqlbpiST7IZu-cgfoNBu1jZcExxa0g';
 const _unsplashCache = {};
 async function _fetchUnsplashPhoto(query) {
   if (_unsplashCache[query] !== undefined) return _unsplashCache[query] || null;
   try {
     const r = await fetch(
-      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=3&orientation=landscape&client_id=${_UNSPLASH_KEY}`,
-      { signal: AbortSignal.timeout(7000) }
+      `https://tripai-backend.vercel.app/api/flights/photo?source=unsplash&query=${encodeURIComponent(query)}`,
+      { signal: AbortSignal.timeout(9000) }
     );
     if (!r.ok) { _unsplashCache[query] = ''; return null; }
     const d = await r.json();
-    const url = d.results?.[0]?.urls?.regular || null;
+    const url = d.url || null;
     _unsplashCache[query] = url || '';
     return url;
   } catch { _unsplashCache[query] = ''; return null; }
 }
 
-const _PEXELS_KEY = 'lioRl2vc8g8t6lObCUWksmyIha1bAeZdn1OcwtTELL6aaVBP8gtv60ZP';
 const _pexelsCache = {};
 async function _fetchPexelsPhoto(query) {
   if (_pexelsCache[query] !== undefined) return _pexelsCache[query] || null;
   try {
     const r = await fetch(
-      'https://api.pexels.com/v1/search?query=' + encodeURIComponent(query) + '&per_page=1&orientation=landscape',
-      { signal: AbortSignal.timeout(7000), headers: { Authorization: _PEXELS_KEY } }
+      `https://tripai-backend.vercel.app/api/flights/photo?source=pexels&query=${encodeURIComponent(query)}`,
+      { signal: AbortSignal.timeout(9000) }
     );
     if (!r.ok) { _pexelsCache[query] = ''; return null; }
     const d = await r.json();
-    const url = d.photos?.[0]?.src?.large || null;
+    const url = d.url || null;
     _pexelsCache[query] = url || '';
     return url;
   } catch { _pexelsCache[query] = ''; return null; }
@@ -4134,7 +4132,7 @@ function populateDashboard(p) {
       bookedWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot booked"></span>✅ CONFIRMED STAYS (${bookedHotels.length})</div>`;
       bookedHotels.forEach(h=>{
         const c=document.createElement('div'); c.className='book-card booked-card';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">📍 Open location →</a></div>`;
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${buildHotellookLink(h.city||h.name,h.checkin,h.checkout,p.trip?.people)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')">🏨 View hotel options →</a></div>`;
         bookedWrap.appendChild(c);
       });
       scroll.appendChild(bookedWrap);
@@ -5860,7 +5858,7 @@ function loadFromHash() {
 // ══════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════
-function md(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h3>$1</h3>').replace(/^# (.+)$/gm,'<h3>$1</h3>').replace(/^\- (.+)$/gm,'<li>$1</li>').replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>').replace(/(<li>.*<\/li>\n?)+/g,s=>`<ul>${s}</ul>`).replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^(.)/,'<p>$1').replace(/(.)$/,'$1</p>');}
+function md(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h3>$1</h3>').replace(/^# (.+)$/gm,'<h3>$1</h3>').replace(/^\- (.+)$/gm,'<li>$1</li>').replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>').replace(/(<li>.*<\/li>\n?)+/g,s=>`<ul>${s}</ul>`).replace(/\[([^\]]+)\]\(([^)]+)\)/g,(_,label,href)=>/^https?:\/\//i.test(href)?`<a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`:label).replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^(.)/,'<p>$1').replace(/(.)$/,'$1</p>');}
 function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
@@ -6206,7 +6204,7 @@ async function searchFlights() {
     }
 
     const month = date.slice(0, 7);
-    let html = '<div class="flt-results-wrap"><div class="flt-result-hdr">AVAILABLE FLIGHTS</div>';
+    let html = '<div class="flt-results-wrap"><div class="flt-result-hdr">AVAILABLE FLIGHTS</div><p style="font-size:10px;color:var(--muted);margin:0 0 8px;line-height:1.4">Booking links are powered by our affiliate partners (Jetradar/Aviasales). We may earn a commission at no extra cost to you.</p>';
     for (const f of flights) {
       const price  = _fmtPrice(f.price, 'USD');
       const dep    = _fmtTime(f.departure?.time);
@@ -6547,8 +6545,8 @@ async function sendAiEdit() {
       rawPlan: plan.rawPlan || plan,
     };
 
-    const resp = await fetch('https://tripai-backend.vercel.app/api/patch', {
-      method: 'POST',
+    const resp = await fetch('https://tripai-backend.vercel.app/api/trip', {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state, instruction }),
     });

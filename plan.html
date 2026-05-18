@@ -802,6 +802,11 @@ function _getDestinationString() {
 
 let _tripState = null;
 let _shareUrl = null;
+function _warnUnsavedTrip(e) {
+  if (!window._tripGenerated) return;
+  e.preventDefault();
+  e.returnValue = 'Your trip is saved locally only. Open it on the trip page and use "Share" to get a permanent link before leaving.';
+}
 
 // ── Archetype state (DESIGN.md v2) ─────────────────────────────────────────
 const ARCHETYPES = {
@@ -1982,8 +1987,10 @@ async function proceedToGeneration() {
     document.getElementById('genEstimate').textContent = 'Still building \u2014 please wait\u2026';
   }, 120000);
   window._sseTFail = setTimeout(() => {
-    document.getElementById('genCta').innerHTML = '<button class="form-submit-btn" onclick="location.reload()">&#9888; Timed out \u2014 Retry</button>';
-    document.getElementById('genCta').style.display = 'block';
+    try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); } catch(e){}
+    document.getElementById('genScreen').style.display = 'none';
+    document.getElementById('planForm').style.display = 'block';
+    showToast('\u26a0\ufe0f Generation timed out \u2014 please try again', 5000);
   }, 180000);
 
   // ── SSE via fetch + ReadableStream ──────────────────────────────────────
@@ -2223,6 +2230,8 @@ function handleSSEEvent(evt, logRoute, logDays) {
       _tripState = planData;
       _shareUrl = evt.data && evt.data.saved ? evt.data.saved.url : null;
       localStorage.setItem('tripva_plan', JSON.stringify(planData.rawPlan || planData));
+      window._tripGenerated = true;
+      window.addEventListener('beforeunload', _warnUnsavedTrip, { once: true });
 
       // Show email gate before navigating to dashboard
       setTimeout(openGeneratedTrip, 300);
@@ -2262,8 +2271,8 @@ async function openGeneratedTrip() {
       const est = document.getElementById('genEstimate');
       if (est) est.textContent = '\u2728 Finalizing your budget\u2026';
       try {
-        const resp = await fetch(BACKEND + '/api/patch', {
-          method: 'POST',
+        const resp = await fetch(BACKEND + '/api/trip', {
+          method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             state: {
