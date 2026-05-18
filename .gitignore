@@ -1,3 +1,7 @@
 .vercel
 .claude/settings.local.json
 .gstack/
+tmp*.html
+italy-*.html
+spot-test.html
+demo-frame.html
