@@ -2197,10 +2197,11 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 //  AFFILIATE TRACKING
 // ══════════════════════════════════════
 function buildHotellookLink(city, checkIn, checkOut, adults) {
-  const p = new URLSearchParams({ destination: city || '', adults: String(adults || 2), rooms: '1', marker: '529721' });
-  if (checkIn)  p.set('checkIn', checkIn);
-  if (checkOut) p.set('checkOut', checkOut);
-  return 'https://www.hotellook.com/hotels?' + p.toString();
+  // search.hotellook.com is the live TP redirect → Booking.com with marker=529721 tracked
+  const p = new URLSearchParams({ destination: city || '', adults: String(adults || 2), marker: '529721' });
+  if (checkIn)  p.set('checkin', checkIn);
+  if (checkOut) p.set('checkout', checkOut);
+  return 'https://search.hotellook.com/?' + p.toString();
 }
 
 
