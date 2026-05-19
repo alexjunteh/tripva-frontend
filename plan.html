@@ -1403,7 +1403,15 @@ async function _fsResolveIata(raw) {
     const r = await fetch(`https://autocomplete.travelpayouts.com/places2?term=${encodeURIComponent(raw.trim())}&locale=en&types[]=airport&types[]=city`, { signal: AbortSignal.timeout(5000) });
     if (!r.ok) return null;
     const items = await r.json();
-    return items[0]?.code?.toUpperCase() || null;
+    if (!items || !items.length) return null;
+    const first = items[0];
+    // City codes (TYO, LON, NYC) return 0 results from the flight API — prefer
+    // the specific airport that belongs to that city.
+    if (first.type === 'city') {
+      const match = items.find(i => i.type === 'airport' && i.city_code === first.code);
+      return (match || first).code.toUpperCase();
+    }
+    return first.code.toUpperCase();
   } catch { return null; }
 }
 
