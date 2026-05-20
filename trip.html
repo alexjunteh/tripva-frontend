@@ -1486,7 +1486,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 <div id="viewerBanner" class="viewer-banner" style="display:none;margin:10px 14px 0;flex-shrink:0">
   <span class="viewer-banner-icon">✨</span>
   <span class="viewer-banner-text"><b>Shared trip.</b> Like what you see? Plan your own in 30 seconds.</span>
-  <a class="viewer-banner-sec" href="javascript:planSimilarTrip();void(0);" id="viewerSimilarBtn">🪄 Similar</a>
+  <a class="viewer-banner-sec" href="#" id="viewerSimilarBtn" onclick="planSimilarTrip();return false;">🪄 Similar</a>
   <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
   <button id="viewerBannerClose" aria-label="Dismiss" onclick="dismissViewerBanner()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0">✕</button>
 </div>
@@ -1606,10 +1606,10 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 
     <!-- QUICK LINKS -->
     <div class="v2-quick-links">
-      <a class="v2-quick-btn" href="javascript:switchTab('tickets')">🎟 Tickets</a>
-      <a class="v2-quick-btn" href="javascript:switchTab('days')">📅 Days</a>
-      <a class="v2-quick-btn" href="javascript:switchTab('hotels')">📌 Book Now</a>
-      <a class="v2-quick-btn" href="javascript:switchTab('budget')">💰 Budget</a>
+      <a class="v2-quick-btn" href="#" onclick="switchTab('tickets');return false;">🎟 Tickets</a>
+      <a class="v2-quick-btn" href="#" onclick="switchTab('days');return false;">📅 Days</a>
+      <a class="v2-quick-btn" href="#" onclick="switchTab('hotels');return false;">📌 Book Now</a>
+      <a class="v2-quick-btn" href="#" onclick="switchTab('budget');return false;">💰 Budget</a>
     </div>
 
   </div>
@@ -4087,8 +4087,8 @@ function populateDashboard(p) {
         <div class="focus-chip"><div class="focus-chip-lbl">Hotel status</div><div class="focus-chip-val">${esc(hotel.name||'Check Book Now tab')}<br>${esc(hotel.price||'')}</div></div>
       </div>
       <div class="focus-actions">
-        <a class="focus-btn" href="javascript:switchTab('days');openDaySheet(${Math.max(0,todayIdx>=0?todayIdx:0)})">Open day plan</a>
-        <a class="focus-btn secondary" href="javascript:switchTab('tickets')">Tickets</a>
+        <a class="focus-btn" href="#" onclick="switchTab('days');openDaySheet(${Math.max(0,todayIdx>=0?todayIdx:0)});return false;">Open day plan</a>
+        <a class="focus-btn secondary" href="#" onclick="switchTab('tickets');return false;">Tickets</a>
       </div>`;
   }
 
@@ -5165,7 +5165,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
     show("nowFocusCta", true);
     setEl("nowFocusCtaText", '🎒 Open packing list');
     const cta = document.getElementById("nowFocusCta");
-    if (cta) cta.href = "javascript:openPackModal();void(0);";
+    if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); openPackModal(); }; }
     show("nowFocusRing", false);
     // Stage strip: Plan → Prep → Travel → Explore → Return
     renderStageStrip([
@@ -5191,7 +5191,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
     show("nowFocusCta", true);
     setEl("nowFocusCtaText", '📸 View scrapbook');
     const cta = document.getElementById("nowFocusCta");
-    if (cta) cta.href = 'javascript:switchTab("days");void(0);';
+    if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); switchTab('days'); }; }
     show("nowFocusRing", false);
     renderStageStrip([
       { label:'Plan',    state:'done' },
@@ -5248,7 +5248,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       show("nowFocusCta", true);
       setEl("nowFocusCtaText", '🎟 View tickets');
       const cta = document.getElementById("nowFocusCta");
-      if (cta) { cta.href = 'javascript:switchTab("tickets");void(0);'; cta.target = '_self'; }
+      if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); switchTab('tickets'); }; cta.target = '_self'; }
     } else if (isFinalDay) {
       setEl("nowFocusKicker", '🧳 FINAL DAY');
       setEl("nowFocusTitle", dayTitle);
@@ -5258,7 +5258,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       show("nowFocusCta", true);
       setEl("nowFocusCtaText", '🎒 Packing checklist');
       const cta = document.getElementById("nowFocusCta");
-      if (cta) { cta.href = 'javascript:openPackModal();void(0);'; cta.target = '_self'; }
+      if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); openPackModal(); }; cta.target = '_self'; }
     } else {
       setEl("nowFocusKicker", '⏰ FIRST UP');
       setEl("nowFocusTitle", fi.title || dayTitle);
@@ -5280,7 +5280,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       show("nowFocusCta", true);
       setEl("nowFocusCtaText", '📸 View scrapbook');
       const cta = document.getElementById("nowFocusCta");
-      if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+      if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); switchTab('days'); }; cta.target = '_self'; }
     } else {
       setEl("nowFocusKicker", '✅ TODAY DONE');
       setEl("nowFocusTitle", "Today's plan complete");
@@ -5291,7 +5291,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       show("nowFocusCta", nextDay ? true : false);
       setEl("nowFocusCtaText", 'Peek tomorrow →');
       const cta = document.getElementById("nowFocusCta");
-      if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+      if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); switchTab('days'); }; cta.target = '_self'; }
     }
   } else if (currentItem) {
     setEl("nowFocusKicker", '📍 YOU\'RE AT');
@@ -5316,7 +5316,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
       show("nowFocusCta", true);
       setEl("nowFocusCtaText", 'Open itinerary');
       const cta = document.getElementById("nowFocusCta");
-      if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+      if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); switchTab('days'); }; cta.target = '_self'; }
     }
   } else {
     // No timeline data OR no match — generic fallback
@@ -5328,7 +5328,7 @@ function renderFocus(plan, ymd, nowMins, currentIdx, day, timeline) {
     show("nowFocusCta", true);
     setEl("nowFocusCtaText", 'Open itinerary');
     const cta = document.getElementById("nowFocusCta");
-    if (cta) { cta.href = 'javascript:switchTab("days");void(0);'; cta.target = '_self'; }
+    if (cta) { cta.href = '#'; cta.onclick = (e) => { e.preventDefault(); switchTab('days'); }; cta.target = '_self'; }
   }
 
   // Progress ring — fraction of day completed
