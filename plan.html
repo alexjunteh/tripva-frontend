@@ -1853,12 +1853,11 @@ function _renderSpotGrid() {
         } else if (img && img.isConnected) {
           // Use specific multi-word keyword so loremflickr returns relevant travel photos
           const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
-          showImg('https://source.unsplash.com/800x600/?' + kw);
+          showImg('https://picsum.photos/seed/' + encodeURIComponent(spot.name || kw) + '/800/600');
         }
       });
     } else {
-      const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
-      showImg('https://source.unsplash.com/800x600/?' + kw);
+      showImg('https://picsum.photos/seed/' + encodeURIComponent(spot.name || spot.fl || 'travel') + '/800/600');
     }
   });
 }

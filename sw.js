@@ -9,34 +9,34 @@
 // Previously stale-while-revalidate on HTML caused users to see 1-visit-old
 // HTML after every deploy. Network-first fixes that while preserving offline.
 
-const CACHE_VERSION = 'tripva-v11';
-const STATIC_CACHE  = 'tripva-static-v11';
-const TRIP_CACHE    = 'tripva-trips-v11';
+const CACHE_VERSION = 'tripva-v12';
+const STATIC_CACHE  = 'tripva-static-v12';
+const TRIP_CACHE    = 'tripva-trips-v12';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
-  '/trip-planner/icons/icon-192.png',
-  '/trip-planner/icons/icon-512.png',
-  '/trip-planner/tickets/alex-accademia.jpg',
-  '/trip-planner/tickets/alex-grindelwald.jpg',
-  '/trip-planner/tickets/alex-uffizi.jpg',
-  '/trip-planner/tickets/alex-venice-ec31.jpg',
-  '/trip-planner/tickets/alex-venice-ir2017.jpg',
-  '/trip-planner/tickets/concert-venice-imusici.pdf',
-  '/trip-planner/tickets/doges-palace-fastrack.pdf',
-  '/trip-planner/tickets/ky-accademia.jpg',
-  '/trip-planner/tickets/ky-grindelwald.jpg',
-  '/trip-planner/tickets/ky-uffizi.jpg',
-  '/trip-planner/tickets/ky-venice-ec31.jpg',
-  '/trip-planner/tickets/ky-venice-ir2017.jpg',
-  '/trip-planner/tickets/vatican-1.jpg',
-  '/trip-planner/tickets/vatican-2.jpg',
-  '/trip-planner/tickets/vatican-3.jpg',
-  '/trip-planner/tickets/venice-florence-alex.jpg',
-  '/trip-planner/tickets/venice-florence-alex.pdf',
-  '/trip-planner/tickets/venice-florence-ky.jpg',
-  '/trip-planner/tickets/venice-florence-ky.pdf',
-  '/trip-planner/tickets/venice-overview.jpg',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/tickets/alex-accademia.jpg',
+  '/tickets/alex-grindelwald.jpg',
+  '/tickets/alex-uffizi.jpg',
+  '/tickets/alex-venice-ec31.jpg',
+  '/tickets/alex-venice-ir2017.jpg',
+  '/tickets/concert-venice-imusici.pdf',
+  '/tickets/doges-palace-fastrack.pdf',
+  '/tickets/ky-accademia.jpg',
+  '/tickets/ky-grindelwald.jpg',
+  '/tickets/ky-uffizi.jpg',
+  '/tickets/ky-venice-ec31.jpg',
+  '/tickets/ky-venice-ir2017.jpg',
+  '/tickets/vatican-1.jpg',
+  '/tickets/vatican-2.jpg',
+  '/tickets/vatican-3.jpg',
+  '/tickets/venice-florence-alex.jpg',
+  '/tickets/venice-florence-alex.pdf',
+  '/tickets/venice-florence-ky.jpg',
+  '/tickets/venice-florence-ky.pdf',
+  '/tickets/venice-overview.jpg',
 ];
 
 self.addEventListener('install', e => {
@@ -104,7 +104,7 @@ self.addEventListener('fetch', e => {
   }
 
   // ── Icons + static assets — cache-first ────────────────────────────────
-  if (STATIC_ASSETS.some(a => url.pathname.includes(a.replace('/trip-planner', '')))) {
+  if (STATIC_ASSETS.some(a => url.pathname.includes(a))) {
     e.respondWith(caches.match(req).then(r => r || fetch(req)));
     return;
   }
