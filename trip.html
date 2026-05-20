@@ -4127,7 +4127,7 @@ function populateDashboard(p) {
         const when=extractWhen(u.label,u.note);
         const itemKey=esc(u.label||'').replace(/'/g,"\'");
         const c=document.createElement('div'); c.className='book-card priority'; c.id='bc-'+i;
-        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${u.url}" target="_blank" onclick="trackAffiliateClick('${detectAffiliatePartner(u.url)}')">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripva_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
+        c.innerHTML=`<div class="book-card-title">#${i+1} · ${esc(u.label||'')}</div><div class="book-card-note">${esc(u.note||'')}</div><div class="book-card-meta">${when?`<span class="book-meta-chip">📅 ${esc(when)}</span>`:''} ${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions">${u.url?`<a class="book-btn" href="${safeHref(u.url)}" target="_blank" onclick="trackAffiliateClick('${detectAffiliatePartner(u.url)}')">${btn}</a>`:''}<button class="book-btn done-btn" onclick="(function(el){const d=JSON.parse(localStorage.getItem('tripva_dismissed')||'[]');d.push('${itemKey}');localStorage.setItem('tripva_dismissed',JSON.stringify(d));el.closest('.book-card').style.transition='opacity .3s';el.closest('.book-card').style.opacity='0';setTimeout(()=>{el.closest('.book-card').remove();},320);})(this)">✓ Done</button></div>`;
         pendingWrap.appendChild(c);
       });
       scroll.appendChild(pendingWrap);
@@ -4350,13 +4350,13 @@ function populateDashboard(p) {
         let actions = '';
         if (booked) {
           actions = bookUrl
-            ? `<div class="budget-row-actions"><a href="${esc(bookUrl)}" target="_blank" rel="noopener">🔗 Booking</a></div>`
+            ? `<div class="budget-row-actions"><a href="${safeHref(bookUrl)}" target="_blank" rel="noopener">🔗 Booking</a></div>`
             : '';
         } else {
           actions = `<div class="budget-row-actions">
             <button class="budget-act-primary" onclick="markBudgetBooked(${idx})" aria-label="Mark as booked">✓ Mark booked</button>
             <button onclick="addBudgetBookingLink(${idx})" aria-label="Add booking link">${bookUrl ? '🔗 Edit link' : '+ Add link'}</button>
-            ${bookUrl ? `<a href="${esc(bookUrl)}" target="_blank" rel="noopener">🔗 Open</a>` : ''}
+            ${bookUrl ? `<a href="${safeHref(bookUrl)}" target="_blank" rel="noopener">🔗 Open</a>` : ''}
           </div>`;
         }
         row.innerHTML=`
@@ -5009,7 +5009,7 @@ function renderLiveOps(){
           if(words.some(w=>ft_title.includes(w)||ft_sub.includes(w))){daysUntil=i-currentIdx;break;}
         }
         const countdown=daysUntil?`<div class="v2-urg-days">${daysUntil}d away</div>`:'';
-        return`<div class="v2-urgent"><span class="v2-urg-icon">⚡</span><div class="v2-urg-body"><div class="v2-urg-label">${esc(u.label||'')}</div><div class="v2-urg-note">${esc((u.note||'').slice(0,140))}</div></div>${countdown}<a class="v2-urg-btn" href="${esc(u.url||'#')}" target="_blank">Book →</a></div>`;
+        return`<div class="v2-urgent"><span class="v2-urg-icon">⚡</span><div class="v2-urg-body"><div class="v2-urg-label">${esc(u.label||'')}</div><div class="v2-urg-note">${esc((u.note||'').slice(0,140))}</div></div>${countdown}<a class="v2-urg-btn" href="${safeHref(u.url)}" target="_blank">Book →</a></div>`;
       }).join('');
       el('liveUrgents').innerHTML=html2;
     } else {
@@ -5063,7 +5063,7 @@ function renderLiveOps(){
     const coDate=todayHotel.checkout||'';
     const coDisplay=coDate?` · Check-out ${coDate} before 11am`:'';
     if(el('liveHotelMeta'))el('liveHotelMeta').textContent=`${todayHotel.price||''}${coDisplay}`.trim();
-    if(el('liveHotelActions'))el('liveHotelActions').innerHTML=todayHotel.bookUrl?`<a class="ops-link secondary" target="_blank" href="${esc(todayHotel.bookUrl)}">🔗 Booking</a>`:'';
+    if(el('liveHotelActions'))el('liveHotelActions').innerHTML=todayHotel.bookUrl?`<a class="ops-link secondary" target="_blank" href="${safeHref(todayHotel.bookUrl)}">🔗 Booking</a>`:'';
   } else if(el('liveHotelCard')){
     el('liveHotelCard').style.display='none';
   }
@@ -5868,6 +5868,7 @@ function loadFromHash() {
 // ══════════════════════════════════════
 function md(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h3>$1</h3>').replace(/^# (.+)$/gm,'<h3>$1</h3>').replace(/^\- (.+)$/gm,'<li>$1</li>').replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>').replace(/(<li>.*<\/li>\n?)+/g,s=>`<ul>${s}</ul>`).replace(/\[([^\]]+)\]\(([^)]+)\)/g,(_,label,href)=>/^https?:\/\//i.test(href)?`<a href="${href.replace(/"/g,'&quot;')}" target="_blank" rel="noopener noreferrer">${label}</a>`:label).replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^(.)/,'<p>$1').replace(/(.)$/,'$1</p>');}
 function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function safeHref(u){const s=String(u||'').trim();return/^https?:\/\//i.test(s)?s.replace(/&/g,'&amp;').replace(/"/g,'&quot;'):'#';}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 // PWA
