@@ -82,10 +82,18 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <body>
 <div id="authWall">
   <div class="auth-logo">Tripva HQ</div>
-  <div class="auth-sub">Command Center · Private</div>
-  <input class="auth-input" type="password" id="authInput" placeholder="Password" autocomplete="current-password">
-  <button class="auth-btn" id="authBtn">Enter →</button>
-  <div class="auth-err" id="authErr">Wrong password</div>
+  <div class="auth-sub">Command Center · Admin sign-in</div>
+  <div id="authStepEmail">
+    <input class="auth-input" type="email" id="authEmail" placeholder="admin email" autocomplete="email" style="letter-spacing:normal;text-align:left">
+    <button class="auth-btn" id="authSendBtn">Send code →</button>
+  </div>
+  <div id="authStepCode" style="display:none;width:100%;max-width:320px;flex-direction:column;align-items:center;gap:10px">
+    <div class="auth-sub" style="margin-bottom:8px">Enter the 6-digit code sent to <span id="authSentEmail"></span></div>
+    <input class="auth-input" type="text" id="authCode" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+    <button class="auth-btn" id="authVerifyBtn" style="margin-top:10px">Verify →</button>
+    <button class="auth-btn" id="authBackBtn" style="margin-top:8px;background:none;border:1px solid var(--border);color:var(--muted)">← Use a different email</button>
+  </div>
+  <div class="auth-err" id="authErr">Not authorized</div>
 </div>
 <div id="app">
   <div class="header">
@@ -144,7 +152,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="sec">Recent saves (last 10)</div>
     <div id="aRecent" style="display:flex;flex-direction:column;gap:6px;font-size:13px">Loading…</div>
     <div style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5">
-      ⚠️ Requires <code>ADMIN_TOKEN</code> env var on Vercel. Must match the <code>PASS</code> value in admin.html. If empty responses, set <code>ADMIN_TOKEN=Tripva10million!</code> in Vercel project settings → tripai-backend.
+      🔐 Admin access is gated by Supabase magic-link sign-in. Set <code>ADMIN_EMAILS</code> (comma-separated) on the tripai-backend Vercel project — only those emails can load this data. No password lives in the page.
     </div>
   </div>
 
@@ -233,22 +241,70 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const PASS='Tripva10million!';
 const BE='https://tripai-backend.vercel.app';
 const ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjkzNTcsImV4cCI6MjA5MDgwNTM1N30.SONh5djSuiUPAkwFuTPrYAxwiavP6lpvWQimljXl5hU';
 
-document.getElementById('authBtn').onclick=auth;
-document.getElementById('authInput').addEventListener('keydown',e=>{if(e.key==='Enter')auth();});
-function auth(){
-  if(document.getElementById('authInput').value===PASS){
-    document.getElementById('authWall').style.display='none';
-    document.getElementById('app').style.display='block';
-    init();
-  }else{
-    const e=document.getElementById('authErr');e.style.display='block';
-    setTimeout(()=>e.style.display='none',2000);
-  }
+// ── Admin auth: Supabase magic-link OTP. No password in source. The backend
+// verifies the JWT and checks the email against its ADMIN_EMAILS allowlist. ──
+function getToken(){ try{ return JSON.parse(localStorage.getItem('tripva_admin_session')||'null'); }catch(e){ return null; } }
+function setToken(t){ if(t) localStorage.setItem('tripva_admin_session',JSON.stringify(t)); else localStorage.removeItem('tripva_admin_session'); }
+let _pendingEmail='';
+
+function showAuthErr(msg){ const e=document.getElementById('authErr'); e.textContent=msg||'Not authorized'; e.style.display='block'; setTimeout(()=>e.style.display='none',2600); }
+
+async function sendCode(){
+  const email=(document.getElementById('authEmail').value||'').trim();
+  if(!email||!email.includes('@')){ showAuthErr('Enter a valid email'); return; }
+  const btn=document.getElementById('authSendBtn'); btn.textContent='Sending…'; btn.disabled=true;
+  try{
+    const r=await fetch(BE+'/api/user/magic-link',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const d=await r.json();
+    if(d.error){ showAuthErr(d.error); return; }
+    _pendingEmail=email;
+    document.getElementById('authSentEmail').textContent=email;
+    document.getElementById('authStepEmail').style.display='none';
+    document.getElementById('authStepCode').style.display='flex';
+    setTimeout(()=>document.getElementById('authCode').focus(),100);
+  }catch(e){ showAuthErr('Could not send code'); }
+  finally{ btn.textContent='Send code →'; btn.disabled=false; }
 }
+
+async function verifyCode(){
+  const otp=(document.getElementById('authCode').value||'').trim();
+  if(otp.length<6){ showAuthErr('Enter the 6-digit code'); return; }
+  const btn=document.getElementById('authVerifyBtn'); btn.textContent='Verifying…'; btn.disabled=true;
+  try{
+    const r=await fetch(BE+'/api/user/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:_pendingEmail,token:otp,type:'email'})});
+    const d=await r.json();
+    if(d.error||!d.access_token){ showAuthErr(d.error||'Invalid code'); return; }
+    setToken(d.access_token);
+    await enterApp();
+  }catch(e){ showAuthErr('Verification failed'); }
+  finally{ btn.textContent='Verify →'; btn.disabled=false; }
+}
+
+// Confirm the token is valid AND allowlisted before showing the dashboard.
+async function enterApp(){
+  const token=getToken();
+  if(!token) return false;
+  try{
+    const r=await fetch(BE+'/api/admin/analytics',{headers:{'Authorization':'Bearer '+token}});
+    if(r.status===401){ setToken(null); showAuthErr('This email is not an admin'); return false; }
+    if(r.status===503){ showAuthErr('ADMIN_EMAILS not set on backend'); return false; }
+  }catch(e){ /* network — let init() surface it */ }
+  document.getElementById('authWall').style.display='none';
+  document.getElementById('app').style.display='block';
+  init();
+  return true;
+}
+
+document.getElementById('authSendBtn').onclick=sendCode;
+document.getElementById('authVerifyBtn').onclick=verifyCode;
+document.getElementById('authBackBtn').onclick=()=>{document.getElementById('authStepCode').style.display='none';document.getElementById('authStepEmail').style.display='block';};
+document.getElementById('authEmail').addEventListener('keydown',e=>{if(e.key==='Enter')sendCode();});
+document.getElementById('authCode').addEventListener('keydown',e=>{if(e.key==='Enter')verifyCode();});
+// Auto-resume if a valid admin session already exists
+if(getToken()){ enterApp(); }
 setInterval(()=>{document.getElementById('hTime').textContent=new Date().toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});},1000);
 document.getElementById('navTabs').addEventListener('click',e=>{
   const btn=e.target.closest('.nav-tab');if(!btn)return;
@@ -324,13 +380,14 @@ async function loadAnalytics(force){
   const fmt = n => (typeof n === 'number') ? n.toLocaleString() : '—';
   try {
     const r = await fetch(BE + '/api/admin/analytics', {
-      headers: { 'x-admin-token': PASS, 'Origin': location.origin }
+      headers: { 'Authorization': 'Bearer ' + (getToken() || '') }
     });
     if (r.status === 401) {
-      setText('aTotalUsers', '—'); showToast('🔒 Admin token mismatch'); return;
+      setToken(null); setText('aTotalUsers', '—'); showToast('🔒 Session expired — sign in again');
+      setTimeout(() => location.reload(), 1200); return;
     }
     if (r.status === 503) {
-      setText('aTotalUsers', '—'); showToast('⚠️ ADMIN_TOKEN env var not set on Vercel'); return;
+      setText('aTotalUsers', '—'); showToast('⚠️ ADMIN_EMAILS env var not set on Vercel'); return;
     }
     if (!r.ok) { showToast('⚠️ Analytics fetch failed'); return; }
     const d = await r.json();
