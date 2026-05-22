@@ -144,7 +144,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="sec">Recent saves (last 10)</div>
     <div id="aRecent" style="display:flex;flex-direction:column;gap:6px;font-size:13px">Loading…</div>
     <div style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5">
-      ⚠️ Requires <code>ADMIN_TOKEN</code> env var on Vercel. Currently uses the same admin password as this page. If empty responses, set <code>ADMIN_TOKEN=tripva2026</code> (or a stronger value — update <code>PASS</code> in admin.html to match) in Vercel project settings.
+      ⚠️ Requires <code>ADMIN_TOKEN</code> env var on Vercel. Must match the <code>PASS</code> value in admin.html. If empty responses, set <code>ADMIN_TOKEN=Tripva10million!</code> in Vercel project settings → tripai-backend.
     </div>
   </div>
 
@@ -152,10 +152,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="tab-panel" id="panel-links">
     <div class="mw">
       <div class="sec">Product</div>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/" target="_blank"><div class="link-icon">🌐</div><div class="link-info"><div class="link-title">Landing Page</div><div class="link-url">futuriztaos.github.io/trip-planner/</div></div><div class="badge g">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/plan.html" target="_blank"><div class="link-icon">✨</div><div class="link-info"><div class="link-title">Trip Generator</div><div class="link-url">plan.html</div></div><div class="badge g">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/trip.html?id=2507ce159dae4b00" target="_blank"><div class="link-icon">🗺️</div><div class="link-info"><div class="link-title">Demo Trip (Paris + Amsterdam 7d)</div><div class="link-url">trip.html?id=2507ce159dae4b00</div></div><div class="badge g">Live</div></a>
-      <a class="link-card" href="https://futuriztaos.github.io/trip-planner/mytrips.html" target="_blank"><div class="link-icon">📋</div><div class="link-info"><div class="link-title">My Trips</div><div class="link-url">mytrips.html</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://tripva.app/" target="_blank"><div class="link-icon">🌐</div><div class="link-info"><div class="link-title">Landing Page</div><div class="link-url">tripva.app</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://tripva.app/plan.html" target="_blank"><div class="link-icon">✨</div><div class="link-info"><div class="link-title">Trip Generator</div><div class="link-url">plan.html</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://tripva.app/trip.html?id=2507ce159dae4b00" target="_blank"><div class="link-icon">🗺️</div><div class="link-info"><div class="link-title">Demo Trip (Paris + Amsterdam 7d)</div><div class="link-url">trip.html?id=2507ce159dae4b00</div></div><div class="badge g">Live</div></a>
+      <a class="link-card" href="https://tripva.app/mytrips.html" target="_blank"><div class="link-icon">📋</div><div class="link-info"><div class="link-title">My Trips</div><div class="link-url">mytrips.html</div></div><div class="badge g">Live</div></a>
       <div class="sec">Backend API</div>
       <a class="link-card" href="https://tripai-backend.vercel.app/api/health" target="_blank"><div class="link-icon">💚</div><div class="link-info"><div class="link-title">GET /api/health</div><div class="link-url">tripai-backend.vercel.app</div></div><div class="badge g">Live</div></a>
       <a class="link-card" href="https://tripai-backend.vercel.app/api/stats" target="_blank"><div class="link-icon">📊</div><div class="link-info"><div class="link-title">GET /api/stats</div><div class="link-url">trip count</div></div><div class="badge g">Live</div></a>
@@ -233,7 +233,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const PASS='tripva2026';
+const PASS='Tripva10million!';
 const BE='https://tripai-backend.vercel.app';
 const ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsbnpxcWx3cXd4a254YXh0YXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjkzNTcsImV4cCI6MjA5MDgwNTM1N30.SONh5djSuiUPAkwFuTPrYAxwiavP6lpvWQimljXl5hU';
 
@@ -291,9 +291,9 @@ async function runChecks(){
     {label:'Backend /api/stats',url:BE+'/api/stats',fn:d=>typeof d.trips==='number',note:'trips count'},
     {label:'Supabase Auth (GoTrue)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/auth/v1/health',fn:d=>d.name==='GoTrue',note:'GoTrue v2',h:{apikey:ANON}},
     {label:'Supabase DB (trips table)',url:'https://alnzqqlwqwxknxaxtawh.supabase.co/rest/v1/trips?limit=0',ok2:[200,401],note:'table exists',h:{apikey:ANON}},
-    {label:'Landing page',url:'https://futuriztaos.github.io/trip-planner/',html:true},
-    {label:'Plan generator (plan.html)',url:'https://futuriztaos.github.io/trip-planner/plan.html',html:true},
-    {label:'My Trips (mytrips.html)',url:'https://futuriztaos.github.io/trip-planner/mytrips.html',html:true},
+    {label:'Landing page',url:'https://tripva.app/',html:true},
+    {label:'Plan generator (/plan)',url:'https://tripva.app/plan',html:true},
+    {label:'My Trips (/mytrips)',url:'https://tripva.app/mytrips',html:true},
     {label:'Demo trip load',url:BE+'/api/trip?id=2507ce159dae4b00',fn:d=>!!(d?.rawPlan||d?.days),note:'plan loaded'},
   ];
   const el=document.getElementById('healthList');el.innerHTML='';
@@ -411,14 +411,13 @@ const WAVE3=[
   {t:'✅ Supabase project created',s:'alnzqqlwqwxknxaxtawh — US East',done:true},
   {t:'✅ Auth endpoints deployed',s:'/api/user/magic-link, /api/user/me',done:true},
   {t:'✅ My Trips page built',s:'mytrips.html — magic link auth gate + trip list',done:true},
-  {t:'⚠️ Run DB migration SQL',s:'Tables not created yet — trips will not save',a:'supabase.com/dashboard/project/alnzqqlwqwxknxaxtawh/sql',warn:true},
+  {t:'✅ DB migration run',s:'trips table live — 93 trips saved',done:true},
   {t:'🚫 Stripe payments',s:'Needs STRIPE_SECRET_KEY',a:'Create Stripe account → share keys'},
 ];
 const BLOCKED=[
-  {t:'Run Supabase SQL migration',s:'Auth save will fail without tables',a:'Supabase → SQL Editor → paste migration.sql → Run'},
-  {t:'Wire tripva.app DNS to GitHub Pages',s:'Domain bought but not live yet',a:'Cloudflare → A records 185.199.108-111.153 + CNAME www'},
   {t:'Stripe keys',s:'Payments blocked',a:'stripe.com → create → share STRIPE_SECRET_KEY'},
-  {t:'Affiliate sign-ups (4 platforms)',s:'All IDs are placeholders, no commissions yet',a:'Booking.com, GetYourGuide, Trainline, Rentalcars'},
+  {t:'Affiliate sign-ups (4 platforms)',s:'GetYourGuide partner_id still placeholder 529721',a:'Booking.com, GetYourGuide, Trainline, Rentalcars'},
+  {t:'Rotate Supabase service_role key',s:'Was exposed in admin.html git history',a:'Supabase → Settings → API → Rotate service_role'},
 ];
 
 function renderRoadmap(){
