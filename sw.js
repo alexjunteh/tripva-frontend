@@ -9,14 +9,16 @@
 // Previously stale-while-revalidate on HTML caused users to see 1-visit-old
 // HTML after every deploy. Network-first fixes that while preserving offline.
 
-const CACHE_VERSION = 'tripva-v12';
-const STATIC_CACHE  = 'tripva-static-v12';
-const TRIP_CACHE    = 'tripva-trips-v12';
+const CACHE_VERSION = 'tripva-v13';
+const STATIC_CACHE  = 'tripva-static-v13';
+const TRIP_CACHE    = 'tripva-trips-v13';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/icons/icon-maskable-512.png',
+  '/og-image.png',
   '/tickets/alex-accademia.jpg',
   '/tickets/alex-grindelwald.jpg',
   '/tickets/alex-uffizi.jpg',

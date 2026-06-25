@@ -1,4 +1,4 @@
-# TripHQ Launch + GTM Plan
+# Tripva Launch + GTM Plan
 _Last updated: 2026-03-25_
 
 ## ICP
@@ -97,9 +97,9 @@ The goal: build compounding advantages that competitors cannot replicate even if
 | Action | Why | How |
 |--------|-----|-----|
 | 5–10 creator partnerships | Exclusive distribution + viral attribution | Offer affiliate revenue share on their audience's bookings |
-| "Planned by Roam" badge on shared trips | Attribution on every shared URL → organic discovery | Already shipped — ensure prominent on all public trip pages |
+| "Planned by Tripva" badge on shared trips | Attribution on every shared URL → organic discovery | Already shipped — ensure prominent on all public trip pages |
 | Telegram/WhatsApp bot | Meet travelers where they plan: in group chats | Bot generates trip on demand in any travel group chat |
-| "Roam Intelligence" destination scores | Proprietary data → PR + SEO + product feature | Publish monthly "Most-planned destinations" from trip data |
+| "Tripva Intelligence" destination scores | Proprietary data → PR + SEO + product feature | Publish monthly "Most-planned destinations" from trip data |
 
 **Milestone**: Creator partner live. First creator-attributed trip generated. SEO pages ranking.
 
@@ -112,7 +112,7 @@ The goal: build compounding advantages that competitors cannot replicate even if
 | White-label B2B API | Contract lock-in 10× stronger than consumer | Pitch 3 travel agencies + 1 credit card travel portal |
 | Strategic investor with distribution | JetBlue Ventures = JetBlue integration. Amadeus = GDS. | Target in Series A / travel VC conversations |
 | Affiliate relationship upgrade | Better commission tiers require performance history | 6 months of conversion data → negotiate preferred rates |
-| Proprietary trip graph published | Media citation moat ("According to Roam data...") | Annual "State of Travel Planning" report from Roam data |
+| Proprietary trip graph published | Media citation moat ("According to Tripva data...") | Annual "State of Travel Planning" report from Tripva data |
 
 **Milestone**: First B2B white-label contract signed. Strategic investor letter of intent.
 

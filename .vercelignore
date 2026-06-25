@@ -1,0 +1,13 @@
+node_modules
+playwright-report
+test-results
+.claude
+.gstack
+docs
+qa
+tests
+*.bak
+tmp*.html
+italy-*.html
+spot-test.html
+demo-frame.html

@@ -2861,8 +2861,6 @@ async function _populateSpotsPhotos(container, dest) {
     const photoQuery = dest ? `${spotName} ${dest}` : spotName;
     let url = await _fetchUnsplashPhoto(photoQuery);
     if (!url) url = await _fetchPexelsPhoto(photoQuery);
-    if (!url) url = await _fetchCommonsThumb(photoQuery);
-    if (!url) url = await _fetchWikiLeadPhoto(spotName);
     if (!url) { wrap.style.display = 'none'; return; }
     const img = document.createElement('img');
     img.src = url; img.alt = query; img.loading = 'lazy';
@@ -3065,128 +3063,128 @@ document.addEventListener("DOMContentLoaded", () => {
 try { window.__ciStart = (window.__ciStart||0) + 1; window.__ciStartStack = new Error().stack?.slice(0,200); } catch(e){}
 window.CITY_IMGS = {
     // Italy
-    'riomaggiore':'https://loremflickr.com/900/500/riomaggiore,travel',
-    'cinque terre':'https://loremflickr.com/900/500/cinque-terre,travel',
-    'varenna':'https://loremflickr.com/900/500/varenna,travel',
-    'como':'https://loremflickr.com/900/500/como,travel',
-    'venice':'https://loremflickr.com/900/500/venice,travel',
-    'venezia':'https://loremflickr.com/900/500/venezia,travel',
-    'florence':'https://loremflickr.com/900/500/florence,travel',
-    'firenze':'https://loremflickr.com/900/500/firenze,travel',
-    'rome':'https://loremflickr.com/900/500/rome,travel',
-    'roma':'https://loremflickr.com/900/500/roma,travel',
-    'amalfi':'https://loremflickr.com/900/500/amalfi,travel',
-    'positano':'https://loremflickr.com/900/500/positano,travel',
-    'milan':'https://loremflickr.com/900/500/milan,travel',
-    'naples':'https://loremflickr.com/900/500/naples,travel',
+    'riomaggiore':'/og-image.png',
+    'cinque terre':'/og-image.png',
+    'varenna':'/og-image.png',
+    'como':'/og-image.png',
+    'venice':'/og-image.png',
+    'venezia':'/og-image.png',
+    'florence':'/og-image.png',
+    'firenze':'/og-image.png',
+    'rome':'/og-image.png',
+    'roma':'/og-image.png',
+    'amalfi':'/og-image.png',
+    'positano':'/og-image.png',
+    'milan':'/og-image.png',
+    'naples':'/og-image.png',
     // Switzerland
-    'lucerne':'https://loremflickr.com/900/500/lucerne,travel',
-    'luzern':'https://loremflickr.com/900/500/luzern,travel',
-    'grindelwald':'https://loremflickr.com/900/500/grindelwald,travel',
-    'interlaken':'https://loremflickr.com/900/500/interlaken,travel',
-    'zurich':'https://loremflickr.com/900/500/zurich,travel',
-    'geneva':'https://loremflickr.com/900/500/geneva,travel',
-    'zermatt':'https://loremflickr.com/900/500/zermatt,travel',
+    'lucerne':'/og-image.png',
+    'luzern':'/og-image.png',
+    'grindelwald':'/og-image.png',
+    'interlaken':'/og-image.png',
+    'zurich':'/og-image.png',
+    'geneva':'/og-image.png',
+    'zermatt':'/og-image.png',
     // France
-    'paris':'https://loremflickr.com/900/500/paris,travel',
-    'nice':'https://loremflickr.com/900/500/nice,travel',
-    'lyon':'https://loremflickr.com/900/500/lyon,travel',
+    'paris':'/og-image.png',
+    'nice':'/og-image.png',
+    'lyon':'/og-image.png',
     // Netherlands
-    'amsterdam':'https://loremflickr.com/900/500/amsterdam,travel',
+    'amsterdam':'/og-image.png',
     // Spain
-    'barcelona':'https://loremflickr.com/900/500/barcelona,travel',
-    'madrid':'https://loremflickr.com/900/500/madrid,travel',
-    'seville':'https://loremflickr.com/900/500/seville,travel',
-    'granada':'https://loremflickr.com/900/500/granada,travel',
+    'barcelona':'/og-image.png',
+    'madrid':'/og-image.png',
+    'seville':'/og-image.png',
+    'granada':'/og-image.png',
     // UK
-    'london':'https://loremflickr.com/900/500/london,travel',
-    'edinburgh':'https://loremflickr.com/900/500/edinburgh,travel',
+    'london':'/og-image.png',
+    'edinburgh':'/og-image.png',
     // Germany
-    'berlin':'https://loremflickr.com/900/500/berlin,travel',
-    'munich':'https://loremflickr.com/900/500/munich,travel',
-    'bavaria':'https://loremflickr.com/900/500/bavaria,travel',
+    'berlin':'/og-image.png',
+    'munich':'/og-image.png',
+    'bavaria':'/og-image.png',
     // Greece
-    'santorini':'https://loremflickr.com/900/500/santorini,travel',
-    'mykonos':'https://loremflickr.com/900/500/mykonos,travel',
-    'athens':'https://loremflickr.com/900/500/athens,travel',
+    'santorini':'/og-image.png',
+    'mykonos':'/og-image.png',
+    'athens':'/og-image.png',
     // Portugal
-    'lisbon':'https://loremflickr.com/900/500/lisbon,travel',
-    'porto':'https://loremflickr.com/900/500/porto,travel',
+    'lisbon':'/og-image.png',
+    'porto':'/og-image.png',
     // Japan
-    'tokyo':'https://loremflickr.com/900/500/tokyo,travel',
-    'kawagoe':'https://loremflickr.com/900/500/kawagoe,travel',
-    'kawaguchiko':'https://loremflickr.com/900/500/kawaguchiko,travel',
-    'mt fuji':'https://loremflickr.com/900/500/mt-fuji,travel',
-    'fuji':'https://loremflickr.com/900/500/fuji,travel',
-    'shibuya':'https://loremflickr.com/900/500/shibuya,travel',
-    'shinjuku':'https://loremflickr.com/900/500/shinjuku,travel',
-    'akihabara':'https://loremflickr.com/900/500/akihabara,travel',
-    'asakusa':'https://loremflickr.com/900/500/asakusa,travel',
-    'nara':'https://loremflickr.com/900/500/nara,travel',
-    'hiroshima':'https://loremflickr.com/900/500/hiroshima,travel',
-    'hakone':'https://loremflickr.com/900/500/hakone,travel',
-    'japan':'https://loremflickr.com/900/500/japan,travel',
-    'uluwatu':'https://loremflickr.com/900/500/uluwatu,travel',
-    'denpasar':'https://loremflickr.com/900/500/denpasar,travel',
-    'kyoto':'https://loremflickr.com/900/500/kyoto,travel',
-    'osaka':'https://loremflickr.com/900/500/osaka,travel',
+    'tokyo':'/og-image.png',
+    'kawagoe':'/og-image.png',
+    'kawaguchiko':'/og-image.png',
+    'mt fuji':'/og-image.png',
+    'fuji':'/og-image.png',
+    'shibuya':'/og-image.png',
+    'shinjuku':'/og-image.png',
+    'akihabara':'/og-image.png',
+    'asakusa':'/og-image.png',
+    'nara':'/og-image.png',
+    'hiroshima':'/og-image.png',
+    'hakone':'/og-image.png',
+    'japan':'/og-image.png',
+    'uluwatu':'/og-image.png',
+    'denpasar':'/og-image.png',
+    'kyoto':'/og-image.png',
+    'osaka':'/og-image.png',
     // Southeast Asia
-    'bangkok':'https://loremflickr.com/900/500/bangkok,travel',
-    'chiang mai':'https://loremflickr.com/900/500/chiang-mai,travel',
-    'phuket':'https://loremflickr.com/900/500/phuket,travel',
-    'bali':'https://loremflickr.com/900/500/bali,travel',
-    'ubud':'https://loremflickr.com/900/500/ubud,travel',
-    'seminyak':'https://loremflickr.com/900/500/seminyak,travel',
-    'singapore':'https://loremflickr.com/900/500/singapore,travel',
-    'kuala lumpur':'https://loremflickr.com/900/500/kuala-lumpur,travel',
-    'penang':'https://loremflickr.com/900/500/penang,travel',
-    'hanoi':'https://loremflickr.com/900/500/hanoi,travel',
-    'ho chi minh':'https://loremflickr.com/900/500/ho-chi-minh,travel',
-    'saigon':'https://loremflickr.com/900/500/saigon,travel',
-    'siem reap':'https://loremflickr.com/900/500/siem-reap,travel',
-    'angkor':'https://loremflickr.com/900/500/angkor,travel',
+    'bangkok':'/og-image.png',
+    'chiang mai':'/og-image.png',
+    'phuket':'/og-image.png',
+    'bali':'/og-image.png',
+    'ubud':'/og-image.png',
+    'seminyak':'/og-image.png',
+    'singapore':'/og-image.png',
+    'kuala lumpur':'/og-image.png',
+    'penang':'/og-image.png',
+    'hanoi':'/og-image.png',
+    'ho chi minh':'/og-image.png',
+    'saigon':'/og-image.png',
+    'siem reap':'/og-image.png',
+    'angkor':'/og-image.png',
     // Korea
-    'seoul':'https://loremflickr.com/900/500/seoul,travel',
-    'busan':'https://loremflickr.com/900/500/busan,travel',
+    'seoul':'/og-image.png',
+    'busan':'/og-image.png',
     // Middle East
-    'dubai':'https://loremflickr.com/900/500/dubai,travel',
-    'abu dhabi':'https://loremflickr.com/900/500/abu-dhabi,travel',
-    'istanbul':'https://loremflickr.com/900/500/istanbul,travel',
+    'dubai':'/og-image.png',
+    'abu dhabi':'/og-image.png',
+    'istanbul':'/og-image.png',
     // Americas
-    'new york':'https://loremflickr.com/900/500/new-york,travel',
-    'nyc':'https://loremflickr.com/900/500/nyc,travel',
-    'los angeles':'https://loremflickr.com/900/500/los-angeles,travel',
-    'san francisco':'https://loremflickr.com/900/500/san-francisco,travel',
-    'miami':'https://loremflickr.com/900/500/miami,travel',
-    'cancun':'https://loremflickr.com/900/500/cancun,travel',
-    'mexico city':'https://loremflickr.com/900/500/mexico-city,travel',
-    'rio de janeiro':'https://loremflickr.com/900/500/rio-de-janeiro,travel',
-    'rio':'https://loremflickr.com/900/500/rio,travel',
+    'new york':'/og-image.png',
+    'nyc':'/og-image.png',
+    'los angeles':'/og-image.png',
+    'san francisco':'/og-image.png',
+    'miami':'/og-image.png',
+    'cancun':'/og-image.png',
+    'mexico city':'/og-image.png',
+    'rio de janeiro':'/og-image.png',
+    'rio':'/og-image.png',
     // Africa / Pacific
-    'cape town':'https://loremflickr.com/900/500/cape-town,travel',
-    'marrakech':'https://loremflickr.com/900/500/marrakech,travel',
-    'sydney':'https://loremflickr.com/900/500/sydney,travel',
-    'melbourne':'https://loremflickr.com/900/500/melbourne,travel',
-    'auckland':'https://loremflickr.com/900/500/auckland,travel',
+    'cape town':'/og-image.png',
+    'marrakech':'/og-image.png',
+    'sydney':'/og-image.png',
+    'melbourne':'/og-image.png',
+    'auckland':'/og-image.png',
     // India
-    'mumbai':'https://loremflickr.com/900/500/mumbai,travel',
-    'delhi':'https://loremflickr.com/900/500/delhi,travel',
-    'goa':'https://loremflickr.com/900/500/goa,travel',
-    'jaipur':'https://loremflickr.com/900/500/jaipur,travel',
+    'mumbai':'/og-image.png',
+    'delhi':'/og-image.png',
+    'goa':'/og-image.png',
+    'jaipur':'/og-image.png',
     // Paris variants
-    'eiffel':'https://loremflickr.com/900/500/eiffel,travel',
-    'paris-night':'https://loremflickr.com/900/500/paris-night,travel',
-    'louvre':'https://loremflickr.com/900/500/louvre,travel',
-    'versailles':'https://loremflickr.com/900/500/versailles,travel',
-    'montmartre':'https://loremflickr.com/900/500/montmartre,travel',
+    'eiffel':'/og-image.png',
+    'paris-night':'/og-image.png',
+    'louvre':'/og-image.png',
+    'versailles':'/og-image.png',
+    'montmartre':'/og-image.png',
     // Amsterdam variants
-    'amsterdam-canals':'https://loremflickr.com/900/500/amsterdam-canals,travel',
-    'jordaan':'https://loremflickr.com/900/500/jordaan,travel',
-    'anne-frank':'https://loremflickr.com/900/500/anne-frank,travel',
-    'vondelpark':'https://loremflickr.com/900/500/vondelpark,travel',
+    'amsterdam-canals':'/og-image.png',
+    'jordaan':'/og-image.png',
+    'anne-frank':'/og-image.png',
+    'vondelpark':'/og-image.png',
     // Eastern Europe (added)
-    'prague':'https://loremflickr.com/900/500/prague,travel',
-    'vienna':'https://loremflickr.com/900/500/vienna,travel',
+    'prague':'/og-image.png',
+    'vienna':'/og-image.png',
     // Africa (added)
     'cairo':'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=900&h=500&fit=crop',
     // Maldives
@@ -3202,21 +3200,21 @@ window.CITY_IMGS = {
 // Alternate hero images per city — used to avoid duplicate images when multiple days share a seed
 try { window.__ciEnd = (window.__ciEnd||0) + 1; window.__ciKeys = Object.keys(window.CITY_IMGS || {}).length; } catch(e) { try { window.__ciEndErr = e.message; } catch(e){} }
 window.CITY_IMG_ALTS = {
-  'paris':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'rome':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'roma':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'florence':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'firenze':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'venice':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'venezia':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'amsterdam':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'tokyo':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'bangkok':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'bali':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'london':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'barcelona':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'lucerne':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
-  'luzern':['https://loremflickr.com/900/500/travel,city','https://loremflickr.com/900/500/travel,city'],
+  'paris':['/og-image.png','/og-image.png','/og-image.png'],
+  'rome':['/og-image.png','/og-image.png','/og-image.png'],
+  'roma':['/og-image.png','/og-image.png','/og-image.png'],
+  'florence':['/og-image.png','/og-image.png'],
+  'firenze':['/og-image.png','/og-image.png'],
+  'venice':['/og-image.png','/og-image.png'],
+  'venezia':['/og-image.png','/og-image.png'],
+  'amsterdam':['/og-image.png','/og-image.png','/og-image.png'],
+  'tokyo':['/og-image.png','/og-image.png','/og-image.png'],
+  'bangkok':['/og-image.png','/og-image.png'],
+  'bali':['/og-image.png','/og-image.png'],
+  'london':['/og-image.png','/og-image.png'],
+  'barcelona':['/og-image.png','/og-image.png'],
+  'lucerne':['/og-image.png','/og-image.png'],
+  'luzern':['/og-image.png','/og-image.png'],
 };
 // Helper: get best image for a day card.
 // Returns a DIFFERENT image per day — first preference: explicit day.imageUrl
@@ -3363,6 +3361,11 @@ function _wikiSeedsForDay(day, idx){
 // Non-blocking — runs after initial paint. Respects existing real images.
 let _wikiUpgradeRunning = false;
 async function upgradeTripImages(){
+  // Launch stability: avoid direct Wikimedia image upgrades. Some Wikimedia
+  // image responses are blocked by browser ORB/CORP in production-like contexts,
+  // which creates noisy console failures. Deterministic fallback imagery is
+  // already provided by getDayImage().
+  return;
   if (_wikiUpgradeRunning) return;
   if (!plan || !plan.days || !plan.days.length) return;
   _wikiUpgradeRunning = true;
@@ -3423,7 +3426,7 @@ async function loadTripPlan() {
   }
 // ── DEMO MODE (?demo=1) — hardcoded trip, never fails ──────────────────
   if (params.get('demo') === '1') {
-    const DEMO_TRIP = {"trip":{"id":"demo-paris-amsterdam","name":"Paris + Amsterdam Explorer","emoji":"🗼","destination":"Paris & Amsterdam","dates":"Apr 5–11, 2026","people":2,"budget":"$3,500 total","days":7,"heroSeed":"paris"},"days":[{"day":1,"title":"Arrival in Paris","subtitle":"Check in, evening stroll","emoji":"✈️","heroSeed":"eiffel","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"14:00","title":"Arrive at Charles de Gaulle Airport","detail":"Take RER B to central Paris — 35 mins, €11.80. Head straight to hotel to drop bags.","type":"transport"},{"time":"16:00","title":"Check in — Hotel des Arts Montmartre","detail":"Boutique hotel in the heart of Montmartre. Room rates €120/night.","type":"hotel"},{"time":"18:00","title":"First walk: Sacré-Cœur Basilica","detail":"Free entry. Climb to the dome for panoramic views over Paris. Best light at golden hour.","type":"activity"},{"time":"20:00","title":"Dinner: Le Relais de la Butte","detail":"Classic French bistro in Montmartre. Steak frites €22, house wine €8. Reservation recommended.","type":"food"}]},{"day":2,"title":"Iconic Paris","subtitle":"Eiffel Tower, Champs-Élysées","emoji":"🗼","heroSeed":"paris","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"08:30","title":"Breakfast at Café de Flore","detail":"Iconic Saint-Germain café. Croissant + café au lait €14. Arrive early to avoid queues.","type":"food"},{"time":"10:00","title":"Eiffel Tower","detail":"Pre-book summit tickets €29/person. Morning light is best for photos. Queues peak after 11am.","type":"activity"},{"time":"13:00","title":"Lunch at Les Ombres","detail":"Rooftop restaurant with direct Eiffel Tower view. €30–45/person. Reserve in advance.","type":"food"},{"time":"15:00","title":"Champs-Élysées & Arc de Triomphe","detail":"Walk the famous avenue. Climb Arc de Triomphe €13 for 360° city views.","type":"activity"},{"time":"19:00","title":"Seine River Cruise","detail":"Bateaux Parisiens cruise €17/person, 1 hour. Stunning views of Notre-Dame, Louvre, and Eiffel Tower lit up.","type":"activity"}]},{"day":3,"title":"Art & Culture","subtitle":"Louvre, Marais district","emoji":"🖼️","heroSeed":"louvre","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"09:00","title":"Louvre Museum","detail":"Book timed entry €17. Arrive at opening — Winged Victory, Venus de Milo, Mona Lisa. Budget 3 hours minimum.","type":"activity"},{"time":"13:00","title":"Lunch: L'As du Fallafel","detail":"Famous falafel spot in the Marais. €8–12, cash only. Queue moves fast.","type":"food"},{"time":"15:00","title":"Le Marais neighborhood walk","detail":"Explore Place des Vosges (free), vintage shops on Rue de Bretagne, galleries on Rue de Turenne.","type":"activity"},{"time":"18:00","title":"Centre Pompidou","detail":"Modern art museum €14. Rooftop terrace is free and has great views. Closes 10pm.","type":"activity"},{"time":"20:30","title":"Dinner: Septime","detail":"Award-winning bistro. Book weeks ahead. Tasting menu €60/person. Worth every cent.","type":"food"}]},{"day":4,"title":"Versailles Day Trip","subtitle":"Palace & gardens","emoji":"🌸","heroSeed":"versailles","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"08:30","title":"RER C to Versailles","detail":"€7.30 return. Journey 40 mins. Buy palace tickets in advance online to skip queues (€20).","type":"transport"},{"time":"10:00","title":"Palace of Versailles","detail":"Hall of Mirrors is unmissable. Royal Apartments take 2–3 hours. Gardens are free outside fountain show days.","type":"activity"},{"time":"13:00","title":"Lunch in the Gardens","detail":"Picnic on the lawn — grab supplies from the market in town. Or eat at Ore restaurant (€30).","type":"food"},{"time":"15:00","title":"Grand & Petit Trianon","detail":"Quieter royal retreats within the estate. €12 add-on. Marie Antoinette's hamlet is charming.","type":"activity"},{"time":"18:30","title":"Return to Paris","detail":"RER C back to central Paris. Head to a wine bar in Saint-Germain for the evening.","type":"transport"}]},{"day":5,"title":"Paris → Amsterdam","subtitle":"Thalys high-speed train","emoji":"🚄","heroSeed":"amsterdam-canals","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"07:30","title":"Breakfast and check out","detail":"Quick breakfast at the hotel. Pack up — train departs in 2.5 hours.","type":"food"},{"time":"10:13","title":"Thalys Paris-Nord → Amsterdam Centraal","detail":"High-speed train, 3h20. Pre-book for best prices (€49–89). Luggage rack above seats.","type":"transport"},{"time":"13:33","title":"Arrive Amsterdam Centraal","detail":"Central station is stunning itself. Head straight to hotel to drop bags, then explore.","type":"transport"},{"time":"15:00","title":"Check in — Hotel V Nesplein","detail":"Design hotel in the city centre, 5 min walk from Dam Square. €130/night.","type":"hotel"},{"time":"16:00","title":"First canal walk","detail":"Wander Prinsengracht and Keizersgracht. The 9 Streets (De Negen Straatjes) are perfect for boutique shopping.","type":"activity"},{"time":"19:30","title":"Dinner: Restaurant Breda","detail":"Modern Dutch cuisine, Jordaan district. €40–55/person. Book ahead.","type":"food"}]},{"day":6,"title":"Amsterdam Highlights","subtitle":"Anne Frank House, museums","emoji":"🚲","heroSeed":"amsterdam","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"09:00","title":"Anne Frank House","detail":"MUST pre-book — €14, sells out weeks ahead. Deeply moving 90-minute visit. Opens 9am.","type":"activity"},{"time":"11:30","title":"Jordaan neighbourhood","detail":"Charming canal streets. Visit Noordermarkt on Saturdays. Lindengracht market on Saturdays too.","type":"activity"},{"time":"13:00","title":"Lunch: Café 't Smalle","detail":"Historic tasting house dating to 1786. Dutch sandwiches €9–14. Canalside terrace.","type":"food"},{"time":"15:00","title":"Rijksmuseum","detail":"Pre-book €22.50. Rembrandt's Night Watch, Vermeer's Milkmaid. Budget 2–3 hours.","type":"activity"},{"time":"18:00","title":"Vondelpark evening walk","detail":"Beautiful city park, free. Pick up Dutch stroopwafels from a street vendor.","type":"activity"},{"time":"20:00","title":"Dinner: Moeders","detail":"Traditional Dutch restaurant, Jordaan. Stamppot, erwtensoep. €25–35. Cosy and authentic.","type":"food"}]},{"day":7,"title":"Final Morning & Departure","subtitle":"Market, bike ride, fly home","emoji":"🛫","heroSeed":"vondelpark","imageUrl":"https://loremflickr.com/900/500/travel,city","timeline":[{"time":"08:30","title":"Albert Cuijp Market","detail":"Amsterdam's largest outdoor market. Fresh stroopwafels, cheese, flowers. Open Mon–Sat 9am–5pm.","type":"activity"},{"time":"10:30","title":"Bike rental","detail":"MacBike rental €12–15/day. Cycle Plantage neighbourhood, Artis Zoo exterior, Eastern docklands.","type":"activity"},{"time":"13:00","title":"Final lunch: Broodje Bert","detail":"Classic Amsterdam sandwich shop. Broodje haring (herring) is a must-try. €5–8.","type":"food"},{"time":"15:30","title":"Schiphol Airport transfer","detail":"Amsterdam Centraal → Schiphol by train: 17 mins, €5.40. Allow 2.5 hours before departure.","type":"transport"}]}],"hotels":[{"city":"Paris","name":"Hotel des Arts Montmartre","nights":3,"price":"€120/night","tier":"mid","note":"Charming boutique hotel in Montmartre, steps from Sacré-Cœur","bookUrl":"https://www.booking.com/search.html?ss=Hotel+des+Arts+Montmartre","stars":4,"rating":8.6},{"city":"Amsterdam","name":"Hotel V Nesplein","nights":3,"price":"€130/night","tier":"mid","note":"Design hotel in city centre, 5 min walk from Dam Square","bookUrl":"https://www.booking.com/search.html?ss=Hotel+V+Nesplein+Amsterdam","stars":4,"rating":8.8}],"budget":[{"label":"Flights (return)","amount":"$800","icon":"✈️","note":"Return flights both travellers","status":"booked","category":"transport","pct":23},{"label":"Paris hotel (3 nights)","amount":"€720","icon":"🏨","note":"Hotel des Arts Montmartre","status":"booked","category":"accommodation","pct":20},{"label":"Amsterdam hotel (3 nights)","amount":"€780","icon":"🏨","note":"Hotel V Nesplein","status":"booked","category":"accommodation","pct":22},{"label":"Thalys train Paris→Amsterdam","amount":"€130","icon":"🚄","note":"2 tickets, advance booking","status":"booked","category":"transport","pct":4},{"label":"Louvre + Versailles + Rijksmuseum","amount":"€120","icon":"🎫","note":"Pre-booked tickets","status":"booked","category":"activities","pct":3},{"label":"Anne Frank House","amount":"€28","icon":"🏛️","note":"Must pre-book — sells out","status":"pending","category":"activities","pct":1},{"label":"Eiffel Tower summit","amount":"€58","icon":"🗼","note":"Pre-book to skip queues","status":"pending","category":"activities","pct":2},{"label":"Restaurants & food (7 days)","amount":"$450","icon":"🍽️","note":"Mix of bistros + casual","status":"pending","category":"food","pct":13},{"label":"Transport in cities","amount":"$80","icon":"🚇","note":"Metro + RER + Amsterdam trams","status":"pending","category":"transport","pct":2}],"tips":[{"category":"Paris Tips","icon":"🗼","items":["Buy a carnet of 10 metro tickets (€17.35) — much cheaper than singles","Museum queues are brutal — always pre-book online","Paris tap water is excellent and free — ask for une carafe d'eau at restaurants","Tipping is not expected but rounding up is appreciated","Most attractions are free on the first Sunday of the month"]},{"category":"Amsterdam Tips","icon":"🚲","items":["Cyclists have absolute right of way — watch where you walk!","Pre-booking Anne Frank House is essential — it sells out weeks ahead","The tram network covers most of the city (€2.90/ride or day pass €8.50)","I Amsterdam City Card includes museum entry + unlimited transport","Tap water is safe to drink and some of the cleanest in Europe"]}],"urgent":[{"label":"Book Anne Frank House tickets","note":"Sells out weeks in advance — book NOW at annefrank.org","url":"https://www.annefrank.org/en/museum/tickets/"},{"label":"Book Eiffel Tower summit","note":"Queue without tickets can be 3+ hours","url":"https://www.toureiffel.paris/en/the-monument/tickets"},{"label":"Book Louvre timed entry","note":"Required — can't enter without timed slot","url":"https://www.louvre.fr/en/visit/tickets-opening-times/book-tickets"}],"tickets":[],"mapStops":[{"name":"Paris","lat":48.8566,"lng":2.3522,"type":"visit"},{"name":"Amsterdam","lat":52.3676,"lng":4.9041,"type":"visit"},{"name":"Versailles","lat":48.8049,"lng":2.1204,"type":"stopover"}]};
+    const DEMO_TRIP = {"trip":{"id":"demo-paris-amsterdam","name":"Paris + Amsterdam Explorer","emoji":"🗼","destination":"Paris & Amsterdam","dates":"Apr 5–11, 2026","people":2,"budget":"$3,500 total","days":7,"heroSeed":"paris"},"days":[{"day":1,"title":"Arrival in Paris","subtitle":"Check in, evening stroll","emoji":"✈️","heroSeed":"eiffel","imageUrl":"/og-image.png","timeline":[{"time":"14:00","title":"Arrive at Charles de Gaulle Airport","detail":"Take RER B to central Paris — 35 mins, €11.80. Head straight to hotel to drop bags.","type":"transport"},{"time":"16:00","title":"Check in — Hotel des Arts Montmartre","detail":"Boutique hotel in the heart of Montmartre. Room rates €120/night.","type":"hotel"},{"time":"18:00","title":"First walk: Sacré-Cœur Basilica","detail":"Free entry. Climb to the dome for panoramic views over Paris. Best light at golden hour.","type":"activity"},{"time":"20:00","title":"Dinner: Le Relais de la Butte","detail":"Classic French bistro in Montmartre. Steak frites €22, house wine €8. Reservation recommended.","type":"food"}]},{"day":2,"title":"Iconic Paris","subtitle":"Eiffel Tower, Champs-Élysées","emoji":"🗼","heroSeed":"paris","imageUrl":"/og-image.png","timeline":[{"time":"08:30","title":"Breakfast at Café de Flore","detail":"Iconic Saint-Germain café. Croissant + café au lait €14. Arrive early to avoid queues.","type":"food"},{"time":"10:00","title":"Eiffel Tower","detail":"Pre-book summit tickets €29/person. Morning light is best for photos. Queues peak after 11am.","type":"activity"},{"time":"13:00","title":"Lunch at Les Ombres","detail":"Rooftop restaurant with direct Eiffel Tower view. €30–45/person. Reserve in advance.","type":"food"},{"time":"15:00","title":"Champs-Élysées & Arc de Triomphe","detail":"Walk the famous avenue. Climb Arc de Triomphe €13 for 360° city views.","type":"activity"},{"time":"19:00","title":"Seine River Cruise","detail":"Bateaux Parisiens cruise €17/person, 1 hour. Stunning views of Notre-Dame, Louvre, and Eiffel Tower lit up.","type":"activity"}]},{"day":3,"title":"Art & Culture","subtitle":"Louvre, Marais district","emoji":"🖼️","heroSeed":"louvre","imageUrl":"/og-image.png","timeline":[{"time":"09:00","title":"Louvre Museum","detail":"Book timed entry €17. Arrive at opening — Winged Victory, Venus de Milo, Mona Lisa. Budget 3 hours minimum.","type":"activity"},{"time":"13:00","title":"Lunch: L'As du Fallafel","detail":"Famous falafel spot in the Marais. €8–12, cash only. Queue moves fast.","type":"food"},{"time":"15:00","title":"Le Marais neighborhood walk","detail":"Explore Place des Vosges (free), vintage shops on Rue de Bretagne, galleries on Rue de Turenne.","type":"activity"},{"time":"18:00","title":"Centre Pompidou","detail":"Modern art museum €14. Rooftop terrace is free and has great views. Closes 10pm.","type":"activity"},{"time":"20:30","title":"Dinner: Septime","detail":"Award-winning bistro. Book weeks ahead. Tasting menu €60/person. Worth every cent.","type":"food"}]},{"day":4,"title":"Versailles Day Trip","subtitle":"Palace & gardens","emoji":"🌸","heroSeed":"versailles","imageUrl":"/og-image.png","timeline":[{"time":"08:30","title":"RER C to Versailles","detail":"€7.30 return. Journey 40 mins. Buy palace tickets in advance online to skip queues (€20).","type":"transport"},{"time":"10:00","title":"Palace of Versailles","detail":"Hall of Mirrors is unmissable. Royal Apartments take 2–3 hours. Gardens are free outside fountain show days.","type":"activity"},{"time":"13:00","title":"Lunch in the Gardens","detail":"Picnic on the lawn — grab supplies from the market in town. Or eat at Ore restaurant (€30).","type":"food"},{"time":"15:00","title":"Grand & Petit Trianon","detail":"Quieter royal retreats within the estate. €12 add-on. Marie Antoinette's hamlet is charming.","type":"activity"},{"time":"18:30","title":"Return to Paris","detail":"RER C back to central Paris. Head to a wine bar in Saint-Germain for the evening.","type":"transport"}]},{"day":5,"title":"Paris → Amsterdam","subtitle":"Thalys high-speed train","emoji":"🚄","heroSeed":"amsterdam-canals","imageUrl":"/og-image.png","timeline":[{"time":"07:30","title":"Breakfast and check out","detail":"Quick breakfast at the hotel. Pack up — train departs in 2.5 hours.","type":"food"},{"time":"10:13","title":"Thalys Paris-Nord → Amsterdam Centraal","detail":"High-speed train, 3h20. Pre-book for best prices (€49–89). Luggage rack above seats.","type":"transport"},{"time":"13:33","title":"Arrive Amsterdam Centraal","detail":"Central station is stunning itself. Head straight to hotel to drop bags, then explore.","type":"transport"},{"time":"15:00","title":"Check in — Hotel V Nesplein","detail":"Design hotel in the city centre, 5 min walk from Dam Square. €130/night.","type":"hotel"},{"time":"16:00","title":"First canal walk","detail":"Wander Prinsengracht and Keizersgracht. The 9 Streets (De Negen Straatjes) are perfect for boutique shopping.","type":"activity"},{"time":"19:30","title":"Dinner: Restaurant Breda","detail":"Modern Dutch cuisine, Jordaan district. €40–55/person. Book ahead.","type":"food"}]},{"day":6,"title":"Amsterdam Highlights","subtitle":"Anne Frank House, museums","emoji":"🚲","heroSeed":"amsterdam","imageUrl":"/og-image.png","timeline":[{"time":"09:00","title":"Anne Frank House","detail":"MUST pre-book — €14, sells out weeks ahead. Deeply moving 90-minute visit. Opens 9am.","type":"activity"},{"time":"11:30","title":"Jordaan neighbourhood","detail":"Charming canal streets. Visit Noordermarkt on Saturdays. Lindengracht market on Saturdays too.","type":"activity"},{"time":"13:00","title":"Lunch: Café 't Smalle","detail":"Historic tasting house dating to 1786. Dutch sandwiches €9–14. Canalside terrace.","type":"food"},{"time":"15:00","title":"Rijksmuseum","detail":"Pre-book €22.50. Rembrandt's Night Watch, Vermeer's Milkmaid. Budget 2–3 hours.","type":"activity"},{"time":"18:00","title":"Vondelpark evening walk","detail":"Beautiful city park, free. Pick up Dutch stroopwafels from a street vendor.","type":"activity"},{"time":"20:00","title":"Dinner: Moeders","detail":"Traditional Dutch restaurant, Jordaan. Stamppot, erwtensoep. €25–35. Cosy and authentic.","type":"food"}]},{"day":7,"title":"Final Morning & Departure","subtitle":"Market, bike ride, fly home","emoji":"🛫","heroSeed":"vondelpark","imageUrl":"/og-image.png","timeline":[{"time":"08:30","title":"Albert Cuijp Market","detail":"Amsterdam's largest outdoor market. Fresh stroopwafels, cheese, flowers. Open Mon–Sat 9am–5pm.","type":"activity"},{"time":"10:30","title":"Bike rental","detail":"MacBike rental €12–15/day. Cycle Plantage neighbourhood, Artis Zoo exterior, Eastern docklands.","type":"activity"},{"time":"13:00","title":"Final lunch: Broodje Bert","detail":"Classic Amsterdam sandwich shop. Broodje haring (herring) is a must-try. €5–8.","type":"food"},{"time":"15:30","title":"Schiphol Airport transfer","detail":"Amsterdam Centraal → Schiphol by train: 17 mins, €5.40. Allow 2.5 hours before departure.","type":"transport"}]}],"hotels":[{"city":"Paris","name":"Hotel des Arts Montmartre","nights":3,"price":"€120/night","tier":"mid","note":"Charming boutique hotel in Montmartre, steps from Sacré-Cœur","bookUrl":"https://www.booking.com/search.html?ss=Hotel+des+Arts+Montmartre","stars":4,"rating":8.6},{"city":"Amsterdam","name":"Hotel V Nesplein","nights":3,"price":"€130/night","tier":"mid","note":"Design hotel in city centre, 5 min walk from Dam Square","bookUrl":"https://www.booking.com/search.html?ss=Hotel+V+Nesplein+Amsterdam","stars":4,"rating":8.8}],"budget":[{"label":"Flights (return)","amount":"$800","icon":"✈️","note":"Return flights both travellers","status":"booked","category":"transport","pct":23},{"label":"Paris hotel (3 nights)","amount":"€720","icon":"🏨","note":"Hotel des Arts Montmartre","status":"booked","category":"accommodation","pct":20},{"label":"Amsterdam hotel (3 nights)","amount":"€780","icon":"🏨","note":"Hotel V Nesplein","status":"booked","category":"accommodation","pct":22},{"label":"Thalys train Paris→Amsterdam","amount":"€130","icon":"🚄","note":"2 tickets, advance booking","status":"booked","category":"transport","pct":4},{"label":"Louvre + Versailles + Rijksmuseum","amount":"€120","icon":"🎫","note":"Pre-booked tickets","status":"booked","category":"activities","pct":3},{"label":"Anne Frank House","amount":"€28","icon":"🏛️","note":"Must pre-book — sells out","status":"pending","category":"activities","pct":1},{"label":"Eiffel Tower summit","amount":"€58","icon":"🗼","note":"Pre-book to skip queues","status":"pending","category":"activities","pct":2},{"label":"Restaurants & food (7 days)","amount":"$450","icon":"🍽️","note":"Mix of bistros + casual","status":"pending","category":"food","pct":13},{"label":"Transport in cities","amount":"$80","icon":"🚇","note":"Metro + RER + Amsterdam trams","status":"pending","category":"transport","pct":2}],"tips":[{"category":"Paris Tips","icon":"🗼","items":["Buy a carnet of 10 metro tickets (€17.35) — much cheaper than singles","Museum queues are brutal — always pre-book online","Paris tap water is excellent and free — ask for une carafe d'eau at restaurants","Tipping is not expected but rounding up is appreciated","Most attractions are free on the first Sunday of the month"]},{"category":"Amsterdam Tips","icon":"🚲","items":["Cyclists have absolute right of way — watch where you walk!","Pre-booking Anne Frank House is essential — it sells out weeks ahead","The tram network covers most of the city (€2.90/ride or day pass €8.50)","I Amsterdam City Card includes museum entry + unlimited transport","Tap water is safe to drink and some of the cleanest in Europe"]}],"urgent":[{"label":"Book Anne Frank House tickets","note":"Sells out weeks in advance — book NOW at annefrank.org","url":"https://www.annefrank.org/en/museum/tickets/"},{"label":"Book Eiffel Tower summit","note":"Queue without tickets can be 3+ hours","url":"https://www.toureiffel.paris/en/the-monument/tickets"},{"label":"Book Louvre timed entry","note":"Required — can't enter without timed slot","url":"https://www.louvre.fr/en/visit/tickets-opening-times/book-tickets"}],"tickets":[],"mapStops":[{"name":"Paris","lat":48.8566,"lng":2.3522,"type":"visit"},{"name":"Amsterdam","lat":52.3676,"lng":4.9041,"type":"visit"},{"name":"Versailles","lat":48.8049,"lng":2.1204,"type":"stopover"}]};
     // Inject relative dates — make trip start yesterday so today = Day 2
     const _today = new Date();
     const _dayMs = 86400000;
@@ -5512,9 +5515,6 @@ async function _populateWikiPhotos(container) {
     if (_wikiGenId !== myGen) return;
     if (!url) url = await _fetchPexelsPhoto(dest ? `${spotName} ${dest}` : spotName);
     if (_wikiGenId !== myGen) return;
-    if (!url) url = await _fetchCommonsThumb(query);
-    if (_wikiGenId !== myGen) return;
-    if (!url) url = await _fetchWikiLeadPhoto(spotName);
     if (_wikiGenId !== myGen || !url) return;
     const img = document.createElement('img');
     img.src = url; img.className = 'tl-ps-photo'; img.loading = 'lazy'; img.alt = spot;
@@ -5914,7 +5914,7 @@ setTimeout(()=>{if(document.getElementById('tab-trip')&&document.getElementById(
 // ══════════════════════════════════════
 //  ROAM TRIP PLANNER — BACKEND WIRING
 // ══════════════════════════════════════
-const BACKEND_URL = 'https://tripai-backend.vercel.app';
+var BACKEND_URL = 'https://tripai-backend.vercel.app';
 
 // ── FLIGHT SEARCH ──────────────────────────────────────────────────────────
 function _prefillFlightInputs() {
@@ -7094,7 +7094,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── TRIP AUTH / SAVE ────────────────────────────────────────────
-var TRIPVA_BACKEND = BACKEND_URL; // consolidated — use BACKEND_URL as single source of truth
+var TRIPVA_BACKEND = 'https://tripai-backend.vercel.app';
 
 function getTripvaSession(){
   try{ return JSON.parse(localStorage.getItem('tripva_session')||'null'); }catch(e){ return null; }

@@ -2,6 +2,7 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 const BASE_URL = process.env.BASE_URL || 'https://tripva.app';
+const LOCAL_BASE_RE = /^http:\/\/(127\.0\.0\.1|localhost):4321\/?$/;
 
 module.exports = defineConfig({
   testDir: './tests/e2e',
@@ -18,6 +19,14 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
+  webServer: LOCAL_BASE_RE.test(BASE_URL)
+    ? {
+        command: 'python3 -m http.server 4321',
+        url: BASE_URL,
+        reuseExistingServer: true,
+        timeout: 10_000,
+      }
+    : undefined,
   projects: [
     {
       name: 'chromium',
