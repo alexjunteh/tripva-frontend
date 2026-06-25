@@ -66,7 +66,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:14px;transition:opacity .3s}
 #splash.gone{opacity:0;pointer-events:none}
 .sp-logo{font-size:64px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(124,106,247,.4))}
-.sp-name{font-size:26px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,#fff 30%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sp-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:700;letter-spacing:.2px;background:linear-gradient(135deg,#fff 30%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .sp-sub{font-size:14px;color:var(--muted);letter-spacing:.3px}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
@@ -168,7 +168,7 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .trip-hero-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.25) 45%,transparent 75%)}
 .hero-edit-btn{position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:14px;font-size:12px;cursor:pointer;font-weight:600;z-index:1}
 .trip-emoji{font-size:52px;position:relative;z-index:1;margin-bottom:8px;line-height:1;display:block}
-.trip-name{font-size:20px;font-weight:800;position:relative;z-index:1;margin-bottom:4px;letter-spacing:-.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.trip-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:700;position:relative;z-index:1;margin-bottom:4px;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .trip-dates{font-size:12px;color:var(--text2);position:relative;z-index:1}
 
 /* Stats row */
