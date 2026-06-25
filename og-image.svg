@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080810"/>
+      <stop offset="0.52" stop-color="#151137"/>
+      <stop offset="1" stop-color="#061b25"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.52" stop-color="#c4d9ff"/>
+      <stop offset="1" stop-color="#9b87f5"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c6af7"/>
+      <stop offset="1" stop-color="#6ee7b7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1045" cy="90" r="220" fill="#7c6af7" opacity="0.16"/>
+  <circle cx="160" cy="560" r="260" fill="#6ee7b7" opacity="0.11"/>
+  <path d="M95 470 C255 380 385 390 540 305 C710 210 840 215 1080 95" fill="none" stroke="#c4d9ff" stroke-width="4" stroke-linecap="round" opacity="0.18"/>
+  <path d="M95 505 C275 408 430 415 590 330 C760 238 890 245 1095 150" fill="none" stroke="#7c6af7" stroke-width="2" stroke-linecap="round" opacity="0.24"/>
+
+  <g transform="translate(82 76)" filter="url(#shadow)">
+    <rect width="126" height="126" rx="30" fill="#0a0a12" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+    <path d="M36 79 Q60 66 82 57" stroke="url(#accent)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <g transform="rotate(-20 76 57)">
+      <ellipse cx="76" cy="55" rx="30" ry="7" fill="url(#brand)"/>
+      <path d="M105 53 Q115 55 105 57 Z" fill="#ffffff"/>
+      <path d="M74 55 L61 86 L49 84 L70 55 Z" fill="#9b87f5"/>
+      <path d="M79 55 L98 43 L104 47 L82 55 Z" fill="#c4d9ff"/>
+      <path d="M49 54 L45 39 L53 42 L53 54 Z" fill="#9b87f5"/>
+    </g>
+    <text x="63" y="103" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="900" letter-spacing="1.8" fill="#ffffff">TRIP</text>
+    <text x="63" y="121" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" letter-spacing="4" fill="#9b87f5">VA</text>
+  </g>
+
+  <g transform="translate(82 280)">
+    <text x="0" y="0" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="900" letter-spacing="-3" fill="#ffffff">Tripva</text>
+    <text x="0" y="80" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="800" letter-spacing="-1.4" fill="url(#brand)">Plan a trip in 30 seconds.</text>
+    <text x="0" y="132" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="500" fill="#cbd5e1">AI builds the itinerary, hotels, budget, tickets,</text>
+    <text x="0" y="168" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="500" fill="#cbd5e1">and live travel alerts.</text>
+  </g>
+
+  <g transform="translate(820 278)" filter="url(#shadow)">
+    <rect width="330" height="236" rx="26" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)"/>
+    <rect x="28" y="28" width="120" height="16" rx="8" fill="#6ee7b7"/>
+    <rect x="28" y="70" width="230" height="14" rx="7" fill="rgba(255,255,255,0.78)"/>
+    <rect x="28" y="104" width="274" height="14" rx="7" fill="rgba(255,255,255,0.28)"/>
+    <rect x="28" y="138" width="210" height="14" rx="7" fill="rgba(255,255,255,0.28)"/>
+    <rect x="28" y="178" width="126" height="34" rx="17" fill="url(#accent)"/>
+    <text x="91" y="201" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="800" fill="#ffffff">TRY FREE</text>
+  </g>
+</svg>

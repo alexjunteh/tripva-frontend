@@ -1,38 +1,64 @@
-# Remaining work log
+# Tripva Remaining Launch Work
 
-**Logged:** 2026-04-21
-**Context:** Backend + frontend archetype overhaul is live. This is the queue for what's left.
+**Updated:** 2026-06-25
 
-## Needs Alex action (blockers — I can't do these)
-- [ ] **Drop Cloudflare firewall rule `90f3f1a949954f649dbd0b0c700fd855`** — blocks non-MY traffic + CI audit
-- [ ] **Stripe keys** — `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` in Vercel env
-- [ ] **Real affiliate IDs** — Booking.com, GetYourGuide, Trainline, Rentalcars
-- [x] ~~Google + Apple OAuth app registration~~ — handled via Supabase managed providers (not separate Google/Apple app reg). Frontend wires `signInWithOAuth({provider})`; Supabase dashboard owns the client-id/secret config.
-- [ ] **Real testimonials** — current landing uses fake Jamie/Sofia/David, swap when real users exist
+## Local Status
 
-## I can build (executing this session, top→bottom)
+- Backend tests pass: 11 files, 86 tests.
+- Frontend E2E passes: 16/16 across Chromium and Firefox.
+- Local launch route audit passes: 25 routes, 50 desktop/mobile checks, 41 same-origin links, zero broken links, zero missing images, zero console/page errors.
+- Press kit zip is rebuilt with current logo/icon assets and final 30-second MP4 demo videos.
 
-Quick wins (≤ 30 min each):
-- [x] Edit-trip modal stale `tripMeta` fix — `67a0c3d`
-- [x] Scroll-hide bottom nav on Now tab — `3586d7a`
+## Approval-Gated Before Production Launch
 
-Substantive work:
-- [x] Adventure archetype full fields — FE `1ba8a17`, BE `591bb84`
-- [x] Nomad archetype full fields — FE `8befc9e`, BE `591bb84`
-- [x] Now-tab 5-state machine — FE `bb0fe98`
-- [x] Archetype prompt iteration — BE `b9455bf` + `5f7d1d6`. 6 test trips generated; found critical gap: `buildPlanPrompt` (non-streaming /api/plan) was archetype-blind. Wired it up + tuned solo/couple/family/friends/adventure prompts with explicit FAIL-style rules. Post-fix signals: family stroller 0→27, friends Airbnb 0→4 with correct hotel format "(Airbnb — N bedrooms)", adventure gear 0→8.
-- [x] Trip sharing OG cards foundation — FE `d1c1ee3` (static meta + JS patch; per-trip CF Worker deferred)
-- [x] Packing endpoint unit tests + archetype fixtures — BE `460955d` (11 tests pass)
-- [x] PWA install polish — FE `64b93d4` (manifest fix + shortcuts + smart dismiss)
+- [ ] Deploy latest frontend assets and fixes.
+- [ ] Align `tripva.app` apex with the latest `www.tripva.app` / Vercel artifact. Current live check shows apex is stale while `www` matches newer local copy.
+- [ ] Sync production Vercel env vars after Alex approval.
 
-Deferred (intentionally — see why):
-- App-shell 8→5 tab merge — surgery on 4.5k-line `trip.html`, needs dedicated session with careful regression testing
-- Vercel AI SDK migration — project-wide backend refactor (`ai` + `@ai-sdk/openai`), scope larger than a polish session
-- Six-archetype Watch demo loops on landing — content-heavy (needs 6× 15-second product videos)
-- Search/browse public landing pages — strategic decision about SEO strategy
+## Production Env Audit Snapshot
 
-## Rules this session
-- Visual audit (`./tests/visual/audit.sh --quick`) after every commit that touches production HTML
-- If audit fails, fix until it passes; don't ship broken
-- Commit each distinct fix atomically
-- Keep this doc updated (check off items as they ship)
+Read-only audit on 2026-06-25 found production has:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_KEY`
+- `ALLOWED_ORIGIN`
+- `ANTHROPIC_API_KEY`
+- `OPENAI_API_KEY`
+- `GITHUB_TOKEN`
+- `VAPID_PUBLIC_KEY`
+- `VAPID_PRIVATE_KEY`
+- `VAPID_SUBJECT`
+- `PUSH_CRON_TOKEN`
+- `PEXELS_API_KEY`
+- `UNSPLASH_ACCESS_KEY`
+- `SERPAPI_KEY`
+- `TRAVELPAYOUTS_TOKEN`
+- `TRAVELPAYOUTS_MARKER`
+- `AWIN_ACCESS_TOKEN`
+- `AWIN_PUBLISHER_ID`
+- `RAPIDAPI_KEY`
+
+Missing from production compared with `.env.example`:
+
+- `GYG_PARTNER_ID`
+- `KLOOK_AID`
+- `TRIPCOM_ALLIANCE_CODE`
+- `KIWI_AFFILIATE_ID`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRICE_PRO`
+- `ADMIN_EMAILS`
+
+Stripe remains skippable for initial launch because endpoints return graceful 503 responses without it. Affiliate/admin env sync still needs explicit approval before mutation.
+
+## Public Launch Actions
+
+These are prepared but require explicit approval before execution:
+
+- Product Hunt post
+- Show HN post
+- Reddit posts
+- Twitter/X thread
+- IndieHackers post
+- Micro-creator DMs
