@@ -1,6 +1,11 @@
 {
   "version": 2,
   "rewrites": [
+    { "source": "/plan", "destination": "/plan.html" },
+    { "source": "/trip", "destination": "/trip.html" },
+    { "source": "/mytrips", "destination": "/mytrips.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/press", "destination": "/press.html" },
     { "source": "/blog", "destination": "/blog/index.html" },
     { "source": "/blog/", "destination": "/blog/index.html" }
   ],
