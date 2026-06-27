@@ -361,7 +361,8 @@ except: pass
   # OG meta presence on each entry page — if a deploy accidentally strips
   # these, social previews break silently. Check the core tags.
   for page_path in "/" "/plan" "/trip?id=$TRIP_FIXTURE_ID" "/mytrips"; do
-    "$B" goto "$base_url$page_path&v=$t&phase=1e" >/dev/null 2>&1
+    local sep="?"; [[ "$page_path" == *"?"* ]] && sep="&"
+    "$B" goto "$base_url$page_path${sep}v=$t&phase=1e" >/dev/null 2>&1
     sleep 2
     local og_check; og_check=$("$B" js "
       (() => {
