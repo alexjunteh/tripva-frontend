@@ -1550,11 +1550,24 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 // ══════════════════════════════════════
 function detectAffiliatePartner(url) {
   const s = String(url||'').toLowerCase();
+  if (s.includes('hotellook')) return 'hotellook';
   if (s.includes('agoda') || s.includes('booking.com')) return 'booking';
   if (s.includes('getyourguide')) return 'gyg';
   if (s.includes('trainline')) return 'trainline';
   if (s.includes('rentalcar')) return 'rentalcars';
   return 'generic';
+}
+
+function buildHotellookLink(city, checkIn, checkOut, adults, tripDestination) {
+  let dest = city || '';
+  if (dest && !dest.includes(',') && tripDestination) {
+    const destCountry = String(tripDestination).split(',').slice(1).join(',').trim();
+    if (destCountry) dest = dest + ', ' + destCountry;
+  }
+  const p = new URLSearchParams({ destination: dest, adults: String(adults || 2), marker: '529721' });
+  if (checkIn) p.set('checkin', checkIn);
+  if (checkOut) p.set('checkout', checkOut);
+  return 'https://search.hotellook.com/?' + p.toString();
 }
 
 function trackAffiliateClick(partner) {
@@ -2549,7 +2562,8 @@ function populateDashboard(p) {
       bookedWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot booked"></span>✅ CONFIRMED STAYS (${bookedHotels.length})</div>`;
       bookedHotels.forEach(h=>{
         const c=document.createElement('div'); c.className='book-card booked-card';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">📍 Open location →</a></div>`;
+        const hotelUrl = buildHotellookLink(h.city || h.name, h.checkin, h.checkout, p.trip?.people, p.trip?.destination);
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta"><span class="book-meta-chip booked-chip">✅ ${h.nights||''} nights</span></div><div class="book-actions"><a class="book-btn booked-btn" href="${hotelUrl}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')">🏨 View hotel options →</a></div>`;
         bookedWrap.appendChild(c);
       });
       scroll.appendChild(bookedWrap);
@@ -2561,12 +2575,13 @@ function populateDashboard(p) {
       const arrangeWrap=document.createElement('div'); arrangeWrap.className='booknow-segment arrange';
       arrangeWrap.innerHTML=`<div class="booknow-seg-hdr"><span class="booknow-seg-dot arrange"></span>🔍 STILL TO ARRANGE (${unbookedHotels.length})</div>`;
       unbookedHotels.forEach(h=>{
-        const btn=/agoda\.com\/search/.test(h.bookUrl||'')?'Search Agoda →':'Open →';
-        const host=getHost(h.bookUrl||'');
+        const hotelUrl = buildHotellookLink(h.city || h.name, h.checkin, h.checkout, p.trip?.people, p.trip?.destination);
+        const btn='Compare hotels →';
+        const host='search.hotellook.com';
         const c=document.createElement('div'); c.className='book-card arrange-card';
         const starsStr = h.stars ? '⭐'.repeat(Math.min(h.stars,5)) : '';
         const ratingStr = h.rating ? `${h.rating}/10` : '';
-        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${h.bookUrl||'#'}" target="_blank" onclick="trackAffiliateClick('booking')">${btn}</a></div>`;
+        c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div><div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div><div class="book-card-meta">${host?`<span class="book-meta-chip">🔗 ${esc(host)}</span>`:''}</div><div class="book-actions"><a class="book-btn" href="${hotelUrl}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')">${btn}</a></div>`;
         arrangeWrap.appendChild(c);
       });
       scroll.appendChild(arrangeWrap);
@@ -2997,7 +3012,11 @@ function renderLiveOps(){
     const coDate=todayHotel.checkout||'';
     const coDisplay=coDate?` · Check-out ${coDate} before 11am`:'';
     if(el('liveHotelMeta'))el('liveHotelMeta').textContent=`${todayHotel.price||''}${coDisplay}`.trim();
-    if(el('liveHotelActions'))el('liveHotelActions').innerHTML=todayHotel.bookUrl?`<a class="ops-link secondary" target="_blank" href="${esc(todayHotel.bookUrl)}">🔗 Booking</a>`:'';
+    if(el('liveHotelActions')){
+      const city = todayHotel.city || todayHotel.name || plan.trip?.destination || '';
+      const hotelUrl = buildHotellookLink(city, todayHotel.checkin, todayHotel.checkout, plan.trip?.people, plan.trip?.destination);
+      el('liveHotelActions').innerHTML = `<a class="ops-link secondary" target="_blank" rel="noopener" href="${hotelUrl}" onclick="trackAffiliateClick('hotellook')">🔗 Hotel options</a>`;
+    }
   } else if(el('liveHotelCard')){
     el('liveHotelCard').style.display='none';
   }

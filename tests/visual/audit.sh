@@ -361,7 +361,8 @@ except: pass
   # OG meta presence on each entry page — if a deploy accidentally strips
   # these, social previews break silently. Check the core tags.
   for page_path in "/" "/plan" "/trip?id=$TRIP_FIXTURE_ID" "/mytrips"; do
-    "$B" goto "$base_url$page_path&v=$t&phase=1e" >/dev/null 2>&1
+    local sep="?"; [[ "$page_path" == *"?"* ]] && sep="&"
+    "$B" goto "$base_url$page_path${sep}v=$t&phase=1e" >/dev/null 2>&1
     sleep 2
     local og_check; og_check=$("$B" js "
       (() => {
@@ -751,7 +752,7 @@ phase_5() {
 
   # Cormorant Garamond actually loaded on trip page
   "$B" goto "https://tripva.app/trip?id=$TRIP_FIXTURE_ID&v=$t&phase=5b" >/dev/null 2>&1; sleep 6
-  local font; font=$("$B" js "document.fonts ? [...document.fonts].filter(f=>/Cormorant/i.test(f.family)).length : 0" 2>/dev/null | tail -1)
+  local font; font=$("$B" js "(() => { const loaded = document.fonts ? [...document.fonts].filter(f=>/Cormorant/i.test(f.family)).length : 0; const linked = [...document.querySelectorAll('link[href*=\"Cormorant+Garamond\"]')].length; return Math.max(loaded, linked); })()" 2>/dev/null | tail -1)
   [ "$font" -ge "1" ] && pass "Cormorant Garamond loaded" || { fail "Cormorant Garamond NOT loaded"; ok=0; }
 
   # Tap targets ≥44px — exclude footer/decorative links (tertiary content) and inline text links
