@@ -2669,8 +2669,10 @@ async function loadPhotoSpots(force) {
     gridEl.innerHTML = spots.map(({ tl, dayIdx, dayNum }) => {
       const cleanName = (tl.title || '').replace(/^[^\w]*photospot:\s*/i, '').trim() || (tl.title || '');
       const mapQuery  = tl.mapQuery || (cleanName + (dest ? ', ' + dest : ''));
-      return `<div class="spot-card" data-wiki-spot="${esc(mapQuery)}" onclick="switchTab('days');setTimeout(()=>openDaySheet(${dayIdx}),150)" style="cursor:pointer">
-        <div class="spot-card-img-wrap"><div class="spot-card-img-placeholder"></div></div>
+      const spotImg = tl.imageUrl || tl.photoUrl || '';
+      const wikiAttr = spotImg ? '' : ` data-wiki-spot="${esc(mapQuery)}"`;
+      return `<div class="spot-card"${wikiAttr} onclick="switchTab('days');setTimeout(()=>openDaySheet(${dayIdx}),150)" style="cursor:pointer">
+        <div class="spot-card-img-wrap">${spotImg ? `<img src="${esc(spotImg)}" alt="${esc(cleanName)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.closest('.spot-card-img-wrap').style.display='none'">` : '<div class="spot-card-img-placeholder"></div>'}</div>
         <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px">
           <div class="spot-card-name">📍 ${esc(cleanName)}</div>
           ${tl.detail ? `<div class="spot-card-desc">${esc(tl.detail)}</div>` : ''}
