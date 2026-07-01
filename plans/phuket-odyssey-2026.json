@@ -128,7 +128,7 @@
           "detail": "Simple first-night photo stop. Aim for beach silhouettes, resort skyline, and group shots before dinner.",
           "type": "photospot",
           "mapQuery": "Patong Beach sunset viewpoint, Phuket, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1733995415583-59372db12f29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/patong-sunset.jpg",
           "tip": "Stand near the beach path and shoot west-facing frames before the sky gets dark.",
           "lat": 7.8965,
           "lng": 98.2956
@@ -183,7 +183,7 @@
           "detail": "Walk Thalang Road and nearby Sino-Portuguese streets for cafes, murals, boutique shops, and colorful shophouse photos. This is the cleanest low-stress morning option.",
           "type": "photospot",
           "mapQuery": "Thalang Road, Phuket Old Town, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1503933166348-a1a86c17b3a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg",
           "tip": "Shoot the pastel shophouses, archways, wall murals, and cafe fronts before lunch crowds arrive.",
           "lat": 7.8842,
           "lng": 98.3889
@@ -194,7 +194,7 @@
           "detail": "Best for colorful street photos and group portraits. Keep lens wide and avoid blocking shop entrances.",
           "type": "photospot",
           "mapQuery": "Soi Romanee, Phuket Old Town, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1684083338842-ee04a0ff8335?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/soi-romanee.jpg",
           "tip": "Shoot from the opposite side of the lane to capture the pastel facades and lanterns.",
           "lat": 7.8847,
           "lng": 98.3892
@@ -212,7 +212,7 @@
           "detail": "A calm cultural stop before returning toward the beaches. Dress respectfully with shoulders/knees covered or bring a light cover-up.",
           "type": "photospot",
           "mapQuery": "Wat Chalong, Phuket, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1578106367598-9c74a4ae23de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/wat-chalong.jpg",
           "tip": "Use wide shots for the temple complex and tighter vertical frames for roof details and stair symmetry.",
           "lat": 7.8468,
           "lng": 98.3378
@@ -230,7 +230,7 @@
           "detail": "Safer default viewpoint stop with a strong view over Kata Noi, Kata, and Karon beaches. Good backup if Big Buddha access is restricted.",
           "type": "photospot",
           "mapQuery": "Karon Viewpoint, Phuket, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1737515908878-12e8ecc5b190?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/karon-viewpoint.jpg",
           "tip": "Use 0.5x/wide camera for the three-beach view; keep people to one side of the frame.",
           "lat": 7.7974,
           "lng": 98.3069
@@ -313,7 +313,7 @@
           "detail": "Beach, cafes, massage, shopping, or rest. This is the main open relaxation block of the trip.",
           "type": "photospot",
           "mapQuery": "Kata Beach, Phuket, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1737515908817-2b7668aea1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/kata-beach.jpg",
           "tip": "Shoot beach layers: foreground umbrellas or palms, swimmers/surf, and the bay curve in the background.",
           "lat": 7.8195,
           "lng": 98.2990
@@ -331,7 +331,7 @@
           "detail": "Promthep is the classic choice; Windmill is often easier and less chaotic. Pick one based on traffic and parking.",
           "type": "photospot",
           "mapQuery": "Promthep Cape, Phuket, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1481988535861-271139e06469?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/promthep-cape.jpg",
           "tip": "Arrive before sunset, secure parking, and shoot both sea horizon and group silhouettes.",
           "lat": 7.7623,
           "lng": 98.3069
@@ -421,7 +421,7 @@
           "detail": "Free and easy Hat Yai evening filled in. Walk the Lee Garden zone for street food, grilled seafood, mango sticky rice, Thai milk tea, fried chicken, snacks, and souvenir shopping.",
           "type": "photospot",
           "mapQuery": "Lee Garden Plaza, Hat Yai, Thailand",
-          "imageUrl": "https://images.unsplash.com/photo-1733150632156-797e26fc6c7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "imageUrl": "/demo-assets/phuket-odyssey/lee-garden-night.jpg",
           "tip": "Shoot neon signs, food stalls, and group candid shots before sitting down for dinner.",
           "lat": 7.0051,
           "lng": 100.4715
