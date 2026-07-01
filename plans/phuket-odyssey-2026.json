@@ -1,0 +1,711 @@
+{
+  "trip": {
+    "id": "trip-phuket-odyssey-2026",
+    "name": "Phuket Odyssey 2026",
+    "destination": "Trang, Krabi, Phuket and Hat Yai, Thailand",
+    "startDate": "2026-07-03",
+    "endDate": "2026-07-08",
+    "timezone": "Asia/Bangkok",
+    "currency": "THB",
+    "dates": "Jul 3 -> Jul 8",
+    "travelers": 4,
+    "archetype": "friends",
+    "pace": "balanced",
+    "source": "Built from supplied Phuket Odyssey 2026 itinerary screenshot, with free-time details filled in by Tripva."
+  },
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-07-03",
+      "title": "Trang Arrival and Group Dinner",
+      "subtitle": "Check in, settle down, and start the trip gently",
+      "emoji": "🏨",
+      "heroSeed": "trang-thailand-town-evening",
+      "imageUrl": "https://images.unsplash.com/photo-1599576838688-8a6c11263108?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "timeline": [
+        {
+          "time": "14:00",
+          "title": "Self check-in at Rua Rasada Hotel, Trang",
+          "detail": "Original anchor from the event itinerary. Arrive independently, check in, collect room keys, and confirm the next morning convoy meeting point with the group.",
+          "type": "hotel",
+          "mapQuery": "Rua Rasada Hotel, Trang, Thailand"
+        },
+        {
+          "time": "15:30",
+          "title": "Rest block and trip setup",
+          "detail": "Use this window for shower, SIM/data top-up, cash withdrawal, pharmacy run, and fuel/vehicle checks before the Phuket convoy day.",
+          "type": "logistics",
+          "mapQuery": "Rua Rasada Hotel, Trang, Thailand"
+        },
+        {
+          "time": "16:30",
+          "title": "Optional short Trang town coffee walk",
+          "detail": "If energy is good, do a light town walk near the hotel area for coffee or local snacks. Keep it low-effort because Day 2 has a long drive.",
+          "type": "activity",
+          "mapQuery": "Trang town center, Trang, Thailand"
+        },
+        {
+          "time": "18:00",
+          "title": "Dinner at Thumrin Thana Hotel Restaurant",
+          "detail": "Original anchor from the event itinerary. Group dinner and briefing. Confirm convoy departure time, route, rest stops, and rooming details for Phuket.",
+          "type": "meal",
+          "mapQuery": "Thumrin Thana Hotel, Trang, Thailand"
+        },
+        {
+          "time": "20:00",
+          "title": "Early night or light supper",
+          "detail": "Keep the night simple. Prepare water, snacks, power bank, sunglasses, and a small day bag for the drive to Krabi and Phuket.",
+          "type": "logistics",
+          "mapQuery": "Trang, Thailand"
+        }
+      ],
+      "highlights": [
+        "Rua Rasada Hotel check-in",
+        "Group dinner at Thumrin Thana",
+        "Convoy preparation"
+      ],
+      "localTips": [
+        "Keep passport, license, insurance, and hotel confirmation in one pouch.",
+        "Buy water and motion-sickness tablets tonight if anyone gets car sick.",
+        "Set alarms early; the convoy leaves at 08:00 on Day 2."
+      ],
+      "photos": []
+    },
+    {
+      "day": 2,
+      "date": "2026-07-04",
+      "title": "Trang to Phuket via Krabi",
+      "subtitle": "Convoy transfer, shopping stop, resort arrival, Patong evening",
+      "emoji": "🚐",
+      "heroSeed": "krabi-road-trip-phuket-patong",
+      "imageUrl": "https://images.unsplash.com/photo-1576682303079-cd3438285f20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "timeline": [
+        {
+          "time": "07:15",
+          "title": "Breakfast, checkout, and convoy briefing",
+          "detail": "Load luggage, check fuel, distribute route pins, and agree on lead car, tail car, and emergency contact. Keep all cars ready before 08:00.",
+          "type": "logistics",
+          "mapQuery": "Rua Rasada Hotel, Trang, Thailand"
+        },
+        {
+          "time": "08:00",
+          "title": "Convoy leaves for Phuket",
+          "detail": "Original anchor from the event itinerary. Drive from Trang toward Krabi first, then continue onward to Phuket. Keep one short restroom/fuel stop if needed.",
+          "type": "transport",
+          "mapQuery": "Trang to Krabi to Phuket, Thailand"
+        },
+        {
+          "time": "10:30",
+          "title": "Central Krabi shopping and lunch stop",
+          "detail": "Original anchor from the event itinerary. Good window for restroom, lunch, snacks, pharmacy, coffee, and a short mall walk before the final leg to Phuket.",
+          "type": "meal",
+          "mapQuery": "Central Krabi, Krabi, Thailand"
+        },
+        {
+          "time": "12:30",
+          "title": "Convoy proceeds to The Kee Resort, Phuket",
+          "detail": "Original anchor from the event itinerary. Expect island traffic near Patong. Keep the group in convoy but do not rush the last stretch.",
+          "type": "transport",
+          "mapQuery": "Central Krabi to The Kee Resort & Spa, Patong, Phuket"
+        },
+        {
+          "time": "16:00",
+          "title": "Arrive at The Kee Resort, Phuket",
+          "detail": "Original anchor from the event itinerary. Check in, unload luggage, inspect rooms, and regroup in the lobby once everyone is settled.",
+          "type": "hotel",
+          "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "17:15",
+          "title": "Easy Patong orientation walk",
+          "detail": "Walk the area around the resort and Patong Beach to understand where food, convenience stores, massage shops, money exchange, and pickup points are.",
+          "type": "activity",
+          "mapQuery": "Patong Beach, Phuket, Thailand"
+        },
+        {
+          "time": "18:30",
+          "title": "Photospot: Patong Beach sunset",
+          "detail": "Simple first-night photo stop. Aim for beach silhouettes, resort skyline, and group shots before dinner.",
+          "type": "photospot",
+          "mapQuery": "Patong Beach sunset viewpoint, Phuket, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1733995415583-59372db12f29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Stand near the beach path and shoot west-facing frames before the sky gets dark.",
+          "lat": 7.8965,
+          "lng": 98.2956
+        },
+        {
+          "time": "19:30",
+          "title": "Dinner near Bangla Road or Jungceylon",
+          "detail": "Choose easy group dining: Thai seafood, hotpot, or mall restaurant if rain hits. Keep it close to the resort so people can split into nightlife/rest groups after dinner.",
+          "type": "meal",
+          "mapQuery": "Jungceylon, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "21:00",
+          "title": "Free and easy: Patong nightlife or recovery",
+          "detail": "Original free/easy window filled in. Option A: Bangla Road for the first nightlife taste. Option B: Thai massage and sleep. Option C: resort rooftop/drinks if the group wants something easier.",
+          "type": "activity",
+          "mapQuery": "Bangla Road, Patong, Phuket, Thailand"
+        }
+      ],
+      "highlights": [
+        "Trang to Phuket convoy",
+        "Central Krabi lunch stop",
+        "The Kee Resort arrival",
+        "Patong Beach sunset"
+      ],
+      "localTips": [
+        "Traffic into Patong can slow down sharply in late afternoon.",
+        "Keep the first Phuket night flexible; people will have different energy after the long drive.",
+        "Use the hotel lobby as the fixed regroup point."
+      ],
+      "photos": []
+    },
+    {
+      "day": 3,
+      "date": "2026-07-05",
+      "title": "Phuket Highlights and Grand Dinner",
+      "subtitle": "Old Town, viewpoints, food, buffet dinner, karaoke, and rooftop after-party",
+      "emoji": "📸",
+      "heroSeed": "phuket-old-town-karon-viewpoint-nightlife",
+      "imageUrl": "https://images.unsplash.com/photo-1687842542880-0f42a42f89a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "timeline": [
+        {
+          "time": "08:30",
+          "title": "Breakfast and choose your day route",
+          "detail": "Original itinerary says visit places of interest on your own. Recommended route: Phuket Old Town in the morning, Wat Chalong or viewpoint mid-day, Karon/Kata sunset, then back for dinner.",
+          "type": "meal",
+          "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "09:30",
+          "title": "Photospot: Phuket Old Town heritage walk",
+          "detail": "Walk Thalang Road and nearby Sino-Portuguese streets for cafes, murals, boutique shops, and colorful shophouse photos. This is the cleanest low-stress morning option.",
+          "type": "photospot",
+          "mapQuery": "Thalang Road, Phuket Old Town, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1503933166348-a1a86c17b3a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Shoot the pastel shophouses, archways, wall murals, and cafe fronts before lunch crowds arrive.",
+          "lat": 7.8842,
+          "lng": 98.3889
+        },
+        {
+          "time": "10:45",
+          "title": "Photospot: Soi Romanee and Old Town shophouses",
+          "detail": "Best for colorful street photos and group portraits. Keep lens wide and avoid blocking shop entrances.",
+          "type": "photospot",
+          "mapQuery": "Soi Romanee, Phuket Old Town, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1684083338842-ee04a0ff8335?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Shoot from the opposite side of the lane to capture the pastel facades and lanterns.",
+          "lat": 7.8847,
+          "lng": 98.3892
+        },
+        {
+          "time": "12:00",
+          "title": "Lunch in Phuket Old Town",
+          "detail": "Pick a local Phuket-style meal: mee Hokkien, roti, crab curry, dim sum, or a cafe if the group wants air-conditioning.",
+          "type": "meal",
+          "mapQuery": "Phuket Old Town restaurants, Thailand"
+        },
+        {
+          "time": "13:30",
+          "title": "Photospot: Wat Chalong temple stop",
+          "detail": "A calm cultural stop before returning toward the beaches. Dress respectfully with shoulders/knees covered or bring a light cover-up.",
+          "type": "photospot",
+          "mapQuery": "Wat Chalong, Phuket, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1578106367598-9c74a4ae23de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Use wide shots for the temple complex and tighter vertical frames for roof details and stair symmetry.",
+          "lat": 7.8468,
+          "lng": 98.3378
+        },
+        {
+          "time": "14:45",
+          "title": "Optional Big Buddha viewpoint check",
+          "detail": "Big Buddha status has been inconsistent after past closures. If it is confirmed open on the day, visit briefly. If not, skip it and use Karon Viewpoint instead.",
+          "type": "activity",
+          "mapQuery": "Big Buddha Phuket, Karon, Phuket, Thailand"
+        },
+        {
+          "time": "15:30",
+          "title": "Photospot: Karon Viewpoint",
+          "detail": "Safer default viewpoint stop with a strong view over Kata Noi, Kata, and Karon beaches. Good backup if Big Buddha access is restricted.",
+          "type": "photospot",
+          "mapQuery": "Karon Viewpoint, Phuket, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1737515908878-12e8ecc5b190?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Use 0.5x/wide camera for the three-beach view; keep people to one side of the frame.",
+          "lat": 7.7974,
+          "lng": 98.3069
+        },
+        {
+          "time": "16:30",
+          "title": "Return to resort and reset",
+          "detail": "Shower, change for dinner, recharge phones, and get ready for the ballroom event.",
+          "type": "logistics",
+          "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "18:30",
+          "title": "Grand dinner: buffet, free-flow beer, karaoke and dance",
+          "detail": "Original anchor from the event itinerary. Ballroom dinner with international buffet, party, karaoke, and dancing.",
+          "type": "meal",
+          "mapQuery": "The Kee Resort & Spa ballroom, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "23:00",
+          "title": "After-party at Rooftop Bar",
+          "detail": "Original anchor from the event itinerary. Continue at Rooftop Bar for anyone still able. Others can call it a night.",
+          "type": "activity",
+          "mapQuery": "The Kee Sky Lounge Rooftop Bar, Patong, Phuket, Thailand"
+        }
+      ],
+      "highlights": [
+        "Phuket Old Town",
+        "Wat Chalong",
+        "Karon Viewpoint",
+        "Grand dinner and party"
+      ],
+      "localTips": [
+        "Keep Day 3 flexible: the dinner is the immovable anchor.",
+        "Check same-day weather before committing to viewpoint stops.",
+        "If Big Buddha access looks uncertain, do not waste time there; Karon Viewpoint is the better fallback."
+      ],
+      "photos": []
+    },
+    {
+      "day": 4,
+      "date": "2026-07-06",
+      "title": "Kata, Karon and Rawai Beach Day",
+      "subtitle": "Free and easy coastal drive with beaches, seafood, and sunset",
+      "emoji": "🏖️",
+      "heroSeed": "kata-karon-rawai-phuket-beaches",
+      "imageUrl": "https://images.unsplash.com/photo-1708656705549-14bcdf9b4921?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "timeline": [
+        {
+          "time": "09:30",
+          "title": "Slow breakfast and beach-day prep",
+          "detail": "Original itinerary marks this as a free and easy day. Pack swimwear, towel, sandals, sunscreen, waterproof pouch, and a change of clothes.",
+          "type": "meal",
+          "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "10:30",
+          "title": "Drive to Karon Beach",
+          "detail": "Start with Karon because it is spacious and easier for a relaxed beach walk. Keep swim decisions weather-dependent.",
+          "type": "transport",
+          "mapQuery": "Karon Beach, Phuket, Thailand"
+        },
+        {
+          "time": "11:00",
+          "title": "Karon Beach walk and photos",
+          "detail": "Long beach walk, coconut stop, and casual photos. Avoid swimming if red flags or rough surf are present.",
+          "type": "activity",
+          "mapQuery": "Karon Beach, Phuket, Thailand"
+        },
+        {
+          "time": "12:30",
+          "title": "Lunch around Kata or Karon",
+          "detail": "Choose Thai seafood, noodle shop, or an air-conditioned cafe. Keep lunch simple so the group can continue south without dragging.",
+          "type": "meal",
+          "mapQuery": "Kata Beach restaurants, Phuket, Thailand"
+        },
+        {
+          "time": "14:00",
+          "title": "Photospot: Kata Beach free time",
+          "detail": "Beach, cafes, massage, shopping, or rest. This is the main open relaxation block of the trip.",
+          "type": "photospot",
+          "mapQuery": "Kata Beach, Phuket, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1737515908817-2b7668aea1a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Shoot beach layers: foreground umbrellas or palms, swimmers/surf, and the bay curve in the background.",
+          "lat": 7.8195,
+          "lng": 98.2990
+        },
+        {
+          "time": "16:00",
+          "title": "Rawai seafood and coastal drive",
+          "detail": "Drive south to Rawai for seafood atmosphere and local coastal views. Good option if the group wants more food than beach.",
+          "type": "activity",
+          "mapQuery": "Rawai Seafood Market, Phuket, Thailand"
+        },
+        {
+          "time": "17:30",
+          "title": "Photospot: Promthep Cape or Windmill Viewpoint",
+          "detail": "Promthep is the classic choice; Windmill is often easier and less chaotic. Pick one based on traffic and parking.",
+          "type": "photospot",
+          "mapQuery": "Promthep Cape, Phuket, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1481988535861-271139e06469?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Arrive before sunset, secure parking, and shoot both sea horizon and group silhouettes.",
+          "lat": 7.7623,
+          "lng": 98.3069
+        },
+        {
+          "time": "19:30",
+          "title": "Dinner at Rawai or return to Patong",
+          "detail": "If everyone is hungry, eat seafood near Rawai. If the group wants nightlife or rest, return to Patong and eat near the resort.",
+          "type": "meal",
+          "mapQuery": "Rawai, Phuket, Thailand"
+        },
+        {
+          "time": "21:30",
+          "title": "Free evening",
+          "detail": "Last proper Phuket night. Choose low-key massage, rooftop drink, Bangla Road, or early sleep before the Hat Yai transfer.",
+          "type": "activity",
+          "mapQuery": "Patong, Phuket, Thailand"
+        }
+      ],
+      "highlights": [
+        "Karon Beach",
+        "Kata Beach",
+        "Rawai seafood",
+        "Promthep Cape or Windmill sunset"
+      ],
+      "localTips": [
+        "The event itinerary specifically recommends Kata, Karon, and Rawai; this route follows that direction.",
+        "July is rainy season, so keep beach stops flexible and watch surf flags.",
+        "Do not overpack the day; the best version is relaxed, not rushed."
+      ],
+      "photos": []
+    },
+    {
+      "day": 5,
+      "date": "2026-07-07",
+      "title": "Phuket to Hat Yai",
+      "subtitle": "Convoy transfer, Regency Hotel check-in, and Lee Garden night market",
+      "emoji": "🏙️",
+      "heroSeed": "hat-yai-lee-garden-night-market",
+      "imageUrl": "https://images.unsplash.com/photo-1535898331935-2d274aff0fbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "timeline": [
+        {
+          "time": "07:15",
+          "title": "Breakfast, checkout and luggage load",
+          "detail": "Settle room bills, check all luggage, refill water, and prepare for the long convoy to Hat Yai.",
+          "type": "logistics",
+          "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
+        },
+        {
+          "time": "08:00",
+          "title": "Convoy proceeds to Hat Yai",
+          "detail": "Original anchor from the event itinerary. Lunch is planned on board, so prepare snacks/drinks and keep the group driving rhythm steady.",
+          "type": "transport",
+          "mapQuery": "Phuket to Hat Yai, Thailand"
+        },
+        {
+          "time": "10:30",
+          "title": "Rest/fuel stop",
+          "detail": "Recommended comfort stop. Stretch, use restrooms, rotate drivers if needed, and confirm ETA.",
+          "type": "logistics",
+          "mapQuery": "Phuket to Hat Yai route, Thailand"
+        },
+        {
+          "time": "12:30",
+          "title": "Lunch on board",
+          "detail": "Original anchor from the event itinerary. Keep lunch light and convenient so the convoy does not lose time.",
+          "type": "meal",
+          "mapQuery": "Phuket to Hat Yai route, Thailand"
+        },
+        {
+          "time": "15:00",
+          "title": "Optional coffee/restroom stop before Hat Yai",
+          "detail": "Add one practical stop before entering town, especially if the group is tired or traffic builds.",
+          "type": "logistics",
+          "mapQuery": "Hat Yai District, Songkhla, Thailand"
+        },
+        {
+          "time": "17:00",
+          "title": "Arrive at Regency Hotel Hat Yai",
+          "detail": "Original anchor from the event itinerary. Check in, unload, refresh, and agree on a night-market meetup time.",
+          "type": "hotel",
+          "mapQuery": "Regency Hotel Hatyai, Hat Yai, Thailand"
+        },
+        {
+          "time": "18:30",
+          "title": "Photospot: Lee Garden night market and dinner",
+          "detail": "Free and easy Hat Yai evening filled in. Walk the Lee Garden zone for street food, grilled seafood, mango sticky rice, Thai milk tea, fried chicken, snacks, and souvenir shopping.",
+          "type": "photospot",
+          "mapQuery": "Lee Garden Plaza, Hat Yai, Thailand",
+          "imageUrl": "https://images.unsplash.com/photo-1733150632156-797e26fc6c7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+          "tip": "Shoot neon signs, food stalls, and group candid shots before sitting down for dinner.",
+          "lat": 7.0051,
+          "lng": 100.4715
+        },
+        {
+          "time": "20:30",
+          "title": "Kim Yong Market area or massage",
+          "detail": "If the group wants more shopping, walk nearby market streets. If tired from the drive, choose foot massage and return early.",
+          "type": "activity",
+          "mapQuery": "Kim Yong Market, Hat Yai, Thailand"
+        },
+        {
+          "time": "22:00",
+          "title": "Pack for border/home return",
+          "detail": "Prepare documents, car items, luggage, and snacks for the independent return to Malaysia tomorrow.",
+          "type": "logistics",
+          "mapQuery": "Regency Hotel Hatyai, Hat Yai, Thailand"
+        }
+      ],
+      "highlights": [
+        "Convoy to Hat Yai",
+        "Regency Hotel arrival",
+        "Lee Garden night market",
+        "Last-night shopping and food"
+      ],
+      "localTips": [
+        "Keep Thai baht cash for markets and small food stalls.",
+        "Lee Garden zone is convenient for food and shopping near many central hotels.",
+        "Do final packing tonight to avoid morning stress."
+      ],
+      "photos": []
+    },
+    {
+      "day": 6,
+      "date": "2026-07-08",
+      "title": "Hat Yai Break and Return to Malaysia",
+      "subtitle": "Final breakfast, optional market stop, and independent convoy break",
+      "emoji": "👋",
+      "heroSeed": "hat-yai-morning-market-return-malaysia",
+      "imageUrl": "https://images.unsplash.com/photo-1535898331935-2d274aff0fbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "timeline": [
+        {
+          "time": "08:00",
+          "title": "Breakfast near hotel",
+          "detail": "Easy final breakfast. Good options: hotel breakfast, local dim sum, kopi, or simple noodles before the drive home.",
+          "type": "meal",
+          "mapQuery": "Hat Yai breakfast near Regency Hotel, Thailand"
+        },
+        {
+          "time": "09:00",
+          "title": "Optional final shopping: Kim Yong Market",
+          "detail": "Pick up snacks, dry goods, souvenirs, and last-minute items. Keep this short if border timing matters.",
+          "type": "activity",
+          "mapQuery": "Kim Yong Market, Hat Yai, Thailand"
+        },
+        {
+          "time": "10:30",
+          "title": "Checkout and convoy break",
+          "detail": "Original anchor from the event itinerary. Convoy breaks here and everyone proceeds back to Malaysia on their own.",
+          "type": "logistics",
+          "mapQuery": "Regency Hotel Hatyai, Hat Yai, Thailand"
+        },
+        {
+          "time": "11:00",
+          "title": "Return to Malaysia",
+          "detail": "Drive independently toward your preferred border crossing and final home destination. Confirm fuel, passports, vehicle documents, and snacks before leaving Hat Yai.",
+          "type": "transport",
+          "mapQuery": "Hat Yai to Malaysia border"
+        },
+        {
+          "time": "13:00",
+          "title": "Lunch stop if needed",
+          "detail": "Add a flexible lunch/rest stop depending on border queue and driver energy. Do not rush if tired.",
+          "type": "meal",
+          "mapQuery": "Sadao border area, Thailand"
+        },
+        {
+          "time": "16:00",
+          "title": "Trip wrap",
+          "detail": "Share photos, fuel/toll receipts, and group memories. Bye bye and see you again in the next trip.",
+          "type": "logistics",
+          "mapQuery": "Malaysia"
+        }
+      ],
+      "highlights": [
+        "Final Hat Yai breakfast",
+        "Kim Yong Market option",
+        "Independent return to Malaysia"
+      ],
+      "localTips": [
+        "Check border queue updates before leaving Hat Yai.",
+        "Keep passports and vehicle documents accessible, not buried in luggage.",
+        "Drivers should rest before the long return."
+      ],
+      "photos": []
+    }
+  ],
+  "hotels": [
+    {
+      "city": "Trang",
+      "name": "Rua Rasada Hotel",
+      "price": "Event-arranged / confirm with organiser",
+      "note": "Self check-in on 3 July.",
+      "checkin": "2026-07-03",
+      "checkout": "2026-07-04",
+      "nights": 1,
+      "bookUrl": "https://www.hotellook.com/hotels?destination=Rua%20Rasada%20Hotel%20Trang&checkIn=2026-07-03&checkOut=2026-07-04&adults=2&rooms=1&marker=529721",
+      "address": "Trang, Thailand"
+    },
+    {
+      "city": "Phuket",
+      "name": "The Kee Resort & Spa",
+      "price": "Event-arranged / confirm with organiser",
+      "note": "Main Phuket stay from 4 July to 7 July.",
+      "checkin": "2026-07-04",
+      "checkout": "2026-07-07",
+      "nights": 3,
+      "bookUrl": "https://www.hotellook.com/hotels?destination=The%20Kee%20Resort%20Patong%20Phuket&checkIn=2026-07-04&checkOut=2026-07-07&adults=2&rooms=1&marker=529721",
+      "address": "Patong, Phuket, Thailand"
+    },
+    {
+      "city": "Hat Yai",
+      "name": "Regency Hotel Hatyai",
+      "price": "Event-arranged / confirm with organiser",
+      "note": "Final night in Hat Yai on 7 July.",
+      "checkin": "2026-07-07",
+      "checkout": "2026-07-08",
+      "nights": 1,
+      "bookUrl": "https://www.hotellook.com/hotels?destination=Regency%20Hotel%20Hatyai&checkIn=2026-07-07&checkOut=2026-07-08&adults=2&rooms=1&marker=529721",
+      "address": "Hat Yai, Thailand"
+    }
+  ],
+  "budget": [
+    {
+      "item": "Fuel, tolls and parking",
+      "amount": "Group to split",
+      "note": "Trang -> Krabi -> Phuket -> Hat Yai -> Malaysia convoy costs.",
+      "status": "pending",
+      "category": "transport"
+    },
+    {
+      "item": "Meals not included",
+      "amount": "THB 300-800 per person per meal",
+      "note": "Lunches, casual dinners, coffee, snacks, and market food.",
+      "status": "pending",
+      "category": "food"
+    },
+    {
+      "item": "Optional activities",
+      "amount": "Variable",
+      "note": "Beach activities, massage, viewpoints, shopping, and nightlife are optional.",
+      "status": "pending",
+      "category": "activities"
+    },
+    {
+      "item": "Shopping and souvenirs",
+      "amount": "Personal budget",
+      "note": "Central Krabi, Phuket Old Town, Patong/Jungceylon, and Hat Yai markets.",
+      "status": "pending",
+      "category": "misc"
+    }
+  ],
+  "urgent": [
+    {
+      "label": "Confirm convoy route and meeting points",
+      "note": "Before 3 July, confirm lead car, tail car, emergency contacts, fuel/rest stops, and WhatsApp location-sharing rules.",
+      "url": "",
+      "priority": 1
+    },
+    {
+      "label": "Confirm hotel rooming list",
+      "note": "Rua Rasada, The Kee Resort, and Regency Hotel Hatyai should all match the organiser list.",
+      "url": "",
+      "priority": 1
+    },
+    {
+      "label": "Check Phuket weather and sea conditions",
+      "note": "July is rainy season. Adjust beach/swim plans if rain, rough surf, or red flags appear.",
+      "url": "",
+      "priority": 2
+    },
+    {
+      "label": "Verify Big Buddha status before visiting",
+      "note": "The site has had reopening/closure confusion after landslide-related closures. Use Karon Viewpoint as the safe backup.",
+      "url": "https://www.getyourguide.com/s/?q=Phuket%20city%20tour%20Wat%20Chalong%20Karon%20Viewpoint&partner_id=529721",
+      "priority": 2
+    },
+    {
+      "label": "Prepare border documents for return",
+      "note": "Passports, vehicle documents, insurance, cash, and driver rest before Hat Yai -> Malaysia.",
+      "url": "",
+      "priority": 1
+    }
+  ],
+  "tickets": [],
+  "mapStops": [
+    {
+      "name": "Rua Rasada Hotel, Trang",
+      "lat": 7.556,
+      "lng": 99.611,
+      "emoji": "hotel",
+      "type": "stay",
+      "day": 1,
+      "nights": 1
+    },
+    {
+      "name": "Central Krabi",
+      "lat": 8.086,
+      "lng": 98.906,
+      "emoji": "shopping",
+      "type": "stop",
+      "day": 2,
+      "nights": 0
+    },
+    {
+      "name": "The Kee Resort, Patong",
+      "lat": 7.895,
+      "lng": 98.298,
+      "emoji": "resort",
+      "type": "stay",
+      "day": 2,
+      "nights": 3
+    },
+    {
+      "name": "Phuket Old Town",
+      "lat": 7.884,
+      "lng": 98.389,
+      "emoji": "town",
+      "type": "activity",
+      "day": 3,
+      "nights": 0
+    },
+    {
+      "name": "Karon / Kata / Rawai",
+      "lat": 7.803,
+      "lng": 98.303,
+      "emoji": "beach",
+      "type": "activity",
+      "day": 4,
+      "nights": 0
+    },
+    {
+      "name": "Regency Hotel Hatyai",
+      "lat": 7.006,
+      "lng": 100.471,
+      "emoji": "hotel",
+      "type": "stay",
+      "day": 5,
+      "nights": 1
+    },
+    {
+      "name": "Malaysia return",
+      "lat": 6.443,
+      "lng": 100.198,
+      "emoji": "home",
+      "type": "return",
+      "day": 6,
+      "nights": 0
+    }
+  ],
+  "mapRoute": [
+    {
+      "lat": 7.556,
+      "lng": 99.611
+    },
+    {
+      "lat": 8.086,
+      "lng": 98.906
+    },
+    {
+      "lat": 7.895,
+      "lng": 98.298
+    },
+    {
+      "lat": 7.803,
+      "lng": 98.303
+    },
+    {
+      "lat": 7.006,
+      "lng": 100.471
+    },
+    {
+      "lat": 6.443,
+      "lng": 100.198
+    }
+  ]
+}

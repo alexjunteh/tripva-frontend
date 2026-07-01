@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Load Phuket Odyssey 2026 in Tripva</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    main {
+      width: min(560px, calc(100vw - 32px));
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 18px;
+      padding: 28px;
+      background: rgba(15, 23, 42, .9);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
+    }
+    h1 { margin: 0 0 10px; font-size: 24px; }
+    p { color: #cbd5e1; line-height: 1.55; }
+    .status { margin-top: 18px; font-weight: 700; }
+    a { color: #f97316; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Loading Phuket Odyssey 2026</h1>
+    <p>This page imports the Tripva itinerary into your browser and opens it in the Tripva trip view.</p>
+    <p class="status" id="status">Loading plan...</p>
+    <p><a href="../trip.html">Open Tripva trip view manually</a></p>
+  </main>
+  <script>
+    async function loadPlan() {
+      const status = document.getElementById('status');
+      try {
+        const response = await fetch('phuket-odyssey-2026.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error(response.status + ' ' + response.statusText);
+        const plan = await response.json();
+        localStorage.setItem('tripva_plan', JSON.stringify(plan));
+        localStorage.removeItem('tripva_budget_render_error');
+        status.textContent = 'Loaded. Opening Tripva...';
+        setTimeout(() => {
+          window.location.href = '../trip.html';
+        }, 500);
+      } catch (error) {
+        status.textContent = 'Could not load plan: ' + error.message;
+      }
+    }
+    loadPlan();
+  </script>
+</body>
+</html>
