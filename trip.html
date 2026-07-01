@@ -8,8 +8,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="AI Trip Planner">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1635,7 +1633,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
     <div id="restoredBanner" class="restored-banner" style="display:none">✅ Trip plan loaded from shared link</div>
     <div id="focusCard" class="focus-card" style="display:none"></div>
     <!-- ROUTE MAP -->
-    <div class="route-map-wrap" id="routeMapWrap">
+    <div class="route-map-wrap collapsed" id="routeMapWrap">
       <div id="routeMap" style="width:100%;height:220px;border-radius:16px;z-index:1;margin:0 14px;width:calc(100% - 28px)"></div>
       <div class="route-map-toggle" id="routeMapToggle" onclick="toggleRouteMap()">🗺️ Route map</div>
     </div>
@@ -2285,14 +2283,18 @@ let fxRates = null; // { USD:1, EUR:0.92, ... } keyed by target currency, base U
 let fxHomeCurrency = localStorage.getItem('tripva_home_currency') || 'USD';
 try { window.__fxHome = fxHomeCurrency; } catch(e) {}
 let fxSourceCurrency = 'USD'; // detected from trip destination
+let fxRatesPromise = null;
 
 async function loadFxRates() {
+  if (fxRates) return fxRates;
+  if (fxRatesPromise) return fxRatesPromise;
+  fxRatesPromise = (async () => {
   const cached = localStorage.getItem('tripva_fx_rates');
   const ts = parseInt(localStorage.getItem('tripva_fx_timestamp') || '0');
   const now = Date.now();
   if (cached && (now - ts) < 3600000) {
     fxRates = JSON.parse(cached);
-    return;
+    return fxRates;
   }
   try {
     const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
@@ -2301,6 +2303,9 @@ async function loadFxRates() {
     localStorage.setItem('tripva_fx_rates', JSON.stringify(fxRates));
     localStorage.setItem('tripva_fx_timestamp', String(now));
   } catch(e) { fxRates = null; }
+  return fxRates;
+  })();
+  return fxRatesPromise;
 }
 
 function detectSourceCurrency(destination) {
@@ -2336,9 +2341,11 @@ function onFxChange(val) {
     c.classList.toggle('active', c.dataset.cur === val);
   });
   const il = document.getElementById('fxSelectInline'); if(il) il.value = val;
-  updateBudgetConversions();
-  // Hero totals are also in home currency → recompute when the chip changes.
-  updateBudgetHero();
+  loadFxRates().then(() => {
+    updateBudgetConversions();
+    // Hero totals are also in home currency → recompute when the chip changes.
+    updateBudgetHero();
+  });
 }
 
 function updateBudgetHero() {
@@ -2487,6 +2494,8 @@ function initFxBar() {
     c.classList.toggle('active', c.dataset.cur === fxHomeCurrency);
   });
   fxSourceCurrency = detectSourceCurrency(plan?.trip?.destination || '');
+  const budgetTab = document.getElementById('tab-budget');
+  if (!budgetTab || !budgetTab.classList.contains('active')) return;
   loadFxRates().then(() => updateBudgetConversions());
 }
 
@@ -3632,6 +3641,7 @@ function openTicket(tktTitle) {
   // Re-render Live tab when activated (ensures it always shows fresh data)
   if (name === 'plan' && plan) { try { renderLiveOps(); } catch(e) {} }
   if (name === 'tickets') { try { _prefillFlightInputs(); _initFlightSearch(); } catch(e) {} }
+  if (name === 'budget') { try { initFxBar(); } catch(e) {} }
 }
 
 // Scroll-hide bottom nav on Now tab (DESIGN.md principle 1 — maximize FocusCard).
@@ -5882,14 +5892,33 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').cat
 
 // ── ROUTE MAP ──
 let routeMapInited=false;
+let leafletLoadPromise=null;
+function ensureLeafletLoaded(){
+  if (window.L) return Promise.resolve(window.L);
+  if (leafletLoadPromise) return leafletLoadPromise;
+  leafletLoadPromise = new Promise((resolve, reject) => {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    const js = document.createElement('script');
+    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.async = true;
+    js.onload = () => resolve(window.L);
+    js.onerror = () => reject(new Error('Leaflet failed to load'));
+    document.head.appendChild(js);
+  });
+  return leafletLoadPromise;
+}
 function toggleRouteMap(){
   const w=document.getElementById('routeMapWrap');
   w.classList.toggle('collapsed');
   if(!w.classList.contains('collapsed') && !routeMapInited) initRouteMap();
   document.getElementById('routeMapToggle').textContent=w.classList.contains('collapsed')?'🗺️ Show route map':'🗺️ Hide map';
 }
-function initRouteMap(){
-  if(routeMapInited||typeof L==='undefined') return;
+async function initRouteMap(){
+  if(routeMapInited) return;
+  try { await ensureLeafletLoaded(); } catch(e) { console.warn('[route-map] Leaflet load failed', e); return; }
   routeMapInited=true;
   const homeCity = (tripMeta?.homeCity || plan?.trip?.homeCity || '').toLowerCase().split(',')[0].trim();
   const stops = (plan?.mapStops||[]).filter(s => !homeCity || !(s.name||'').toLowerCase().includes(homeCity));
@@ -5911,12 +5940,6 @@ function initRouteMap(){
   });
   map.fitBounds(L.latLngBounds(stops.map(s=>[s.lat,s.lng])),{padding:[40,40],maxZoom:7});
 }
-// Auto-init when Days tab opens
-const _origSwitch=window.switchTab;
-window.switchTab=function(t){_origSwitch(t);if(t==='trip'&&!routeMapInited){setTimeout(initRouteMap,300);}};
-// Also init if trip tab is loaded during populateDashboard
-setTimeout(()=>{if(document.getElementById('tab-trip')&&document.getElementById('tab-trip').classList.contains('active')&&!routeMapInited)initRouteMap();},2000);
-
 // ══════════════════════════════════════
 //  ROAM TRIP PLANNER — BACKEND WIRING
 // ══════════════════════════════════════
