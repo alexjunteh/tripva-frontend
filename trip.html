@@ -5921,12 +5921,17 @@ function scheduleLazyBg(el) {
     if (_lazyBgScrollWired) return;
     _lazyBgScrollWired = true;
     const scroller = document.getElementById('daysList');
+    const strip = document.getElementById('dayStrip');
     const flush = () => {
       _pendingLazyBgs.forEach(node => observeLazyBg(node));
       _pendingLazyBgs.clear();
     };
-    if (scroller) scroller.addEventListener('scroll', flush, { once: true, passive: true });
-    setTimeout(flush, 3500);
+    if (scroller) {
+      ['wheel', 'touchstart', 'pointerdown'].forEach(evt => {
+        scroller.addEventListener(evt, flush, { once: true, passive: true });
+      });
+    }
+    if (strip) strip.addEventListener('click', flush, { once: true, passive: true });
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireScroll, { once: true });
   else wireScroll();
