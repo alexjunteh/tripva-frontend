@@ -4054,7 +4054,7 @@ function populateDashboard(p) {
         </div>`;
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
-      if (!eagerBg) observeLazyBg(card.querySelector('.day-big-hero'));
+      if (!eagerBg) scheduleLazyBg(card.querySelector('.day-big-hero'));
     });
 
     // Scroll day strip so the last pill is fully visible
@@ -5889,6 +5889,8 @@ function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function safeHref(u){const s=String(u||'').trim();return/^https?:\/\//i.test(s)?s.replace(/&/g,'&amp;').replace(/"/g,'&quot;'):'#';}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 let _lazyBgObserver = null;
+let _lazyBgScrollWired = false;
+const _pendingLazyBgs = new Set();
 function observeLazyBg(el) {
   if (!el || !el.dataset.bg) return;
   const load = () => {
@@ -5911,6 +5913,23 @@ function observeLazyBg(el) {
     }, { rootMargin: '260px 0px' });
   }
   _lazyBgObserver.observe(el);
+}
+function scheduleLazyBg(el) {
+  if (!el || !el.dataset.bg) return;
+  _pendingLazyBgs.add(el);
+  const wireScroll = () => {
+    if (_lazyBgScrollWired) return;
+    _lazyBgScrollWired = true;
+    const scroller = document.getElementById('daysList');
+    const flush = () => {
+      _pendingLazyBgs.forEach(node => observeLazyBg(node));
+      _pendingLazyBgs.clear();
+    };
+    if (scroller) scroller.addEventListener('scroll', flush, { once: true, passive: true });
+    setTimeout(flush, 3500);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireScroll, { once: true });
+  else wireScroll();
 }
 
 // PWA
