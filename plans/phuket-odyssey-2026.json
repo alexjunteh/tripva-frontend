@@ -11,7 +11,7 @@
     "travelers": 4,
     "archetype": "friends",
     "pace": "balanced",
-    "source": "Built from supplied Phuket Odyssey 2026 itinerary screenshot, with free-time details filled in by Tripva."
+    "source": "Built from supplied Phuket Odyssey 2026 itinerary screenshot, with free-time details filled in by Tripva and July 3 cafe/viewpoint requests added."
   },
   "days": [
     {
@@ -21,7 +21,7 @@
       "subtitle": "Check in, settle down, and start the trip gently",
       "emoji": "🏨",
       "heroSeed": "trang-thailand-town-evening",
-      "imageUrl": "https://images.unsplash.com/photo-1599576838688-8a6c11263108?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg",
       "timeline": [
         {
           "time": "14:00",
@@ -78,7 +78,7 @@
       "subtitle": "Convoy transfer, shopping stop, resort arrival, Patong evening",
       "emoji": "🚐",
       "heroSeed": "krabi-road-trip-phuket-patong",
-      "imageUrl": "https://images.unsplash.com/photo-1576682303079-cd3438285f20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "/demo-assets/phuket-odyssey/patong-sunset.jpg",
       "timeline": [
         {
           "time": "07:15",
@@ -90,14 +90,14 @@
         {
           "time": "08:00",
           "title": "Convoy leaves for Phuket",
-          "detail": "Original anchor from the event itinerary. Drive from Trang toward Krabi first, then continue onward to Phuket. Keep one short restroom/fuel stop if needed.",
+          "detail": "Original anchor from the event itinerary. Drive from Trang toward Krabi first, then continue onward to Phuket. Keep one short restroom or fuel stop if needed.",
           "type": "transport",
           "mapQuery": "Trang to Krabi to Phuket, Thailand"
         },
         {
           "time": "10:30",
           "title": "Central Krabi shopping and lunch stop",
-          "detail": "Original anchor from the event itinerary. Good window for restroom, lunch, snacks, pharmacy, coffee, and a short mall walk before the final leg to Phuket.",
+          "detail": "Original anchor from the event itinerary. Use this as the first shopping window for snacks, pharmacy items, coffee, and a comfortable lunch before the final Phuket leg.",
           "type": "meal",
           "mapQuery": "Central Krabi, Krabi, Thailand"
         },
@@ -118,32 +118,39 @@
         {
           "time": "17:15",
           "title": "Easy Patong orientation walk",
-          "detail": "Walk the area around the resort and Patong Beach to understand where food, convenience stores, massage shops, money exchange, and pickup points are.",
+          "detail": "Short walk from The Kee to understand the beach road, Bangla Road, Jungceylon direction, pharmacy options, and taxi pickup points before the night gets busy.",
           "type": "activity",
           "mapQuery": "Patong Beach, Phuket, Thailand"
         },
         {
-          "time": "18:30",
-          "title": "Photospot: Patong Beach sunset",
-          "detail": "Simple first-night photo stop. Aim for beach silhouettes, resort skyline, and group shots before dinner.",
+          "time": "18:00",
+          "title": "Kan's Haus Cafe & Bistro sunset stop",
+          "detail": "Requested cafe add-on. Go for beachfront photos, coffee or mocktails, and an easy golden-hour table facing Patong Beach. Keep this as a relaxed first Phuket evening, not a heavy dinner stop.",
           "type": "photospot",
-          "mapQuery": "Patong Beach sunset viewpoint, Phuket, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/patong-sunset.jpg",
-          "tip": "Stand near the beach path and shoot west-facing frames before the sky gets dark.",
-          "lat": 7.8965,
-          "lng": 98.2956
+          "mapQuery": "Kan's Haus Cafe & Bistro, Patong, Phuket, Thailand",
+          "tip": "Ask for an outdoor or sea-facing table before sunset; shoot wide with beach and warm sky behind the drinks.",
+          "imageUrl": "/demo-assets/phuket-odyssey/patong-sunset.jpg"
         },
         {
-          "time": "19:30",
-          "title": "Dinner near Bangla Road or Jungceylon",
-          "detail": "Choose easy group dining: Thai seafood, hotpot, or mall restaurant if rain hits. Keep it close to the resort so people can split into nightlife/rest groups after dinner.",
+          "time": "19:15",
+          "title": "Amari Phuket / Samutr Bar viewpoint drink",
+          "detail": "Requested Amari Phuket add-on. Head to Samutr Bar for a polished Patong Bay viewpoint, sunset drinks, and group photos before returning toward the main Patong area.",
+          "type": "photospot",
+          "mapQuery": "Samutr Bar, Amari Phuket, Patong, Phuket, Thailand",
+          "tip": "Smart casual is safest. This works best as a scenic drink stop, not a rushed meal.",
+          "imageUrl": "/demo-assets/phuket-odyssey/patong-sunset.jpg"
+        },
+        {
+          "time": "20:30",
+          "title": "Dinner and shopping around Jungceylon",
+          "detail": "Use the late dinner window for Jungceylon, street snacks, pharmacy top-up, and any forgotten beach items. Keep the group near Patong so nobody needs a long transfer after the drive day.",
           "type": "meal",
           "mapQuery": "Jungceylon, Patong, Phuket, Thailand"
         },
         {
-          "time": "21:00",
+          "time": "22:00",
           "title": "Free and easy: Patong nightlife or recovery",
-          "detail": "Original free/easy window filled in. Option A: Bangla Road for the first nightlife taste. Option B: Thai massage and sleep. Option C: resort rooftop/drinks if the group wants something easier.",
+          "detail": "Split by energy level: Bangla Road for nightlife, beach road for a softer walk, or back to The Kee for rest before the fuller Phuket day.",
           "type": "activity",
           "mapQuery": "Bangla Road, Patong, Phuket, Thailand"
         }
@@ -168,91 +175,80 @@
       "subtitle": "Old Town, viewpoints, food, buffet dinner, karaoke, and rooftop after-party",
       "emoji": "📸",
       "heroSeed": "phuket-old-town-karon-viewpoint-nightlife",
-      "imageUrl": "https://images.unsplash.com/photo-1687842542880-0f42a42f89a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg",
       "timeline": [
         {
           "time": "08:30",
           "title": "Breakfast and choose your day route",
-          "detail": "Original itinerary says visit places of interest on your own. Recommended route: Phuket Old Town in the morning, Wat Chalong or viewpoint mid-day, Karon/Kata sunset, then back for dinner.",
+          "detail": "Start at The Kee and confirm who wants the full Old Town route versus a lighter shopping route. Bring sun protection and power banks because this day has many photo stops.",
           "type": "meal",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
         {
           "time": "09:30",
-          "title": "Photospot: Phuket Old Town heritage walk",
-          "detail": "Walk Thalang Road and nearby Sino-Portuguese streets for cafes, murals, boutique shops, and colorful shophouse photos. This is the cleanest low-stress morning option.",
-          "type": "photospot",
-          "mapQuery": "Thalang Road, Phuket Old Town, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg",
-          "tip": "Shoot the pastel shophouses, archways, wall murals, and cafe fronts before lunch crowds arrive.",
-          "lat": 7.8842,
-          "lng": 98.3889
+          "title": "Phuket Old Town heritage walk",
+          "detail": "Walk Thalang Road and the Sino-Portuguese shophouses while the streets are still manageable. Focus on murals, colorful facades, and short cafe stops rather than trying to cover every lane.",
+          "type": "activity",
+          "mapQuery": "Thalang Road, Phuket Old Town, Thailand"
         },
         {
           "time": "10:45",
           "title": "Photospot: Soi Romanee and Old Town shophouses",
-          "detail": "Best for colorful street photos and group portraits. Keep lens wide and avoid blocking shop entrances.",
+          "detail": "Original Tripva photospot. Use Soi Romanee for pastel building photos, doorway portraits, and group shots before the midday sun gets too harsh.",
           "type": "photospot",
           "mapQuery": "Soi Romanee, Phuket Old Town, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/soi-romanee.jpg",
-          "tip": "Shoot from the opposite side of the lane to capture the pastel facades and lanterns.",
-          "lat": 7.8847,
-          "lng": 98.3892
+          "tip": "Shoot from the shaded side of the lane; pastel shophouses look better with people walking naturally through frame.",
+          "imageUrl": "/demo-assets/phuket-odyssey/soi-romanee.jpg"
         },
         {
-          "time": "12:00",
+          "time": "11:30",
+          "title": "The Glass House Cafe & Space / Lion Cafe stop",
+          "detail": "Requested Glass House Lion Cafe add-on near Phuket Town/Ratsada. Use it as a coffee, dessert, and interior photo stop. If animal-contact photos feel uncomfortable, skip handling/paid animal interaction and keep it to the cafe setting.",
+          "type": "photospot",
+          "mapQuery": "The Glass House Cafe & Space, Ratsada, Phuket, Thailand",
+          "tip": "Go for window, jungle, and starry-ceiling shots; keep the stop short so lunch and shopping do not slip.",
+          "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg"
+        },
+        {
+          "time": "12:45",
           "title": "Lunch in Phuket Old Town",
-          "detail": "Pick a local Phuket-style meal: mee Hokkien, roti, crab curry, dim sum, or a cafe if the group wants air-conditioning.",
+          "detail": "Choose an Old Town lunch spot before the transfer south. If the group wants local food, use this window for One Chun/Chomchan-style Phuket dishes; if tired, pick an air-conditioned cafe nearby.",
           "type": "meal",
           "mapQuery": "Phuket Old Town restaurants, Thailand"
         },
         {
-          "time": "13:30",
-          "title": "Photospot: Wat Chalong temple stop",
-          "detail": "A calm cultural stop before returning toward the beaches. Dress respectfully with shoulders/knees covered or bring a light cover-up.",
-          "type": "photospot",
-          "mapQuery": "Wat Chalong, Phuket, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/wat-chalong.jpg",
-          "tip": "Use wide shots for the temple complex and tighter vertical frames for roof details and stair symmetry.",
-          "lat": 7.8468,
-          "lng": 98.3378
-        },
-        {
-          "time": "14:45",
-          "title": "Optional Big Buddha viewpoint check",
-          "detail": "Big Buddha status has been inconsistent after past closures. If it is confirmed open on the day, visit briefly. If not, skip it and use Karon Viewpoint instead.",
+          "time": "14:00",
+          "title": "Wat Chalong temple stop",
+          "detail": "Keep the temple visit respectful and efficient: covered shoulders, quiet group movement, and 35-45 minutes on site. This keeps the spiritual/cultural stop without making the day too heavy.",
           "type": "activity",
-          "mapQuery": "Big Buddha Phuket, Karon, Phuket, Thailand"
+          "mapQuery": "Wat Chalong, Phuket, Thailand",
+          "imageUrl": "/demo-assets/phuket-odyssey/wat-chalong.jpg"
         },
         {
-          "time": "15:30",
-          "title": "Photospot: Karon Viewpoint",
-          "detail": "Safer default viewpoint stop with a strong view over Kata Noi, Kata, and Karon beaches. Good backup if Big Buddha access is restricted.",
-          "type": "photospot",
-          "mapQuery": "Karon Viewpoint, Phuket, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/karon-viewpoint.jpg",
-          "tip": "Use 0.5x/wide camera for the three-beach view; keep people to one side of the frame.",
-          "lat": 7.7974,
-          "lng": 98.3069
+          "time": "15:15",
+          "title": "Shopping block: Central Phuket or weekend market",
+          "detail": "Requested shopping/market planning. If the group wants air-con and brands, use Central Phuket. If it is operating and the group wants local snacks, choose Naka/Chillva-style market instead.",
+          "type": "activity",
+          "mapQuery": "Central Phuket, Phuket, Thailand"
         },
         {
-          "time": "16:30",
+          "time": "16:45",
           "title": "Return to resort and reset",
-          "detail": "Shower, change for dinner, recharge phones, and get ready for the ballroom event.",
+          "detail": "Return to The Kee with enough time to shower, charge phones, and change for the official dinner. Do not add another far viewpoint before the 18:30 anchor.",
           "type": "logistics",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
         {
           "time": "18:30",
           "title": "Grand dinner: buffet, free-flow beer, karaoke and dance",
-          "detail": "Original anchor from the event itinerary. Ballroom dinner with international buffet, party, karaoke, and dancing.",
+          "detail": "Original anchor from the event itinerary. Group dinner with international buffet, beer, karaoke, and dance. Keep valuables in room safe before the event.",
           "type": "meal",
           "mapQuery": "The Kee Resort & Spa ballroom, Patong, Phuket, Thailand"
         },
         {
           "time": "23:00",
           "title": "After-party at Rooftop Bar",
-          "detail": "Original anchor from the event itinerary. Continue at Rooftop Bar for anyone still able. Others can call it a night.",
+          "detail": "Original anchor from the event itinerary. Continue only if energy is good; otherwise this is the natural point to rest before the beach/viewpoint day.",
           "type": "activity",
           "mapQuery": "The Kee Sky Lounge Rooftop Bar, Patong, Phuket, Thailand"
         }
@@ -277,76 +273,83 @@
       "subtitle": "Free and easy coastal drive with beaches, seafood, and sunset",
       "emoji": "🏖️",
       "heroSeed": "kata-karon-rawai-phuket-beaches",
-      "imageUrl": "https://images.unsplash.com/photo-1708656705549-14bcdf9b4921?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "/demo-assets/phuket-odyssey/kata-beach.jpg",
       "timeline": [
         {
           "time": "09:30",
           "title": "Slow breakfast and beach-day prep",
-          "detail": "Original itinerary marks this as a free and easy day. Pack swimwear, towel, sandals, sunscreen, waterproof pouch, and a change of clothes.",
+          "detail": "Pack swimwear, towel, sunscreen, water, sunglasses, power bank, and a dry bag. This route is built for cafes, viewpoints, and flexible beach time.",
           "type": "meal",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
         {
           "time": "10:30",
-          "title": "Drive to Karon Beach",
-          "detail": "Start with Karon because it is spacious and easier for a relaxed beach walk. Keep swim decisions weather-dependent.",
-          "type": "transport",
-          "mapQuery": "Karon Beach, Phuket, Thailand"
+          "title": "Cafe Phuket Viewpoint / Karon Viewpoint coffee",
+          "detail": "Requested viewpoint cafe add-on. Start with the Karon/Phuket viewpoint area for coffee and photos before the beaches get hot and crowded.",
+          "type": "photospot",
+          "mapQuery": "Karon Viewpoint, Phuket, Thailand",
+          "tip": "Use the viewpoint as the establishing shot for the beach day; wide angle works best for the three-bay view.",
+          "imageUrl": "/demo-assets/phuket-odyssey/karon-viewpoint.jpg"
         },
         {
-          "time": "11:00",
+          "time": "11:30",
           "title": "Karon Beach walk and photos",
-          "detail": "Long beach walk, coconut stop, and casual photos. Avoid swimming if red flags or rough surf are present.",
+          "detail": "Short beach walk and group photos at Karon. Keep this lighter than a full swim because Kata and Rawai still follow.",
           "type": "activity",
-          "mapQuery": "Karon Beach, Phuket, Thailand"
+          "mapQuery": "Karon Beach, Phuket, Thailand",
+          "imageUrl": "/demo-assets/phuket-odyssey/karon-viewpoint.jpg"
         },
         {
-          "time": "12:30",
+          "time": "12:45",
           "title": "Lunch around Kata or Karon",
-          "detail": "Choose Thai seafood, noodle shop, or an air-conditioned cafe. Keep lunch simple so the group can continue south without dragging.",
+          "detail": "Choose a casual lunch near Kata/Karon so the group does not lose time driving back and forth. Prioritize shade, cold drinks, and quick service.",
           "type": "meal",
           "mapQuery": "Kata Beach restaurants, Phuket, Thailand"
         },
         {
           "time": "14:00",
-          "title": "Photospot: Kata Beach free time",
-          "detail": "Beach, cafes, massage, shopping, or rest. This is the main open relaxation block of the trip.",
-          "type": "photospot",
+          "title": "Kata Beach free time",
+          "detail": "Use Kata for the main swim/rest window. Those who do not want beach time can stay in a nearby cafe and rejoin before the next viewpoint/cafe stop.",
+          "type": "activity",
           "mapQuery": "Kata Beach, Phuket, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/kata-beach.jpg",
-          "tip": "Shoot beach layers: foreground umbrellas or palms, swimmers/surf, and the bay curve in the background.",
-          "lat": 7.8195,
-          "lng": 98.2990
+          "imageUrl": "/demo-assets/phuket-odyssey/kata-beach.jpg"
         },
         {
-          "time": "16:00",
+          "time": "15:45",
+          "title": "The Commune sea-view cafe stop",
+          "detail": "Requested The Commune add-on. Use this as the stylish afternoon cafe/photo stop: sea views, design corners, and a cleaner rest point before the Rawai/Promthep side.",
+          "type": "photospot",
+          "mapQuery": "The Commune, Phuket, Thailand",
+          "tip": "Best for group lifestyle photos; order drinks first, then rotate through photo corners quickly.",
+          "imageUrl": "/demo-assets/phuket-odyssey/karon-viewpoint.jpg"
+        },
+        {
+          "time": "17:00",
           "title": "Rawai seafood and coastal drive",
-          "detail": "Drive south to Rawai for seafood atmosphere and local coastal views. Good option if the group wants more food than beach.",
+          "detail": "Head south toward Rawai for seafood-market browsing and a coastal drive. Keep purchases simple if the group plans to continue to Promthep for sunset.",
           "type": "activity",
           "mapQuery": "Rawai Seafood Market, Phuket, Thailand"
         },
         {
-          "time": "17:30",
-          "title": "Photospot: Promthep Cape or Windmill Viewpoint",
-          "detail": "Promthep is the classic choice; Windmill is often easier and less chaotic. Pick one based on traffic and parking.",
+          "time": "18:00",
+          "title": "Sunset option: Promthep Cape or Windmill Viewpoint",
+          "detail": "Keep the sunset decision flexible: Promthep for the classic viewpoint, Windmill Viewpoint if the group wants an easier crowd/parking experience.",
           "type": "photospot",
           "mapQuery": "Promthep Cape, Phuket, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/promthep-cape.jpg",
-          "tip": "Arrive before sunset, secure parking, and shoot both sea horizon and group silhouettes.",
-          "lat": 7.7623,
-          "lng": 98.3069
+          "tip": "Arrive before the final light; traffic and parking get worse near sunset.",
+          "imageUrl": "/demo-assets/phuket-odyssey/promthep-cape.jpg"
         },
         {
-          "time": "19:30",
+          "time": "19:45",
           "title": "Dinner at Rawai or return to Patong",
-          "detail": "If everyone is hungry, eat seafood near Rawai. If the group wants nightlife or rest, return to Patong and eat near the resort.",
+          "detail": "If everyone is hungry, eat Rawai seafood before the drive back. If the group is tired, return to Patong and choose a simple dinner near The Kee.",
           "type": "meal",
           "mapQuery": "Rawai, Phuket, Thailand"
         },
         {
           "time": "21:30",
           "title": "Free evening",
-          "detail": "Last proper Phuket night. Choose low-key massage, rooftop drink, Bangla Road, or early sleep before the Hat Yai transfer.",
+          "detail": "Final Phuket night. Keep it easy: massage, dessert, quiet drink, or early packing for the 08:00 convoy to Hat Yai.",
           "type": "activity",
           "mapQuery": "Patong, Phuket, Thailand"
         }
@@ -371,7 +374,7 @@
       "subtitle": "Convoy transfer, Regency Hotel check-in, and Lee Garden night market",
       "emoji": "🏙️",
       "heroSeed": "hat-yai-lee-garden-night-market",
-      "imageUrl": "https://images.unsplash.com/photo-1535898331935-2d274aff0fbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "/demo-assets/phuket-odyssey/lee-garden-night.jpg",
       "timeline": [
         {
           "time": "07:15",
@@ -417,14 +420,10 @@
         },
         {
           "time": "18:30",
-          "title": "Photospot: Lee Garden night market and dinner",
+          "title": "Lee Garden night market and dinner",
           "detail": "Free and easy Hat Yai evening filled in. Walk the Lee Garden zone for street food, grilled seafood, mango sticky rice, Thai milk tea, fried chicken, snacks, and souvenir shopping.",
-          "type": "photospot",
-          "mapQuery": "Lee Garden Plaza, Hat Yai, Thailand",
-          "imageUrl": "/demo-assets/phuket-odyssey/lee-garden-night.jpg",
-          "tip": "Shoot neon signs, food stalls, and group candid shots before sitting down for dinner.",
-          "lat": 7.0051,
-          "lng": 100.4715
+          "type": "meal",
+          "mapQuery": "Lee Garden Plaza, Hat Yai, Thailand"
         },
         {
           "time": "20:30",
@@ -461,7 +460,7 @@
       "subtitle": "Final breakfast, optional market stop, and independent convoy break",
       "emoji": "👋",
       "heroSeed": "hat-yai-morning-market-return-malaysia",
-      "imageUrl": "https://images.unsplash.com/photo-1535898331935-2d274aff0fbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "/demo-assets/phuket-odyssey/lee-garden-night.jpg",
       "timeline": [
         {
           "time": "08:00",
