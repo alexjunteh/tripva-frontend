@@ -24,6 +24,13 @@
       "imageUrl": "/demo-assets/phuket-odyssey/rua-rasada-hotel.jpg",
       "timeline": [
         {
+          "time": "12:30",
+          "title": "Trang arrival lunch: roast pork, dim sum, or hotel cafe",
+          "detail": "Add a proper lunch before check-in if the group arrives early. Best practical choices: Trang roast pork/rice, local dim sum, or Rua Rasada hotel cafe if luggage timing is tight. Keep it light because the official group dinner is at 18:00.",
+          "type": "meal",
+          "mapQuery": "Trang roast pork restaurant or Rua Rasada Hotel cafe, Trang, Thailand"
+        },
+        {
           "time": "14:00",
           "title": "Self check-in at Rua Rasada Hotel, Trang",
           "detail": "Original anchor from the event itinerary. Arrive independently, check in, collect room keys, and confirm the next morning convoy meeting point with the group.",
@@ -39,15 +46,15 @@
         },
         {
           "time": "16:30",
-          "title": "Optional short Trang town coffee walk",
-          "detail": "If energy is good, do a light town walk near the hotel area for coffee or local snacks. Keep it low-effort because Day 2 has a long drive.",
-          "type": "activity",
-          "mapQuery": "Trang town center, Trang, Thailand"
+          "title": "Optional Trang coffee, snack, or convenience-store run",
+          "detail": "If energy is good, do a short coffee/snack run near the hotel. Use this for Thai tea, bakery items, bottled water, electrolyte drinks, and car snacks before the Phuket convoy day.",
+          "type": "meal",
+          "mapQuery": "Trang cafe near Rua Rasada Hotel, Trang, Thailand"
         },
         {
           "time": "18:00",
-          "title": "Dinner at Thumrin Thana Hotel Restaurant",
-          "detail": "Original anchor from the event itinerary. Group dinner and briefing. Confirm convoy departure time, route, rest stops, and rooming details for Phuket.",
+          "title": "Official dinner at Thumrin Thana Hotel Restaurant",
+          "detail": "Original anchor from the event itinerary. Treat this as the main Day 1 dinner: group table, briefing, convoy timing, rooming details, and any dietary notes. Confirm the Day 2 breakfast/departure plan before leaving.",
           "type": "meal",
           "mapQuery": "Thumrin Thana Hotel, Trang, Thailand"
         },
@@ -82,10 +89,10 @@
       "timeline": [
         {
           "time": "07:15",
-          "title": "Breakfast, checkout, and convoy briefing",
-          "detail": "Load luggage, check fuel, distribute route pins, and agree on lead car, tail car, and emergency contact. Keep all cars ready before 08:00.",
-          "type": "logistics",
-          "mapQuery": "Rua Rasada Hotel, Trang, Thailand"
+          "title": "Hotel breakfast, checkout, and convoy briefing",
+          "detail": "Eat a proper hotel breakfast before the 08:00 convoy. Keep coffee, water, mints, and light snacks in the car; avoid a heavy breakfast if anyone gets motion sick.",
+          "type": "meal",
+          "mapQuery": "Rua Rasada Hotel breakfast, Trang, Thailand"
         },
         {
           "time": "08:00",
@@ -96,8 +103,8 @@
         },
         {
           "time": "10:30",
-          "title": "Central Krabi shopping and lunch stop",
-          "detail": "Original anchor from the event itinerary. Use this as the first shopping window for snacks, pharmacy items, coffee, and a comfortable lunch before the final Phuket leg.",
+          "title": "Lunch stop at Central Krabi",
+          "detail": "Original anchor from the event itinerary. Use Central Krabi for a real lunch, restroom break, pharmacy items, snacks, and coffee. Pick a fast group-friendly option: mall Thai restaurant, food court, or simple cafe so the 12:30 departure stays realistic.",
           "type": "meal",
           "mapQuery": "Central Krabi, Krabi, Thailand"
         },
@@ -142,8 +149,8 @@
         },
         {
           "time": "20:30",
-          "title": "Dinner and shopping around Jungceylon",
-          "detail": "Use the late dinner window for Jungceylon, street snacks, pharmacy top-up, and any forgotten beach items. Keep the group near Patong so nobody needs a long transfer after the drive day.",
+          "title": "Dinner and shopping around Jungceylon or Banzaan",
+          "detail": "Late dinner after Kan's Haus and Amari. Choose Jungceylon for air-conditioned group dining, or Banzaan/Jungceylon area for seafood and street snacks. Also use this for pharmacy, beachwear, and forgotten essentials.",
           "type": "meal",
           "mapQuery": "Jungceylon, Patong, Phuket, Thailand"
         },
@@ -179,8 +186,8 @@
       "timeline": [
         {
           "time": "08:30",
-          "title": "Breakfast and choose your day route",
-          "detail": "Start at The Kee and confirm who wants the full Old Town route versus a lighter shopping route. Bring sun protection and power banks because this day has many photo stops.",
+          "title": "Breakfast at The Kee and route decision",
+          "detail": "Start with hotel breakfast, then split preferences: full Old Town/cafe route, lighter shopping route, or direct rest before dinner. Bring water and power banks because the lunch and cafe stops are photo-heavy.",
           "type": "meal",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
@@ -211,10 +218,10 @@
         },
         {
           "time": "12:45",
-          "title": "Lunch in Phuket Old Town",
-          "detail": "Choose an Old Town lunch spot before the transfer south. If the group wants local food, use this window for One Chun/Chomchan-style Phuket dishes; if tired, pick an air-conditioned cafe nearby.",
+          "title": "Lunch: One Chun or Tu Kab Khao in Phuket Old Town",
+          "detail": "Make this the main local-food lunch. First choice: One Chun for Michelin-recognized Phuket southern dishes and vintage Old Town interiors. Backup: Tu Kab Khao or Chomchan if the queue is long. Order crab curry, moo hong, stir-fried local vegetables, and rice for sharing.",
           "type": "meal",
-          "mapQuery": "Phuket Old Town restaurants, Thailand"
+          "mapQuery": "One Chun Cafe and Restaurant, Phuket Old Town, Thailand"
         },
         {
           "time": "14:00",
@@ -227,7 +234,7 @@
         {
           "time": "15:15",
           "title": "Shopping block: Central Phuket or weekend market",
-          "detail": "Requested shopping/market planning. If the group wants air-con and brands, use Central Phuket. If it is operating and the group wants local snacks, choose Naka/Chillva-style market instead.",
+          "detail": "Requested shopping/market planning. If the group wants air-con and brands, use Central Phuket. If timing fits and it is operating, choose Naka Weekend Market or Chillva Market for snacks, clothes, souvenirs, Thai tea, grilled skewers, and dessert.",
           "type": "activity",
           "mapQuery": "Central Phuket, Phuket, Thailand"
         },
@@ -241,7 +248,7 @@
         {
           "time": "18:30",
           "title": "Grand dinner: buffet, free-flow beer, karaoke and dance",
-          "detail": "Original anchor from the event itinerary. Group dinner with international buffet, beer, karaoke, and dance. Keep valuables in room safe before the event.",
+          "detail": "Original anchor from the event itinerary and the main Day 3 dinner. International buffet, free-flow beer, karaoke, and dance. Eat enough here; the later rooftop bar is drinks/social time, not a full meal.",
           "type": "meal",
           "mapQuery": "The Kee Resort & Spa ballroom, Patong, Phuket, Thailand"
         },
@@ -277,8 +284,8 @@
       "timeline": [
         {
           "time": "09:30",
-          "title": "Slow breakfast and beach-day prep",
-          "detail": "Pack swimwear, towel, sunscreen, water, sunglasses, power bank, and a dry bag. This route is built for cafes, viewpoints, and flexible beach time.",
+          "title": "Hotel breakfast and beach-day prep",
+          "detail": "Eat breakfast at The Kee before the coastal route. Pack swimwear, towel, sunscreen, water, sunglasses, power bank, and a dry bag. This route has cafe stops but lunch is still planned near Kata/Karon.",
           "type": "meal",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
@@ -301,10 +308,10 @@
         },
         {
           "time": "12:45",
-          "title": "Lunch around Kata or Karon",
-          "detail": "Choose a casual lunch near Kata/Karon so the group does not lose time driving back and forth. Prioritize shade, cold drinks, and quick service.",
+          "title": "Lunch around Kata/Karon: Thai seafood or easy group food",
+          "detail": "Choose a casual lunch near Kata/Karon so the group does not lose time driving. Good practical choices: The Family Restaurant for simple Thai/group food, Two Chefs for western-friendly options, or a Kata/Karon local seafood place if everyone wants Thai.",
           "type": "meal",
-          "mapQuery": "Kata Beach restaurants, Phuket, Thailand"
+          "mapQuery": "The Family Restaurant Kata Beach Phuket or Two Chefs Karon Phuket"
         },
         {
           "time": "14:00",
@@ -325,8 +332,8 @@
         },
         {
           "time": "17:00",
-          "title": "Rawai seafood and coastal drive",
-          "detail": "Head south toward Rawai for seafood-market browsing and a coastal drive. Keep purchases simple if the group plans to continue to Promthep for sunset.",
+          "title": "Rawai seafood market browse and coastal drive",
+          "detail": "Browse Rawai Seafood Market before dinner: pick prawns, crab, squid, or fish, then choose a nearby cooking restaurant if the group wants the full seafood experience. Keep purchases simple if continuing to sunset.",
           "type": "activity",
           "mapQuery": "Rawai Seafood Market, Phuket, Thailand"
         },
@@ -341,10 +348,10 @@
         },
         {
           "time": "19:45",
-          "title": "Dinner at Rawai or return to Patong",
-          "detail": "If everyone is hungry, eat Rawai seafood before the drive back. If the group is tired, return to Patong and choose a simple dinner near The Kee.",
+          "title": "Dinner: Rawai Seafood Market, Salaloy Seafood, or Patong fallback",
+          "detail": "Primary dinner: Rawai Seafood Market cooked-to-order seafood, or Salaloy Seafood if the group wants a seated local restaurant. If everyone is tired after sunset, return to Patong and do an easy dinner near The Kee instead.",
           "type": "meal",
-          "mapQuery": "Rawai, Phuket, Thailand"
+          "mapQuery": "Rawai Seafood Market or Salaloy Seafood Phuket"
         },
         {
           "time": "21:30",
@@ -378,9 +385,9 @@
       "timeline": [
         {
           "time": "07:15",
-          "title": "Breakfast, checkout and luggage load",
-          "detail": "Settle room bills, check all luggage, refill water, and prepare for the long convoy to Hat Yai.",
-          "type": "logistics",
+          "title": "Breakfast, checkout, and luggage load",
+          "detail": "Eat hotel breakfast before the 08:00 convoy. Settle room bills, check luggage, refill water, and prepare car snacks for the long Phuket-to-Hat Yai drive.",
+          "type": "meal",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
         {
@@ -399,8 +406,8 @@
         },
         {
           "time": "12:30",
-          "title": "Lunch on board",
-          "detail": "Original anchor from the event itinerary. Keep lunch light and convenient so the convoy does not lose time.",
+          "title": "Packed lunch on board plus rest-stop snacks",
+          "detail": "Original anchor from the event itinerary. Prepare packed lunch, fruit, bottled water, and simple snacks before departure. Add one rest-stop coffee/snack break if driver energy drops.",
           "type": "meal",
           "mapQuery": "Phuket to Hat Yai route, Thailand"
         },
@@ -420,15 +427,15 @@
         },
         {
           "time": "18:30",
-          "title": "Lee Garden night market and dinner",
-          "detail": "Free and easy Hat Yai evening filled in. Walk the Lee Garden zone for street food, grilled seafood, mango sticky rice, Thai milk tea, fried chicken, snacks, and souvenir shopping.",
+          "title": "Dinner: Lee Garden night market food crawl",
+          "detail": "Free and easy Hat Yai dinner. Walk the Lee Garden zone for grilled seafood, chicken rice, fried snacks, mango sticky rice, Thai milk tea, and group-friendly street food. Keep cash ready and split into smaller groups if crowded.",
           "type": "meal",
           "mapQuery": "Lee Garden Plaza, Hat Yai, Thailand"
         },
         {
           "time": "20:30",
-          "title": "Kim Yong Market area or massage",
-          "detail": "If the group wants more shopping, walk nearby market streets. If tired from the drive, choose foot massage and return early.",
+          "title": "Dessert, Kim Yong Market area, or massage",
+          "detail": "After dinner, choose dessert/Thai tea near Lee Garden, a short Kim Yong market-area walk, or foot massage if tired from the drive.",
           "type": "activity",
           "mapQuery": "Kim Yong Market, Hat Yai, Thailand"
         },
@@ -464,10 +471,10 @@
       "timeline": [
         {
           "time": "08:00",
-          "title": "Breakfast near hotel",
-          "detail": "Easy final breakfast. Good options: hotel breakfast, local dim sum, kopi, or simple noodles before the drive home.",
+          "title": "Breakfast: Chokdee Dim Sum or hotel breakfast",
+          "detail": "Best local option: Chokdee Dim Sum for steamed baskets and bak kut teh-style soup if the group wants a proper Hat Yai breakfast. Safer fallback: hotel breakfast if timing or parking is tight.",
           "type": "meal",
-          "mapQuery": "Hat Yai breakfast near Regency Hotel, Thailand"
+          "mapQuery": "Chokdee Dim Sum Hat Yai, Thailand"
         },
         {
           "time": "09:00",
@@ -492,8 +499,8 @@
         },
         {
           "time": "13:00",
-          "title": "Lunch stop if needed",
-          "detail": "Add a flexible lunch/rest stop depending on border queue and driver energy. Do not rush if tired.",
+          "title": "Lunch stop near Sadao/Dannok or after crossing",
+          "detail": "Keep lunch flexible based on border queue and driver energy. Option A: quick Thai lunch near Sadao/Dannok before crossing. Option B: eat after crossing back into Malaysia if the queue is long.",
           "type": "meal",
           "mapQuery": "Sadao border area, Thailand"
         },
@@ -503,6 +510,13 @@
           "detail": "Share photos, fuel/toll receipts, and group memories. Bye bye and see you again in the next trip.",
           "type": "logistics",
           "mapQuery": "Malaysia"
+        },
+        {
+          "time": "18:30",
+          "title": "Optional dinner after return to Malaysia",
+          "detail": "Only add this if the group reaches home area with enough energy. Keep it simple: local dinner near the final drop-off point, then share photos, toll/fuel costs, and final receipts in the group chat.",
+          "type": "meal",
+          "mapQuery": "Malaysia dinner near final drop-off point"
         }
       ],
       "highlights": [
