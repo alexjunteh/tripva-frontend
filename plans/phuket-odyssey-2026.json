@@ -21,7 +21,7 @@
       "subtitle": "Check in, settle down, and start the trip gently",
       "emoji": "🏨",
       "heroSeed": "trang-thailand-town-evening",
-      "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg",
+      "imageUrl": "/demo-assets/phuket-odyssey/rua-rasada-hotel.jpg",
       "timeline": [
         {
           "time": "14:00",
@@ -207,7 +207,7 @@
           "type": "photospot",
           "mapQuery": "The Glass House Cafe & Space, Ratsada, Phuket, Thailand",
           "tip": "Go for window, jungle, and starry-ceiling shots; keep the stop short so lunch and shopping do not slip.",
-          "imageUrl": "/demo-assets/phuket-odyssey/phuket-old-town.jpg"
+          "imageUrl": "/demo-assets/phuket-odyssey/glass-house-lion-cafe.jpg"
         },
         {
           "time": "12:45",
@@ -321,7 +321,7 @@
           "type": "photospot",
           "mapQuery": "The Commune, Phuket, Thailand",
           "tip": "Best for group lifestyle photos; order drinks first, then rotate through photo corners quickly.",
-          "imageUrl": "/demo-assets/phuket-odyssey/karon-viewpoint.jpg"
+          "imageUrl": "/demo-assets/phuket-odyssey/the-commune.jpg"
         },
         {
           "time": "17:00",
