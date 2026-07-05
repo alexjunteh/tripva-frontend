@@ -232,16 +232,18 @@
           "imageUrl": "/demo-assets/phuket-odyssey/wat-chalong.jpg"
         },
         {
-          "time": "15:15",
-          "title": "Shopping block: Central Phuket or weekend market",
-          "detail": "Requested shopping/market planning. If the group wants air-con and brands, use Central Phuket. If timing fits and it is operating, choose Naka Weekend Market or Chillva Market for snacks, clothes, souvenirs, Thai tea, grilled skewers, and dessert.",
-          "type": "activity",
-          "mapQuery": "Central Phuket, Phuket, Thailand"
+          "time": "15:10",
+          "title": "Big Buddha Phuket viewpoint stop",
+          "detail": "Add Big Buddha after Wat Chalong as the main afternoon viewpoint. The site reopened in 2026 after the 2024 landslide closure, but access has been confusing, so call/check maps before leaving. Dress modestly, keep shoulders/knees covered, and use this as a 45-60 minute viewpoint/temple stop. If access is restricted or weather is bad, swap this for Karon Viewpoint and return to the resort early.",
+          "type": "photospot",
+          "mapQuery": "Big Buddha Phuket, Karon, Phuket, Thailand",
+          "tip": "Best practical shot: wide view with the white statue and Phuket coastline; late afternoon gives softer light but do not risk being late for the 18:30 dinner.",
+          "imageUrl": "/demo-assets/phuket-odyssey/big-buddha-phuket.jpg"
         },
         {
-          "time": "16:45",
+          "time": "16:35",
           "title": "Return to resort and reset",
-          "detail": "Return to The Kee with enough time to shower, charge phones, and change for the official dinner. Do not add another far viewpoint before the 18:30 anchor.",
+          "detail": "Return to The Kee after Big Buddha with enough time to shower, charge phones, and change for the official dinner. Skip extra shopping if traffic is heavy.",
           "type": "logistics",
           "mapQuery": "The Kee Resort & Spa, Patong, Phuket, Thailand"
         },
@@ -264,7 +266,8 @@
         "Phuket Old Town",
         "Wat Chalong",
         "Karon Viewpoint",
-        "Grand dinner and party"
+        "Grand dinner and party",
+        "Big Buddha Phuket"
       ],
       "localTips": [
         "Keep Day 3 flexible: the dinner is the immovable anchor.",
