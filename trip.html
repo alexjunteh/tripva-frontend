@@ -432,6 +432,23 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
   background:rgba(255,255,255,.04);
   border-top:1px solid var(--border);
 }
+.tl-activity-media{
+  margin-top:9px;
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  max-width:100%;
+}
+.tl-activity-media img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:var(--surface);
+  max-width:100%;
+}
 .tl-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .tl-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px}
 .tl-tag.activity{background:rgba(124,106,247,.12);color:var(--accent2)}
@@ -5647,6 +5664,8 @@ function renderDaySheet(idx) {
     const bookLabel=/show|cabaret|ticket|tour|cruise|island|buddha|temple|museum|experience|viewpoint|cafe|activity/i.test((tl.title||'')+' '+(tl.detail||''))?'🎟️ Find activity':'🎟️ Book activity';
     const bookLink=tl.type==='activity'?`<a class="tl-book-btn" href="${makeActivityBookUrl(tl, d.title)}" target="_blank" rel="noopener" onclick="event.stopPropagation();trackAffiliateClick('activity')">${bookLabel} →</a>`:'';
     const dispTitle=tl.type==='photospot'?(tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim()||(tl.title||''):(tl.title||'');
+    const explicitActivityImage=tl.type==='activity'&&(tl.imageUrl||tl.photoUrl||'');
+    const activityMedia=explicitActivityImage?`<div class="tl-activity-media"><img src="${esc(explicitActivityImage)}" alt="${esc(dispTitle)}" loading="eager" onerror="this.closest('.tl-activity-media').style.display='none'"></div>`:'';
     return `<div class="tl-item" onclick="openEditSheet(${idx},${i})" title="Tap to edit">
       <div class="tl-left"><div class="tl-time">${esc(tl.time||'')}</div></div>
       <div class="tl-dot-col">
@@ -5656,7 +5675,7 @@ function renderDaySheet(idx) {
       <div class="tl-main ${typeClass}">
         <div class="tl-title">${esc(dispTitle)}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
-        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _explicit=tl.imageUrl||tl.photoUrl||'';const _sp=_explicit||getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${esc(_sp)}" alt="${esc(dispTitle)}" class="tl-ps-photo" loading="${_explicit?'eager':'lazy'}" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
+        ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _explicit=tl.imageUrl||tl.photoUrl||'';const _sp=_explicit||getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${esc(_sp)}" alt="${esc(dispTitle)}" class="tl-ps-photo" loading="${_explicit?'eager':'lazy'}" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(activityMedia+(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:''))}
         <div class="tl-tags">
           <span class="tl-tag ${typeClass}">${TYPE_ICONS[typeClass]||'🎯'} ${typeClass.charAt(0).toUpperCase()+typeClass.slice(1)}</span>
           ${bookLink}

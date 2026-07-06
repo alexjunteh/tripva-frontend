@@ -47,7 +47,14 @@ nav{position:sticky;top:0;z-index:100;padding:0 20px;height:56px;display:flex;al
 .nav-back:hover{color:var(--text)}
 .wrap{max-width:540px;margin:0 auto;padding:32px 20px 160px}@media(min-width:640px){.wrap{padding:48px 20px 160px}}.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:50;background:linear-gradient(to top,rgba(10,10,15,.95) 60%,transparent);padding:8px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));display:none;box-shadow:0 -4px 24px rgba(0,0,0,.4)}.sticky-cta.show{display:block}.sticky-cta .form-submit-btn{box-shadow:0 -4px 32px rgba(124,106,247,.4);font-size:17px}
 .page-title{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
-.page-sub{font-size:15px;color:var(--muted);margin-bottom:36px}
+.page-sub{font-size:15px;color:var(--muted);margin-bottom:18px}
+.plan-inspo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 28px}
+.plan-inspo-card{position:relative;min-height:96px;border:1px solid rgba(255,255,255,.13);border-radius:16px;overflow:hidden;background:#161624;background-image:linear-gradient(to top,rgba(0,0,0,.74),rgba(0,0,0,.08)),var(--img);background-size:cover;background-position:center;color:#fff;text-align:left;padding:10px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;font-family:inherit;box-shadow:0 10px 26px rgba(0,0,0,.22);transition:transform .16s,border-color .16s,box-shadow .16s}
+.plan-inspo-card:hover,.plan-inspo-card:focus-visible{transform:translateY(-1px);border-color:rgba(255,255,255,.36);box-shadow:0 14px 34px rgba(0,0,0,.32);outline:none}
+.plan-inspo-card.active{border-color:rgba(255,107,53,.82);box-shadow:0 0 0 2px rgba(255,107,53,.18),0 14px 34px rgba(0,0,0,.32)}
+.plan-inspo-kicker{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.68);line-height:1.2}
+.plan-inspo-title{font-size:13px;font-weight:900;line-height:1.1;margin-top:3px;text-shadow:0 1px 10px rgba(0,0,0,.4)}
+@media(max-width:420px){.plan-inspo{display:flex;overflow-x:auto;margin-left:-20px;margin-right:-20px;padding:0 20px 12px;scrollbar-width:none}.plan-inspo::-webkit-scrollbar{display:none}.plan-inspo-card{flex:0 0 138px;min-height:94px}}
 .form-section{margin-bottom:20px}
 .form-label{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px;display:block}
 .form-input{width:100%;background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:inherit;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s;appearance:none}
@@ -318,6 +325,21 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
   <div class="plan-form" id="planForm">
     <h1 class="page-title">Plan your trip &#10024;</h1>
     <p class="page-sub" id="archSub">Pick your shape of trip — Tripva tailors the plan.</p>
+
+    <div class="plan-inspo" aria-label="Trip inspiration">
+      <button class="plan-inspo-card active" type="button" data-dest="Phuket, Thailand" style="--img:url('/demo-assets/phuket-odyssey/kata-beach.jpg')">
+        <span class="plan-inspo-kicker">Beach + food</span>
+        <span class="plan-inspo-title">Phuket escape</span>
+      </button>
+      <button class="plan-inspo-card" type="button" data-dest="Paris, France" style="--img:url('/demo-assets/paris-eiffel.jpg')">
+        <span class="plan-inspo-kicker">Romance</span>
+        <span class="plan-inspo-title">Paris icons</span>
+      </button>
+      <button class="plan-inspo-card" type="button" data-dest="Amsterdam, Netherlands" style="--img:url('/demo-assets/amsterdam-canals.jpg')">
+        <span class="plan-inspo-kicker">Canals</span>
+        <span class="plan-inspo-title">Amsterdam weekend</span>
+      </button>
+    </div>
 
     <!-- Archetype picker -->
     <label class="arch-label">You're planning a…</label>
@@ -1059,6 +1081,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (destAddBtnEl) destAddBtnEl.addEventListener('click', () => _addDest(document.getElementById('f-dest').value));
+  document.querySelectorAll('.plan-inspo-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const dest = card.dataset.dest || '';
+      document.querySelectorAll('.plan-inspo-card').forEach(c => c.classList.toggle('active', c === card));
+      if (destInp) {
+        destInp.value = dest;
+        destInp.focus({ preventScroll: true });
+      }
+      if (destAddBtnEl) destAddBtnEl.classList.toggle('show', dest.trim().length > 0 && _destinations.length > 0);
+    });
+  });
   const destChipsEl = document.getElementById('destChips');
   if (destChipsEl) {
     destChipsEl.addEventListener('click', e => {
