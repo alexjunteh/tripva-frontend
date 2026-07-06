@@ -329,6 +329,15 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .tl-dot.food{background:var(--yellow)}.tl-dot.transport{background:var(--green)}.tl-dot.hotel{background:var(--accent2)}.tl-dot.tip{background:var(--muted)}
 .tl-line{width:2px;flex:1;background:var(--surface2);margin-top:4px;min-height:20px}
 .tl-main{flex:1;padding-bottom:4px}
+.tl-main.activity{
+  background:linear-gradient(135deg,rgba(124,106,247,.10),rgba(149,184,255,.045));
+  border:1px solid rgba(149,184,255,.14);
+  border-radius:16px;
+  padding:11px 12px 12px;
+  margin-top:-4px;
+  box-shadow:0 12px 28px rgba(0,0,0,.14);
+}
+.tl-main.activity .tl-title{font-size:15px}
 .tl-title{font-size:14px;font-weight:800;line-height:1.35;color:var(--text)}
 /* ── DAY PHOTO GALLERY ── */
 .day-gallery{margin:0 -16px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;display:flex;gap:10px;padding:0 16px;scroll-snap-type:x mandatory}
@@ -431,7 +440,8 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .tl-tag.hotel{background:rgba(167,139,250,.1);color:var(--accent2)}
 .tl-tag.tip{background:var(--surface2);color:var(--muted)}
 .tl-map-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--accent2);text-decoration:none;background:rgba(124,106,247,.08);padding:3px 9px;border-radius:8px;font-weight:600;margin-top:5px}
-.tl-book-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#fff;text-decoration:none;background:linear-gradient(135deg,rgba(124,106,247,.7),rgba(149,181,255,.5));padding:3px 10px;border-radius:8px;font-weight:700;margin-top:5px;border:1px solid rgba(124,106,247,.3)}
+.tl-book-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:#fff;text-decoration:none;background:linear-gradient(135deg,#ff6b35,#ff9f43);padding:6px 12px;border-radius:999px;font-weight:900;margin-top:5px;border:1px solid rgba(255,159,67,.42);box-shadow:0 8px 18px rgba(255,107,53,.16)}
+.tl-aff-note{font-size:10px;color:rgba(255,255,255,.48);margin-top:7px;line-height:1.4}
 /* Highlights strip */
 .day-highlights{display:flex;flex-direction:column;gap:6px;padding:14px 16px 8px;background:rgba(124,106,247,.05);border-bottom:1px solid var(--border);flex-shrink:0}
 .day-hl-title{font-size:10px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
@@ -2195,6 +2205,8 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 // ══════════════════════════════════════
 //  AFFILIATE TRACKING
 // ══════════════════════════════════════
+var BACKEND_URL = 'https://tripai-backend.vercel.app';
+
 function buildHotellookLink(city, checkIn, checkOut, adults, tripDestination) {
   // If city is a bare single word and we have a trip destination, append country context
   // e.g. "Bali" + "Bali, Indonesia" → "Bali, Indonesia" to avoid Balikpapan mis-resolution
@@ -2210,8 +2222,13 @@ function buildHotellookLink(city, checkIn, checkOut, adults, tripDestination) {
 }
 
 
-function buildGygLink(destination) {
-  return 'https://www.getyourguide.com/s/?q=' + encodeURIComponent(destination || '') + '&partner_id=529721';
+function buildActivityLink(destination, activityName) {
+  const p = new URLSearchParams({
+    destination: destination || '',
+    activityName: activityName || destination || '',
+    redirect: '1',
+  });
+  return BACKEND_URL + '/api/flights/activity-link?' + p.toString();
 }
 
 function buildKiwitaxiLink(destination) {
@@ -2232,7 +2249,9 @@ function detectAffiliatePartner(url) {
   if (s.includes('jetradar') || s.includes('aviasales')) return 'jetradar';
   if (s.includes('hotellook')) return 'hotellook';
   if (s.includes('booking.com') || s.includes('agoda')) return 'booking';
+  if (s.includes('klook')) return 'klook';
   if (s.includes('getyourguide')) return 'gyg';
+  if (s.includes('/api/flights/activity-link')) return 'activity';
   if (s.includes('kiwitaxi')) return 'kiwitaxi';
   if (s.includes('ekta')) return 'ekta';
   if (s.includes('airalo')) return 'airalo';
@@ -4190,7 +4209,7 @@ function populateDashboard(p) {
       scroll.appendChild(arrangeWrap);
     }
 
-    // ── ACTIVITIES & EXPERIENCES (GetYourGuide affiliate) ──
+    // ── ACTIVITIES & EXPERIENCES (Klook/GetYourGuide affiliate via backend) ──
     const dest = p.trip?.destination || '';
     if (dest) {
       const actSection = document.getElementById('activitiesSection');
@@ -4203,10 +4222,10 @@ function populateDashboard(p) {
           ...(p.days   || []).map(d => d.title?.split(/[→–-]/)[0].trim()).filter(Boolean).slice(0, 3),
         ])].slice(0, 4);
         actCards.innerHTML = cities.map(city => `
-          <a class="book-card" href="${buildGygLink(city)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('gyg')" style="text-decoration:none;display:block;margin-bottom:8px">
+          <a class="book-card" href="${buildActivityLink(city, city + ' tours and activities')}" target="_blank" rel="noopener" onclick="trackAffiliateClick('activity')" style="text-decoration:none;display:block;margin-bottom:8px">
             <div class="book-card-title">🎯 ${esc(city)} Activities</div>
-            <div class="book-card-note">Tours, experiences &amp; guided activities</div>
-            <div class="book-actions" style="pointer-events:none"><span class="book-btn" style="display:inline-block">Browse GetYourGuide →</span></div>
+            <div class="book-card-note">Tours, shows, tickets and guided experiences through Tripva affiliate partners.</div>
+            <div class="book-actions" style="pointer-events:none"><span class="book-btn" style="display:inline-block">Browse activities →</span></div>
           </a>`).join('');
       }
     }
@@ -5606,22 +5625,27 @@ function renderDaySheet(idx) {
     </div>`;
   }
 
-  // Build activity booking URL — prefer server-enriched bookUrl, else build GYG search client-side
+  // Build activity booking URL — prefer server-enriched bookUrl, else use the
+  // backend redirect so Klook/GYG affiliate IDs stay server-side and consistent.
   const makeActivityBookUrl = (tl, dayTitle) => {
     if (tl.bookUrl) return tl.bookUrl;
     const dest = plan.trip?.destination || '';
-    // Extract city from mapQuery ("Anne Frank House, Amsterdam" → "Amsterdam") or fall back to trip destination
-    const mapCity = tl.mapQuery ? (tl.mapQuery.split(',').pop() || '').trim() : '';
-    const city = mapCity || dest;
-    const q = encodeURIComponent((tl.title || '') + (city ? ' ' + city : ''));
-    return `https://www.getyourguide.com/s/?q=${q}&partner_id=529721`;
+    const placeContext = [tl.mapQuery, dest].filter(Boolean).join(' ');
+    const p = new URLSearchParams({
+      destination: dest || tl.mapQuery || dayTitle || '',
+      activityName: [tl.title || dayTitle || dest, placeContext].filter(Boolean).join(' '),
+      redirect: '1',
+    });
+    if (d.date) p.set('date', d.date);
+    return `${BACKEND_URL}/api/flights/activity-link?${p.toString()}`;
   };
 
   html+=(d.timeline||[]).map((tl,i)=>{
     const isLast=i===(d.timeline||[]).length-1;
     const typeClass=tl.type||'activity';
     const mapLink=tl.mapQuery?`<a class="tl-map-btn" href="https://maps.google.com/?q=${encodeURIComponent(tl.mapQuery)}" target="_blank" onclick="event.stopPropagation()">📍 Map</a>`:'';
-    const bookLink=tl.type==='activity'?`<a class="tl-book-btn" href="${makeActivityBookUrl(tl, d.title)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🎟️ Book tickets</a>`:'';
+    const bookLabel=/show|cabaret|ticket|tour|cruise|island|buddha|temple|museum|experience|viewpoint|cafe|activity/i.test((tl.title||'')+' '+(tl.detail||''))?'🎟️ Find activity':'🎟️ Book activity';
+    const bookLink=tl.type==='activity'?`<a class="tl-book-btn" href="${makeActivityBookUrl(tl, d.title)}" target="_blank" rel="noopener" onclick="event.stopPropagation();trackAffiliateClick('activity')">${bookLabel} →</a>`:'';
     const dispTitle=tl.type==='photospot'?(tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim()||(tl.title||''):(tl.title||'');
     return `<div class="tl-item" onclick="openEditSheet(${idx},${i})" title="Tap to edit">
       <div class="tl-left"><div class="tl-time">${esc(tl.time||'')}</div></div>
@@ -5629,7 +5653,7 @@ function renderDaySheet(idx) {
         <div class="tl-dot ${typeClass}"></div>
         ${!isLast?'<div class="tl-line"></div>':''}
       </div>
-      <div class="tl-main">
+      <div class="tl-main ${typeClass}">
         <div class="tl-title">${esc(dispTitle)}${tl.platform?` <span class="tl-platform">P${esc(tl.platform)}</span>`:''}</div>
         ${tl.stars?`<div class="tl-stars">⭐ ${tl.stars}/5${tl.reviews?' · '+tl.reviews+' reviews':''}${tl.hours?' · '+tl.hours:''}${tl.closedOn?' · ⚠️ Closed '+tl.closedOn:''}</div>`:''}
         ${tl.type==='transport'?renderTransportCard(tl):tl.type==='photospot'?(()=>{const _explicit=tl.imageUrl||tl.photoUrl||'';const _sp=_explicit||getSpotPhoto(tl.title,d.city||'');const _sn=(tl.mapQuery||tl.title||'').replace(/^[^\w]*photospot:\s*/i,'').trim();const _wa=!_sp?` data-wiki-spot="${esc(_sn)}"`:'';;return`<div class="tl-ps-wrap"${_wa}>${_sp?`<img src="${esc(_sp)}" alt="${esc(dispTitle)}" class="tl-ps-photo" loading="${_explicit?'eager':'lazy'}" onerror="this.style.display='none'">`:''}`+(tl.tip?`<div class="tl-ps-tip">📸 ${esc(tl.tip)}</div>`:tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')+`</div>`})():(tl.detail?`<div class="tl-detail">${esc(tl.detail)}</div>`:'')}
@@ -5638,6 +5662,7 @@ function renderDaySheet(idx) {
           ${bookLink}
           ${mapLink}
         </div>
+        ${tl.type==='activity'?`<div class="tl-aff-note">Powered by Tripva affiliate partners. We may earn a commission at no extra cost to you.</div>`:''}
       </div>
     </div>`;
   }).join('');
