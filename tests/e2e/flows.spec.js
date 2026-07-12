@@ -218,10 +218,8 @@ test.describe('Tripva E2E flows', () => {
     // Wait for auth email gate to appear, fill email, submit, then wait for redirect
     await expect(page.locator('#authModalBg.open')).toBeVisible({ timeout: 20_000 });
     await page.fill('#authEmailInput', 'test@e2e.example.com');
-    await Promise.all([
-      page.waitForURL(/\/trip(\.html)?(\?|$)/, { timeout: 15_000, waitUntil: 'domcontentloaded' }),
-      page.locator('#authSubmitBtn').click(),
-    ]);
+    await page.locator('#authSubmitBtn').click();
+    await expect(page).toHaveURL(/\/trip(\.html)?(\?|$)/, { timeout: 15_000 });
 
     await expect(page.locator('.bottom-nav')).toBeVisible({ timeout: 10_000 });
   });
@@ -276,10 +274,8 @@ test.describe('Tripva E2E flows', () => {
     await page.locator('.spot-go-btn').click();
     await expect(page.locator('#authModalBg.open')).toBeVisible({ timeout: 20_000 });
     await page.fill('#authEmailInput', 'test@e2e.example.com');
-    await Promise.all([
-      page.waitForURL(/\/trip(\.html)?(\?|$)/, { timeout: 15_000, waitUntil: 'domcontentloaded' }),
-      page.locator('#authSubmitBtn').click(),
-    ]);
+    await page.locator('#authSubmitBtn').click();
+    await expect(page).toHaveURL(/\/trip(\.html)?(\?|$)/, { timeout: 15_000 });
 
     await expect(page.locator('.bottom-nav')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#tab-days')).toBeVisible();
