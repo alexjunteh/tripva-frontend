@@ -2223,6 +2223,14 @@ const EXTRACT_PROMPT = `Extract ALL information from the travel plan above into 
 //  AFFILIATE TRACKING
 // ══════════════════════════════════════
 var BACKEND_URL = 'https://tripai-backend.vercel.app';
+function tripvaAuthHeaders(extra) {
+  const headers = Object.assign({}, extra || {});
+  try {
+    const session = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+    if (session && session.access_token) headers.Authorization = 'Bearer ' + session.access_token;
+  } catch(e) {}
+  return headers;
+}
 
 function buildHotellookLink(city, checkIn, checkOut, adults, tripDestination) {
   // If city is a bare single word and we have a trip destination, append country context
@@ -2421,7 +2429,7 @@ async function healMissingBudget(p) {
   };
   const resp = await fetch('https://tripai-backend.vercel.app/api/trip', {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify({
       state,
       instruction: 'Add a complete, realistic budget breakdown for this trip. Include flights, accommodation, transport, food, activities, and misc. Use the trip currency. Mark all items as status:"pending" unless already booked.'
@@ -2952,7 +2960,7 @@ async function fetchPacking() {
   try {
     const r = await fetch('https://tripai-backend.vercel.app/api/packing', {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      headers: tripvaAuthHeaders({'Content-Type':'application/json'}),
       body: JSON.stringify(payload)
     });
     if (!r.ok) {
@@ -6317,7 +6325,7 @@ async function searchFlights() {
 
     const r = await fetch(BACKEND_URL + '/api/flights', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(25000),
     });
@@ -6455,7 +6463,7 @@ async function submitPlan() {
     _planWarn2 = setTimeout(() => updateProgress(null, '⏳ Almost there — hang tight…'), 90000);
     const resp = await fetch(BACKEND_URL + '/api/plan?stream=true', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       signal: _planCtrl.signal,
       body: JSON.stringify({ destination: dest, startDate: start, endDate: end, travelers: plannerTravellers, budget, style, interests, homeCity: home, transportModes })
     });
@@ -6679,7 +6687,7 @@ async function sendAiEdit() {
 
     const resp = await fetch('https://tripai-backend.vercel.app/api/trip', {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ state, instruction }),
     });
 
