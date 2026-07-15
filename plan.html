@@ -755,6 +755,14 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 
 <script>
 const BACKEND = 'https://tripai-backend.vercel.app';
+function tripvaAuthHeaders(extra) {
+  const headers = Object.assign({}, extra || {});
+  try {
+    const session = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+    if (session && session.access_token) headers.Authorization = 'Bearer ' + session.access_token;
+  } catch(e) {}
+  return headers;
+}
 let travellers = 2;
 let _destinations = [];
 
@@ -1525,7 +1533,7 @@ async function searchFlights() {
     try {
       const resp = await fetch(BACKEND + '/api/flights', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ from, to, date, travelers }),
       });
       const data = await resp.json();
@@ -1622,7 +1630,7 @@ async function _parseBookingText(text) {
   try {
     const r = await fetch(BACKEND + '/api/parse-booking', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ text }),
       signal: AbortSignal.timeout(20000),
     });
@@ -1787,6 +1795,7 @@ async function _fetchWikiPhoto(wikiSlug) {
 async function _fetchSpotsForDest(dest) {
   try {
     const r = await fetch(BACKEND + '/api/spots?destination=' + encodeURIComponent(dest), {
+      headers: tripvaAuthHeaders(),
       signal: AbortSignal.timeout(22000)
     });
     if (!r.ok) return [];
@@ -2046,7 +2055,7 @@ async function proceedToGeneration() {
   try {
     const response = await fetch(BACKEND + '/api/plan?stream=true', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), ...(bookingAnchors && bookingAnchors.length && { bookingAnchors }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots, transport: transport || 'flight' }, archData)),
     });
 
@@ -2322,7 +2331,7 @@ async function openGeneratedTrip() {
       try {
         const resp = await fetch(BACKEND + '/api/trip', {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({
             state: {
               normalizedVersion: rp.normalizedVersion || 2,
