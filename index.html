@@ -159,13 +159,14 @@ nav{
   opacity:0;
   animation:heroCycle 24s ease-in-out infinite;
 }
+.hero-photos .hero-photo:first-child{opacity:1}
 .hero-photos .hero-photo:nth-child(1){animation-delay:0s}
 .hero-photos .hero-photo:nth-child(2){animation-delay:6s}
 .hero-photos .hero-photo:nth-child(3){animation-delay:12s}
 .hero-photos .hero-photo:nth-child(4){animation-delay:18s}
 @keyframes heroCycle{
-  0%,  20% { opacity:1; transform:scale(1.04); }
-  25%, 95% { opacity:0; }
+  0%,  28% { opacity:1; transform:scale(1.04); }
+  33%, 95% { opacity:0; }
   100%     { opacity:0; transform:scale(1); }
 }
 .hero-overlay{
@@ -931,12 +932,13 @@ footer{
 
 <!-- ─── HERO — travel-inspiring photo cycle ─────────────────────────────── -->
 <section class="hero" id="home">
-  <!-- Cross-fading destination photos (Santorini, Paris, Kyoto, Patagonia) -->
+  <!-- Cross-fading destination photos. Local assets keep first paint reliable;
+       remote images remain as visual fallback when available. -->
   <div class="hero-photos" aria-hidden="true">
-    <div class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1522093007474-d86e9bf7ba6f?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#1a0f2e,#0a0a12);"></div>
-    <div class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#2e1a0f,#0a0a12);"></div>
-    <div class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#0f1e2e,#0a0a12);"></div>
-    <div class="hero-photo" style="background-image:url('https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#1a2e1a,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/paris-arrival.jpg'), url('https://images.unsplash.com/photo-1522093007474-d86e9bf7ba6f?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#1a0f2e,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/amsterdam-canals.jpg'), url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#2e1a0f,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/phuket-odyssey/patong-sunset.jpg'), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#0f1e2e,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/paris-eiffel.jpg'), url('https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#1a2e1a,#0a0a12);"></div>
   </div>
   <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-inner">
