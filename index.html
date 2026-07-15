@@ -115,9 +115,11 @@ nav{
   border-bottom:1px solid var(--border);
 }
 .nav-logo{
-  font-size:20px;font-weight:900;letter-spacing:-0.5px;
-  background:linear-gradient(135deg,#fff 30%,var(--purple-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:flex;align-items:center;
+  width:108px;height:40px;
+}
+.nav-logo img{
+  display:block;width:100%;height:auto;
 }
 .nav-links{
   display:flex;gap:28px;align-items:center;
@@ -137,6 +139,7 @@ nav{
 }
 .nav-cta:hover{background:var(--purple);transform:translateY(-1px)}
 @media(max-width:600px){
+  .nav-logo{width:94px;height:36px}
   .nav-links{display:none}
   nav{padding:0 16px}
 }
@@ -476,7 +479,7 @@ h2.section-h2{
   content:"";position:absolute;inset:0;z-index:0;
   background-image:
     linear-gradient(180deg, rgba(10,10,18,.35) 0%, rgba(10,10,18,.2) 40%, rgba(10,10,18,.85) 100%),
-    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=65&auto=format&fit=crop');
+    url('demo-assets/phuket-odyssey/patong-sunset.jpg');
   background-size:cover;background-position:center;
 }
 .final-cta-photo .final-inner{position:relative;z-index:1;max-width:720px}
@@ -711,38 +714,38 @@ footer{
 .arch-tile-img.arch-solo{
   background:
     linear-gradient(180deg, rgba(10,10,18,0) 0%, rgba(10,10,18,.55) 70%, rgba(10,10,18,.88) 100%),
-    url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&q=70&auto=format&fit=crop') center/cover,
+    url('assets/landing/destination-0.webp') center/cover,
     radial-gradient(circle at 25% 20%, rgba(255,195,120,.35), transparent 55%),
     linear-gradient(160deg, #2a1a0e 0%, #0f0a07 75%);
 }
 .arch-tile-img.arch-couple{
   background:
     linear-gradient(180deg, rgba(10,10,18,0) 0%, rgba(10,10,18,.55) 70%, rgba(10,10,18,.88) 100%),
-    url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=70&auto=format&fit=crop') center/cover,
+    url('assets/landing/destination-4.webp') center/cover,
     linear-gradient(160deg, #2b1020 0%, #100610 75%);
 }
 .arch-tile-img.arch-family{
   background:
     linear-gradient(180deg, rgba(10,10,18,0) 0%, rgba(10,10,18,.55) 70%, rgba(10,10,18,.88) 100%),
-    url('https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?w=800&q=70&auto=format&fit=crop') center/cover,
+    url('assets/landing/destination-3.webp') center/cover,
     linear-gradient(160deg, #0e2430 0%, #050f16 75%);
 }
 .arch-tile-img.arch-friends{
   background:
     linear-gradient(180deg, rgba(10,10,18,0) 0%, rgba(10,10,18,.55) 70%, rgba(10,10,18,.88) 100%),
-    url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&q=70&auto=format&fit=crop') center/cover,
+    url('assets/landing/destination-7.webp') center/cover,
     linear-gradient(160deg, #0b2a24 0%, #06140f 75%);
 }
 .arch-tile-img.arch-adventure{
   background:
     linear-gradient(180deg, rgba(10,10,18,0) 0%, rgba(10,10,18,.55) 70%, rgba(10,10,18,.88) 100%),
-    url('https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800&q=70&auto=format&fit=crop') center/cover,
+    url('assets/landing/destination-5.webp') center/cover,
     linear-gradient(160deg, #13223b 0%, #080e1b 75%);
 }
 .arch-tile-img.arch-nomad{
   background:
     linear-gradient(180deg, rgba(10,10,18,0) 0%, rgba(10,10,18,.55) 70%, rgba(10,10,18,.88) 100%),
-    url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&q=70&auto=format&fit=crop') center/cover,
+    url('assets/landing/destination-6.webp') center/cover,
     linear-gradient(160deg, #1e1433 0%, #0a0718 75%);
 }
 .arch-glyph{
@@ -921,7 +924,7 @@ footer{
 
 <!-- ─── NAV ───────────────────────────────────────────────────────────────── -->
 <nav>
-  <div class="nav-logo">Tripva</div>
+  <a class="nav-logo" href="/" aria-label="Tripva home"><img src="assets/brand/tripva-nav-logo.png" width="180" height="67" alt="Tripva"></a>
   <div class="nav-links">
     
     <a href="#pricing">Pricing</a>
@@ -932,13 +935,12 @@ footer{
 
 <!-- ─── HERO — travel-inspiring photo cycle ─────────────────────────────── -->
 <section class="hero" id="home">
-  <!-- Cross-fading destination photos. Local assets keep first paint reliable;
-       remote images remain as visual fallback when available. -->
+  <!-- Cross-fading local destination photos for reliable first paint. -->
   <div class="hero-photos" aria-hidden="true">
-    <div class="hero-photo" style="background-image:url('demo-assets/paris-arrival.jpg'), url('https://images.unsplash.com/photo-1522093007474-d86e9bf7ba6f?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#1a0f2e,#0a0a12);"></div>
-    <div class="hero-photo" style="background-image:url('demo-assets/amsterdam-canals.jpg'), url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#2e1a0f,#0a0a12);"></div>
-    <div class="hero-photo" style="background-image:url('demo-assets/phuket-odyssey/patong-sunset.jpg'), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#0f1e2e,#0a0a12);"></div>
-    <div class="hero-photo" style="background-image:url('demo-assets/paris-eiffel.jpg'), url('https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c?w=1920&q=60&auto=format&fit=crop'), linear-gradient(135deg,#1a2e1a,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/paris-arrival.jpg'), linear-gradient(135deg,#1a0f2e,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/amsterdam-canals.jpg'), linear-gradient(135deg,#2e1a0f,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/phuket-odyssey/patong-sunset.jpg'), linear-gradient(135deg,#0f1e2e,#0a0a12);"></div>
+    <div class="hero-photo" style="background-image:url('demo-assets/paris-eiffel.jpg'), linear-gradient(135deg,#1a2e1a,#0a0a12);"></div>
   </div>
   <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-inner">
@@ -1123,49 +1125,49 @@ footer{
     <p class="section-sub fade-in">Tap any city — Tripva builds a complete plan in 30 seconds.</p>
     <div class="dest-grid">
       <a class="dest-tile fade-in" href="plan.html?dest=Tokyo">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#2a1a0e,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-0.webp'), linear-gradient(135deg,#2a1a0e,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">Japan</div><div class="dest-tile-name">Tokyo</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Santorini">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#1a2e3a,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-1.webp'), linear-gradient(135deg,#1a2e3a,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">Greece</div><div class="dest-tile-name">Santorini</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Kyoto">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#2e1a1a,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-2.webp'), linear-gradient(135deg,#2e1a1a,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">Japan</div><div class="dest-tile-name">Kyoto</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Bali">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#1a2e1a,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-3.webp'), linear-gradient(135deg,#1a2e1a,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">Indonesia</div><div class="dest-tile-name">Bali</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Paris">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1522093007474-d86e9bf7ba6f?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#1a1033,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-4.webp'), linear-gradient(135deg,#1a1033,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">France</div><div class="dest-tile-name">Paris</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Iceland">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1531168556467-80aace0d0144?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#0d2030,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-5.webp'), linear-gradient(135deg,#0d2030,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">Nordic</div><div class="dest-tile-name">Iceland</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Queenstown">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#0f1e2e,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-6.webp'), linear-gradient(135deg,#0f1e2e,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">New Zealand</div><div class="dest-tile-name">Queenstown</div></div>
       </a>
       <a class="dest-tile fade-in" href="plan.html?dest=Barcelona">
-        <div class="dest-tile-img" style="background-image:url('https://images.unsplash.com/photo-1583422409516-2895a77efded?w=700&q=70&auto=format&fit=crop'), linear-gradient(135deg,#2a1515,#0a0a12)"></div>
+        <div class="dest-tile-img" style="background-image:url('assets/landing/destination-7.webp'), linear-gradient(135deg,#2a1515,#0a0a12)"></div>
         <div class="dest-tile-overlay"></div>
         <span class="dest-tile-cta">Plan →</span>
         <div class="dest-tile-body"><div class="dest-tile-sub">Spain</div><div class="dest-tile-name">Barcelona</div></div>

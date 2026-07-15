@@ -134,6 +134,19 @@ test.describe('Tripva E2E flows', () => {
     await expect(page.locator('.nav-cta').first()).toBeVisible();
   });
 
+  test('homepage — brand and landing imagery are self-hosted', async ({ page }) => {
+    await page.goto('/');
+    const logo = page.locator('.nav-logo img');
+    await expect(logo).toBeVisible();
+    await expect(logo).toHaveAttribute('src', /assets\/brand\/tripva-nav-logo\.png$/);
+
+    const backgrounds = await page.locator('.hero-photo, .arch-tile-img, .dest-tile-img').evaluateAll(
+      elements => elements.map(element => getComputedStyle(element).backgroundImage),
+    );
+    expect(backgrounds).toHaveLength(18);
+    expect(backgrounds.join(' ')).not.toContain('images.unsplash.com');
+  });
+
   // ── 2. SPOT SELECTOR — critical flow guard ───────────────────────────────────
   // This test ensures the spot selector appears between form submit and generation.
   // If this test fails, the spot selector is broken (e.g. API timeout, empty response,
