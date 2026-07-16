@@ -1490,7 +1490,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 .spot-tag{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);border-radius:6px;padding:2px 7px}
 </style>
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
-<script src="demo-trips.js"></script>
+<script src="demo-trips.js?v=20260716-demo-quality-1"></script>
 </head>
 <body>
 
@@ -4113,7 +4113,9 @@ function populateDashboard(p) {
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
-      const eagerBg = i === _todayPillIdx;
+      // A demo only has three cards and is a first-impression surface. Do not
+      // leave its other days blank while waiting for a scroll interaction.
+      const eagerBg = p.trip?.isDemo || i === _todayPillIdx;
       card.innerHTML=`
         <div class="day-big-hero" ${eagerBg ? `style="background-image:url('${imgUrl}')"` : `data-bg="${esc(imgUrl)}"`}>
           <div class="day-big-grad"></div>
