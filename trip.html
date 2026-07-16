@@ -1490,6 +1490,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 .spot-tag{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);border-radius:6px;padding:2px 7px}
 </style>
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
+<script src="demo-trips.js"></script>
 </head>
 <body>
 
@@ -1514,6 +1515,12 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
   <a class="viewer-banner-sec" href="#" id="viewerSimilarBtn" onclick="planSimilarTrip();return false;">🪄 Similar</a>
   <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
   <button id="viewerBannerClose" aria-label="Dismiss" onclick="dismissViewerBanner()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0">✕</button>
+</div>
+
+<div id="demoBanner" class="viewer-banner" style="display:none;margin:10px 14px 0;flex-shrink:0">
+  <span class="viewer-banner-icon">🧭</span>
+  <span class="viewer-banner-text"><b>Sample itinerary.</b> Keep this plan, then tailor every detail to your trip.</span>
+  <button class="viewer-banner-cta" onclick="cloneDemoTrip()">Make it yours →</button>
 </div>
 
 <!-- ── 1. LIVE OPS ── -->
@@ -3473,11 +3480,34 @@ try { window.__usedDayImgsReady = true; } catch(e){}
 async function loadTripPlan() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
+  const demoSlug = params.get('demo');
 
   
   // Always restore from localStorage first — but skip if DEMO block will run
   if (!params.get('demo') && !params.get('id')) {
     restoreMeta();
+  }
+  // Landing-page destination demos are local, complete itineraries. They do
+  // not depend on a saved gist or an API request, so visitors always have a
+  // working trip to explore before making a copy.
+  if (demoSlug && demoSlug !== '1' && window.TripvaDemoTrips) {
+    const DEMO_TRIP = window.TripvaDemoTrips.build(demoSlug);
+    if (DEMO_TRIP) {
+      setTimeout(() => {
+        try {
+          plan = DEMO_TRIP;
+          tripMeta = plan.trip || {};
+          populateDashboard(plan);
+          renderLiveOps();
+          switchTab('days');
+          document.title = plan.trip.name + ' · Tripva';
+          const banner = document.getElementById('demoBanner');
+          if (banner) banner.style.display = 'flex';
+        } catch (e) { console.error('[Demo] populateDashboard error:', e); }
+      }, 0);
+      showLoadingSpinner(false);
+      return;
+    }
   }
 // ── DEMO MODE (?demo=1) — hardcoded trip, never fails ──────────────────
   if (params.get('demo') === '1') {
@@ -3505,6 +3535,7 @@ async function loadTripPlan() {
       try { renderLiveOps(); } catch(e) { console.error('[Demo] renderLiveOps error:', e); }
       try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
       try { document.title = plan.trip.name + ' · Tripva'; } catch(e) {}
+      try { const banner = document.getElementById('demoBanner'); if (banner) banner.style.display = 'flex'; } catch(e) {}
     }, 0);
     
     showLoadingSpinner(false);
@@ -7344,6 +7375,32 @@ function planSimilarTrip() {
   window.location.href = '/plan.html?' + params.toString();
 }
 window.planSimilarTrip = planSimilarTrip;
+
+// Keep a demo local to the visitor before they change it. This avoids editing
+// a shared fixture and makes every dashboard control behave like a normal trip.
+function cloneDemoTrip() {
+  const source = (plan && (plan.rawPlan || plan)) || null;
+  if (!source || !source.trip) {
+    try { showToast('⚠️ Demo is still loading'); } catch(e) {}
+    return;
+  }
+  const copy = JSON.parse(JSON.stringify(source));
+  copy.trip = Object.assign({}, copy.trip, {
+    id: `local-${Date.now().toString(36)}`,
+    name: `${copy.trip.name || 'My trip'} · My copy`,
+    isDemo: false,
+  });
+  try {
+    localStorage.setItem('tripva_plan', JSON.stringify(copy));
+    localStorage.setItem('tripai_meta', JSON.stringify(copy.trip));
+    sessionStorage.setItem('tripva_cloned_demo', '1');
+  } catch(e) {
+    try { showToast('⚠️ Could not save your copy'); } catch(_) {}
+    return;
+  }
+  window.location.href = '/trip.html?cloned=1';
+}
+window.cloneDemoTrip = cloneDemoTrip;
 
 function startTripOAuth(provider){
   var btn = document.getElementById('tripOauth' + provider[0].toUpperCase() + provider.slice(1));

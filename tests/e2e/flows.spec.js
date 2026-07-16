@@ -147,6 +147,23 @@ test.describe('Tripva E2E flows', () => {
     expect(backgrounds.join(' ')).not.toContain('images.unsplash.com');
   });
 
+  test('destination demo — opens a real itinerary and makes a local copy', async ({ page }) => {
+    await page.goto('/');
+    const destinationLinks = page.locator('.dest-tile');
+    await expect(destinationLinks).toHaveCount(8);
+    await expect(destinationLinks.nth(0)).toHaveAttribute('href', 'trip.html?demo=tokyo');
+    await expect(destinationLinks.nth(7)).toHaveAttribute('href', 'trip.html?demo=barcelona');
+
+    await page.goto('/trip.html?demo=tokyo');
+    await expect(page.locator('#demoBanner')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('#tripName')).toContainText('Tokyo Weekend Guide');
+    await page.locator('#demoBanner button').click();
+    await expect(page).toHaveURL(/trip\.html\?cloned=1/);
+    const copied = await page.evaluate(() => JSON.parse(localStorage.getItem('tripva_plan') || 'null'));
+    expect(copied.trip.id).toMatch(/^local-/);
+    expect(copied.trip.name).toContain('My copy');
+  });
+
   // ── 2. SPOT SELECTOR — critical flow guard ───────────────────────────────────
   // This test ensures the spot selector appears between form submit and generation.
   // If this test fails, the spot selector is broken (e.g. API timeout, empty response,
@@ -313,7 +330,7 @@ test.describe('Tripva E2E flows', () => {
     });
     await page.goto(`/trip.html?id=${SHARED_ID}`);
     await expect(page.locator('#viewerBanner')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('.viewer-banner-cta')).toBeVisible();
+    await expect(page.locator('#viewerBanner .viewer-banner-cta')).toBeVisible();
   });
 
   // ── 5. Auth gate ─────────────────────────────────────────────────────────────
