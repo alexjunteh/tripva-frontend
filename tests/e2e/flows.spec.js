@@ -174,6 +174,21 @@ test.describe('Tripva E2E flows', () => {
     expect(copied.trip.name).toContain('My copy');
   });
 
+  test('every landing destination opens a full Tripva demo plan', async ({ page }) => {
+    const slugs = ['tokyo', 'santorini', 'kyoto', 'bali', 'paris', 'iceland', 'queenstown', 'barcelona'];
+    for (const slug of slugs) {
+      await page.goto(`/trip.html?demo=${slug}`);
+      await expect(page.locator('#demoBanner')).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('.day-big-card')).toHaveCount(3);
+      await expect(page.locator('.day-big-events')).toHaveText(['📍 7 events', '📍 7 events', '📍 7 events']);
+      await page.locator('#dc-0').click();
+      await expect(page.locator('.day-gallery-item')).toHaveCount(3);
+      await expect(page.locator('.tl-main.photospot')).toHaveCount(1);
+      await expect(page.locator('.tl-main.transport')).toHaveCount(1);
+      await expect(page.locator('.local-tip-item')).toHaveCount(3);
+    }
+  });
+
   // ── 2. SPOT SELECTOR — critical flow guard ───────────────────────────────────
   // This test ensures the spot selector appears between form submit and generation.
   // If this test fails, the spot selector is broken (e.g. API timeout, empty response,
