@@ -77,23 +77,43 @@
     if (!cfg) return null;
     const guidance = localGuidance[slug];
     const start = 21;
-    const days = cfg.days.map(([title, subtitle, stops], index) => ({
-      day: index + 1,
-      date: dateAt(start + index),
-      title,
-      subtitle,
-      emoji: index === 0 ? '✈️' : index === 1 ? '✨' : '🌙',
-      heroSeed: cfg.city.toLowerCase(),
-      imageUrl: `assets/demos/${slug}-${index}.webp`,
-      highlights: stops,
-      timeline: [
-        { time: '08:30', title: 'Breakfast and route check', detail: guidance.breakfast, type: 'food', mapQuery: `${stops[0]}, ${cfg.city}` },
-        { time: '09:30', title: stops[0], detail: `${guidance.morning} Allow around 90 minutes here before moving on.`, type: 'activity', mapQuery: `${stops[0]}, ${cfg.city}` },
-        { time: '12:30', title: stops[1], detail: `${guidance.transit} Stop for lunch close to ${stops[1]} rather than crossing the city twice.`, type: 'activity', mapQuery: `${stops[1]}, ${cfg.city}` },
-        { time: '15:30', title: stops[2], detail: `${guidance.reserve} This is the anchor experience for the afternoon.`, type: 'activity', mapQuery: `${stops[2]}, ${cfg.city}` },
-        { time: '19:30', title: localMeals[slug][index], detail: guidance.dinner, type: 'food', mapQuery: `${localMeals[slug][index]}, ${cfg.city}` }
-      ]
-    }));
+    const days = cfg.days.map(([title, subtitle, stops], index) => {
+      const imageUrl = `assets/demos/${slug}-${index}.webp`;
+      const nextImageUrl = `assets/demos/${slug}-${(index + 1) % cfg.days.length}.webp`;
+      const lastImageUrl = `assets/demos/${slug}-${(index + 2) % cfg.days.length}.webp`;
+      const photoSpot = `${stops[2]} photo stop`;
+      return {
+        day: index + 1,
+        date: dateAt(start + index),
+        title,
+        subtitle,
+        emoji: index === 0 ? '✈️' : index === 1 ? '✨' : '🌙',
+        heroSeed: cfg.city.toLowerCase(),
+        imageUrl,
+        highlights: stops,
+        // These galleries are intentionally self-hosted. A demo must remain
+        // visually complete even when third-party image hosts are unavailable.
+        photos: [
+          { url: imageUrl, time: 'Morning', caption: stops[0] },
+          { url: nextImageUrl, time: 'Afternoon', caption: stops[1] },
+          { url: lastImageUrl, time: 'Golden hour', caption: stops[2] }
+        ],
+        localTips: [
+          guidance.morning,
+          guidance.transit,
+          `Save ${stops[2]} in Maps before leaving Wi-Fi; it is the best place to keep the afternoon flexible.`
+        ],
+        timeline: [
+          { time: '08:30', title: 'Breakfast and route check', detail: guidance.breakfast, type: 'food', mapQuery: `${stops[0]}, ${cfg.city}` },
+          { time: '09:30', title: stops[0], detail: `${guidance.morning} Allow around 90 minutes here before moving on.`, type: 'activity', mapQuery: `${stops[0]}, ${cfg.city}`, imageUrl },
+          { time: '12:30', title: stops[1], detail: `${guidance.transit} Stop for lunch close to ${stops[1]} rather than crossing the city twice.`, type: 'activity', mapQuery: `${stops[1]}, ${cfg.city}`, imageUrl: nextImageUrl },
+          { time: '14:15', title: `Transfer to ${stops[2]}`, detail: `${guidance.transit} Leave with a 20-minute buffer for the final approach.`, type: 'transport', mapQuery: `${stops[2]}, ${cfg.city}` },
+          { time: '15:30', title: stops[2], detail: `${guidance.reserve} This is the anchor experience for the afternoon.`, type: 'activity', mapQuery: `${stops[2]}, ${cfg.city}`, imageUrl: lastImageUrl },
+          { time: '17:45', title: photoSpot, detail: `Frame ${stops[2]} in softer late-day light. Keep this as a photo-first stop rather than rushing straight to dinner.`, tip: `Best light is roughly 45 minutes before sunset; bring a wide lens or use your phone's 0.5x camera.`, type: 'photospot', mapQuery: `${stops[2]}, ${cfg.city}`, imageUrl: lastImageUrl },
+          { time: '19:30', title: localMeals[slug][index], detail: guidance.dinner, type: 'food', mapQuery: `${localMeals[slug][index]}, ${cfg.city}` }
+        ]
+      };
+    });
     const end = dateAt(start + days.length - 1);
     return {
       trip: {
@@ -124,7 +144,12 @@
       tips: [{ category: `${cfg.city} notes`, icon: cfg.emoji, items: ['Book headline attractions before you travel.', 'Keep one open block each day for a place you discover on the way.', 'Use this sample as a starting point, then adjust dates, pace, and budget.'] }],
       urgent: [{ label: `Check ${cfg.city} headline attraction availability`, note: 'Popular times and experiences can sell out early.', url: '' }],
       tickets: [],
-      mapStops: [{ name: cfg.city, lat: cfg.coords[0], lng: cfg.coords[1], type: 'visit' }]
+      mapStops: [
+        { name: cfg.city, lat: cfg.coords[0], lng: cfg.coords[1], type: 'visit', city: cfg.city },
+        ...days.flatMap(day => day.timeline
+          .filter(item => ['activity', 'photospot'].includes(item.type))
+          .map(item => ({ name: item.title.replace(/ photo stop$/, ''), city: cfg.city, type: item.type, day: day.day })))
+      ]
     };
   }
 
