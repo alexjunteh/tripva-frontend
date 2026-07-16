@@ -4113,9 +4113,7 @@ function populateDashboard(p) {
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
-      // A demo only has three cards and is a first-impression surface. Do not
-      // leave its other days blank while waiting for a scroll interaction.
-      const eagerBg = p.trip?.isDemo || i === _todayPillIdx;
+      const eagerBg = true;
       card.innerHTML=`
         <div class="day-big-hero" ${eagerBg ? `style="background-image:url('${imgUrl}')"` : `data-bg="${esc(imgUrl)}"`}>
           <div class="day-big-grad"></div>
@@ -4131,7 +4129,6 @@ function populateDashboard(p) {
         </div>`;
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
-      if (!eagerBg) scheduleLazyBg(card.querySelector('.day-big-hero'));
     });
 
     // Scroll day strip so the last pill is fully visible

@@ -164,7 +164,7 @@ test.describe('Tripva E2E flows', () => {
     expect(new Set(dayImages).size).toBe(3);
     expect(dayImages.join(' ')).toContain('assets/demos/tokyo-');
     await page.locator('#demoBanner button').click();
-    await expect(page).toHaveURL(/trip\.html\?cloned=1/);
+    await expect(page).toHaveURL(/[/]trip(\.html)?\?cloned=1/);
     const copied = await page.evaluate(() => JSON.parse(localStorage.getItem('tripva_plan') || 'null'));
     expect(copied.trip.id).toMatch(/^local-/);
     expect(copied.trip.name).toContain('My copy');
