@@ -157,6 +157,12 @@ test.describe('Tripva E2E flows', () => {
     await page.goto('/trip.html?demo=tokyo');
     await expect(page.locator('#demoBanner')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#tripName')).toContainText('Tokyo Weekend Guide');
+    await expect(page.locator('.day-big-card')).toHaveCount(3);
+    await expect(page.locator('.day-big-events')).toHaveText(['📍 5 events', '📍 5 events', '📍 5 events']);
+    const dayImages = await page.locator('.day-big-hero').evaluateAll(nodes => nodes.map(node => node.style.backgroundImage));
+    expect(dayImages).toHaveLength(3);
+    expect(new Set(dayImages).size).toBe(3);
+    expect(dayImages.join(' ')).toContain('assets/demos/tokyo-');
     await page.locator('#demoBanner button').click();
     await expect(page).toHaveURL(/trip\.html\?cloned=1/);
     const copied = await page.evaluate(() => JSON.parse(localStorage.getItem('tripva_plan') || 'null'));
