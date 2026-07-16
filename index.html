@@ -311,6 +311,7 @@ h2.section-h2{
 /* ─── FADE IN ─────────────────────────────────────────────────────────────── */
 .fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){.fade-in{opacity:1;transform:none;transition:none}}
 
 /* ─── PAIN SECTION ────────────────────────────────────────────────────────── */
 .pain-section{
