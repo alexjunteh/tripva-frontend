@@ -3503,6 +3503,9 @@ async function loadTripPlan() {
           document.title = plan.trip.name + ' · Tripva';
           const banner = document.getElementById('demoBanner');
           if (banner) banner.style.display = 'flex';
+          const rb = document.getElementById('restoredBanner');
+          if (rb) rb.style.display = 'none';
+          try { loadPhotoSpots(); } catch(e) {}
         } catch (e) { console.error('[Demo] populateDashboard error:', e); }
       }, 0);
       showLoadingSpinner(false);
@@ -3536,6 +3539,8 @@ async function loadTripPlan() {
       try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
       try { document.title = plan.trip.name + ' · Tripva'; } catch(e) {}
       try { const banner = document.getElementById('demoBanner'); if (banner) banner.style.display = 'flex'; } catch(e) {}
+      try { const rb = document.getElementById('restoredBanner'); if (rb) rb.style.display = 'none'; } catch(e) {}
+      try { loadPhotoSpots(); } catch(e) {}
     }, 0);
     
     showLoadingSpinner(false);
@@ -4255,7 +4260,7 @@ function populateDashboard(p) {
         c.innerHTML=`<div class="book-card-title">${esc(h.city||'')} · ${esc(h.name||'')}</div>
           ${stayStatus?`<div class="stay-pill-row"><span class="stay-pill ${stayStatus.sourceClass}">${stayStatus.sourceLabel}</span><span class="stay-pill strategy">${esc(stayStatus.strategyLabel)}</span>${h.pricingSourceType?`<span class="stay-pill soft">${esc(h.pricingSourceType)}</span>`:''}</div>`:''}
           <div class="book-card-note">${starsStr}${starsStr && ratingStr ? ' ' : ''}${ratingStr ? '<span style="color:rgba(255,255,255,.5);font-size:11px">'+ratingStr+'</span>' : ''} ${esc(h.price||'')} · ${esc(h.note||'')}</div>
-          <div class="book-card-budget">${buildHotelBudgetMini('Nightly', nightlyText)}${buildHotelBudgetMini('Stay total', totalText)}${buildHotelBudgetMini('Stay cap', capText)}${buildHotelBudgetMini('Budget fit', h.stayBudgetStatus==='within-cap'?'Within cap':'Over cap')}</div>
+          <div class="book-card-budget">${buildHotelBudgetMini('Nightly', nightlyText)}${buildHotelBudgetMini('Stay total', totalText)}${buildHotelBudgetMini('Stay cap', capText)}${buildHotelBudgetMini('Budget fit', h.stayBudgetStatus ? (h.stayBudgetStatus==='within-cap'?'Within cap':'Over cap') : '—')}</div>
           <div class="book-actions">
             <a class="book-btn" href="${buildHotellookLink(city,checkin,checkout,adults,p.trip?.destination)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('hotellook')" style="background:rgba(99,179,237,.12);border-color:rgba(99,179,237,.3);color:#63b3ed">🏨 Compare Booking.com, Agoda & more →</a>
           </div>`;
@@ -4530,10 +4535,9 @@ function populateDashboard(p) {
         const excludedTypes = ['food','meal','hotel','photospot','logistics'];
         const hasPrice = /[€$£¥]\s*\d|\d+\s*(?:EUR|USD|GBP|MYR|SGD|AUD|JPY|THB|RM)\b/i.test(det);
         const hasTicketKeyword = /ticket|pre-book|prebook|museum|gallery|entry fee|admission|timed entry|tour booking|reserve|book at|advance booking/i.test(det);
-        const hasMapQuery = !!(tl.mapQuery && String(tl.mapQuery).trim().length);
         const isTicketed = !excludedTypes.includes(tl.type) && (
           hasTicketKeyword ||
-          (tl.type === 'activity' && (hasPrice || hasMapQuery))
+          (tl.type === 'activity' && hasPrice)
         );
         if (isTransport || isTicketed) {
           const icon = tl.type === 'transport' ? '🚆' : '🎟️';
@@ -4981,20 +4985,32 @@ function renderLiveOps(){
   // ── HERO ──
   const heroImg=(day.imageUrl&&!day.imageUrl.includes('loremflickr')?day.imageUrl:null)||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
   if(el('liveHero'))el('liveHero').style.backgroundImage=`url('${heroImg}')`;
-  if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`Day ${day.day} of ${totalDays}`;
-  if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
-  // Emotional hook
-  const HOOKS=['Adventure awaits 🗺️','Make today count ✨','The best day yet 🌟','Create memories 📸','You planned this — enjoy it 🎉','Explore and discover 🧭'];
-  const MORNING=['Good morning! Ready for today ☀️','Fresh day, fresh adventures 🌅'];
-  const EVENING=['What a day! Evening ahead 🌙','Winding down nicely ✨'];
-  let hook=day.subtitle||HOOKS[day.day%HOOKS.length];
-  if(localHour<10)hook=MORNING[day.day%2];
-  else if(localHour>=20)hook=EVENING[day.day%2];
-  if(el('liveHeroHook'))el('liveHeroHook').textContent=hook;
   const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const dateObj=new Date(ymd+'T12:00:00');
-  if(el('liveHeroTime'))el('liveHeroTime').textContent=`${timeStr} · ${DN[dateObj.getDay()]} ${MN[dateObj.getMonth()]} ${dateObj.getDate()}`;
+  const firstDayDate=plan.days[0]&&plan.days[0].date||'';
+  const lastDayDate=plan.days[plan.days.length-1]&&plan.days[plan.days.length-1].date||'';
+  const isPreTrip=firstDayDate&&ymd<firstDayDate;
+  if(isPreTrip){
+    if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`${totalDays}-day preview`;
+    if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
+    const startObj=new Date(firstDayDate+'T12:00:00');
+    const daysUntil=Math.ceil((startObj.getTime()-new Date(ymd+'T12:00:00').getTime())/86400000);
+    const hook=daysUntil===1?'Tomorrow is the day!':'Your trip starts in '+daysUntil+' days';
+    if(el('liveHeroHook'))el('liveHeroHook').textContent=hook;
+    if(el('liveHeroTime'))el('liveHeroTime').textContent=`${DN[startObj.getDay()]} ${MN[startObj.getMonth()]} ${startObj.getDate()} · ${totalDays} days`;
+  } else {
+    if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`Day ${day.day} of ${totalDays}`;
+    if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
+    const HOOKS=['Adventure awaits','Make today count','The best day yet','Create memories','You planned this — enjoy it','Explore and discover'];
+    const MORNING=['Good morning! Ready for today','Fresh day, fresh adventures'];
+    const EVENING=['What a day! Evening ahead','Winding down nicely'];
+    let hook=day.subtitle||HOOKS[day.day%HOOKS.length];
+    if(localHour<10)hook=MORNING[day.day%2];
+    else if(localHour>=20)hook=EVENING[day.day%2];
+    if(el('liveHeroHook'))el('liveHeroHook').textContent=hook;
+    const dateObj=new Date(ymd+'T12:00:00');
+    if(el('liveHeroTime'))el('liveHeroTime').textContent=`${timeStr} · ${DN[dateObj.getDay()]} ${MN[dateObj.getMonth()]} ${dateObj.getDate()}`;
+  }
 
   // ── TIMELINE ANALYSIS ──
   const isTodayDay = day.date === ymd; // only mark done if this day IS today

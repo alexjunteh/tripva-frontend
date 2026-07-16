@@ -167,6 +167,8 @@ test.describe('Tripva E2E flows', () => {
     await expect(page.locator('.day-gallery-item')).toHaveCount(3);
     await expect(page.locator('.tl-main.photospot')).toHaveCount(1);
     await expect(page.locator('.tl-main.transport')).toHaveCount(1);
+    await page.evaluate(() => { try { closeDaySheet(); } catch(e){} });
+    await page.waitForTimeout(400);
     await page.locator('#demoBanner button').click();
     await expect(page).toHaveURL(/[/]trip(\.html)?\?cloned=1/);
     const copied = await page.evaluate(() => JSON.parse(localStorage.getItem('tripva_plan') || 'null'));
