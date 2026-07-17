@@ -377,6 +377,68 @@ h2.section-h2{
   font-size:13px;font-weight:600;color:var(--purple-light);
 }
 
+/* ─── DEMO ANIMATION ─────────────────────────────────────────────────────── */
+@keyframes demoBlink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes demoPulse{0%,100%{box-shadow:0 0 8px rgba(124,106,247,.2),inset 0 0 0 1px rgba(124,106,247,.3)}50%{box-shadow:0 0 24px rgba(124,106,247,.5),inset 0 0 0 1px rgba(124,106,247,.5)}}
+@keyframes demoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes demoGlow{0%,100%{opacity:.3}50%{opacity:1}}
+
+.demo-phone-inner{text-align:center;padding:20px;margin-top:20px;position:relative;min-height:340px}
+.demo-input-box{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;padding:14px 16px;margin:80px 16px 0;
+  text-align:left;font-size:14px;color:rgba(255,255,255,.85);
+  display:flex;align-items:center;opacity:0;transition:opacity .4s ease;
+}
+.demo-input-box.show{opacity:1}
+.demo-cursor{display:inline-block;width:2px;height:17px;background:#7c6af7;margin-left:1px;animation:demoBlink .7s steps(1) infinite;vertical-align:middle}
+.demo-typed{font-family:inherit;white-space:nowrap}
+.demo-generating{
+  position:absolute;left:0;right:0;top:45%;transform:translateY(-50%);
+  text-align:center;opacity:0;transition:opacity .5s ease;pointer-events:none;
+}
+.demo-generating.show{opacity:1}
+.demo-gen-text{font-size:14px;font-weight:600;color:rgba(255,255,255,.6);margin-top:10px}
+.demo-gen-dots{display:inline-flex;gap:8px;margin-top:14px}
+.demo-gen-dots span{width:8px;height:8px;background:#7c6af7;border-radius:50%;opacity:.3;animation:demoGlow 1.2s ease-in-out infinite}
+.demo-gen-dots span:nth-child(2){animation-delay:.25s}
+.demo-gen-dots span:nth-child(3){animation-delay:.5s}
+.demo-result{opacity:0;transition:opacity .5s ease}
+.demo-result.show{opacity:1}
+.demo-result-emoji{font-size:48px;margin-bottom:12px;opacity:0;transform:scale(.5);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1)}
+.demo-result-emoji.show{opacity:1;transform:scale(1)}
+.demo-result-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease}
+.demo-result-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease}
+.demo-result-title.show,.demo-result-sub.show{opacity:1;transform:translateY(0)}
+.demo-item{
+  background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;
+  font-size:12px;color:rgba(255,255,255,.7);text-align:left;
+  opacity:0;transform:translateX(-20px);transition:opacity .4s ease,transform .4s cubic-bezier(.25,.46,.45,.94);
+}
+.demo-item.show{opacity:1;transform:translateX(0)}
+.demo-item.alert{background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.3);color:#9d8fff}
+.demo-item.alert.show{animation:demoPulse 2.5s ease-in-out infinite .8s}
+.demo-cta{
+  display:inline-block;margin-top:16px;background:#7c6af7;color:#fff;
+  padding:8px 20px;border-radius:8px;font-size:12px;font-weight:700;
+  text-decoration:none;opacity:0;transform:translateY(10px);
+  transition:opacity .4s ease,transform .4s ease;
+}
+.demo-cta:hover{background:#6b5ce6}
+.demo-cta.show{opacity:1;transform:translateY(0)}
+.phone-wrap.demo-playing{animation:demoFloat 5s ease-in-out infinite}
+.phone-wrap.demo-playing .phone-frame{
+  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 60px rgba(124,106,247,.12),0 0 0 1px rgba(124,106,247,.25);
+  transition:box-shadow 1.5s ease;
+}
+@media(prefers-reduced-motion:reduce){
+  .demo-input-box,.demo-generating,.demo-result,.demo-result-emoji,
+  .demo-result-title,.demo-result-sub,.demo-item,.demo-cta{opacity:1!important;transform:none!important;transition:none!important;animation:none!important}
+  .demo-cursor{animation:none!important}
+  .phone-wrap.demo-playing{animation:none!important}
+  .phone-wrap.demo-playing .phone-frame{transition:none!important}
+}
+
 /* ─── HOW IT WORKS ────────────────────────────────────────────────────────── */
 .how-section{background:var(--bg)}
 .how-grid{
@@ -1090,21 +1152,31 @@ footer{
     <h2 class="section-h2 fade-in">Watch it work.</h2>
     <p class="section-sub fade-in">From one sentence to a complete trip dashboard — 30 seconds.</p>
 
-    <div class="phone-wrap fade-in">
-      <div class="phone-frame" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0f0f1c 0%,#1a1a2e 100%);">
+    <div class="phone-wrap fade-in" id="demo-phone">
+      <div class="phone-frame" style="background:linear-gradient(180deg,#0f0f1c 0%,#1a1a2e 100%);">
         <div class="phone-notch"></div>
-        <div style="text-align:center;padding:20px;margin-top:20px;">
-          <div style="font-size:48px;margin-bottom:16px;">✈️</div>
-          <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Paris + Amsterdam</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;">7 days · 2 cities · Full itinerary</div>
-          <div style="display:flex;flex-direction:column;gap:8px;text-align:left;padding:0 12px;">
-            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">📅 Day 1 — Arrival in Paris · Eiffel Tower sunset</div>
-            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">📅 Day 2 — Louvre · Montmartre · Seine cruise</div>
-            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">📅 Day 3 — Versailles day trip</div>
-            <div style="background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.3);border-radius:8px;padding:10px 12px;font-size:12px;color:#9d8fff;">⚡ Book Louvre tickets — sells out 2 weeks early</div>
-            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.7);">🏨 Hôtel des Arts · Montmartre · ★★★★</div>
+        <div class="demo-phone-inner">
+          <div class="demo-input-box" id="demo-input">
+            <span class="demo-typed" id="demo-typed"></span><span class="demo-cursor" id="demo-cursor"></span>
           </div>
-          <a href="trip.html?demo=paris" target="_blank" style="display:inline-block;margin-top:16px;background:#7c6af7;color:#fff;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">See full demo →</a>
+          <div class="demo-generating" id="demo-gen">
+            <div style="font-size:32px;margin-bottom:8px;">✨</div>
+            <div class="demo-gen-text">Building your trip...</div>
+            <div class="demo-gen-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="demo-result" id="demo-result">
+            <div class="demo-result-emoji">✈️</div>
+            <div class="demo-result-title">Paris + Amsterdam</div>
+            <div class="demo-result-sub">7 days · 2 cities · Full itinerary</div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding:0 12px;">
+              <div class="demo-item">📅 Day 1 — Arrival in Paris · Eiffel Tower sunset</div>
+              <div class="demo-item">📅 Day 2 — Louvre · Montmartre · Seine cruise</div>
+              <div class="demo-item">📅 Day 3 — Versailles day trip</div>
+              <div class="demo-item alert">⚡ Book Louvre tickets — sells out 2 weeks early</div>
+              <div class="demo-item">🏨 Hôtel des Arts · Montmartre · ★★★★</div>
+            </div>
+            <a href="trip.html?demo=paris" target="_blank" class="demo-cta">See full demo →</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1376,6 +1448,78 @@ function handleEmail(e) {
     var pending = document.querySelectorAll('.fade-in:not(.visible)');
     for(var k=0;k<pending.length;k++){ pending[k].classList.add('visible'); }
   }, 900);
+})();
+
+// Demo animation sequence — typewriter → generating → result cascade
+(function(){
+  var phone = document.getElementById('demo-phone');
+  if(!phone) return;
+  var played = false;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+    var r = document.getElementById('demo-result');
+    document.getElementById('demo-input').style.display='none';
+    document.getElementById('demo-gen').style.display='none';
+    r.classList.add('show');
+    r.querySelector('.demo-result-emoji').classList.add('show');
+    r.querySelector('.demo-result-title').classList.add('show');
+    r.querySelector('.demo-result-sub').classList.add('show');
+    var all = r.querySelectorAll('.demo-item');
+    for(var a=0;a<all.length;a++) all[a].classList.add('show');
+    r.querySelector('.demo-cta').classList.add('show');
+    return;
+  }
+  function run(){
+    if(played) return;
+    played = true;
+    phone.classList.add('demo-playing');
+    var input = document.getElementById('demo-input');
+    var typed = document.getElementById('demo-typed');
+    var cursor = document.getElementById('demo-cursor');
+    var gen = document.getElementById('demo-gen');
+    var result = document.getElementById('demo-result');
+    var emoji = result.querySelector('.demo-result-emoji');
+    var title = result.querySelector('.demo-result-title');
+    var sub = result.querySelector('.demo-result-sub');
+    var items = result.querySelectorAll('.demo-item');
+    var cta = result.querySelector('.demo-cta');
+    var text = '7 days in Paris and Amsterdam';
+    var ci = 0;
+    input.classList.add('show');
+    var ti = setInterval(function(){
+      if(ci < text.length){ typed.textContent = text.substring(0, ++ci); }
+      else {
+        clearInterval(ti);
+        setTimeout(function(){
+          cursor.style.display='none';
+          input.style.opacity='0';
+          setTimeout(function(){
+            input.style.display='none';
+            gen.classList.add('show');
+            setTimeout(function(){
+              gen.classList.remove('show');
+              setTimeout(function(){
+                gen.style.display='none';
+                result.classList.add('show');
+                setTimeout(function(){ emoji.classList.add('show'); },100);
+                setTimeout(function(){ title.classList.add('show'); },300);
+                setTimeout(function(){ sub.classList.add('show'); },500);
+                for(var i=0;i<items.length;i++){
+                  (function(idx){ setTimeout(function(){ items[idx].classList.add('show'); }, 700 + idx*250); })(i);
+                }
+                setTimeout(function(){ cta.classList.add('show'); }, 700 + items.length*250 + 200);
+              },300);
+            },1400);
+          },300);
+        },500);
+      }
+    },55);
+  }
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(e){
+      if(e[0].isIntersecting){ run(); obs.unobserve(phone); }
+    },{threshold:0.25});
+    obs.observe(phone);
+  } else { run(); }
 })();
 
 // PWA install banner — localStorage-backed, with escalating snooze so we
