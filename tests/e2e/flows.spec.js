@@ -138,7 +138,7 @@ test.describe('Tripva E2E flows', () => {
     await page.goto('/');
     const logo = page.locator('.nav-logo img');
     await expect(logo).toBeVisible();
-    await expect(logo).toHaveAttribute('src', /assets\/brand\/tripva-nav-logo\.png$/);
+    await expect(logo).toHaveAttribute('src', /assets\/brand\/tripva-nav-logo-dark\.png$/);
 
     const backgrounds = await page.locator('.hero-photo, .arch-tile-img, .dest-tile-img').evaluateAll(
       elements => elements.map(element => getComputedStyle(element).backgroundImage),
