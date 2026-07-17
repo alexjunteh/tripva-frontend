@@ -4,11 +4,21 @@
   <url><loc>https://tripva.app/plan.html</loc><priority>0.9</priority></url>
   <url><loc>https://tripva.app/about.html</loc><priority>0.8</priority></url>
   <url><loc>https://tripva.app/press.html</loc><priority>0.7</priority></url>
+
+  <!-- Blog -->
   <url><loc>https://tripva.app/blog/</loc><priority>0.8</priority></url>
-  <url><loc>https://tripva.app/blog/best-time-to-visit-japan.html</loc><priority>0.7</priority></url>
-  <url><loc>https://tripva.app/blog/europe-by-train.html</loc><priority>0.7</priority></url>
-  <url><loc>https://tripva.app/blog/paris-hidden-gems-photo-spots.html</loc><priority>0.7</priority></url>
-  <url><loc>https://tripva.app/blog/southeast-asia-budget-travel.html</loc><priority>0.7</priority></url>
+  <url><loc>https://tripva.app/blog/best-time-to-visit-japan.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/paris-hidden-gems-photo-spots.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/europe-by-train.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/southeast-asia-budget-travel.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/santorini-complete-guide.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/bali-first-timer-guide.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/iceland-ring-road-7-days.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/barcelona-food-and-culture.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/kyoto-temple-guide.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+  <url><loc>https://tripva.app/blog/queenstown-adventure-guide.html</loc><priority>0.7</priority><lastmod>2026-07-18</lastmod></url>
+
+  <!-- Itinerary SEO pages -->
   <url><loc>https://tripva.app/itineraries/7-day-italy-itinerary.html</loc><priority>0.8</priority></url>
   <url><loc>https://tripva.app/itineraries/tokyo-with-kids.html</loc><priority>0.8</priority></url>
   <url><loc>https://tripva.app/itineraries/bali-on-1500.html</loc><priority>0.8</priority></url>
@@ -19,6 +29,16 @@
   <url><loc>https://tripva.app/itineraries/switzerland-by-train-7-days.html</loc><priority>0.8</priority></url>
   <url><loc>https://tripva.app/itineraries/seoul-5-day-itinerary.html</loc><priority>0.8</priority></url>
   <url><loc>https://tripva.app/itineraries/singapore-3-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/santorini-5-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/barcelona-4-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/kyoto-5-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/queenstown-5-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/iceland-7-day-ring-road.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/bali-7-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/morocco-10-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/croatia-7-day-itinerary.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tripva.app/itineraries/portugal-7-day-itinerary.html</loc><priority>0.8</priority></url>
+
   <url><loc>https://tripva.app/privacy.html</loc><priority>0.3</priority></url>
   <url><loc>https://tripva.app/terms.html</loc><priority>0.3</priority></url>
 </urlset>

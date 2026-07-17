@@ -1,5 +1,5 @@
 # Tripva Launch + GTM Plan
-_Last updated: 2026-03-25_
+_Last updated: 2026-07-17_
 
 ## ICP
 - Age: 25-40
@@ -11,6 +11,20 @@ _Last updated: 2026-03-25_
 - Promise: plan in minutes, travel with one live dashboard
 - Primary CTA: `Generate free trip`
 
+## What's Live (as of July 2026)
+- 30-second itinerary generation with streaming build
+- 8 destination demos on landing (Tokyo, Santorini, Kyoto, Bali, Paris, Iceland, Queenstown, Barcelona) — each with 3-day itineraries, photo galleries, photo spots, transport events, local tips
+- Animated "Watch it work" demo on landing — typewriter → shimmer → cascade sequence
+- Saved trips via Supabase auth (Google + magic link)
+- Shareable trip dashboards with OG previews
+- PWA install + offline support
+- Affiliate links: Travelpayouts (hotels/flights), GetYourGuide (activities), Klook (Asia activities), Rail Ninja (Japan/Korea/Taiwan rail), Trip.com, Booking.com, Trainline
+- Affiliate click tracking via `affiliate_clicks` Supabase table
+- Rate limiting via Upstash Redis (sliding window, 3 req/min costly endpoints)
+- JWT auth middleware (ready but not yet enabled for anonymous generation)
+- Blog + SEO itinerary templates
+- SerpAPI Google Flights integration
+
 ## Channels
 - SEO: destination + itinerary intent pages (`"7 day italy itinerary"`, `"amalfi coast luxury itinerary"`)
 - Instagram Reels: short itinerary transformations + in-trip dashboard demos
@@ -19,24 +33,23 @@ _Last updated: 2026-03-25_
 - Reddit (`r/travel`, `r/solotravel`, `r/digitalnomad`): value-first posts + templates
 
 ## Launch Sequence
-1. Soft launch (friends + warm audience) and fix usability friction
+1. Soft launch (friends + warm audience) and fix usability friction — DONE
 2. Reach 500 active users through content + communities
 3. Show affiliate proof (tracked clicks + first commissions)
 4. Scale with repeatable SEO + creator partnerships
 
 ## 3-Week Execution Sprint
-### Week 1 (Product Hunt prep + post)
-- Finalize PH assets: tagline, 5 screenshots, demo URL, maker comment
-- Publish Product Hunt launch post Tuesday 12:01am PT
-- Activate launch-day checklist: comments in first hour, update reply cadence, ask warm network for early support
-
-### Week 2 (Reddit templates + distribution)
-- Publish 3 value-first Reddit posts:
-  - "I built an AI planner that outputs a full trip dashboard"
-  - "How I planned a 7-day Europe trip in 30 seconds"
-  - "Free itinerary generator for couples/solo travelers"
+### Week 1 (Reddit + Show HN — lowest friction)
+- Publish 3 value-first Reddit posts (see LAUNCH_PACK.md)
+- Publish Show HN post with demo link
 - Comment support runbook: answer all comments in <12h
 - Capture high-performing hooks into reusable copy bank
+
+### Week 2 (Product Hunt + content ramp)
+- Finalize PH assets: tagline, 5 screenshots (use demo destinations), demo URL, maker comment
+- Publish Product Hunt launch post Tuesday 12:01am PT
+- Activate launch-day checklist: comments in first hour, update reply cadence, ask warm network for early support
+- Start daily TikTok/Reels (see SOCIAL_MEDIA_GROWTH_STRATEGY_2026.md)
 
 ### Week 3 (Influencer outreach)
 - Outreach to 30 micro creators (10k-150k followers) in travel + lifestyle
@@ -55,38 +68,38 @@ _Last updated: 2026-03-25_
 - Retention: returning visitors, repeat trip generation within 30 days
 
 ## Immediate Next Actions
-- Replace placeholder affiliate IDs with approved live partner IDs
-- Ship analytics dashboard for `trips generated`, `book clicks`, `book conversions`
-- Prepare 10 SEO landing pages for highest-intent city + duration keywords
+- [ ] Pick launch week start date (recommend a Tuesday)
+- [ ] Record 3 screen-capture demo videos for Reddit/PH/HN posts
+- [ ] Prepare 10 SEO landing pages for highest-intent city + duration keywords
 
 ---
 
 ## Moat-Building Timeline
-_Added 2026-03-25 — integrated with launch phases_
+_Updated 2026-07-17_
 
 The goal: build compounding advantages that competitors cannot replicate even if they copy the product.
 
-### NOW — Week 0–4 (Data Layer, Start Immediately)
+### DONE — Data Layer (completed)
 
-| Action | Why | How |
-|--------|-----|-----|
-| Wire real affiliate IDs (Booking.com first) | Every click starts building conversion intelligence | Sign up at booking.com/affiliateprogram, get ID within 24h |
-| Log affiliate clicks + outcomes per trip | Proprietary CTR/conversion data by destination, duration, travel style | Add analytics event on every affiliate link click |
-| Track which itinerary items lead to bookings | Trains better AI output over time | Backend logging per `urgent[]` item click |
-| Index first 1,000 trip URLs | SEO footprint — time-locked, can't be replicated later | Generate + share real trips; ensure pages are crawlable |
+| Action | Status |
+|--------|--------|
+| Wire real affiliate IDs (Travelpayouts, GYG, Klook, Rail Ninja, Trip.com, Booking, Trainline) | DONE |
+| Log affiliate clicks + outcomes per trip (`affiliate_clicks` table in Supabase) | DONE |
+| Track which itinerary items lead to bookings | DONE — backend logging on every affiliate link click |
+| 8 demo destination trip pages indexed on landing | DONE |
 
-**Milestone**: First real affiliate commission earned. Screenshot it. Worth $1M in investor conversations.
+**Next milestone**: First real affiliate commission earned. Screenshot it. Worth $1M in investor conversations.
 
 ---
 
-### Month 1–3 (Lock-In Layer)
+### NOW — Month 1–3 (Lock-In Layer)
 
-| Action | Why | How |
-|--------|-----|-----|
-| Launch My Trips (Supabase auth) | Switching cost compounds with every saved trip | Magic link auth → trip history → free quota gate |
-| Group trip sharing | Multi-user lock-in + K-factor >1 | Share link → collaborators see + edit same plan |
-| Post-trip recap | Full lifecycle ownership → can't leave without losing memories | End-of-trip summary, photos prompt, "Plan next trip like this" CTA |
-| 20 SEO destination pages | Content moat — first to index wins permanently | "Best 7-day [city] itinerary" pages with Generate CTA |
+| Action | Why | Status |
+|--------|-----|--------|
+| Launch My Trips (Supabase auth) | Switching cost compounds with every saved trip | DONE — Google + magic link auth, saved trips |
+| Group trip sharing | Multi-user lock-in + K-factor >1 | DONE — shareable trip links with OG previews |
+| Post-trip recap | Full lifecycle ownership → can't leave without losing memories | TODO — end-of-trip summary, photos prompt, "Plan next trip like this" CTA |
+| 20 SEO destination pages | Content moat — first to index wins permanently | IN PROGRESS — 8 demo destinations live on landing, 12 more needed |
 
 **Milestone**: User with 3+ saved trips. Retention data. Return visit rate >20%.
 
