@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <path d="M256 16c-97 0-176 79-176 176 0 132 176 304 176 304s176-172 176-304c0-97-79-176-176-176z" fill="#e8594e"/>
-  <text x="256" y="235" text-anchor="middle" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif" font-size="220" font-weight="700" fill="#fff">a</text>
+  <circle cx="256" cy="192" r="64" fill="#fff"/>
 </svg>
