@@ -345,30 +345,138 @@ h2.section-h2{
 @media(min-width:601px) and (max-width:900px){.pain-grid{grid-template-columns:1fr 1fr}}
 
 /* ─── DEMO SECTION ────────────────────────────────────────────────────────── */
-.demo-section{background:var(--bg2);text-align:center}
+.demo-section{background:var(--bg2);text-align:center;overflow:hidden}
 .demo-section .section-inner{display:flex;flex-direction:column;align-items:center}
 .demo-section h2.section-h2,.demo-section .section-sub{text-align:center;margin:0 auto}
-.demo-section .section-sub{margin-bottom:40px}
-.phone-wrap{
-  position:relative;width:100%;max-width:380px;margin:0 auto 32px;
+.demo-section .section-sub{margin-bottom:48px}
+
+/* ─── DEMO SEARCH BAR ───────────────────────────────────────────────────── */
+.demo-search-wrap{width:100%;max-width:620px;margin:0 auto 0}
+.demo-search-bar{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:18px 22px;
+  transition:border-color .4s,box-shadow .4s;
 }
-.phone-frame{
-  background:#111;border-radius:36px;
-  border:2px solid rgba(255,255,255,.12);
-  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(124,106,247,.15);
-  overflow:hidden;aspect-ratio:9/19;
+.demo-search-bar.active{
+  border-color:rgba(124,106,247,.35);
+  box-shadow:0 0 32px rgba(124,106,247,.12);
+}
+.demo-search-icon{font-size:20px;flex-shrink:0;opacity:.7}
+.demo-search-text{flex:1;text-align:left;min-height:22px;display:flex;align-items:center;overflow:hidden}
+.demo-typed{font-size:15px;color:rgba(255,255,255,.85);font-family:inherit;white-space:nowrap}
+.demo-cursor{display:inline-block;width:2px;height:18px;background:#7c6af7;margin-left:1px;vertical-align:middle}
+.demo-cursor.blink{animation:demoBlink .7s steps(1) infinite}
+.demo-search-btn{
+  background:#7c6af7;color:#fff;border:none;border-radius:10px;
+  padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;
+  opacity:0;transform:scale(.9);transition:opacity .3s,transform .3s,background .2s;
+  flex-shrink:0;letter-spacing:.3px;
+}
+.demo-search-btn.show{opacity:1;transform:scale(1)}
+.demo-search-btn:hover{background:#6b5ce6}
+
+/* ─── DEMO GENERATING ────────────────────────────────────────────────────── */
+.demo-generating{
+  text-align:center;opacity:0;transition:opacity .5s ease;pointer-events:none;
+  margin:48px 0;
+}
+.demo-generating.show{opacity:1}
+.demo-gen-text{font-size:15px;font-weight:600;color:rgba(255,255,255,.55);margin-top:10px}
+.demo-gen-dots{display:inline-flex;gap:8px;margin-top:14px}
+.demo-gen-dots span{width:8px;height:8px;background:#7c6af7;border-radius:50%;opacity:.3;animation:demoGlow 1.2s ease-in-out infinite}
+.demo-gen-dots span:nth-child(2){animation-delay:.25s}
+.demo-gen-dots span:nth-child(3){animation-delay:.5s}
+
+/* ─── DEMO TRIP RESULT ───────────────────────────────────────────────────── */
+.demo-trip-result{
+  width:100%;max-width:1100px;
+  opacity:0;transform:translateY(24px);
+  transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1);
+  margin-top:48px;
+}
+.demo-trip-result.show{opacity:1;transform:translateY(0)}
+.demo-trip-header{margin-bottom:28px}
+.demo-trip-dest{
+  font-size:clamp(26px,4vw,36px);font-weight:800;color:#fff;
+  letter-spacing:-.8px;line-height:1.1;
+  opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;
+}
+.demo-trip-meta{
+  font-size:14px;color:rgba(255,255,255,.45);margin-top:8px;letter-spacing:.3px;
+  opacity:0;transform:translateY(12px);transition:opacity .4s ease .12s,transform .4s ease .12s;
+}
+.demo-trip-dest.show,.demo-trip-meta.show{opacity:1;transform:translateY(0)}
+
+/* Day card gallery — horizontal scroll */
+.demo-day-cards{
+  display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;
+  padding:4px 0 20px;
+  scroll-snap-type:x mandatory;
+  -ms-overflow-style:none;scrollbar-width:none;
+}
+.demo-day-cards::-webkit-scrollbar{display:none}
+
+.demo-day-card{
+  flex:0 0 240px;height:320px;
+  border-radius:18px;overflow:hidden;
   position:relative;
+  scroll-snap-align:start;
+  opacity:0;transform:translateY(30px) scale(.96);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1);
 }
-.phone-frame iframe{
-  width:100%;height:100%;border:none;display:block;
+.demo-day-card.show{opacity:1;transform:translateY(0) scale(1)}
+.demo-day-card:hover{transform:translateY(-5px) scale(1.02)}
+.demo-day-card:hover .demo-day-img{transform:scale(1.06)}
+
+.demo-day-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
 }
-.phone-notch{
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:120px;height:28px;background:#111;border-radius:0 0 18px 18px;
-  z-index:2;
+.demo-day-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    rgba(10,10,18,0) 0%,
+    rgba(10,10,18,.08) 35%,
+    rgba(10,10,18,.75) 80%,
+    rgba(10,10,18,.92) 100%);
 }
+.demo-day-content{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:22px 18px;text-align:left;z-index:1;
+}
+.demo-day-num{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
+  color:rgba(255,255,255,.6);margin-bottom:5px;
+}
+.demo-day-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.2px;margin-bottom:4px}
+.demo-day-hl{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5}
+
+/* Smart alert */
+.demo-trip-alert{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.25);
+  border-radius:12px;padding:12px 22px;
+  font-size:13px;font-weight:600;color:#9d8fff;
+  margin:28px auto 24px;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .4s ease,transform .4s ease;
+}
+.demo-trip-alert.show{opacity:1;transform:translateY(0)}
+
+.demo-cta{
+  display:inline-block;background:#7c6af7;color:#fff;
+  padding:13px 32px;border-radius:12px;font-size:14px;font-weight:700;
+  text-decoration:none;letter-spacing:.2px;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .4s ease,transform .4s ease,background .2s;
+}
+.demo-cta:hover{background:#6b5ce6}
+.demo-cta.show{opacity:1;transform:translateY(0)}
+
 .feature-chips{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:36px;
 }
 .chip{
   display:inline-flex;align-items:center;gap:6px;
@@ -379,64 +487,21 @@ h2.section-h2{
 
 /* ─── DEMO ANIMATION ─────────────────────────────────────────────────────── */
 @keyframes demoBlink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes demoPulse{0%,100%{box-shadow:0 0 8px rgba(124,106,247,.2),inset 0 0 0 1px rgba(124,106,247,.3)}50%{box-shadow:0 0 24px rgba(124,106,247,.5),inset 0 0 0 1px rgba(124,106,247,.5)}}
-@keyframes demoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes demoPulse{0%,100%{box-shadow:0 0 8px rgba(124,106,247,.15)}50%{box-shadow:0 0 28px rgba(124,106,247,.35)}}
 @keyframes demoGlow{0%,100%{opacity:.3}50%{opacity:1}}
 
-.demo-phone-inner{text-align:center;padding:20px;margin-top:20px;position:relative;min-height:340px}
-.demo-input-box{
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
-  border-radius:12px;padding:14px 16px;margin:80px 16px 0;
-  text-align:left;font-size:14px;color:rgba(255,255,255,.85);
-  display:flex;align-items:center;opacity:0;transition:opacity .4s ease;
-}
-.demo-input-box.show{opacity:1}
-.demo-cursor{display:inline-block;width:2px;height:17px;background:#7c6af7;margin-left:1px;animation:demoBlink .7s steps(1) infinite;vertical-align:middle}
-.demo-typed{font-family:inherit;white-space:nowrap}
-.demo-generating{
-  position:absolute;left:0;right:0;top:45%;transform:translateY(-50%);
-  text-align:center;opacity:0;transition:opacity .5s ease;pointer-events:none;
-}
-.demo-generating.show{opacity:1}
-.demo-gen-text{font-size:14px;font-weight:600;color:rgba(255,255,255,.6);margin-top:10px}
-.demo-gen-dots{display:inline-flex;gap:8px;margin-top:14px}
-.demo-gen-dots span{width:8px;height:8px;background:#7c6af7;border-radius:50%;opacity:.3;animation:demoGlow 1.2s ease-in-out infinite}
-.demo-gen-dots span:nth-child(2){animation-delay:.25s}
-.demo-gen-dots span:nth-child(3){animation-delay:.5s}
-.demo-result{opacity:0;transition:opacity .5s ease}
-.demo-result.show{opacity:1}
-.demo-result-emoji{font-size:48px;margin-bottom:12px;opacity:0;transform:scale(.5);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1)}
-.demo-result-emoji.show{opacity:1;transform:scale(1)}
-.demo-result-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease}
-.demo-result-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease}
-.demo-result-title.show,.demo-result-sub.show{opacity:1;transform:translateY(0)}
-.demo-item{
-  background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;
-  font-size:12px;color:rgba(255,255,255,.7);text-align:left;
-  opacity:0;transform:translateX(-20px);transition:opacity .4s ease,transform .4s cubic-bezier(.25,.46,.45,.94);
-}
-.demo-item.show{opacity:1;transform:translateX(0)}
-.demo-item.alert{background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.3);color:#9d8fff}
-.demo-item.alert.show{animation:demoPulse 2.5s ease-in-out infinite .8s}
-.demo-cta{
-  display:inline-block;margin-top:16px;background:#7c6af7;color:#fff;
-  padding:8px 20px;border-radius:8px;font-size:12px;font-weight:700;
-  text-decoration:none;opacity:0;transform:translateY(10px);
-  transition:opacity .4s ease,transform .4s ease;
-}
-.demo-cta:hover{background:#6b5ce6}
-.demo-cta.show{opacity:1;transform:translateY(0)}
-.phone-wrap.demo-playing{animation:demoFloat 5s ease-in-out infinite}
-.phone-wrap.demo-playing .phone-frame{
-  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 60px rgba(124,106,247,.12),0 0 0 1px rgba(124,106,247,.25);
-  transition:box-shadow 1.5s ease;
+@media(max-width:600px){
+  .demo-day-card{flex:0 0 190px;height:270px}
+  .demo-day-cards{gap:12px}
+  .demo-search-bar{padding:14px 16px}
+  .demo-trip-alert{font-size:12px;padding:10px 16px}
 }
 @media(prefers-reduced-motion:reduce){
-  .demo-input-box,.demo-generating,.demo-result,.demo-result-emoji,
-  .demo-result-title,.demo-result-sub,.demo-item,.demo-cta{opacity:1!important;transform:none!important;transition:none!important;animation:none!important}
+  .demo-search-bar,.demo-generating,.demo-trip-result,.demo-trip-dest,
+  .demo-trip-meta,.demo-day-card,.demo-trip-alert,.demo-cta,.demo-search-btn{
+    opacity:1!important;transform:none!important;transition:none!important;animation:none!important;
+  }
   .demo-cursor{animation:none!important}
-  .phone-wrap.demo-playing{animation:none!important}
-  .phone-wrap.demo-playing .phone-frame{transition:none!important}
 }
 
 /* ─── HOW IT WORKS ────────────────────────────────────────────────────────── */
@@ -1150,35 +1215,89 @@ footer{
   <div class="section-inner">
     <div class="section-label fade-in">See it live</div>
     <h2 class="section-h2 fade-in">Watch it work.</h2>
-    <p class="section-sub fade-in">From one sentence to a complete trip dashboard — 30 seconds.</p>
+    <p class="section-sub fade-in">One sentence. A complete trip in seconds.</p>
 
-    <div class="phone-wrap fade-in" id="demo-phone">
-      <div class="phone-frame" style="background:linear-gradient(180deg,#0f0f1c 0%,#1a1a2e 100%);">
-        <div class="phone-notch"></div>
-        <div class="demo-phone-inner">
-          <div class="demo-input-box" id="demo-input">
-            <span class="demo-typed" id="demo-typed"></span><span class="demo-cursor" id="demo-cursor"></span>
+    <div class="demo-search-wrap fade-in" id="demo-search">
+      <div class="demo-search-bar" id="demo-bar">
+        <span class="demo-search-icon">✈️</span>
+        <div class="demo-search-text">
+          <span class="demo-typed" id="demo-typed"></span><span class="demo-cursor" id="demo-cursor"></span>
+        </div>
+        <button class="demo-search-btn" id="demo-btn">Plan it</button>
+      </div>
+    </div>
+
+    <div class="demo-generating" id="demo-gen">
+      <div style="font-size:36px;margin-bottom:10px;">✨</div>
+      <div class="demo-gen-text">Building your trip...</div>
+      <div class="demo-gen-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="demo-trip-result" id="demo-result">
+      <div class="demo-trip-header">
+        <div class="demo-trip-dest" id="demo-dest">Paris + Amsterdam</div>
+        <div class="demo-trip-meta" id="demo-meta">7 days · 2 cities · Full itinerary ready</div>
+      </div>
+
+      <div class="demo-day-cards" id="demo-cards">
+        <div class="demo-day-card">
+          <img class="demo-day-img" src="demo-assets/paris-arrival.jpg" alt="Paris arrival" loading="lazy">
+          <div class="demo-day-overlay"></div>
+          <div class="demo-day-content">
+            <div class="demo-day-num">Day 1</div>
+            <div class="demo-day-title">Arrive in Paris</div>
+            <div class="demo-day-hl">Check in · Evening Seine stroll · Crêpes at dusk</div>
           </div>
-          <div class="demo-generating" id="demo-gen">
-            <div style="font-size:32px;margin-bottom:8px;">✨</div>
-            <div class="demo-gen-text">Building your trip...</div>
-            <div class="demo-gen-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="demo-day-card">
+          <img class="demo-day-img" src="demo-assets/paris-eiffel.jpg" alt="Eiffel Tower sunset" loading="lazy">
+          <div class="demo-day-overlay"></div>
+          <div class="demo-day-content">
+            <div class="demo-day-num">Day 2</div>
+            <div class="demo-day-title">Eiffel & Le Marais</div>
+            <div class="demo-day-hl">Sunrise tower · Hidden cafés · Falafel on Rue des Rosiers</div>
           </div>
-          <div class="demo-result" id="demo-result">
-            <div class="demo-result-emoji">✈️</div>
-            <div class="demo-result-title">Paris + Amsterdam</div>
-            <div class="demo-result-sub">7 days · 2 cities · Full itinerary</div>
-            <div style="display:flex;flex-direction:column;gap:8px;padding:0 12px;">
-              <div class="demo-item">📅 Day 1 — Arrival in Paris · Eiffel Tower sunset</div>
-              <div class="demo-item">📅 Day 2 — Louvre · Montmartre · Seine cruise</div>
-              <div class="demo-item">📅 Day 3 — Versailles day trip</div>
-              <div class="demo-item alert">⚡ Book Louvre tickets — sells out 2 weeks early</div>
-              <div class="demo-item">🏨 Hôtel des Arts · Montmartre · ★★★★</div>
-            </div>
-            <a href="trip.html?demo=paris" target="_blank" class="demo-cta">See full demo →</a>
+        </div>
+        <div class="demo-day-card">
+          <img class="demo-day-img" src="demo-assets/paris-louvre.jpg" alt="Louvre Museum" loading="lazy">
+          <div class="demo-day-overlay"></div>
+          <div class="demo-day-content">
+            <div class="demo-day-num">Day 3</div>
+            <div class="demo-day-title">Louvre & Montmartre</div>
+            <div class="demo-day-hl">World-class art · Sacré-Cœur · Sunset over the city</div>
+          </div>
+        </div>
+        <div class="demo-day-card">
+          <img class="demo-day-img" src="demo-assets/paris-versailles.jpg" alt="Palace of Versailles" loading="lazy">
+          <div class="demo-day-overlay"></div>
+          <div class="demo-day-content">
+            <div class="demo-day-num">Day 4</div>
+            <div class="demo-day-title">Versailles Day Trip</div>
+            <div class="demo-day-hl">Hall of Mirrors · Garden fountains · Royal picnic</div>
+          </div>
+        </div>
+        <div class="demo-day-card">
+          <img class="demo-day-img" src="demo-assets/amsterdam-canals.jpg" alt="Amsterdam canals" loading="lazy">
+          <div class="demo-day-overlay"></div>
+          <div class="demo-day-content">
+            <div class="demo-day-num">Day 5</div>
+            <div class="demo-day-title">Amsterdam Canals</div>
+            <div class="demo-day-hl">Train from Paris · Canal cruise · Jordaan quarter</div>
+          </div>
+        </div>
+        <div class="demo-day-card">
+          <img class="demo-day-img" src="demo-assets/amsterdam-center.jpg" alt="Amsterdam center" loading="lazy">
+          <div class="demo-day-overlay"></div>
+          <div class="demo-day-content">
+            <div class="demo-day-num">Day 6</div>
+            <div class="demo-day-title">Museums & Markets</div>
+            <div class="demo-day-hl">Rijksmuseum · Albert Cuyp market · Dutch pancakes</div>
           </div>
         </div>
       </div>
+
+      <div class="demo-trip-alert" id="demo-alert">⚡ Book Louvre tickets 2 weeks early — sells out fast</div>
+      <a href="trip.html?demo=paris" target="_blank" class="demo-cta" id="demo-cta-btn">See the full trip →</a>
     </div>
 
     <div class="feature-chips fade-in">
@@ -1450,75 +1569,87 @@ function handleEmail(e) {
   }, 900);
 })();
 
-// Demo animation sequence — typewriter → generating → result cascade
+// Demo animation — typewriter → generating → photo cards cascade
 (function(){
-  var phone = document.getElementById('demo-phone');
-  if(!phone) return;
+  var section = document.getElementById('demo');
+  if(!section) return;
   var played = false;
+
   if(matchMedia('(prefers-reduced-motion:reduce)').matches){
-    var r = document.getElementById('demo-result');
-    document.getElementById('demo-input').style.display='none';
+    document.getElementById('demo-search').style.display='none';
     document.getElementById('demo-gen').style.display='none';
+    var r = document.getElementById('demo-result');
     r.classList.add('show');
-    r.querySelector('.demo-result-emoji').classList.add('show');
-    r.querySelector('.demo-result-title').classList.add('show');
-    r.querySelector('.demo-result-sub').classList.add('show');
-    var all = r.querySelectorAll('.demo-item');
-    for(var a=0;a<all.length;a++) all[a].classList.add('show');
-    r.querySelector('.demo-cta').classList.add('show');
+    document.getElementById('demo-dest').classList.add('show');
+    document.getElementById('demo-meta').classList.add('show');
+    var cards = r.querySelectorAll('.demo-day-card');
+    for(var a=0;a<cards.length;a++) cards[a].classList.add('show');
+    document.getElementById('demo-alert').classList.add('show');
+    document.getElementById('demo-cta-btn').classList.add('show');
     return;
   }
+
   function run(){
     if(played) return;
     played = true;
-    phone.classList.add('demo-playing');
-    var input = document.getElementById('demo-input');
+    var bar = document.getElementById('demo-bar');
     var typed = document.getElementById('demo-typed');
     var cursor = document.getElementById('demo-cursor');
+    var btn = document.getElementById('demo-btn');
     var gen = document.getElementById('demo-gen');
     var result = document.getElementById('demo-result');
-    var emoji = result.querySelector('.demo-result-emoji');
-    var title = result.querySelector('.demo-result-title');
-    var sub = result.querySelector('.demo-result-sub');
-    var items = result.querySelectorAll('.demo-item');
-    var cta = result.querySelector('.demo-cta');
+    var dest = document.getElementById('demo-dest');
+    var meta = document.getElementById('demo-meta');
+    var cards = result.querySelectorAll('.demo-day-card');
+    var alert = document.getElementById('demo-alert');
+    var cta = document.getElementById('demo-cta-btn');
+
     var text = '7 days in Paris and Amsterdam';
     var ci = 0;
-    input.classList.add('show');
+    bar.classList.add('active');
+    cursor.classList.add('blink');
+
     var ti = setInterval(function(){
-      if(ci < text.length){ typed.textContent = text.substring(0, ++ci); }
-      else {
+      if(ci < text.length){
+        typed.textContent = text.substring(0, ++ci);
+      } else {
         clearInterval(ti);
+        btn.classList.add('show');
         setTimeout(function(){
           cursor.style.display='none';
-          input.style.opacity='0';
+          bar.style.opacity='0';
+          bar.style.transition='opacity .4s ease';
           setTimeout(function(){
-            input.style.display='none';
+            document.getElementById('demo-search').style.display='none';
             gen.classList.add('show');
             setTimeout(function(){
               gen.classList.remove('show');
               setTimeout(function(){
                 gen.style.display='none';
                 result.classList.add('show');
-                setTimeout(function(){ emoji.classList.add('show'); },100);
-                setTimeout(function(){ title.classList.add('show'); },300);
-                setTimeout(function(){ sub.classList.add('show'); },500);
-                for(var i=0;i<items.length;i++){
-                  (function(idx){ setTimeout(function(){ items[idx].classList.add('show'); }, 700 + idx*250); })(i);
+                setTimeout(function(){ dest.classList.add('show'); },150);
+                setTimeout(function(){ meta.classList.add('show'); },350);
+                for(var i=0;i<cards.length;i++){
+                  (function(idx){
+                    setTimeout(function(){ cards[idx].classList.add('show'); }, 550 + idx*180);
+                  })(i);
                 }
-                setTimeout(function(){ cta.classList.add('show'); }, 700 + items.length*250 + 200);
-              },300);
-            },1400);
-          },300);
-        },500);
+                var afterCards = 550 + cards.length*180 + 200;
+                setTimeout(function(){ alert.classList.add('show'); }, afterCards);
+                setTimeout(function(){ cta.classList.add('show'); }, afterCards + 250);
+              },250);
+            },1600);
+          },350);
+        },600);
       }
-    },55);
+    },50);
   }
+
   if('IntersectionObserver' in window){
     var obs = new IntersectionObserver(function(e){
-      if(e[0].isIntersecting){ run(); obs.unobserve(phone); }
-    },{threshold:0.25});
-    obs.observe(phone);
+      if(e[0].isIntersecting){ run(); obs.unobserve(section); }
+    },{threshold:0.2});
+    obs.observe(section);
   } else { run(); }
 })();
 
