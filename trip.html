@@ -92,6 +92,13 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .nav-lbl{position:relative;z-index:1;letter-spacing:.1px}
 .nav-badge{position:absolute;top:2px;right:10px;background:var(--red);color:var(--text);font-size:9px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center;z-index:2}
 
+/* ─── DESKTOP CONTAINMENT ─── */
+@media(min-width:769px){
+  body{background:#050510}
+  #app{max-width:768px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 60px rgba(0,0,0,.4)}
+  .day-sheet{max-width:768px;margin:0 auto}
+}
+
 /* ─── CHAT TAB ─── */
 #tab-plan{background:var(--bg)}
 .chat-header{padding:12px 16px 8px;background:var(--surface-alpha);border-bottom:1px solid var(--border);flex-shrink:0}
