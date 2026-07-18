@@ -92,11 +92,73 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .nav-lbl{position:relative;z-index:1;letter-spacing:.1px}
 .nav-badge{position:absolute;top:2px;right:10px;background:var(--red);color:var(--text);font-size:9px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center;z-index:2}
 
-/* ─── DESKTOP CONTAINMENT ─── */
-@media(min-width:769px){
-  body{background:#050510}
-  #app{max-width:768px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 60px rgba(0,0,0,.4)}
-  .day-sheet{max-width:768px;margin:0 auto}
+/* ─── DESKTOP LAYOUT ─── */
+@media(min-width:1024px){
+  body{background:var(--bg)}
+
+  /* App: horizontal with sidebar nav */
+  #app{flex-direction:row;max-width:none;margin:0;border:none;box-shadow:none}
+
+  /* Bottom nav → left sidebar */
+  .bottom-nav{flex-direction:column;width:80px;min-width:80px;border-top:none;border-right:1px solid var(--border);padding:20px 8px;order:-1;gap:4px;background:var(--surface);justify-content:flex-start}
+  body.nav-hidden .bottom-nav{transform:none;opacity:1;pointer-events:all}
+  .nav-btn{min-height:60px;flex:none}
+  .nav-btn.active::after{top:50%;left:3px;right:auto;width:3px;height:20px;transform:translateX(0) translateY(-50%)}
+
+  /* Tabs fill remaining space */
+  .tab-content.active{flex:1;min-width:0}
+
+  /* ── Days tab: two-panel ── */
+  #tab-days.active{display:grid!important;grid-template-columns:400px 1fr;grid-template-rows:auto 1fr}
+  #tab-days .day-strip{grid-column:1/-1}
+  #tab-days .days-list{grid-column:1;grid-row:2;border-right:1px solid var(--border);padding:10px 12px 20px}
+  .day-big-card{height:auto;min-height:100px;max-height:150px}
+  .day-big-hero{min-height:80px}
+  .day-big-card.desk-active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .desk-day-panel{display:none;grid-column:2;grid-row:2;overflow:hidden;background:var(--bg)}
+  .desk-day-panel.has-day{display:flex;flex-direction:column}
+  .desk-day-panel .desk-hero{height:220px;background-size:cover;background-position:center;position:relative;flex-shrink:0}
+  .desk-day-panel .desk-hero-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--surface) 0%,transparent 60%)}
+  .desk-day-panel .desk-hero-info{position:absolute;bottom:12px;left:20px}
+  .desk-day-panel .desk-badge{font-size:11px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.6px}
+  .desk-day-panel .desk-title{font-size:22px;font-weight:800;margin-top:2px}
+  .desk-day-panel .desk-sub{font-size:12px;color:var(--text2);margin-top:2px}
+  .desk-day-panel .desk-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 24px 32px}
+  .desk-day-panel .desk-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 14px;flex-shrink:0;border-top:1px solid var(--border);gap:8px}
+  .desk-nav .sheet-nav-btn{flex:1}
+  .desk-day-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;flex:1;color:var(--muted);padding:60px 40px;text-align:center}
+  .desk-day-empty-icon{font-size:48px;opacity:.4}
+  .desk-day-empty-text{font-size:15px;font-weight:600}
+
+  /* Hide mobile sheet overlay on desktop */
+  #daySheetOverlay{display:none!important}
+
+  /* ── Trip overview: wider ── */
+  #tab-trip .trip-scroll{max-width:1100px;margin:0 auto;padding:0 20px}
+  .trip-hero{padding:60px 40px 36px}
+  .trip-name{font-size:28px}
+  .stats-grid{max-width:800px;margin:12px auto 4px}
+  .focus-card{max-width:800px;margin:10px auto 14px}
+  #routeMapWrap{max-width:800px;margin:0 auto}
+  .pack-btn{max-width:800px;margin:10px auto 4px;display:block}
+  .ov-section{max-width:800px;margin:0 auto;padding:0 0 6px}
+  .save-bar{max-width:800px;margin:0 auto}
+
+  /* ── Live tab: wider ── */
+  .v2-scroll{max-width:800px;margin:0 auto}
+
+  /* ── Other tabs: wider ── */
+  .tickets-scroll,.flt-search-wrap{max-width:900px;margin-left:auto;margin-right:auto}
+  .transport-banner{max-width:900px;margin-left:auto;margin-right:auto}
+  .hotels-scroll,.budget-scroll,.tips-scroll,.sos-scroll{max-width:800px;margin:0 auto}
+  .sub-header{max-width:800px;margin:0 auto}
+  .fx-bar{max-width:800px;margin:0 auto}
+
+  /* Hide mobile FAB on desktop */
+  .fab-main,.fab-wrap,.fab-backdrop{display:none!important}
+
+  /* More sheet centered */
+  .more-sheet{max-width:500px;margin:0 auto}
 }
 
 /* ─── CHAT TAB ─── */
@@ -1712,6 +1774,29 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
       <div class="es-title">Days are still loading...</div>
       <div class="es-text">Each day appears here with hour-by-hour plans after the AI builds your trip.</div>
       <button class="es-btn" onclick="switchTab('plan')">Plan my trip →</button>
+    </div>
+  </div>
+  <div class="desk-day-panel" id="deskDayPanel">
+    <div class="desk-day-empty" id="deskDayEmpty">
+      <div class="desk-day-empty-icon">👈</div>
+      <div class="desk-day-empty-text">Select a day to see the full itinerary</div>
+    </div>
+    <div id="deskDayContent" style="display:none;flex-direction:column;height:100%">
+      <div class="desk-hero" id="deskHero">
+        <div class="desk-hero-grad"></div>
+        <div class="desk-hero-info">
+          <div class="desk-badge" id="deskBadge">Day 1</div>
+          <div class="desk-title" id="deskTitle">Title</div>
+          <div class="desk-sub" id="deskSub">Subtitle</div>
+        </div>
+      </div>
+      <div class="desk-body" id="deskBody"></div>
+      <div class="desk-nav">
+        <button class="sheet-nav-btn" id="deskPrev" onclick="sheetNav(-1)">‹ Previous</button>
+        <button class="sheet-nav-btn" onclick="exportDayIcs(curSheetDay)" title="Calendar">📅</button>
+        <button class="sheet-nav-btn" onclick="askAiAboutDay()" title="AI Edit">🤖 Edit</button>
+        <button class="sheet-nav-btn" id="deskNext" onclick="sheetNav(1)">Next ›</button>
+      </div>
     </div>
   </div>
 </div>
@@ -3731,6 +3816,7 @@ function openTicket(tktTitle) {
   if (name === 'plan' && plan) { try { renderLiveOps(); } catch(e) {} }
   if (name === 'tickets') { try { _prefillFlightInputs(); _initFlightSearch(); } catch(e) {} }
   if (name === 'budget') { try { initFxBar(); } catch(e) {} }
+  if (name === 'days' && _isDesktop && _isDesktop() && plan?.days?.length && curSheetDay >= 0) { setTimeout(function(){ openDaySheet(curSheetDay); }, 100); }
 }
 
 // Scroll-hide bottom nav on Now tab (DESIGN.md principle 1 — maximize FocusCard).
@@ -5539,16 +5625,37 @@ function toggleV2Timeline(){
 // ══════════════════════════════════════
 //  DAY DETAIL SHEET
 // ══════════════════════════════════════
+function _isDesktop(){return window.matchMedia('(min-width:1024px)').matches}
+function _syncDesktopPanel(){
+  var panel=document.getElementById('deskDayPanel');if(!panel)return;
+  var e=document.getElementById('deskDayEmpty'),c=document.getElementById('deskDayContent');
+  if(e)e.style.display='none';if(c){c.style.display='flex';c.style.flexDirection='column';c.style.height='100%'}
+  var heroSrc=document.getElementById('sheetHero'),heroDst=document.getElementById('deskHero');
+  if(heroSrc&&heroDst)heroDst.style.backgroundImage=heroSrc.style.backgroundImage;
+  [['sheetBadge','deskBadge'],['sheetTitle','deskTitle'],['sheetSub','deskSub']].forEach(function(p){
+    var s=document.getElementById(p[0]),d=document.getElementById(p[1]);if(s&&d)d.textContent=s.textContent;
+  });
+  var bodySrc=document.getElementById('sheetBody'),bodyDst=document.getElementById('deskBody');
+  if(bodySrc&&bodyDst)bodyDst.innerHTML=bodySrc.innerHTML;
+  var idx=curSheetDay,prev=document.getElementById('deskPrev'),next=document.getElementById('deskNext');
+  if(prev){prev.disabled=idx===0;prev.textContent=idx>0?'‹ Day '+plan.days[idx-1].day:'‹ Prev'}
+  if(next){next.disabled=idx===plan.days.length-1;next.textContent=idx<plan.days.length-1?'Day '+plan.days[idx+1].day+' ›':'Next ›'}
+  panel.classList.add('has-day');if(bodyDst)bodyDst.scrollTop=0;
+}
 function openDaySheet(idx) {
   if (!plan?.days) return;
   curSheetDay=idx;
   renderDaySheet(idx);
-  document.getElementById('daySheetOverlay').classList.add('open');
-  document.getElementById('sheetBody').scrollTop=0;
-  // Sync strip
-  document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active'));
-  document.getElementById('dp-'+idx)?.classList.add('active');
-  document.getElementById('dp-'+idx)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  if(_isDesktop()){
+    _syncDesktopPanel();
+    document.querySelectorAll('.day-big-card').forEach(function(c){c.classList.remove('desk-active')});
+    var ac=document.getElementById('dc-'+idx);if(ac){ac.classList.add('desk-active');ac.scrollIntoView({behavior:'smooth',block:'nearest'})}
+  } else {
+    document.getElementById('daySheetOverlay').classList.add('open');
+    document.getElementById('sheetBody').scrollTop=0;
+  }
+  document.querySelectorAll('.day-pill').forEach(function(p){p.classList.remove('active')});
+  var dp=document.getElementById('dp-'+idx);if(dp){dp.classList.add('active');dp.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})}
 }
 
 function renderTransportCard(tl) {
@@ -5779,13 +5886,7 @@ function closeDaySheet(e) {
 function sheetNav(dir) {
   const newIdx=curSheetDay+dir;
   if(newIdx<0||!plan?.days||newIdx>=plan.days.length) return;
-  curSheetDay=newIdx;
-  document.getElementById('sheetBody').scrollTop=0;
-  renderDaySheet(newIdx);
-  // Sync strip
-  document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active'));
-  document.getElementById('dp-'+newIdx)?.classList.add('active');
-  document.getElementById('dp-'+newIdx)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  openDaySheet(newIdx);
 }
 
 // ══════════════════════════════════════
