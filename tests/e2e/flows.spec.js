@@ -178,11 +178,13 @@ test.describe('Tripva E2E flows', () => {
 
   test('every landing destination opens a full Tripva demo plan', async ({ page }) => {
     const slugs = ['tokyo', 'santorini', 'kyoto', 'bali', 'paris', 'iceland', 'queenstown', 'barcelona'];
+    const expectedDays = { paris: 7 };
     for (const slug of slugs) {
+      const dayCount = expectedDays[slug] || 3;
       await page.goto(`/trip.html?demo=${slug}`);
       await expect(page.locator('#demoBanner')).toBeVisible({ timeout: 10_000 });
-      await expect(page.locator('.day-big-card')).toHaveCount(3);
-      await expect(page.locator('.day-big-events')).toHaveText(['📍 7 events', '📍 7 events', '📍 7 events']);
+      await expect(page.locator('.day-big-card')).toHaveCount(dayCount);
+      await expect(page.locator('.day-big-events')).toHaveText(Array(dayCount).fill('📍 7 events'));
       await page.locator('#dc-0').click();
       await expect(page.locator('.day-gallery-item')).toHaveCount(3);
       await expect(page.locator('.tl-main.photospot')).toHaveCount(1);
