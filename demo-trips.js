@@ -22,10 +22,14 @@
       ['Coast day', 'Beach time and a clifftop sunset', ['Padang Padang Beach', 'Uluwatu Temple', 'Jimbaran Beach sunset']],
       ['North Bali', 'Waterfalls and a local café stop', ['Tegenungan Waterfall', 'Campuhan Ridge Walk', 'Balinese cooking class']]
     ]},
-    paris: { city: 'Paris', country: 'France', emoji: '🗼', budget: '$2,300', image: 'assets/landing/destination-4.webp', coords: [48.8566, 2.3522], hotel: 'Hotel des Arts Montmartre', hotelPrice: '€155/night', days: [
-      ['Montmartre arrival', 'A gentle first afternoon above the city', ['Sacré-Cœur Basilica', 'Montmartre lanes', 'Place du Tertre']],
-      ['Paris icons', 'The tower, the river, and classic boulevards', ['Eiffel Tower', 'Seine river cruise', 'Champs-Élysées walk']],
-      ['Art & Marais', 'Museum highlights and a neighbourhood dinner', ['Louvre Museum', 'Le Marais walk', 'Canal Saint-Martin walk']]
+    paris: { city: 'Paris', country: 'France', emoji: '🗼', budget: '$3,200', image: 'assets/landing/destination-4.webp', coords: [48.8566, 2.3522], hotel: 'Hotel des Arts Montmartre', hotelPrice: '€155/night', tripName: 'Paris & Amsterdam Guide', destination: 'Paris & Amsterdam', extraHotel: { city: 'Amsterdam', name: 'Canal House Jordaan', nights: 3, price: '€165/night' }, cities: ['Paris', 'Paris', 'Paris', 'Paris', 'Amsterdam', 'Amsterdam', 'Amsterdam'], days: [
+      ['Arrive in Paris', 'Check in, evening Seine stroll, and crêpes at dusk', ['Evening Seine stroll', 'Île de la Cité walk', 'Crêperie Montparnasse']],
+      ['Eiffel & Le Marais', 'Sunrise tower, hidden cafés, and Rue des Rosiers', ['Eiffel Tower', 'Le Marais cafés', 'Rue des Rosiers']],
+      ['Louvre & Montmartre', 'World-class art, Sacré-Cœur, and sunset over the city', ['Louvre Museum', 'Sacré-Cœur Basilica', 'Montmartre sunset walk']],
+      ['Versailles Day Trip', 'Hall of Mirrors, garden fountains, and a royal picnic', ['Palace of Versailles', 'Versailles Gardens', "Marie-Antoinette's Estate"]],
+      ['Amsterdam Canals', 'Train from Paris, canal cruise, and Jordaan quarter', ['Thalys to Amsterdam', 'Canal boat cruise', 'Jordaan quarter walk']],
+      ['Museums & Markets', 'Rijksmuseum, Albert Cuyp Market, and Dutch pancakes', ['Rijksmuseum', 'Albert Cuyp Market', 'De Pijp neighbourhood']],
+      ['Final Day', 'Anne Frank House, Vondelpark, and farewell dinner', ['Anne Frank House', 'Vondelpark stroll', 'Leidseplein farewell']]
     ]},
     iceland: { city: 'Iceland', country: 'Iceland', emoji: '❄️', budget: '$2,650', image: 'assets/landing/destination-5.webp', coords: [64.1466, -21.9426], hotel: 'Reykjavik Harbour Hotel', hotelPrice: '$195/night', days: [
       ['Reykjavik start', 'Design, harbour air, and geothermal warmth', ['Hallgrímskirkja', 'Reykjavik harbour walk', 'Sky Lagoon soak']],
@@ -49,7 +53,7 @@
     santorini: ['caldera-view dinner in Imerovigli', 'seafood dinner at Ammoudi Bay', 'winery dinner near Akrotiri'],
     kyoto: ['Gion kaiseki dinner', 'Arashiyama riverside dinner', 'Pontocho dinner'],
     bali: ['Balinese rijsttafel in Ubud', 'seafood dinner in Jimbaran', 'Ubud cooking-class supper'],
-    paris: ['Montmartre bistro dinner', 'Left Bank dinner', 'Canal Saint-Martin wine bar'],
+    paris: ['Seine-side crêperie dinner', 'Le Marais falafel dinner', 'Montmartre bistro dinner', 'Left Bank dinner after Versailles', 'Jordaan canal-side dinner', 'De Pijp Dutch dinner', 'Leidseplein farewell dinner'],
     iceland: ['Reykjavik harbour seafood dinner', 'Vik-area dinner stop', 'Reykjavik final-night dinner'],
     queenstown: ['central Queenstown dinner', 'Gibbston Valley dinner', 'Queenstown waterfront dinner'],
     barcelona: ['Eixample tapas dinner', 'Barceloneta seafood dinner', 'Poble-sec tapas crawl']
@@ -60,7 +64,7 @@
     santorini: { breakfast: 'Have breakfast close to the caldera, then use the cooler morning light for the cliff walk.', morning: 'Start early before day visitors arrive; the best lanes are calmer before the first island buses.', transit: 'Use the Fira-Oia bus or a pre-booked transfer instead of trying to move a car through the narrow lanes.', reserve: 'Confirm your sunset table or boat place in advance, then leave the viewpoint before the post-sunset rush.', dinner: 'Book a terrace table a day ahead and ask for a wind-sheltered spot.' },
     kyoto: { breakfast: 'Start with coffee and a light Japanese breakfast; load an ICOCA card for buses and Keihan trains.', morning: 'Be at the temple gate when it opens to experience the lanes before the tour groups.', transit: 'Walk the old streets where possible, then use the nearest rail line instead of crossing Kyoto by bus at midday.', reserve: 'Check seasonal illuminations and any timed garden access before locking in the afternoon.', dinner: 'Reserve Pontocho or Gion dinner ahead, particularly during blossom and foliage seasons.' },
     bali: { breakfast: 'Eat near the hotel and ask reception to arrange a driver before peak traffic builds.', morning: 'Visit temples and terraces early, with shoulders and knees covered and a sarong ready where required.', transit: 'Keep a private driver or Grab for the longer transfer; travel times are much slower than map estimates.', reserve: 'Confirm sunset, wellness, and cooking-class places the day before because weather can shift the schedule.', dinner: 'Choose a restaurant near your final stop so the return journey is short after dark.' },
-    paris: { breakfast: 'Begin at a neighbourhood boulangerie, then use contactless Metro entry for the first cross-city ride.', morning: 'Book the headline museum or tower slot for the morning to avoid the longest security and entry lines.', transit: 'Use the Metro between districts and leave time to walk the final few blocks where Paris is at its best.', reserve: 'Keep timed-ticket confirmations offline and reserve popular dinner rooms before the afternoon.', dinner: 'Ask for a 20:00 table and plan the final stroll around the same arrondissement.' },
+    paris: { breakfast: 'Start at a local bakery or café, then use contactless transit for the first ride of the day.', morning: 'Book the headline museum or landmark for the morning to avoid the longest queues.', transit: 'Use the metro or tram between districts and walk the final stretch to soak in the neighbourhood.', reserve: 'Keep timed-ticket confirmations offline and reserve popular dinner spots before the afternoon.', dinner: 'Reserve a table for 20:00 and plan the final stroll through the same neighbourhood.' },
     iceland: { breakfast: 'Check road.is and the weather forecast over breakfast before committing to the driving route.', morning: 'Leave Reykjavik early for daylight and the first waterfall stop; waterproof layers stay in the car.', transit: 'Use a rental car only after checking wind and road alerts, and refuel before the more remote stretches.', reserve: 'Pre-book lagoon or tour slots and keep an alternate city plan ready for severe weather.', dinner: 'Return to Reykjavik before dark when possible and reserve a harbour table for a relaxed finish.' },
     queenstown: { breakfast: 'Fuel up in town and check the DOC and weather updates before any lake or mountain route.', morning: 'Start scenic drives early so you can stop at lookouts without rushing the return to town.', transit: 'Use a rental car for Arrowtown and Glenorchy, with extra time for photo stops and changing road conditions.', reserve: 'Book gondola, onsen, and cellar-door experiences before the day; prime late-afternoon slots go first.', dinner: 'Reserve lakefront dining for the evening and walk back through central Queenstown.' },
     barcelona: { breakfast: 'Start with a bakery stop and a T-casual or contactless Metro ride before the main sites open.', morning: 'Use a timed morning entry for Gaudi sites, when interiors are quieter and the light is better.', transit: 'Walk within each district and use the Metro only for the longer jump to avoid losing the day in taxis.', reserve: 'Keep Sagrada Familia and Park Guell tickets on your phone, then book tapas before the evening crowd.', dinner: 'Plan a late Spanish dinner near the final neighbourhood, with a reservation after 20:30.' }
@@ -82,6 +86,7 @@
       const nextImageUrl = `assets/demos/${slug}-${(index + 1) % cfg.days.length}.webp`;
       const lastImageUrl = `assets/demos/${slug}-${(index + 2) % cfg.days.length}.webp`;
       const photoSpot = `${stops[2]} photo stop`;
+      const dayCity = (cfg.cities && cfg.cities[index]) || cfg.city;
       return {
         day: index + 1,
         date: dateAt(start + index),
@@ -104,13 +109,13 @@
           `Save ${stops[2]} in Maps before leaving Wi-Fi; it is the best place to keep the afternoon flexible.`
         ],
         timeline: [
-          { time: '08:30', title: 'Breakfast and route check', detail: guidance.breakfast, type: 'food', mapQuery: `${stops[0]}, ${cfg.city}` },
-          { time: '09:30', title: stops[0], detail: `${guidance.morning} Allow around 90 minutes here before moving on.`, type: 'activity', mapQuery: `${stops[0]}, ${cfg.city}`, imageUrl },
-          { time: '12:30', title: stops[1], detail: `${guidance.transit} Stop for lunch close to ${stops[1]} rather than crossing the city twice.`, type: 'activity', mapQuery: `${stops[1]}, ${cfg.city}`, imageUrl: nextImageUrl },
-          { time: '14:15', title: `Transfer to ${stops[2]}`, detail: `${guidance.transit} Leave with a 20-minute buffer for the final approach.`, type: 'transport', mapQuery: `${stops[2]}, ${cfg.city}` },
-          { time: '15:30', title: stops[2], detail: `${guidance.reserve} This is the anchor experience for the afternoon.`, type: 'activity', mapQuery: `${stops[2]}, ${cfg.city}`, imageUrl: lastImageUrl },
-          { time: '17:45', title: photoSpot, detail: `Frame ${stops[2]} in softer late-day light. Keep this as a photo-first stop rather than rushing straight to dinner.`, tip: `Best light is roughly 45 minutes before sunset; bring a wide lens or use your phone's 0.5x camera.`, type: 'photospot', mapQuery: `${stops[2]}, ${cfg.city}`, imageUrl: lastImageUrl },
-          { time: '19:30', title: localMeals[slug][index], detail: guidance.dinner, type: 'food', mapQuery: `${localMeals[slug][index]}, ${cfg.city}` }
+          { time: '08:30', title: 'Breakfast and route check', detail: guidance.breakfast, type: 'food', mapQuery: `${stops[0]}, ${dayCity}` },
+          { time: '09:30', title: stops[0], detail: `${guidance.morning} Allow around 90 minutes here before moving on.`, type: 'activity', mapQuery: `${stops[0]}, ${dayCity}`, imageUrl },
+          { time: '12:30', title: stops[1], detail: `${guidance.transit} Stop for lunch close to ${stops[1]} rather than crossing the city twice.`, type: 'activity', mapQuery: `${stops[1]}, ${dayCity}`, imageUrl: nextImageUrl },
+          { time: '14:15', title: `Transfer to ${stops[2]}`, detail: `${guidance.transit} Leave with a 20-minute buffer for the final approach.`, type: 'transport', mapQuery: `${stops[2]}, ${dayCity}` },
+          { time: '15:30', title: stops[2], detail: `${guidance.reserve} This is the anchor experience for the afternoon.`, type: 'activity', mapQuery: `${stops[2]}, ${dayCity}`, imageUrl: lastImageUrl },
+          { time: '17:45', title: photoSpot, detail: `Frame ${stops[2]} in softer late-day light. Keep this as a photo-first stop rather than rushing straight to dinner.`, tip: `Best light is roughly 45 minutes before sunset; bring a wide lens or use your phone's 0.5x camera.`, type: 'photospot', mapQuery: `${stops[2]}, ${dayCity}`, imageUrl: lastImageUrl },
+          { time: '19:30', title: localMeals[slug][index], detail: guidance.dinner, type: 'food', mapQuery: `${localMeals[slug][index]}, ${dayCity}` }
         ]
       };
     });
@@ -118,9 +123,9 @@
     return {
       trip: {
         id: `demo-${slug}`,
-        name: `${cfg.city} Weekend Guide`,
+        name: cfg.tripName || `${cfg.city} Weekend Guide`,
         emoji: cfg.emoji,
-        destination: `${cfg.city}, ${cfg.country}`,
+        destination: cfg.destination || `${cfg.city}, ${cfg.country}`,
         startDate: dateAt(start),
         endDate: end,
         dates: `${days.length} days · sample itinerary`,
@@ -134,12 +139,15 @@
         isDemo: true
       },
       days,
-      hotels: [{ city: cfg.city, name: cfg.hotel, nights: days.length - 1, price: cfg.hotelPrice, tier: 'mid', note: `Well located for this ${cfg.city} route.`, checkin: dateAt(start), checkout: dateAt(start + days.length), stayBudgetStatus: 'within-cap' }],
+      hotels: [
+        { city: cfg.city, name: cfg.hotel, nights: cfg.extraHotel ? days.length - 1 - cfg.extraHotel.nights : days.length - 1, price: cfg.hotelPrice, tier: 'mid', note: `Well located for this ${cfg.city} route.`, checkin: dateAt(start), checkout: dateAt(start + (cfg.extraHotel ? days.length - 1 - cfg.extraHotel.nights : days.length)), stayBudgetStatus: 'within-cap' },
+        ...(cfg.extraHotel ? [{ city: cfg.extraHotel.city, name: cfg.extraHotel.name, nights: cfg.extraHotel.nights, price: cfg.extraHotel.price, tier: 'mid', note: `Well located for this ${cfg.extraHotel.city} route.`, checkin: dateAt(start + days.length - 1 - cfg.extraHotel.nights), checkout: dateAt(start + days.length), stayBudgetStatus: 'within-cap' }] : [])
+      ],
       budget: [
-        { label: 'Return travel', amount: '$650', icon: '✈️', note: 'Estimate for two travellers', status: 'pending', category: 'transport' },
-        { label: 'Accommodation', amount: '$520', icon: '🏨', note: `${days.length - 1} nights in a central stay`, status: 'pending', category: 'accommodation' },
-        { label: 'Food and coffee', amount: '$330', icon: '🍽️', note: 'Mix of local favourites and relaxed meals', status: 'pending', category: 'food' },
-        { label: 'Experiences', amount: '$260', icon: '🎟️', note: 'Entries, tours, and local transport', status: 'pending', category: 'activities' }
+        { label: 'Return travel', amount: cfg.extraHotel ? '$850' : '$650', icon: '✈️', note: cfg.extraHotel ? 'Flights + inter-city train for two' : 'Estimate for two travellers', status: 'pending', category: 'transport' },
+        { label: 'Accommodation', amount: cfg.extraHotel ? '$960' : '$520', icon: '🏨', note: `${days.length - 1} nights across ${cfg.extraHotel ? '2 cities' : 'a central stay'}`, status: 'pending', category: 'accommodation' },
+        { label: 'Food and coffee', amount: cfg.extraHotel ? '$560' : '$330', icon: '🍽️', note: 'Mix of local favourites and relaxed meals', status: 'pending', category: 'food' },
+        { label: 'Experiences', amount: cfg.extraHotel ? '$420' : '$260', icon: '🎟️', note: 'Entries, tours, and local transport', status: 'pending', category: 'activities' }
       ],
       tips: [{ category: `${cfg.city} notes`, icon: cfg.emoji, items: ['Book headline attractions before you travel.', 'Keep one open block each day for a place you discover on the way.', 'Use this sample as a starting point, then adjust dates, pace, and budget.'] }],
       urgent: [{ label: `Check ${cfg.city} headline attraction availability`, note: 'Popular times and experiences can sell out early.', url: '' }],
