@@ -10,14 +10,14 @@
 <meta property="og:site_name" content="Tripva">
 <meta property="og:title" content="15 Hidden Photo Spots in Paris You Haven't Seen Yet">
 <meta property="og:description" content="Secret Paris photography locations — from a canal lock to a rooftop cemetery — with exact addresses, best times, and shot tips.">
-<meta property="og:image" content="https://tripva.app/blog/assets/paris-cover.png">
+<meta property="og:image" content="https://tripva.app/blog/assets/paris-cover.webp">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://tripva.app/blog/paris-hidden-gems-photo-spots.html">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="15 Hidden Photo Spots in Paris You Haven't Seen Yet">
-<meta name="twitter:image" content="https://tripva.app/blog/assets/paris-cover.png">
+<meta name="twitter:image" content="https://tripva.app/blog/assets/paris-cover.webp">
 <link rel="icon" type="image/png" href="/icons/tripva-logo.png">
 <link rel="apple-touch-icon" href="/icons/tripva-logo.png">
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
@@ -28,8 +28,8 @@
   "@type": "BlogPosting",
   "headline": "15 Hidden Photo Spots in Paris You Haven't Seen Yet",
   "description": "Beyond the Eiffel Tower — 15 lesser-known Paris photography locations with exact addresses, best times, and shot composition tips.",
-  "image": "https://tripva.app/blog/assets/paris-cover.png",
-  "datePublished": "2026-02-03",
+  "image": "https://tripva.app/blog/assets/paris-cover.webp",
+  "datePublished": "2026-05-22",
   "dateModified": "2026-05-01",
   "author": {"@type": "Organization", "name": "Tripva", "url": "https://tripva.app"},
   "publisher": {
@@ -216,6 +216,18 @@ nav{
 }
 .back-link:hover{color:var(--accent)}
 .back-link svg{width:14px;height:14px}
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin:32px 0}
+.toc h3{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px}
+.toc ol{padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.toc a{font-size:14px;color:var(--accent);font-weight:500;transition:color .2s}
+.toc a:hover{color:var(--purple-light)}
+
+/* INLINE IMAGES */
+.inline-img{margin:32px 0;border-radius:var(--r-lg);overflow:hidden}
+.inline-img img{width:100%;height:auto;display:block}
+.inline-img figcaption{font-size:13px;color:var(--muted);text-align:center;padding:10px 16px;background:var(--surface)}
+
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
@@ -260,9 +272,17 @@ footer a:hover{color:var(--accent)}
   </header>
 
   <img class="cover-img"
-    src="/blog/assets/paris-cover.png"
+    src="/blog/assets/paris-cover.webp"
     alt="Eiffel Tower rising over Paris at dusk with warm city lights"
     width="1200" height="675">
+
+  <nav class="toc" aria-label="Table of contents">
+    <h3>In This Guide</h3>
+    <ol>
+      <li><a href="#the-15-spots">The 15 Spots</a></li>
+      <li><a href="#how-to-use-these-spots">How to Use These Spots</a></li>
+    </ol>
+  </nav>
 
   <article class="article-body">
 
@@ -280,7 +300,7 @@ footer a:hover{color:var(--accent)}
       </ul>
     </div>
 
-    <h2>The 15 Spots</h2>
+    <h2 id="the-15-spots">The 15 Spots</h2>
 
     <ul class="spots-list">
 
@@ -322,6 +342,12 @@ footer a:hover{color:var(--accent)}
           </div>
         </div>
       </li>
+
+    </ul>
+
+    <figure class="inline-img"><img src="/blog/assets/paris-canal.webp" alt="Canal Saint-Martin in Paris" loading="lazy" width="800" height="450"><figcaption>Canal Saint-Martin — one of Paris's most photogenic hidden gems</figcaption></figure>
+
+    <ul class="spots-list">
 
       <li class="spot-card">
         <div class="spot-num">4</div>
@@ -401,6 +427,12 @@ footer a:hover{color:var(--accent)}
         </div>
       </li>
 
+    </ul>
+
+    <figure class="inline-img"><img src="/blog/assets/paris-garden.webp" alt="Hidden garden in Paris" loading="lazy" width="800" height="450"><figcaption>Paris's secret gardens offer peaceful photo spots away from crowds</figcaption></figure>
+
+    <ul class="spots-list">
+
       <li class="spot-card">
         <div class="spot-num">10</div>
         <div class="spot-body">
@@ -439,6 +471,12 @@ footer a:hover{color:var(--accent)}
           </div>
         </div>
       </li>
+
+    </ul>
+
+    <figure class="inline-img"><img src="/blog/assets/paris-montmartre.webp" alt="Cobblestone street in Montmartre, Paris" loading="lazy" width="800" height="450"><figcaption>The winding streets of Montmartre hide Paris's best photo opportunities</figcaption></figure>
+
+    <ul class="spots-list">
 
       <li class="spot-card">
         <div class="spot-num">13</div>
@@ -481,7 +519,7 @@ footer a:hover{color:var(--accent)}
 
     </ul>
 
-    <h2>How to Use These Spots</h2>
+    <h2 id="how-to-use-these-spots">How to Use These Spots</h2>
 
     <p>Don't try to hit all 15 in one trip. Group them by arrondissement and walk between them — the best Paris photography often happens in the streets between destinations, not at the spots themselves. Pick 4–5 per day and allow time to stay if the light is working.</p>
 
@@ -500,22 +538,22 @@ footer a:hover{color:var(--accent)}
   <nav class="related" aria-label="Related posts">
     <h2>More Travel Guides</h2>
     <div class="related-grid">
+      <a href="/blog/barcelona-food-and-culture.html" class="related-card">
+        <img src="/blog/assets/barcelona-cover.webp" alt="Barcelona food and culture" loading="lazy" width="480" height="270">
+        <div class="related-card-body">
+          <div class="related-card-title">Barcelona Food & Culture</div>
+        </div>
+      </a>
+      <a href="/blog/santorini-complete-guide.html" class="related-card">
+        <img src="/blog/assets/santorini-cover.webp" alt="Santorini" loading="lazy" width="480" height="270">
+        <div class="related-card-body">
+          <div class="related-card-title">Santorini Complete Guide</div>
+        </div>
+      </a>
       <a href="/blog/best-time-to-visit-japan.html" class="related-card">
-        <img src="/blog/assets/japan-cover.png" alt="Japan cherry blossoms" loading="lazy" width="480" height="270">
+        <img src="/blog/assets/japan-cover.webp" alt="Japan" loading="lazy" width="480" height="270">
         <div class="related-card-body">
-          <div class="related-card-title">Best Time to Visit Japan: Month-by-Month Guide</div>
-        </div>
-      </a>
-      <a href="/blog/europe-by-train.html" class="related-card">
-        <img src="/blog/assets/europe-train-cover.png" alt="European train" loading="lazy" width="480" height="270">
-        <div class="related-card-body">
-          <div class="related-card-title">Europe by Train: The Ultimate 2026 Rail Itinerary</div>
-        </div>
-      </a>
-      <a href="/blog/southeast-asia-budget-travel.html" class="related-card">
-        <img src="/blog/assets/southeast-asia-cover.png" alt="Southeast Asia" loading="lazy" width="480" height="270">
-        <div class="related-card-body">
-          <div class="related-card-title">Southeast Asia on $50/Day: The Complete 2026 Budget Guide</div>
+          <div class="related-card-title">Japan Best Time to Visit</div>
         </div>
       </a>
     </div>

@@ -29,8 +29,8 @@
   "headline": "Barcelona Beyond the Basics: Food Markets, Gothic Quarter & Hidden Beaches (2026)",
   "description": "Barcelona beyond Sagrada Familia — the best food markets, Gothic Quarter walks, hidden beaches, tapas spots, and local neighborhoods that most tourists miss.",
   "image": "https://tripva.app/blog/assets/barcelona-cover.webp",
-  "datePublished": "2026-07-18",
-  "dateModified": "2026-07-18",
+  "datePublished": "2026-07-06",
+  "dateModified": "2026-07-06",
   "author": {"@type": "Organization", "name": "Tripva", "url": "https://tripva.app"},
   "publisher": {
     "@type": "Organization",
@@ -245,6 +245,16 @@ nav{
 .back-link:hover{color:var(--accent)}
 .back-link svg{width:14px;height:14px}
 
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin:32px 0}
+.toc h3{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px}
+.toc ol{padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.toc a{font-size:14px;color:var(--accent);font-weight:500;transition:color .2s}
+.toc a:hover{color:var(--purple-light)}
+.inline-img{margin:32px 0;border-radius:var(--r-lg);overflow:hidden}
+.inline-img img{width:100%;height:auto;display:block}
+.inline-img figcaption{font-size:13px;color:var(--muted);text-align:center;padding:10px 16px;background:var(--surface)}
+
 /* FOOTER */
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
@@ -294,9 +304,24 @@ footer a:hover{color:var(--accent)}
     alt="Barcelona skyline with Sagrada Familia towers rising above the city at golden hour"
     width="1200" height="675">
 
+  <nav class="toc" aria-label="Table of contents">
+    <h3>In This Guide</h3>
+    <ol>
+      <li><a href="#why-barcelona-keeps-pulling-you-back">Why Barcelona Keeps Pulling You Back</a></li>
+      <li><a href="#gaudi-and-beyond-the-architecture">Gaudi and Beyond: The Architecture</a></li>
+      <li><a href="#food-markets-and-where-to-eat">Food Markets and Where to Eat</a></li>
+      <li><a href="#the-gothic-quarter-and-el-born">The Gothic Quarter and El Born</a></li>
+      <li><a href="#beaches-the-ones-worth-your-time">Beaches: The Ones Worth Your Time</a></li>
+      <li><a href="#when-to-visit">When to Visit</a></li>
+      <li><a href="#neighbourhoods-beyond-the-tourist-core">Neighbourhoods Beyond the Tourist Core</a></li>
+      <li><a href="#photo-spots-three-unmissable-frames">Photo Spots — Three Unmissable Frames</a></li>
+      <li><a href="#budget-quick-facts">Budget Quick Facts</a></li>
+    </ol>
+  </nav>
+
   <article class="article-body">
 
-    <h2>Why Barcelona Keeps Pulling You Back</h2>
+    <h2 id="why-barcelona-keeps-pulling-you-back">Why Barcelona Keeps Pulling You Back</h2>
 
     <p>Most European cities ask you to choose. Paris is culture and food but no beach. Lisbon has coastline and nightlife but a smaller culinary scene. Athens has history and sea but limited contemporary edge. Barcelona refuses to compromise. It stacks a Mediterranean coastline against a mountainous backdrop, fills the space between with architecture that belongs in a fever dream, and then throws in some of the best food in southern Europe for good measure.</p>
 
@@ -304,15 +329,17 @@ footer a:hover{color:var(--accent)}
 
     <p>This guide is for people who have already seen the postcard. You know about Sagrada Familia. You have heard of La Rambla. What you want to know is where the locals actually eat, which beaches are worth the towel, and which neighbourhoods reward a slow afternoon of wandering with no particular destination. That is what follows.</p>
 
-    <h2>Gaudi and Beyond: The Architecture</h2>
+    <h2 id="gaudi-and-beyond-the-architecture">Gaudi and Beyond: The Architecture</h2>
 
     <p>Antoni Gaudi is Barcelona's most famous architect, but he was part of a broader movement called <strong>Modernisme</strong> — Catalonia's answer to Art Nouveau that transformed the city between 1880 and 1930. Understanding that context turns a visit from ticking off individual buildings to reading an entire cityscape.</p>
 
     <h3>Sagrada Familia</h3>
 
-    <p>Start here, because everyone does, and because it genuinely earns the hype. Gaudi's unfinished basilica has been under construction since 1882 and is projected to reach completion around 2026. The interior is where it transcends expectation: tree-shaped columns branch toward the ceiling in a geometry that feels organic and mathematical simultaneously, and the stained glass windows cast shifting pools of colour across the stone floors depending on the time of day.</p>
+    <p>Start here, because everyone does, and because it genuinely earns the hype. Gaudi's unfinished basilica has been under construction since 1882 and is projected to reach completion in the coming years. The interior is where it transcends expectation: tree-shaped columns branch toward the ceiling in a geometry that feels organic and mathematical simultaneously, and the stained glass windows cast shifting pools of colour across the stone floors depending on the time of day.</p>
 
     <p><strong>Practical tips:</strong> Book tickets at least two months ahead during peak season (April through October). Choose a morning slot between 9am and 10am — the east-facing Nativity facade windows throw warm reds and oranges across the interior in the first hours. The tower access ticket (Nativity tower is the better of the two) adds a spiral staircase ascent with close-up views of the stone fruit and lizard sculptures. Budget 90 minutes minimum inside.</p>
+
+    <figure class="inline-img"><img src="/blog/assets/barcelona-sagrada.webp" alt="Sagrada Familia basilica in Barcelona" loading="lazy" width="800" height="450"><figcaption>Gaudí's masterpiece — still under construction after more than 140 years</figcaption></figure>
 
     <h3>Park Guell</h3>
 
@@ -328,7 +355,7 @@ footer a:hover{color:var(--accent)}
 
     <p>Do not leave Barcelona thinking Modernisme begins and ends with one architect. The <strong>Palau de la Musica Catalana</strong>, designed by Lluis Domenech i Montaner, is an explosion of stained glass, mosaic, and sculptural ornament that makes the average concert hall look like a parking garage. Attend a performance if you can — the acoustics match the visuals. The <strong>Hospital de Sant Pau</strong>, also by Domenech i Montaner, is a complex of 27 Modernista pavilions connected by underground tunnels, set in gardens. It functioned as a working hospital until 2009 and now operates as a museum and cultural centre. It receives a fraction of Sagrada Familia's visitors and deserves far more.</p>
 
-    <h2>Food Markets and Where to Eat</h2>
+    <h2 id="food-markets-and-where-to-eat">Food Markets and Where to Eat</h2>
 
     <p>Barcelona's relationship with food is not performative. There is no equivalent of the Parisian restaurant scene's occasionally stiff formality. Here, great food happens in places with paper tablecloths and plastic chairs as often as it does in Michelin-starred dining rooms. The markets are where it starts.</p>
 
@@ -337,6 +364,8 @@ footer a:hover{color:var(--accent)}
     <p>The most famous food market in Europe sits halfway down La Rambla and has been feeding Barcelona since the 13th century in one form or another. It is also the most tourist-photographed, and the stalls near the entrance have adjusted their prices and products accordingly. The strategy is simple: <strong>walk past the first three rows</strong>. The stalls deeper inside and along the back wall cater to locals who shop here daily. Look for seasonal fruit (the stone fruits in summer are extraordinary), fresh seafood, and the prepared food counters where you can sit at a bar stool and eat a plate of grilled prawns or a bocadillo de jamon for a third of what a nearby restaurant charges.</p>
 
     <p>Go before 10am to see the market as a functioning wholesale operation rather than a tourist attraction. By noon the aisles are shoulder-to-shoulder and the experience changes entirely.</p>
+
+    <figure class="inline-img"><img src="/blog/assets/barcelona-market.webp" alt="Colorful food market in Barcelona" loading="lazy" width="800" height="450"><figcaption>Barcelona's markets are a feast for the eyes and the stomach</figcaption></figure>
 
     <h3>Mercat de Sant Antoni</h3>
 
@@ -359,7 +388,7 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>Patatas bravas</strong> — Fried potato cubes with spicy tomato sauce (salsa brava) and sometimes aioli. Every bar has its own version and arguing about who makes the best is a local sport. <strong>Pa amb tomaquet</strong> — Bread rubbed with ripe tomato, drizzled with olive oil, and sprinkled with salt. Sounds absurdly simple. Tastes transcendent when the tomatoes and oil are right. Served with nearly everything. <strong>Bombas</strong> — Potato croquettes stuffed with spiced meat, fried, and served with aioli and brava sauce. A Barcelona original from Barceloneta. <strong>Escalivada</strong> — Roasted red pepper, aubergine, and onion, peeled and dressed with olive oil. Served cold or at room temperature. The Catalan vegetable dish that converts people who think they do not like aubergine.</p>
 
-    <h2>The Gothic Quarter and El Born</h2>
+    <h2 id="the-gothic-quarter-and-el-born">The Gothic Quarter and El Born</h2>
 
     <p>The oldest part of Barcelona is a labyrinth. Streets narrow to the width of a handshake. Medieval stone walls rise four and five storeys, blocking the sun and creating a permanent twilight at ground level. Laundry hangs between buildings. A Roman aqueduct pillar stands in the middle of a square. A 14th-century church hides behind a row of vintage shops. Getting lost here is not a risk — it is the entire point.</p>
 
@@ -369,6 +398,8 @@ footer a:hover{color:var(--accent)}
 
     <p>From the Cathedral, wind south through the lanes to <strong>Placa Reial</strong>, a grand arcaded square with palm trees, Gaudi-designed lampposts (his first public commission), and a concentration of restaurants and bars. It is beautiful, lively, and slightly touristy — embrace it for one drink and move on. Head east through Carrer d'Avino toward the <strong>Pont del Bisbe</strong>, the neo-Gothic bridge connecting two buildings across Carrer del Bisbe. It is one of the most photographed spots in the old city and genuinely atmospheric, especially at night when the streetlights catch the stone carvings.</p>
 
+    <figure class="inline-img"><img src="/blog/assets/barcelona-gothic.webp" alt="Gothic Quarter narrow street in Barcelona" loading="lazy" width="800" height="450"><figcaption>The Gothic Quarter's medieval lanes reveal surprises at every turn</figcaption></figure>
+
     <h3>El Born</h3>
 
     <p>Cross Via Laietana (the boulevard that divides the Gothic Quarter from El Born) and the character shifts. El Born was Barcelona's medieval merchant district and has reinvented itself as the city's most stylish neighbourhood for boutique shopping, cocktail bars, and cultural spaces. The <strong>Picasso Museum</strong> occupies five connected medieval palaces on Carrer de Montcada and houses the most comprehensive collection of Picasso's early work, including the entire Las Meninas series. Book online to skip the queue.</p>
@@ -377,7 +408,7 @@ footer a:hover{color:var(--accent)}
 
     <p>The streets around Santa Maria del Mar — Carrer del Rec, Carrer de l'Argenteria, Passeig del Born — are El Born's social spine. Independent clothing shops, design stores, wine bars, and cocktail lounges stack up along these blocks. The Passeig del Born itself is a wide tree-lined boulevard that becomes an open-air social gathering point on warm evenings.</p>
 
-    <h2>Beaches: The Ones Worth Your Time</h2>
+    <h2 id="beaches-the-ones-worth-your-time">Beaches: The Ones Worth Your Time</h2>
 
     <p>Barcelona is unusual among major European cities in having genuinely usable urban beaches. The waterfront was completely rebuilt for the 1992 Olympics, transforming an industrial port into several kilometres of sandy coastline. Not all of it is worth your afternoon, though. Here is the breakdown.</p>
 
@@ -392,7 +423,7 @@ footer a:hover{color:var(--accent)}
 
     <p>Take the Rodalies commuter train (R1 line) north from Passeig de Gracia or Placa de Catalunya to El Masnou station — about 25 minutes. Walk five minutes east to Ocata beach, a long, wide stretch of golden sand that feels like a different world from Barceloneta. The water is clearer, the sand is cleaner, and on a weekday you can find twenty-metre stretches of empty beach. There is a beach bar, a few restaurants along the promenade, and nothing else. Bring a book and a towel. This is one of the best day-trip beaches accessible from any major European city.</p>
 
-    <h2>When to Visit</h2>
+    <h2 id="when-to-visit">When to Visit</h2>
 
     <div class="season-grid">
       <div class="season-card">
@@ -429,7 +460,7 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>Winter (November to March)</strong> is mild by northern European standards — daytime temperatures rarely drop below 10 degrees and sunny days are common. Some outdoor attractions reduce hours, the beach is off the agenda for most visitors, and a handful of restaurants close for January holidays. But hotel prices drop 40-50%, the major museums and architectural sites are crowd-free, and the city's restaurant and bar culture operates year-round. Christmas markets appear in December (the one at the Cathedral is the most traditional), and the city celebrates the Feast of the Three Kings on January 5-6 with a major parade.</p>
 
-    <h2>Neighbourhoods Beyond the Tourist Core</h2>
+    <h2 id="neighbourhoods-beyond-the-tourist-core">Neighbourhoods Beyond the Tourist Core</h2>
 
     <p>The biggest mistake first-time visitors make in Barcelona is never leaving the rectangle between La Rambla, Sagrada Familia, and the beach. The city's most interesting daily life happens in the neighbourhoods that surround this tourist core.</p>
 
@@ -449,7 +480,7 @@ footer a:hover{color:var(--accent)}
 
     <p>Centred around the renovated Mercat de Sant Antoni, this neighbourhood has seen the most dramatic transformation in Barcelona over the past decade. Carrer del Parlament has become a destination street for restaurants and bars — Federal for brunch, Flauta for modern Catalan cooking, and a growing number of natural wine bars. The area has a young, creative energy and remains predominantly local despite its rising profile. The Sunday book market around the Mercat building is a Barcelona tradition worth experiencing.</p>
 
-    <h2>Photo Spots — Three Unmissable Frames</h2>
+    <h2 id="photo-spots-three-unmissable-frames">Photo Spots — Three Unmissable Frames</h2>
 
     <ul class="spots-list">
       <li class="spot-item">
@@ -478,7 +509,7 @@ footer a:hover{color:var(--accent)}
       </li>
     </ul>
 
-    <h2>Budget Quick Facts</h2>
+    <h2 id="budget-quick-facts">Budget Quick Facts</h2>
 
     <div class="info-box">
       <div class="info-box-title">Barcelona 2026 — What Things Cost</div>
@@ -504,22 +535,22 @@ footer a:hover{color:var(--accent)}
   <nav class="related" aria-label="Related posts">
     <h2>More Travel Guides</h2>
     <div class="related-grid">
-      <a href="/blog/europe-by-train.html" class="related-card">
-        <img src="/blog/assets/europe-train-cover.png" alt="European train" loading="lazy" width="480" height="270">
-        <div class="related-card-body">
-          <div class="related-card-title">Europe by Train: The Ultimate 2026 Rail Itinerary</div>
-        </div>
-      </a>
       <a href="/blog/paris-hidden-gems-photo-spots.html" class="related-card">
-        <img src="/blog/assets/paris-cover.png" alt="Paris" loading="lazy" width="480" height="270">
+        <img src="/blog/assets/paris-cover.webp" alt="Paris hidden spots" loading="lazy" width="480" height="270">
         <div class="related-card-body">
           <div class="related-card-title">15 Hidden Photo Spots in Paris You Haven't Seen Yet</div>
         </div>
       </a>
-      <a href="/blog/best-time-to-visit-japan.html" class="related-card">
-        <img src="/blog/assets/japan-cover.png" alt="Japan cherry blossoms" loading="lazy" width="480" height="270">
+      <a href="/blog/santorini-complete-guide.html" class="related-card">
+        <img src="/blog/assets/santorini-cover.webp" alt="Santorini" loading="lazy" width="480" height="270">
         <div class="related-card-body">
-          <div class="related-card-title">Best Time to Visit Japan: Month-by-Month Guide (2025-2026)</div>
+          <div class="related-card-title">Santorini Complete Guide</div>
+        </div>
+      </a>
+      <a href="/blog/europe-by-train.html" class="related-card">
+        <img src="/blog/assets/europe-train-cover.webp" alt="Europe by train" loading="lazy" width="480" height="270">
+        <div class="related-card-body">
+          <div class="related-card-title">Europe by Train: The Ultimate 2026 Rail Itinerary</div>
         </div>
       </a>
     </div>

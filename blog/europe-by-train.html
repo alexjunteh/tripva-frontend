@@ -10,14 +10,14 @@
 <meta property="og:site_name" content="Tripva">
 <meta property="og:title" content="Europe by Train: The Ultimate 2026 Rail Itinerary">
 <meta property="og:description" content="London to Barcelona in three weeks by rail. Interrail passes, night trains, booking windows, and real costs for 2026.">
-<meta property="og:image" content="https://tripva.app/blog/assets/europe-train-cover.png">
+<meta property="og:image" content="https://tripva.app/blog/assets/europe-train-cover.webp">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://tripva.app/blog/europe-by-train.html">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Europe by Train: The Ultimate 2026 Rail Itinerary">
-<meta name="twitter:image" content="https://tripva.app/blog/assets/europe-train-cover.png">
+<meta name="twitter:image" content="https://tripva.app/blog/assets/europe-train-cover.webp">
 <link rel="icon" type="image/png" href="/icons/tripva-logo.png">
 <link rel="apple-touch-icon" href="/icons/tripva-logo.png">
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
@@ -28,8 +28,8 @@
   "@type": "BlogPosting",
   "headline": "Europe by Train: The Ultimate 2026 Rail Itinerary",
   "description": "Three weeks by rail from London to Barcelona — Interrail passes, night trains, booking windows, and real costs.",
-  "image": "https://tripva.app/blog/assets/europe-train-cover.png",
-  "datePublished": "2026-03-10",
+  "image": "https://tripva.app/blog/assets/europe-train-cover.webp",
+  "datePublished": "2026-06-08",
   "dateModified": "2026-05-01",
   "author": {"@type": "Organization", "name": "Tripva", "url": "https://tripva.app"},
   "publisher": {
@@ -234,6 +234,14 @@ nav{
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin:32px 0}
+.toc h3{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px}
+.toc ol{padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.toc a{font-size:14px;color:var(--accent);font-weight:500;transition:color .2s}
+.toc a:hover{color:var(--purple-light)}
+.inline-img{margin:32px 0;border-radius:var(--r-lg);overflow:hidden}
+.inline-img img{width:100%;height:auto;display:block}
+.inline-img figcaption{font-size:13px;color:var(--muted);text-align:center;padding:10px 16px;background:var(--surface)}
 </style>
 </head>
 <body>
@@ -275,17 +283,28 @@ footer a:hover{color:var(--accent)}
   </header>
 
   <img class="cover-img"
-    src="/blog/assets/europe-train-cover.png"
+    src="/blog/assets/europe-train-cover.webp"
     alt="A train at a European station platform, ready to depart"
     width="1200" height="675">
 
+  <nav class="toc" aria-label="Table of contents">
+    <h3>In This Guide</h3>
+    <ol>
+      <li><a href="#the-route-at-a-glance">The Route at a Glance</a></li>
+      <li><a href="#interrail-vs-point-to-point-which-makes-sense">Interrail vs. Point-to-Point: Which Makes Sense?</a></li>
+      <li><a href="#night-trains-the-underrated-game-changer">Night Trains: The Underrated Game-Changer</a></li>
+      <li><a href="#city-by-city-highlights">City-by-City Highlights</a></li>
+      <li><a href="#costs-summary-21-day-trip">Costs Summary: 21-Day Trip</a></li>
+    </ol>
+  </nav>
+
   <article class="article-body">
 
-    <p>Flying between European cities is faster in theory. In practice, you spend 90 minutes getting to the airport, 90 minutes in security and boarding, 90 minutes flying, then 60 minutes reaching the city centre from wherever the budget airline lands you. That's 6 hours door-to-door between Paris and Amsterdam — the same as the Thalys train, which drops you in the centre of both cities and lets you watch the Dutch polders unfold outside the window.</p>
+    <p>Flying between European cities is faster in theory. In practice, you spend 90 minutes getting to the airport, 90 minutes in security and boarding, 90 minutes flying, then 60 minutes reaching the city centre from wherever the budget airline lands you. That's 6 hours door-to-door between Paris and Amsterdam — the same as the Thalys (now Eurostar) train, which drops you in the centre of both cities and lets you watch the Dutch polders unfold outside the window.</p>
 
     <p>This itinerary covers the classic grand tour of Europe's most compelling cities by rail, in three weeks. It's designed to be genuinely do-able without burning out, with 2–4 nights per city and logical geography — no backtracking, no wasted travel days.</p>
 
-    <h2>The Route at a Glance</h2>
+    <h2 id="the-route-at-a-glance">The Route at a Glance</h2>
 
     <div class="route-timeline">
       <div class="route-stop">
@@ -300,7 +319,7 @@ footer a:hover{color:var(--accent)}
         <div class="stop-city">Paris, France</div>
         <div class="stop-meta">
           <span class="stop-badge">3 nights</span>
-          <span class="stop-badge euro">Paris Nord → Amsterdam Centraal (Thalys/Eurostar)</span>
+          <span class="stop-badge euro">Paris Nord → Amsterdam Centraal (Thalys (now Eurostar)/Eurostar)</span>
         </div>
         <div class="stop-desc">2h20 to Amsterdam. Book via Eurostar's international booking or SNCF Connect.</div>
       </div>
@@ -353,7 +372,9 @@ footer a:hover{color:var(--accent)}
       </div>
     </div>
 
-    <h2>Interrail vs. Point-to-Point: Which Makes Sense?</h2>
+    <figure class="inline-img"><img src="/blog/assets/europe-alps-train.webp" alt="Train passing through the Swiss Alps" loading="lazy" width="800" height="450"><figcaption>The Swiss Alps by rail — one of Europe's most scenic train journeys</figcaption></figure>
+
+    <h2 id="interrail-vs-point-to-point-which-makes-sense">Interrail vs. Point-to-Point: Which Makes Sense?</h2>
 
     <p>This is the most common question about European rail travel, and the answer depends entirely on your age and how many journeys you're making.</p>
 
@@ -381,7 +402,9 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>The honest answer:</strong> Run the numbers on your actual dates 3–4 months out. Use the Interrail pass calculator at interrail.eu and compare against Trainline. The pass wins on spontaneity; point-to-point wins on certainty and advance planning.</p>
 
-    <h2>Night Trains: The Underrated Game-Changer</h2>
+    <figure class="inline-img"><img src="/blog/assets/europe-station.webp" alt="Historic European train station" loading="lazy" width="800" height="450"><figcaption>Europe's grand train stations are destinations in themselves</figcaption></figure>
+
+    <h2 id="night-trains-the-underrated-game-changer">Night Trains: The Underrated Game-Changer</h2>
 
     <p>Night trains eliminate one of budget travel's biggest costs: accommodation. A €45–80 couchette berth gives you a bed, a night's sleep, and transport. That's competitive with a hostel bed plus a daytime train fare — and you arrive ready to start the day instead of losing half of it to travel.</p>
 
@@ -396,7 +419,7 @@ footer a:hover{color:var(--accent)}
 
     <p>Book night trains as early as possible — 180 days in advance for ÖBB Nightjet. The cheapest couchette berths sell out first. Always book the specific berth (couchette or sleeper), not just the seat — overnight in a seat is miserable on a 9-hour train.</p>
 
-    <h2>City-by-City Highlights</h2>
+    <h2 id="city-by-city-highlights">City-by-City Highlights</h2>
 
     <h3>London (2 nights)</h3>
     <p>If you're flying into London as a non-EU visitor, give yourself a full two days. The Eurostar terminal at St Pancras is worth an hour itself — the Victorian Gothic station is extraordinary, and the Champagne Bar on platform level is a civilised place to wait for departure. Must-sees before boarding: the British Museum (free), Columbia Road Flower Market (Sunday mornings only), and the view from the South Bank at dusk.</p>
@@ -422,7 +445,9 @@ footer a:hover{color:var(--accent)}
     <h3>Barcelona (3 nights)</h3>
     <p>End the trip in style. Barcelona has the best food of any city on this itinerary — the Boqueria market for breakfast, tapas in the Born neighbourhood for lunch, and a proper Catalan dinner in Gràcia for under €25. Sagrada Família is unmissable but book weeks ahead; the interior (finally complete with its towers) is worth the €30 entry. The Picasso Museum, Park Güell (book timed entry), and the Gothic Quarter at night round out three excellent days.</p>
 
-    <h2>Costs Summary: 21-Day Trip</h2>
+    <figure class="inline-img"><img src="/blog/assets/europe-prague.webp" alt="Prague cityscape with historic architecture" loading="lazy" width="800" height="450"><figcaption>Prague — one of the most rewarding stops on any European rail journey</figcaption></figure>
+
+    <h2 id="costs-summary-21-day-trip">Costs Summary: 21-Day Trip</h2>
 
     <ul>
       <li><strong>Interrail Global Pass (21 days, adult):</strong> ~€490</li>
@@ -441,7 +466,7 @@ footer a:hover{color:var(--accent)}
       <ul>
         <li><strong>6 months out:</strong> Book Nightjet Vienna → Venice couchettes (they sell out)</li>
         <li><strong>3–4 months out:</strong> Book Eurostar London → Paris for best fares</li>
-        <li><strong>2–3 months out:</strong> Book Thalys/Eurostar Paris → Amsterdam, Frecciarossa Venice → Milan</li>
+        <li><strong>2–3 months out:</strong> Book Thalys (now Eurostar)/Eurostar Paris → Amsterdam, Frecciarossa Venice → Milan</li>
         <li><strong>6–8 weeks out:</strong> Book Rijksmuseum (Amsterdam), Pergamon Museum (Berlin), Sagrada Família (Barcelona)</li>
         <li><strong>On arrival:</strong> Vaporetto day passes in Venice, bike rental in Amsterdam</li>
       </ul>
@@ -461,22 +486,22 @@ footer a:hover{color:var(--accent)}
   <nav class="related" aria-label="Related posts">
     <h2>More Travel Guides</h2>
     <div class="related-grid">
-      <a href="/blog/best-time-to-visit-japan.html" class="related-card">
-        <img src="/blog/assets/japan-cover.png" alt="Japan cherry blossoms" loading="lazy" width="480" height="270">
+      <a href="/blog/barcelona-food-and-culture.html" class="related-card">
+        <img src="/blog/assets/barcelona-cover.webp" alt="Barcelona architecture and food" loading="lazy" width="480" height="270">
         <div class="related-card-body">
-          <div class="related-card-title">Best Time to Visit Japan: Month-by-Month Guide</div>
+          <div class="related-card-title">Barcelona Food & Culture</div>
+        </div>
+      </a>
+      <a href="/blog/iceland-ring-road-7-days.html" class="related-card">
+        <img src="/blog/assets/iceland-cover.webp" alt="Iceland Ring Road landscape" loading="lazy" width="480" height="270">
+        <div class="related-card-body">
+          <div class="related-card-title">Iceland Ring Road</div>
         </div>
       </a>
       <a href="/blog/paris-hidden-gems-photo-spots.html" class="related-card">
-        <img src="/blog/assets/paris-cover.png" alt="Paris" loading="lazy" width="480" height="270">
+        <img src="/blog/assets/paris-cover.webp" alt="Paris hidden spots" loading="lazy" width="480" height="270">
         <div class="related-card-body">
-          <div class="related-card-title">15 Hidden Photo Spots in Paris You Haven't Seen Yet</div>
-        </div>
-      </a>
-      <a href="/blog/southeast-asia-budget-travel.html" class="related-card">
-        <img src="/blog/assets/southeast-asia-cover.png" alt="Southeast Asia beach" loading="lazy" width="480" height="270">
-        <div class="related-card-body">
-          <div class="related-card-title">Southeast Asia on $50/Day: The Complete 2026 Budget Guide</div>
+          <div class="related-card-title">Paris Hidden Spots</div>
         </div>
       </a>
     </div>
