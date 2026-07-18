@@ -92,11 +92,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .nav-lbl{position:relative;z-index:1;letter-spacing:.1px}
 .nav-badge{position:absolute;top:2px;right:10px;background:var(--red);color:var(--text);font-size:9px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center;z-index:2}
 
-/* ─── DESKTOP CONTAINMENT ─── */
-@media(min-width:769px){
-  body{background:#050510}
-  #app{max-width:768px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 60px rgba(0,0,0,.4)}
-  .day-sheet{max-width:768px;margin:0 auto}
+/* ─── DESKTOP LAYOUT ─── */
+@media(min-width:1024px){
+  body{background:var(--bg)}
+  #app{flex-direction:row;max-width:none;margin:0;border:none;box-shadow:none}
+  .bottom-nav{flex-direction:column;width:80px;min-width:80px;border-top:none;border-right:1px solid var(--border);padding:20px 8px;order:-1;gap:4px;background:var(--surface);justify-content:flex-start}
+  .nav-btn{min-height:60px;flex:none}
+  .nav-btn.active::after{top:50%;left:3px;right:auto;width:3px;height:20px;transform:translateX(0) translateY(-50%)}
+  .tab-content.active{flex:1;min-width:0}
+  .v2-scroll{max-width:800px;margin:0 auto}
+  .day-sheet{max-width:600px;margin:0 auto}
+  .tickets-scroll{max-width:900px;margin:0 auto}
+  .hotels-scroll,.budget-scroll,.tips-scroll,.sos-scroll{max-width:800px;margin:0 auto}
+  .sub-header,.fx-bar{max-width:800px;margin:0 auto}
+  .more-sheet{max-width:500px;margin:0 auto}
+  .fab-main,.fab-wrap,.fab-backdrop{display:none!important}
 }
 
 /* ─── CHAT TAB ─── */
