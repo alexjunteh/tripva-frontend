@@ -30,7 +30,7 @@
   "description": "Beyond the Eiffel Tower — 15 lesser-known Paris photography locations with exact addresses, best times, and shot composition tips.",
   "image": "https://tripva.app/blog/assets/paris-cover.webp",
   "datePublished": "2026-05-22",
-  "dateModified": "2026-05-01",
+  "dateModified": "2026-05-22",
   "author": {"@type": "Organization", "name": "Tripva", "url": "https://tripva.app"},
   "publisher": {
     "@type": "Organization",
@@ -148,8 +148,11 @@ nav{
 .spots-list{list-style:none;padding:0;margin:24px 0;display:flex;flex-direction:column;gap:20px}
 .spot-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r-xl);padding:24px;
-  display:grid;grid-template-columns:48px 1fr;gap:18px;
+  border-radius:var(--r-xl);overflow:hidden;
+}
+.spot-img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.spot-content{
+  display:grid;grid-template-columns:48px 1fr;gap:18px;padding:24px;
 }
 .spot-num{
   width:44px;height:44px;border-radius:50%;
@@ -261,7 +264,7 @@ footer a:hover{color:var(--accent)}
     <div class="article-meta">
       <span class="meta-item">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="12" rx="2"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
-        February 3, 2026
+        May 22, 2026
       </span>
       <span class="meta-item">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5l2 2"/></svg>
@@ -305,6 +308,8 @@ footer a:hover{color:var(--accent)}
     <ul class="spots-list">
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-rue-cremieux.webp" alt="Colorful pastel houses on Rue Crémieux, Paris" width="800" height="450">
+        <div class="spot-content">
         <div class="spot-num">1</div>
         <div class="spot-body">
           <div class="spot-name">Rue Crémieux</div>
@@ -315,9 +320,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: cloudy days saturate the colours more than direct sun</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-passage-panoramas.webp" alt="Historic covered gallery in Passage des Panoramas, Paris" width="800" height="450">
+        <div class="spot-content">
         <div class="spot-num">2</div>
         <div class="spot-body">
           <div class="spot-name">Passage des Panoramas</div>
@@ -328,9 +336,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: shoot toward the skylights for dramatic rays of light</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-canal.webp" alt="Canal Saint-Martin lock and footbridge, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">3</div>
         <div class="spot-body">
           <div class="spot-name">Canal Saint-Martin Lock No. 2 (Écluse des Récollets)</div>
@@ -341,15 +352,14 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: check barge schedules — a moving barge breaks the symmetry nicely</span>
           </div>
         </div>
+        </div>
       </li>
 
-    </ul>
-
-    <figure class="inline-img"><img src="/blog/assets/paris-canal.webp" alt="Canal Saint-Martin in Paris" loading="lazy" width="800" height="450"><figcaption>Canal Saint-Martin — one of Paris's most photogenic hidden gems</figcaption></figure>
-
-    <ul class="spots-list">
+    
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-library.webp" alt="Ornate neoclassical library interior, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">4</div>
         <div class="spot-body">
           <div class="spot-name">Bibliothèque de l'Assemblée Nationale (Salle des Quatre Colonnes)</div>
@@ -360,9 +370,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: queue by 9am — capacity is limited</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-pere-lachaise.webp" alt="Père Lachaise Cemetery with autumn foliage, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">5</div>
         <div class="spot-body">
           <div class="spot-name">Père Lachaise Cemetery — Division 89 Rooftop View</div>
@@ -373,9 +386,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: visit on a weekday — weekends see Jim Morrison pilgrims</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-arts-metiers.webp" alt="Museum interior with vaulted ceiling, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">6</div>
         <div class="spot-body">
           <div class="spot-name">Musée des Arts et Métiers — Airplane Chapel</div>
@@ -386,9 +402,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: shoot upward — the church's vaulted ceiling with the aircraft is the money shot</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-cobblestone-village.webp" alt="Hidden cobblestone lane in Ménilmontant, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">7</div>
         <div class="spot-body">
           <div class="spot-name">Villa de l'Ermitage</div>
@@ -399,9 +418,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: also explore neighbouring Cité de l'Ermitage — a similar hidden lane nearby</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-palais-royal.webp" alt="Palais Royal colonnade arcade, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">8</div>
         <div class="spot-body">
           <div class="spot-name">Palais Royal Gardens Colonnade</div>
@@ -412,9 +434,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: the arcades shelter small galleries and vintage coin shops worth browsing</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-promenade-plantee.webp" alt="Elevated garden walkway on the Promenade Plantée, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">9</div>
         <div class="spot-body">
           <div class="spot-name">Promenade Plantée (La Coulée Verte)</div>
@@ -425,15 +450,14 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: walk the full length east — it gets quieter and more secluded beyond the Gare de Lyon</span>
           </div>
         </div>
+        </div>
       </li>
 
-    </ul>
-
-    <figure class="inline-img"><img src="/blog/assets/paris-garden.webp" alt="Hidden garden in Paris" loading="lazy" width="800" height="450"><figcaption>Paris's secret gardens offer peaceful photo spots away from crowds</figcaption></figure>
-
-    <ul class="spots-list">
+    
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-vert-galant.webp" alt="Seine river view from Square du Vert-Galant, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">10</div>
         <div class="spot-body">
           <div class="spot-name">Square du Vert-Galant at Dawn</div>
@@ -444,9 +468,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: access via the stairs descending from Pont Neuf; often locked until 7:30am</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-notre-dame.webp" alt="Notre-Dame Cathedral interior, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">11</div>
         <div class="spot-body">
           <div class="spot-name">Notre-Dame North Rose Window (Interior)</div>
@@ -457,9 +484,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: book a timed entry slot online — walk-up queues are 2+ hours</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-montmartre.webp" alt="Cobblestone streets of Montmartre, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">12</div>
         <div class="spot-body">
           <div class="spot-name">Montmartre Vineyard (Clos Montmartre)</div>
@@ -470,15 +500,14 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: pair with Musée de Montmartre directly next door for Renoir-era interiors</span>
           </div>
         </div>
+        </div>
       </li>
 
-    </ul>
-
-    <figure class="inline-img"><img src="/blog/assets/paris-montmartre.webp" alt="Cobblestone street in Montmartre, Paris" loading="lazy" width="800" height="450"><figcaption>The winding streets of Montmartre hide Paris's best photo opportunities</figcaption></figure>
-
-    <ul class="spots-list">
+    
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-sainte-chapelle.webp" alt="Sainte-Chapelle stained glass windows, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">13</div>
         <div class="spot-body">
           <div class="spot-name">Sainte-Chapelle Upper Chapel</div>
@@ -489,9 +518,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: book combined ticket with the Conciergerie to skip the queue</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-arab-institute.webp" alt="Panoramic rooftop view of Paris from Institut du Monde Arabe" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">14</div>
         <div class="spot-body">
           <div class="spot-name">Institut du Monde Arabe Terrace</div>
@@ -502,9 +534,12 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge tip">Tip: museum admission required for terrace access; Thursday–Sunday open until 9:30pm</span>
           </div>
         </div>
+        </div>
       </li>
 
       <li class="spot-card">
+        <img class="spot-img" src="/blog/assets/paris-vincennes-lake.webp" alt="Lac Daumesnil in Bois de Vincennes with autumn trees, Paris" width="800" height="450" loading="lazy">
+        <div class="spot-content">
         <div class="spot-num">15</div>
         <div class="spot-body">
           <div class="spot-name">Bois de Vincennes — Lac Daumesnil at Dawn</div>
@@ -514,6 +549,7 @@ footer a:hover{color:var(--accent)}
             <span class="spot-badge time">Best: autumn 7–9am, misty mornings</span>
             <span class="spot-badge tip">Tip: take Métro Line 1 to Château de Vincennes and walk 10 minutes</span>
           </div>
+        </div>
         </div>
       </li>
 
