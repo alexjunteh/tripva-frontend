@@ -91,6 +91,7 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .nav-btn.active .nav-icon{transform:scale(1.12) translateY(-1px)}
 .nav-lbl{position:relative;z-index:1;letter-spacing:.1px}
 .nav-badge{position:absolute;top:2px;right:10px;background:var(--red);color:var(--text);font-size:9px;font-weight:800;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center;z-index:2}
+.desktop-nav-brand,.desktop-nav-section{display:none}
 
 /* ─── DESKTOP LAYOUT ─── */
 @media(min-width:1024px){
@@ -99,11 +100,22 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
   /* App: horizontal with sidebar nav */
   #app{flex-direction:row;max-width:none;margin:0;border:none;box-shadow:none}
 
-  /* Bottom nav → left sidebar */
-  .bottom-nav{flex-direction:column;width:80px;min-width:80px;border-top:none;border-right:1px solid var(--border);padding:20px 8px;order:-1;gap:4px;background:var(--surface);justify-content:flex-start}
+  /* Dedicated desktop workspace sidebar. Mobile retains the bottom navigation. */
+  .bottom-nav{flex-direction:column;width:232px;min-width:232px;border-top:none;border-right:1px solid var(--border);padding:18px 12px;order:-1;gap:4px;background:var(--surface);justify-content:flex-start}
   body.nav-hidden .bottom-nav{transform:none;opacity:1;pointer-events:all}
-  .nav-btn{min-height:60px;flex:none}
-  .nav-btn.active::after{top:50%;left:3px;right:auto;width:3px;height:20px;transform:translateX(0) translateY(-50%)}
+  .desktop-nav-brand{display:flex;flex-direction:column;gap:7px;padding:4px 10px 22px;border-bottom:1px solid var(--border);margin-bottom:14px}
+  .desktop-nav-brand img{width:112px;height:auto;object-fit:contain;object-position:left center}
+  .desktop-nav-brand span{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.3px}
+  .desktop-nav-section{display:block;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.9px;padding:0 10px 7px;text-transform:uppercase}
+  .nav-btn{width:100%;min-height:48px;flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;border-radius:9px;font-size:14px;font-weight:700;text-align:left}
+  .nav-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+  .nav-btn.active{background:rgba(124,106,247,.14);color:var(--purple-light)}
+  .nav-btn.active::before{inset:0;background:transparent;border:1px solid rgba(124,106,247,.25);border-radius:9px}
+  .nav-btn.active::after{top:50%;left:-12px;right:auto;width:3px;height:24px;transform:translateY(-50%);border-radius:0 3px 3px 0}
+  .nav-icon{font-size:20px;flex:0 0 22px;text-align:center}
+  .nav-btn.active .nav-icon{transform:none}
+  .nav-lbl{font-size:14px;line-height:1.2}
+  .nav-badge{top:50%;right:10px;transform:translateY(-50%)}
 
   /* Tabs fill remaining space */
   .tab-content.active{flex:1;min-width:0}
@@ -2077,7 +2089,12 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 </div>
 
 <!-- ── BOTTOM NAV (5 tabs) ── -->
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Trip navigation">
+  <div class="desktop-nav-brand">
+    <img src="assets/brand/tripva-nav-logo-dark.png" alt="Tripva">
+    <span>Your travel workspace</span>
+  </div>
+  <div class="desktop-nav-section">Trip workspace</div>
   <button class="nav-btn active" id="nav-plan" onclick="switchTab('plan')"><span class="nav-icon">🧭</span><span class="nav-lbl">Live</span></button>
   <button class="nav-btn" id="nav-days" onclick="switchTab('days')"><span class="nav-icon">📅</span><span class="nav-lbl">Days</span></button>
   <button class="nav-btn" id="nav-tickets" onclick="switchTab('tickets')"><span class="nav-icon">🎟️</span><span class="nav-lbl">Tickets</span></button>
