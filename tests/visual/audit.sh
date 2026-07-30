@@ -112,8 +112,11 @@ phase_1() {
   local day_dims; day_dims=$("$B" js "JSON.stringify([...document.querySelectorAll('.day-big-card')].slice(0,3).map(c=>({w:c.getBoundingClientRect().width,h:c.getBoundingClientRect().height,ratio:c.getBoundingClientRect().width/c.getBoundingClientRect().height})))" 2>/dev/null | tail -1)
   echo "$day_dims" > "$REPORT_DIR/phase-1-day-dims.json"
 
-  local narrow; narrow=$(echo "$day_dims" | python3 -c "import json,sys;d=json.loads(sys.stdin.read().strip() or '[]');print(len([c for c in d if c.get('w',0)<300]))" 2>/dev/null || echo 0)
-  [ "$narrow" = "0" ] && pass "day cards width sane (desktop)" || { fail "$narrow day card(s) narrower than 300px"; ok=0; }
+  # Desktop uses a horizontal gallery with 240px cards. Keep a floor high
+  # enough to catch accidental mobile-width collapse without rejecting the
+  # intentional gallery density.
+  local narrow; narrow=$(echo "$day_dims" | python3 -c "import json,sys;d=json.loads(sys.stdin.read().strip() or '[]');print(len([c for c in d if c.get('w',0)<220]))" 2>/dev/null || echo 0)
+  [ "$narrow" = "0" ] && pass "day cards width sane (desktop)" || { fail "$narrow day card(s) narrower than 220px"; ok=0; }
 
   # Landing-page link-check: any anchor pointing to /trip?id=<X> or trip.html?id=<X>
   # must resolve to an actual saved trip, not 404. Catches the 'See full demo'
