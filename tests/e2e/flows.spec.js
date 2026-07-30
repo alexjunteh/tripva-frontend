@@ -155,8 +155,8 @@ test.describe('Tripva E2E flows', () => {
     await expect(destinationLinks.nth(7)).toHaveAttribute('href', 'trip.html?demo=barcelona');
 
     await page.goto('/trip.html?demo=tokyo');
-    await expect(page.locator('#demoBanner')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#tripName')).toContainText('Tokyo Weekend Guide');
+    await expect(page.locator('#deskCloneDemoBtn')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('.day-big-card')).toHaveCount(3);
     await expect(page.locator('.day-big-events')).toHaveText(['📍 7 events', '📍 7 events', '📍 7 events']);
     const dayImages = await page.locator('.day-big-hero').evaluateAll(nodes => nodes.map(node => node.style.backgroundImage));
@@ -164,12 +164,12 @@ test.describe('Tripva E2E flows', () => {
     expect(new Set(dayImages).size).toBe(3);
     expect(dayImages.join(' ')).toContain('assets/demos/tokyo-');
     await page.locator('#dc-0').click();
-    await expect(page.locator('.day-gallery-item')).toHaveCount(3);
-    await expect(page.locator('.tl-main.photospot')).toHaveCount(1);
-    await expect(page.locator('.tl-main.transport')).toHaveCount(1);
+    await expect(page.locator('#deskBody .day-gallery-item')).toHaveCount(3);
+    await expect(page.locator('#deskBody .tl-main.photospot')).toHaveCount(1);
+    await expect(page.locator('#deskBody .tl-main.transport')).toHaveCount(1);
     await page.evaluate(() => { try { closeDaySheet(); } catch(e){} });
     await page.waitForTimeout(400);
-    await page.locator('#demoBanner button').click();
+    await page.locator('#deskCloneDemoBtn').click();
     await expect(page).toHaveURL(/[/]trip(\.html)?\?cloned=1/);
     const copied = await page.evaluate(() => JSON.parse(localStorage.getItem('tripva_plan') || 'null'));
     expect(copied.trip.id).toMatch(/^local-/);
@@ -182,14 +182,14 @@ test.describe('Tripva E2E flows', () => {
     for (const slug of slugs) {
       const dayCount = expectedDays[slug] || 3;
       await page.goto(`/trip.html?demo=${slug}`);
-      await expect(page.locator('#demoBanner')).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('#deskCloneDemoBtn')).toBeVisible({ timeout: 10_000 });
       await expect(page.locator('.day-big-card')).toHaveCount(dayCount);
       await expect(page.locator('.day-big-events')).toHaveText(Array(dayCount).fill('📍 7 events'));
       await page.locator('#dc-0').click();
-      await expect(page.locator('.day-gallery-item')).toHaveCount(3);
-      await expect(page.locator('.tl-main.photospot')).toHaveCount(1);
-      await expect(page.locator('.tl-main.transport')).toHaveCount(1);
-      await expect(page.locator('.local-tip-item')).toHaveCount(3);
+      await expect(page.locator('#deskBody .day-gallery-item')).toHaveCount(3);
+      await expect(page.locator('#deskBody .tl-main.photospot')).toHaveCount(1);
+      await expect(page.locator('#deskBody .tl-main.transport')).toHaveCount(1);
+      await expect(page.locator('#deskBody .local-tip-item')).toHaveCount(3);
     }
   });
 
@@ -368,6 +368,28 @@ test.describe('Tripva E2E flows', () => {
     await expect(page.locator('#authSection')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#authEmail')).toBeVisible();
     await expect(page.locator('#authSendBtn')).toBeVisible();
+  });
+
+  test('desktop days view keeps the selected itinerary panel within the app viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/trip.html?demo=paris');
+    await page.evaluate(() => switchTab('days'));
+    await expect(page.locator('#dc-0')).toBeVisible({ timeout: 10_000 });
+    await page.locator('#dc-0').click();
+    await expect(page.locator('#deskDayPanel.has-day')).toBeVisible();
+    await expect(page.locator('#deskCloneDemoBtn')).toBeVisible();
+    await expect(page.locator('#demoBanner')).not.toBeVisible();
+
+    const bounds = await page.evaluate(() => {
+      const app = document.getElementById('app').getBoundingClientRect();
+      const list = document.getElementById('daysList').getBoundingClientRect();
+      const panel = document.getElementById('deskDayPanel').getBoundingClientRect();
+      return { app, list, panel, viewportWidth: window.innerWidth, viewportHeight: window.innerHeight };
+    });
+    expect(bounds.list.left).toBeGreaterThanOrEqual(bounds.app.left);
+    expect(bounds.panel.right).toBeLessThanOrEqual(bounds.viewportWidth);
+    expect(bounds.panel.bottom).toBeLessThanOrEqual(bounds.viewportHeight);
+    expect(bounds.panel.width).toBeGreaterThan(400);
   });
 
   // ── 6. Mobile viewport ───────────────────────────────────────────────────────

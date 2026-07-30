@@ -108,14 +108,19 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
   /* Tabs fill remaining space */
   .tab-content.active{flex:1;min-width:0}
 
+  /* These banners are direct #app children. Keep shared-trip notices visible
+     without allowing mobile-style inline banners to consume a desktop flex column. */
+  .viewer-banner{position:fixed;right:20px;bottom:20px;z-index:120;max-width:420px;margin:0!important;box-shadow:0 16px 40px rgba(0,0,0,.32)}
+  #demoBanner{display:none!important}
+
   /* ── Days tab: two-panel ── */
-  #tab-days.active{display:grid!important;grid-template-columns:400px 1fr;grid-template-rows:auto 1fr}
+  #tab-days.active{display:grid!important;grid-template-columns:minmax(320px,400px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);width:100%;min-width:0;min-height:0}
   #tab-days .day-strip{grid-column:1/-1}
-  #tab-days .days-list{grid-column:1;grid-row:2;border-right:1px solid var(--border);padding:10px 12px 20px}
+  #tab-days .days-list{grid-column:1;grid-row:2;min-height:0;border-right:1px solid var(--border);padding:10px 12px 20px}
   .day-big-card{height:auto;min-height:100px;max-height:150px}
   .day-big-hero{min-height:80px}
   .day-big-card.desk-active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-  .desk-day-panel{display:none;grid-column:2;grid-row:2;overflow:hidden;background:var(--bg)}
+  .desk-day-panel{display:none;grid-column:2;grid-row:2;min-width:0;min-height:0;overflow:hidden;background:var(--bg)}
   .desk-day-panel.has-day{display:flex;flex-direction:column}
   .desk-day-panel .desk-hero{height:220px;background-size:cover;background-position:center;position:relative;flex-shrink:0}
   .desk-day-panel .desk-hero-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--surface) 0%,transparent 60%)}
@@ -1795,6 +1800,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
         <button class="sheet-nav-btn" id="deskPrev" onclick="sheetNav(-1)">‹ Previous</button>
         <button class="sheet-nav-btn" onclick="exportDayIcs(curSheetDay)" title="Calendar">📅</button>
         <button class="sheet-nav-btn" onclick="askAiAboutDay()" title="AI Edit">🤖 Edit</button>
+        <button class="sheet-nav-btn" id="deskCloneDemoBtn" onclick="cloneDemoTrip()" style="display:none">Make it yours</button>
         <button class="sheet-nav-btn" id="deskNext" onclick="sheetNav(1)">Next ›</button>
       </div>
     </div>
@@ -3597,6 +3603,8 @@ async function loadTripPlan() {
           document.title = plan.trip.name + ' · Tripva';
           const banner = document.getElementById('demoBanner');
           if (banner) banner.style.display = 'flex';
+          const desktopClone = document.getElementById('deskCloneDemoBtn');
+          if (desktopClone) desktopClone.style.display = 'flex';
           const rb = document.getElementById('restoredBanner');
           if (rb) rb.style.display = 'none';
           try { loadPhotoSpots(); } catch(e) {}
@@ -3632,7 +3640,12 @@ async function loadTripPlan() {
       try { renderLiveOps(); } catch(e) { console.error('[Demo] renderLiveOps error:', e); }
       try { switchTab('days'); } catch(e) { console.error('[Demo] switchTab error:', e); }
       try { document.title = plan.trip.name + ' · Tripva'; } catch(e) {}
-      try { const banner = document.getElementById('demoBanner'); if (banner) banner.style.display = 'flex'; } catch(e) {}
+      try {
+        const banner = document.getElementById('demoBanner');
+        if (banner) banner.style.display = 'flex';
+        const desktopClone = document.getElementById('deskCloneDemoBtn');
+        if (desktopClone) desktopClone.style.display = 'flex';
+      } catch(e) {}
       try { const rb = document.getElementById('restoredBanner'); if (rb) rb.style.display = 'none'; } catch(e) {}
       try { loadPhotoSpots(); } catch(e) {}
     }, 0);
