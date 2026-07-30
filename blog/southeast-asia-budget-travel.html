@@ -71,7 +71,7 @@ body{
 }
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
-nav{
+body > nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 24px;height:60px;
@@ -93,7 +93,7 @@ nav{
   font-size:13px;font-weight:700;transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
 
 .breadcrumb{
   padding:76px 24px 0;max-width:800px;margin:0 auto;
