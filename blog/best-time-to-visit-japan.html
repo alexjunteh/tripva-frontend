@@ -18,8 +18,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Best Time to Visit Japan: Month-by-Month Guide">
 <meta name="twitter:image" content="https://tripva.app/blog/assets/japan-cover.webp">
-<link rel="icon" type="image/png" href="/icons/tripva-logo.png">
-<link rel="apple-touch-icon" href="/icons/tripva-logo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
 
 <script type="application/ld+json">
@@ -35,7 +35,7 @@
   "publisher": {
     "@type": "Organization",
     "name": "Tripva",
-    "logo": {"@type": "ImageObject", "url": "https://tripva.app/icons/tripva-logo.png"}
+    "logo": {"@type": "ImageObject", "url": "https://tripva.app/icons/icon-512.png"}
   },
   "mainEntityOfPage": {"@type": "WebPage", "@id": "https://tripva.app/blog/best-time-to-visit-japan.html"},
   "breadcrumb": {
@@ -81,11 +81,8 @@ body > nav{
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
 }
-.nav-logo{
-  font-size:20px;font-weight:900;letter-spacing:-0.5px;
-  background:linear-gradient(135deg,#fff 30%,var(--purple-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
+.nav-logo{display:flex;align-items:center;width:108px;height:40px}
+.nav-logo img{display:block;width:100%;height:auto}
 .nav-links{display:flex;gap:28px;align-items:center}
 .nav-links a{font-size:14px;color:var(--muted2);font-weight:500;transition:color .2s}
 .nav-links a:hover{color:#fff}
@@ -266,7 +263,7 @@ footer a:hover{color:var(--accent)}
 <body>
 
 <nav>
-  <a href="/" class="nav-logo">Tripva</a>
+  <a href="/" class="nav-logo" aria-label="Tripva home"><img src="/assets/brand/tripva-nav-logo-dark.png" width="180" height="67" alt="Tripva"></a>
   <div class="nav-links">
     <a href="/">Home</a>
     <a href="/plan.html">Plan a Trip</a>
