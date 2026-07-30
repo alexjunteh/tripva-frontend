@@ -387,6 +387,8 @@ test.describe('Tripva E2E flows', () => {
       return { app, list, panel, viewportWidth: window.innerWidth, viewportHeight: window.innerHeight };
     });
     expect(bounds.list.left).toBeGreaterThanOrEqual(bounds.app.left);
+    expect(bounds.list.width).toBeGreaterThan(1_000);
+    expect(bounds.panel.top).toBeGreaterThanOrEqual(bounds.list.bottom);
     expect(bounds.panel.right).toBeLessThanOrEqual(bounds.viewportWidth);
     expect(bounds.panel.bottom).toBeLessThanOrEqual(bounds.viewportHeight);
     expect(bounds.panel.width).toBeGreaterThan(400);
