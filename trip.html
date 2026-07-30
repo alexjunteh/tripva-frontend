@@ -361,6 +361,17 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .days-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px calc(20px + 200px + var(--safe-b));display:flex;flex-direction:column;gap:10px}
 .day-big-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s;position:relative;aspect-ratio:16/9;min-height:200px;max-height:320px;display:flex;flex-direction:column;flex-shrink:0}
 @media(min-width:640px){ .day-big-card{aspect-ratio:auto; height:calc((100dvh - 168px) / 3); max-height:320px} }
+
+/* Desktop Days follows the landing demo: browse visual day cards horizontally,
+   then work in a full-width itinerary below. Mobile keeps the stacked cards. */
+@media(min-width:1024px){
+  #tab-days.active{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,320px) minmax(0,1fr)}
+  #tab-days .day-strip{display:none}
+  #tab-days .days-list{grid-column:1;grid-row:1;min-height:0;overflow-x:auto;overflow-y:hidden;flex-direction:row;align-items:stretch;gap:16px;padding:16px 20px;border-right:none;border-bottom:1px solid var(--border)}
+  #tab-days .day-big-card{flex:0 0 240px;width:240px;height:288px;min-height:288px;max-height:288px;aspect-ratio:auto}
+  #tab-days .day-big-hero{min-height:0}
+  .desk-day-panel{grid-column:1;grid-row:2}
+}
 .day-big-card:active{transform:scale(.985)}
 .day-big-card.today-card{border-color:rgba(52,211,153,.4)}
 .day-big-hero{flex:1;background-size:cover;background-position:center;position:relative;overflow:hidden;min-height:0}
