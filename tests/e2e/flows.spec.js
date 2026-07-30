@@ -379,13 +379,17 @@ test.describe('Tripva E2E flows', () => {
     await expect(page.locator('#deskDayPanel.has-day')).toBeVisible();
     await expect(page.locator('#deskCloneDemoBtn')).toBeVisible();
     await expect(page.locator('#demoBanner')).not.toBeVisible();
+    await expect(page.locator('.desktop-nav-brand')).toBeVisible();
+    await expect(page.locator('.nav-lbl')).toHaveText(['Live', 'Days', 'Tickets', 'Budget', 'Spots', 'More']);
 
     const bounds = await page.evaluate(() => {
       const app = document.getElementById('app').getBoundingClientRect();
       const list = document.getElementById('daysList').getBoundingClientRect();
       const panel = document.getElementById('deskDayPanel').getBoundingClientRect();
-      return { app, list, panel, viewportWidth: window.innerWidth, viewportHeight: window.innerHeight };
+      const sidebar = document.querySelector('.bottom-nav').getBoundingClientRect();
+      return { app, list, panel, sidebar, viewportWidth: window.innerWidth, viewportHeight: window.innerHeight };
     });
+    expect(bounds.sidebar.width).toBeGreaterThanOrEqual(220);
     expect(bounds.list.left).toBeGreaterThanOrEqual(bounds.app.left);
     expect(bounds.list.width).toBeGreaterThan(1_000);
     expect(bounds.panel.top).toBeGreaterThanOrEqual(bounds.list.bottom);
