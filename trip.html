@@ -6667,6 +6667,14 @@ async function submitPlan() {
 
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({}));
+      if (resp.status === 429 && err.upgrade) {
+        document.getElementById('plannerForm').classList.remove('hide');
+        document.getElementById('plannerProgress').classList.remove('show');
+        document.getElementById('plannerSubmitBtn').disabled = false;
+        document.getElementById('plannerSubmitBtn').textContent = 'Plan my trip';
+        if (typeof showUpgradeModal === 'function') showUpgradeModal(err.message || 'Daily quota exceeded. Upgrade to Pro for unlimited trip generation.');
+        return;
+      }
       throw new Error(err.error || 'Backend error ' + resp.status);
     }
 
@@ -7283,11 +7291,7 @@ async function upgradeToPro() {
     const r = await fetch(TRIPVA_BACKEND + '/api/stripe/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: sess.access_token,
-        successUrl: location.origin + '/mytrips.html?upgraded=1',
-        cancelUrl: location.origin + location.pathname + location.search
-      })
+      body: JSON.stringify({ token: sess.access_token })
     });
     const d = await r.json().catch(() => ({}));
     if (r.status === 503 && d.error === 'stripe_not_configured') {
@@ -7333,7 +7337,7 @@ async function openBillingPortal() {
     const r = await fetch(TRIPVA_BACKEND + '/api/stripe/portal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: sess.access_token, returnUrl: location.href })
+      body: JSON.stringify({ token: sess.access_token })
     });
     const d = await r.json();
     if (d.url) location.href = d.url;
@@ -7489,6 +7493,10 @@ async function doSaveTrip(token){
     var d = res.body;
     if(res.status >= 400 || d.error){
       if(btn){ btn.textContent='💾 Save'; btn.disabled=false; }
+      if(res.status === 403 && d.error === 'save_limit_reached'){
+        if(typeof showUpgradeModal === 'function') showUpgradeModal(d.message || 'You\'ve reached the free plan save limit. Upgrade to Pro for unlimited saved trips.');
+        return;
+      }
       // Token expired? clear and re-auth
       if(d.error && (d.error.includes('Invalid') || d.error.includes('expired') || d.error.includes('JWT'))){
         localStorage.removeItem('tripva_session');
@@ -7776,6 +7784,101 @@ try { window.__endOfScript = true; window.__ciKeysAtEnd = (typeof CITY_IMGS === 
     </div>
   </div>
 </div>
+
+<div style="display:none;position:fixed;inset:0;z-index:610;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center" id="proUpgradeModal">
+  <div style="background:#1a1624;border-radius:16px;padding:32px;max-width:400px;width:calc(100% - 32px);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 64px rgba(0,0,0,.4);text-align:center">
+    <button onclick="document.getElementById('proUpgradeModal').style.display='none'" style="position:absolute;right:12px;top:10px;background:none;border:none;color:#a89e96;font-size:20px;cursor:pointer">&#215;</button>
+    <div style="font-size:40px;margin-bottom:10px">⚡</div>
+    <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:#f5f0e8;margin-bottom:6px">Upgrade to Tripva Pro</div>
+    <div id="proUpgradeReason" style="font-size:13px;color:#a89e96;margin-bottom:16px;line-height:1.5">Unlock unlimited trips, sharing, and exports.</div>
+    <div style="display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:18px;padding:0 8px">
+      <div style="font-size:13px;color:#f5f0e8">&#10003; Unlimited trip generation</div>
+      <div style="font-size:13px;color:#f5f0e8">&#10003; Unlimited saved trips</div>
+      <div style="font-size:13px;color:#f5f0e8">&#10003; Share & export trips</div>
+      <div style="font-size:13px;color:#f5f0e8">&#10003; Priority generation speed</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button onclick="upgradeToProPlan('year')" style="flex:1;padding:13px;background:linear-gradient(135deg,#95b8ff,var(--purple,#8b5cf6));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;min-height:44px">$24.99/year</button>
+      <button onclick="upgradeToProPlan('month')" style="flex:1;padding:13px;background:rgba(255,255,255,.08);color:#f5f0e8;border:1px solid rgba(255,255,255,.14);border-radius:8px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;min-height:44px">$2.99/mo</button>
+    </div>
+    <div style="font-size:11px;color:#a89e96">Cancel anytime. Billed via Stripe.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var _cachedPlan = null;
+
+  function getCachedPlan() { return _cachedPlan; }
+
+  function fetchUserPlan() {
+    var sess; try { sess = JSON.parse(localStorage.getItem('tripva_session') || 'null'); } catch(e){}
+    if (!sess || !sess.access_token) { _cachedPlan = { plan: 'free', limits: { canShare: false, canExport: false } }; return; }
+    fetch(TRIPVA_BACKEND + '/api/user/me', { headers: { 'Authorization': 'Bearer ' + sess.access_token } })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if (d && d.plan) _cachedPlan = d; })
+      .catch(function(){});
+  }
+  fetchUserPlan();
+  window.addEventListener('storage', function(e){ if (e.key === 'tripva_session') fetchUserPlan(); });
+
+  function showUpgradeModal(reason) {
+    var el = document.getElementById('proUpgradeReason');
+    if (el) el.textContent = reason || 'Unlock unlimited trips, sharing, and exports.';
+    var m = document.getElementById('proUpgradeModal');
+    if (m) m.style.display = 'flex';
+  }
+  window.showUpgradeModal = showUpgradeModal;
+
+  function upgradeToProPlan(period) {
+    document.getElementById('proUpgradeModal').style.display = 'none';
+    upgradeToPro();
+  }
+  window.upgradeToProPlan = upgradeToProPlan;
+
+  var _origShareTripLink = window.shareTripLink;
+  window.shareTripLink = function() {
+    var p = getCachedPlan();
+    if (p && p.limits && p.limits.canShare === false && p.plan !== 'pro') {
+      showUpgradeModal('Upgrade to Pro to share your trips with friends and family.');
+      return;
+    }
+    _origShareTripLink();
+  };
+
+  var _origFabShare = window.fabShare;
+  window.fabShare = function() {
+    var p = getCachedPlan();
+    if (p && p.limits && p.limits.canShare === false && p.plan !== 'pro') {
+      showUpgradeModal('Upgrade to Pro to share your trips with friends and family.');
+      return;
+    }
+    _origFabShare();
+  };
+
+  var _origExportHtml = window.exportHtml;
+  window.exportHtml = function() {
+    var p = getCachedPlan();
+    if (p && p.limits && p.limits.canExport === false && p.plan !== 'pro') {
+      showUpgradeModal('Upgrade to Pro to export your trip as HTML.');
+      return;
+    }
+    _origExportHtml();
+  };
+
+  var _origExportTripIcs = window.exportTripIcs;
+  window.exportTripIcs = function() {
+    var p = getCachedPlan();
+    if (p && p.limits && p.limits.canExport === false && p.plan !== 'pro') {
+      showUpgradeModal('Upgrade to Pro to export your trip to calendar.');
+      return;
+    }
+    _origExportTripIcs();
+  };
+
+  window._tripvaRefreshPlan = fetchUserPlan;
+})();
+</script>
 
   // Always restore from localStorage first (before DEMO fallback)
   restoreMeta();
