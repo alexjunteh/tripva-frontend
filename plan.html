@@ -1827,17 +1827,18 @@ async function showSpotSelector(dest, primaryDest) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   _updateSpotFooter();
 
-  const key = _matchDest(primaryDest || dest);
-  if (key) {
-    // Fast path — use curated data, photos load async per-card
-    _spotList = SPOT_DATA[key];
+  _showSpotSkeleton();
+  const spots = await _fetchSpotsForDest(primaryDest || dest);
+  if (spots.length) {
+    _spotList = spots;
     _renderSpotGrid();
+    _updateSpotFooter();
   } else {
-    // Dynamic path — show loading skeleton, fetch from backend AI
-    _showSpotSkeleton();
-    const spots = await _fetchSpotsForDest(primaryDest || dest);
-    if (!spots.length) {
-      // Show error state — don't silently skip to generation
+    const key = _matchDest(primaryDest || dest);
+    if (key) {
+      _spotList = SPOT_DATA[key];
+      _renderSpotGrid();
+    } else {
       const g = document.getElementById('spotGrid');
       g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:rgba(255,255,255,.5)">' +
         '<div style="font-size:32px;margin-bottom:12px">⚠️</div>' +
@@ -1846,11 +1847,7 @@ async function showSpotSelector(dest, primaryDest) {
         '<button onclick="showSpotSelector(_spotDest)" style="background:rgba(255,255,255,.08);border:none;border-radius:12px;padding:12px 24px;color:#fff;font-size:14px;cursor:pointer">Retry</button>' +
         '</div>';
       _updateSpotFooter();
-      return;
     }
-    _spotList = spots;
-    _renderSpotGrid();
-    _updateSpotFooter();
   }
 }
 
