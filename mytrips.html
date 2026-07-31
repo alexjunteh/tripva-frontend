@@ -416,7 +416,7 @@ function renderTrips(trips){
     }
     var meta = 'Saved ' + timeAgo(trip.created_at);
     
-    var tripUrl = trip.gist_id ? 'trip.html?id='+encodeURIComponent(trip.gist_id) : '#';
+    var tripUrl = trip.share_url || '#';
     var similarParams = new URLSearchParams();
     if (trip.destination) similarParams.set('dest', trip.destination);
     if (trip.start_date) similarParams.set('start', trip.start_date);

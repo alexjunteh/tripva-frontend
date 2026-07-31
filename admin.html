@@ -431,7 +431,7 @@ async function loadAnalytics(force){
             const when = t.created_at ? timeAgo(t.created_at) : '';
             const title = esc(t.title || t.destination || 'Trip');
             const dest  = esc(t.destination || '—');
-            const link  = t.gist_id ? `https://tripva.app/trip?id=${encodeURIComponent(t.gist_id)}` : '';
+            const link  = t.share_url || '';
             return `<div style="display:flex;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 11px">
               <div style="min-width:0;flex:1"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${title}</div><div style="font-size:11px;color:var(--muted)">${dest} · ${when}</div></div>
               ${link ? `<a href="${link}" target="_blank" style="color:var(--accent);font-size:12px;text-decoration:none;align-self:center">Open →</a>` : ''}
