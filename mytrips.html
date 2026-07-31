@@ -518,6 +518,10 @@ function escHtml(s){
       return; // Show auth form
     }
     loadTrips(session.access_token);
+    if (new URLSearchParams(location.search).get('upgraded') === '1') {
+      showToast('🎉 Welcome to Tripva Pro!');
+      try { history.replaceState(null, '', location.pathname); } catch(e){}
+    }
   }
   // else: auth form shown by default
 })();
