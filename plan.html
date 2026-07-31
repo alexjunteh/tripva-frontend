@@ -276,6 +276,9 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 .spot-dest-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.3);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:800;color:var(--accent2);margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
 .spot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:4px 10px}
 @media(min-width:580px){.spot-grid{grid-template-columns:repeat(3,1fr);padding:4px 14px}}
+@media(min-width:900px){#spotScreen{width:100vw;position:relative;left:50%;margin-left:-50vw;margin-right:0;padding-bottom:140px}.spot-grid{grid-template-columns:repeat(4,1fr);max-width:960px;margin:0 auto;gap:16px;padding:4px 24px}.spot-hdr{max-width:640px}.spot-hdr-title{font-size:32px}.spot-card{border-radius:16px}.spot-name{font-size:14px}.spot-desc{font-size:11.5px}}
+@media(min-width:1200px){.spot-grid{max-width:1120px;gap:18px}}
+@media(hover:hover){.spot-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4)}}
 .spot-card{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;background:var(--surface);border:2.5px solid transparent;transition:border-color .18s,transform .15s;aspect-ratio:3/4}
 .spot-card:active{transform:scale(.95)}
 .spot-card.sel{border-color:#7c6af7}
@@ -291,7 +294,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 .spot-desc{font-size:10.5px;color:rgba(255,255,255,.65);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .spot-tick{position:absolute;top:9px;right:9px;width:26px;height:26px;border-radius:50%;background:#7c6af7;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;opacity:0;transform:scale(.5) rotate(-30deg);transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 2px 8px rgba(124,106,247,.5)}
 .spot-card.sel .spot-tick{opacity:1;transform:scale(1) rotate(0deg)}
-.spot-footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(10,10,18,.99) 65%,transparent);padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));z-index:200}
+.spot-footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(10,10,18,.99) 65%,transparent);padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));z-index:200}.spot-footer-inner{max-width:640px;margin:0 auto}
 .spot-count-row{text-align:center;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:700;letter-spacing:.2px}
 .spot-count-row .spot-count-n{color:var(--accent2)}
 .spot-go-btn{width:100%;background:linear-gradient(135deg,#7c6af7,#6d5ee0);border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:-.2px;box-shadow:0 4px 20px rgba(124,106,247,.35);transition:transform .15s,box-shadow .15s;margin-bottom:8px}
@@ -691,7 +694,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     </div>
     <div class="spot-grid" id="spotGrid"></div>
     <!-- Custom spot input -->
-    <div id="customSpotSection" style="padding:14px 20px 0;max-width:520px;margin:0 auto">
+    <div id="customSpotSection" style="padding:14px 20px 0;max-width:640px;margin:0 auto">
       <div style="font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px">Don't see your spot?</div>
       <div style="display:flex;gap:8px">
         <input id="customSpotInput" type="text" placeholder="Type a place name…" autocomplete="off" maxlength="80"
@@ -704,9 +707,11 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       <div id="customSpotList" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
     </div>
     <div class="spot-footer">
-      <div class="spot-count-row" id="spotCountRow">Select places that excite you</div>
-      <button class="spot-go-btn" id="spotGoBtn" onclick="continueWithSpots()">Plan my trip ✨</button>
-      <span class="spot-skip" onclick="skipSpots()">Skip — plan without picking</span>
+      <div class="spot-footer-inner">
+        <div class="spot-count-row" id="spotCountRow">Select places that excite you</div>
+        <button class="spot-go-btn" id="spotGoBtn" onclick="continueWithSpots()">Plan my trip ✨</button>
+        <span class="spot-skip" onclick="skipSpots()">Skip — plan without picking</span>
+      </div>
     </div>
   </div>
 
@@ -1768,23 +1773,21 @@ async function _fetchWikiPhoto(wikiSlug) {
     } catch { return null; }
   };
 
-  // Fast path — exact slug
-  const direct = await trySlug(wikiSlug, 8000);
+  const direct = await trySlug(wikiSlug, 4000);
   if (direct) return direct;
 
-  // Fallback — search Wikipedia by name to recover from bad/hallucinated slugs (e.g. Canals_of_Venice → 404)
   try {
     const q = wikiSlug.replace(/_/g, ' ');
     const sr = await fetch(
       'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' +
-      encodeURIComponent(q) + '&format=json&srlimit=3&srprop=&origin=*',
-      { signal: AbortSignal.timeout(6000) }
+      encodeURIComponent(q) + '&format=json&srlimit=2&srprop=&origin=*',
+      { signal: AbortSignal.timeout(3000) }
     );
     if (sr.ok) {
       const sd = await sr.json();
       const hits = (sd?.query?.search || []).slice(0, 2);
       for (const hit of hits) {
-        const url = await trySlug(hit.title.replace(/ /g, '_'), 6000);
+        const url = await trySlug(hit.title.replace(/ /g, '_'), 3000);
         if (url) return url;
       }
     }
@@ -1807,7 +1810,7 @@ async function _fetchSpotsForDest(dest) {
       wiki: s.wikiSlug,
       cat: s.category,
       desc: s.description,
-      photoUrl: null,
+      photoUrl: s.photoUrl || null,
       fl: s.name.toLowerCase(),
     }));
   } catch { return []; }
@@ -1880,28 +1883,27 @@ function _renderSpotGrid() {
     g.appendChild(c);
     const img = document.getElementById('_si'+i);
     const sk = document.getElementById('_sk'+i);
+    const picsumUrl = 'https://picsum.photos/seed/' + encodeURIComponent(spot.name || spot.fl || 'travel') + '/800/600';
+    let imgLoaded = false;
     const showImg = (src) => {
-      if (!img) return;
-      img.onload = () => { img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
-      img.onerror = () => { if (sk) sk.style.opacity = '0.3'; }; // dim skeleton on failure
+      if (!img || imgLoaded) return;
+      img.onload = () => { imgLoaded = true; img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
+      img.onerror = () => {
+        if (!imgLoaded && img.src !== picsumUrl && img.isConnected) { img.src = picsumUrl; return; }
+        if (sk) { sk.style.background = 'linear-gradient(135deg,#1e1e3a 0%,#2a2848 50%,#1e1e3a 100%)'; sk.style.animation = 'none'; }
+      };
       img.src = src;
     };
     if (spot.photoUrl) {
       showImg(spot.photoUrl);
     } else if (spot.wiki) {
-      // Fetch Wikipedia first — loremflickr tags are unreliable (e.g. "colosseum" matches theaters)
-      // Keep skeleton shimmer visible while fetching; only fall back to loremflickr on failure
       _fetchWikiPhoto(spot.wiki).then(url => {
-        if (url && img && img.isConnected) {
-          showImg(url);
-        } else if (img && img.isConnected) {
-          // Use specific multi-word keyword so loremflickr returns relevant travel photos
-          const kw = encodeURIComponent((spot.fl || spot.name) + ' travel');
-          showImg('https://picsum.photos/seed/' + encodeURIComponent(spot.name || kw) + '/800/600');
-        }
+        if (url && img && img.isConnected) showImg(url);
+        else if (img && img.isConnected) showImg(picsumUrl);
       });
+      setTimeout(() => { if (!imgLoaded && img && img.isConnected) showImg(picsumUrl); }, 5000);
     } else {
-      showImg('https://picsum.photos/seed/' + encodeURIComponent(spot.name || spot.fl || 'travel') + '/800/600');
+      showImg(picsumUrl);
     }
   });
 }
