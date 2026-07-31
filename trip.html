@@ -2193,7 +2193,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
       <button class="more-action" onclick="closeMore();exportTripIcs()">📅 Calendar (.ics)</button>
       <button class="more-action" onclick="closeMore();exportHtml()">📄 Export HTML</button>
       <button class="more-action" onclick="closeMore();openEditModal()">✏️ Edit Trip</button>
-      <button class="more-action" id="moreUpgradeBtn" onclick="closeMore();upgradeToPro()" style="background:linear-gradient(135deg,#95b8ff,var(--purple));color:var(--bg);border-color:transparent">⚡ Upgrade to Pro</button>
+      <button class="more-action" id="moreUpgradeBtn" onclick="closeMore();showUpgradeModal()" style="background:linear-gradient(135deg,#95b8ff,var(--purple));color:var(--bg);border-color:transparent">⚡ Upgrade to Pro</button>
     </div>
   </div>
 </div>
@@ -2977,19 +2977,24 @@ async function _buildDestGallery(gridEl, errEl, dest, maxCards, append) {
   gridEl.style.display = 'flex';
   _spotsLoaded = true;
 
-  // Async-fill best photo per card: Unsplash → Pexels → Wikipedia thumbnail
   cards.forEach(async c => {
     const cardEl = document.getElementById(c.id);
     if (!cardEl) return;
     const wrap = cardEl.querySelector('.spot-card-img-wrap');
     let url = await _fetchUnsplashPhoto(`${c.name} ${dest}`);
     if (!url) url = await _fetchPexelsPhoto(`${c.name} ${dest}`);
+    if (!url) url = await _fetchWikiLeadPhoto(c.name);
     if (!url) url = c.wikiImg;
-    if (!url) { wrap.style.display = 'none'; return; }
+    if (!url) {
+      wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(124,106,247,.18),rgba(149,181,255,.12));font-size:32px">📍</div>';
+      return;
+    }
     const img = document.createElement('img');
     img.src = url; img.alt = c.name; img.loading = 'lazy';
     img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
-    img.onerror = () => { wrap.style.display = 'none'; };
+    img.onerror = () => {
+      wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(124,106,247,.18),rgba(149,181,255,.12));font-size:32px">📍</div>';
+    };
     wrap.querySelector('.spot-card-img-placeholder')?.remove();
     wrap.appendChild(img);
   });
@@ -6636,7 +6641,12 @@ async function submitPlan() {
 
   if (!dest) { showToast('⚠️ Where are you going?', 3000); return; }
   if (!start || !end) { showToast('⚠️ Pick your travel dates', 3000); return; }
-  if (!budget) { showToast("⚠️ What's your budget?", 3000); return; }
+  if (!budget) {
+    showToast("⚠️ What's your budget?", 3000);
+    var budgetEl = document.getElementById('pln-budget');
+    if (budgetEl) { budgetEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); budgetEl.focus(); budgetEl.style.outline = '2px solid #f87171'; setTimeout(function(){ budgetEl.style.outline = ''; }, 2500); }
+    return;
+  }
   if (interests.length === 0) { showToast('⚠️ Pick at least one interest', 3000); return; }
 
   // Show progress
@@ -7836,52 +7846,65 @@ try { window.__endOfScript = true; window.__ciKeysAtEnd = (typeof CITY_IMGS === 
   }
   window.upgradeToProPlan = upgradeToProPlan;
 
-  var _origShareTripLink = window.shareTripLink;
-  window.shareTripLink = function() {
-    var p = getCachedPlan();
-    if (p && p.limits && p.limits.canShare === false && p.plan !== 'pro') {
-      showUpgradeModal('Upgrade to Pro to share your trips with friends and family.');
-      return;
-    }
-    _origShareTripLink();
-  };
-
-  var _origFabShare = window.fabShare;
-  window.fabShare = function() {
-    var p = getCachedPlan();
-    if (p && p.limits && p.limits.canShare === false && p.plan !== 'pro') {
-      showUpgradeModal('Upgrade to Pro to share your trips with friends and family.');
-      return;
-    }
-    _origFabShare();
-  };
-
-  var _origExportHtml = window.exportHtml;
-  window.exportHtml = function() {
-    var p = getCachedPlan();
-    if (p && p.limits && p.limits.canExport === false && p.plan !== 'pro') {
-      showUpgradeModal('Upgrade to Pro to export your trip as HTML.');
-      return;
-    }
-    _origExportHtml();
-  };
-
-  var _origExportTripIcs = window.exportTripIcs;
-  window.exportTripIcs = function() {
-    var p = getCachedPlan();
-    if (p && p.limits && p.limits.canExport === false && p.plan !== 'pro') {
-      showUpgradeModal('Upgrade to Pro to export your trip to calendar.');
-      return;
-    }
-    _origExportTripIcs();
-  };
-
   window._tripvaRefreshPlan = fetchUserPlan;
+
+  function wrapProGates() {
+    var _origShareTripLink = window.shareTripLink;
+    if (typeof _origShareTripLink === 'function') {
+      window.shareTripLink = function() {
+        var p = getCachedPlan();
+        if (p && p.limits && p.limits.canShare === false && p.plan !== 'pro') {
+          showUpgradeModal('Upgrade to Pro to share your trips with friends and family.');
+          return;
+        }
+        _origShareTripLink();
+      };
+    }
+
+    var _origFabShare = window.fabShare;
+    if (typeof _origFabShare === 'function') {
+      window.fabShare = function() {
+        var p = getCachedPlan();
+        if (p && p.limits && p.limits.canShare === false && p.plan !== 'pro') {
+          showUpgradeModal('Upgrade to Pro to share your trips with friends and family.');
+          return;
+        }
+        _origFabShare();
+      };
+    }
+
+    var _origExportHtml = window.exportHtml;
+    if (typeof _origExportHtml === 'function') {
+      window.exportHtml = function() {
+        var p = getCachedPlan();
+        if (p && p.limits && p.limits.canExport === false && p.plan !== 'pro') {
+          showUpgradeModal('Upgrade to Pro to export your trip as HTML.');
+          return;
+        }
+        _origExportHtml();
+      };
+    }
+
+    var _origExportTripIcs = window.exportTripIcs;
+    if (typeof _origExportTripIcs === 'function') {
+      window.exportTripIcs = function() {
+        var p = getCachedPlan();
+        if (p && p.limits && p.limits.canExport === false && p.plan !== 'pro') {
+          showUpgradeModal('Upgrade to Pro to export your trip to calendar.');
+          return;
+        }
+        _origExportTripIcs();
+      };
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(wrapProGates, 0); });
+  } else {
+    setTimeout(wrapProGates, 0);
+  }
 })();
 </script>
-
-  // Always restore from localStorage first (before DEMO fallback)
-  restoreMeta();
 
 </body>
 </html>
