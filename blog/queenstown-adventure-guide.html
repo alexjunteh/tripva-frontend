@@ -56,7 +56,7 @@
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
   --text:#f0f0f8;--muted:rgba(240,240,248,.55);--muted2:rgba(240,240,248,.80);
   --purple:#7c6af7;--purple-light:#a78bfa;--purple-glow:rgba(124,106,247,.25);
-  --accent:#95b8ff;--green:#6ee7b7;
+  --accent:#95b8ff;--green:#6ee7b7;--red:#e8594e;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-full:999px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -208,6 +208,24 @@ body > nav{
   box-shadow:0 8px 24px rgba(124,106,247,.4);
 }
 
+/* AFFILIATE CTA */
+.affiliate-cta{
+  background:linear-gradient(135deg,rgba(232,89,78,.06),rgba(124,106,247,.06));
+  border:1px solid rgba(232,89,78,.2);border-radius:var(--r-xl);
+  padding:28px 32px;margin:32px 0;
+}
+.affiliate-cta-title{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--red)}
+.affiliate-cta p{color:var(--muted2);margin:0 0 16px;line-height:1.6;font-size:15px}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{
+  display:inline-block;background:var(--red);color:#fff;
+  padding:12px 24px;border-radius:var(--r-lg);
+  font-size:15px;font-weight:600;transition:opacity .2s;
+}
+.affiliate-btn:hover{opacity:.85}
+.affiliate-row .affiliate-btn{font-size:14px;padding:10px 20px}
+@media(max-width:600px){.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
+
 /* INFO BOX */
 .info-box{
   background:rgba(149,184,255,.06);border:1px solid rgba(149,184,255,.18);
@@ -319,11 +337,11 @@ footer a:hover{color:var(--accent)}
 
     <p>Queenstown earned the title "adventure capital of the world" not by committee vote but by sheer density of ways to get your heart rate up within a fifteen-minute drive of town. Set on the northern shore of Lake Wakatipu, a glacial lake that stretches 80 kilometres through the Southern Alps, the town is backed by the jagged wall of The Remarkables mountain range and flanked by dense beech forest. The scale of it hits you the moment you land at the airport, which has one of the most dramatic approaches of any commercial runway on the planet.</p>
 
-    <p>What makes Queenstown exceptional is not just the landscape but the infrastructure built around it. This is a town of roughly 16,000 permanent residents that services over three million visitors a year. Every adrenaline activity imaginable has been refined here over decades. Bungee jumping was commercially invented here. Jet boating was born on these rivers. The ski fields, the paragliding launches, the canyon swings, the mountain bike trails -- all of it operates at a professional level you rarely find outside major resort destinations, and the distances between them are tiny.</p>
+    <p>What makes Queenstown exceptional is not just the landscape but the infrastructure built around it. This is a town of roughly 16,000 permanent residents that services over three million visitors a year. Every adrenaline activity imaginable has been refined here over decades. <a href="https://www.getyourguide.com/s/?q=Queenstown+bungee&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Bungee jumping</a> was commercially invented here. <a href="https://www.getyourguide.com/s/?q=Queenstown+jet+boat&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Jet boating</a> was born on these rivers. The ski fields, the paragliding launches, the canyon swings, the mountain bike trails -- all of it operates at a professional level you rarely find outside major resort destinations, and the distances between them are tiny.</p>
 
     <p>Film fans will recognise the terrain. Peter Jackson shot extensively across the Queenstown Lakes district for the Lord of the Rings and Hobbit trilogies. Glenorchy, 45 minutes north, stood in for Isengard and Lothl&oacute;rien. The Remarkables became the Dimrill Dale. The landscape genuinely looks like a fantasy set, which is the point -- it was chosen because it already looked impossible.</p>
 
-    <p>But Queenstown is not just for thrill-seekers. The Gibbston Valley wine region is a twenty-minute drive away. Arrowtown, a preserved gold rush village, sits just beyond that. Milford Sound, one of the most photographed natural landmarks in the Southern Hemisphere, is reachable as a long day trip. You could spend a week here without repeating an experience, which is rare for a town this small.</p>
+    <p>But Queenstown is not just for thrill-seekers. The Gibbston Valley wine region is a twenty-minute drive away. Arrowtown, a preserved gold rush village, sits just beyond that. <a href="https://www.getyourguide.com/s/?q=Milford+Sound+cruise&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Milford Sound</a>, one of the most photographed natural landmarks in the Southern Hemisphere, is reachable as a long day trip. You could spend a week here without repeating an experience, which is rare for a town this small.</p>
 
     <figure class="inline-img"><img src="/blog/assets/queenstown-lake.webp" alt="Lake Wakatipu surrounded by mountains in Queenstown" loading="lazy" width="800" height="450"><figcaption>Lake Wakatipu and the Remarkables — Queenstown's stunning backdrop</figcaption></figure>
 
@@ -345,17 +363,23 @@ footer a:hover{color:var(--accent)}
 
     <h3>Nzone Skydive</h3>
 
-    <p>Tandem skydiving from <strong>15,000 feet</strong> over Queenstown delivers roughly 60 seconds of free fall at 200 km/h before the parachute opens. What makes this particular skydive special is the view: Lake Wakatipu below, The Remarkables to one side, Coronet Peak to the other, and on clear days you can see across to Milford Sound and Mount Aspiring. The canopy ride down takes five to seven minutes and the landing is on the Queenstown waterfront. This is consistently rated one of the top skydiving locations in the world. Prices start around NZD $350 for 12,000ft and climb to $450+ for the full 15,000ft experience.</p>
+    <p><a href="https://www.getyourguide.com/s/?q=Queenstown+skydiving&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Tandem skydiving</a> from <strong>15,000 feet</strong> over Queenstown delivers roughly 60 seconds of free fall at 200 km/h before the parachute opens. What makes this particular skydive special is the view: Lake Wakatipu below, The Remarkables to one side, Coronet Peak to the other, and on clear days you can see across to Milford Sound and Mount Aspiring. The canopy ride down takes five to seven minutes and the landing is on the Queenstown waterfront. This is consistently rated one of the top skydiving locations in the world. Prices start around NZD $350 for 12,000ft and climb to $450+ for the full 15,000ft experience.</p>
 
     <h3>Queenstown Paragliding</h3>
 
-    <p>Tandem paragliding launches from the Skyline Gondola summit, Bob's Peak, at around 790 metres above Queenstown. The flight is gentler than skydiving but the views are arguably better because you are lower, slower, and can actually take them in. Flights last 8 to 12 minutes depending on thermals and you land near the lake. From NZD $249. On a still day with the lake like glass, it is one of the most serene experiences in Queenstown despite being categorised as adventure.</p>
+    <p><a href="https://www.getyourguide.com/s/?q=Queenstown+paragliding&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Tandem paragliding</a> launches from the Skyline Gondola summit, Bob's Peak, at around 790 metres above Queenstown. The flight is gentler than skydiving but the views are arguably better because you are lower, slower, and can actually take them in. Flights last 8 to 12 minutes depending on thermals and you land near the lake. From NZD $249. On a still day with the lake like glass, it is one of the most serene experiences in Queenstown despite being categorised as adventure.</p>
 
     <h3>Skyline Luge</h3>
 
     <p>Take the Skyline Gondola up Bob's Peak and ride a gravity-fuelled luge cart back down one of three tracks. The scenic track is gentle and family-friendly. The advanced track adds banked corners and tunnels. It is not extreme in the bungee sense, but it is one of the most fun things you can do in Queenstown, especially with children. Five rides plus the gondola costs around NZD $69 for adults. The gondola ride itself is worth the trip for the panorama alone.</p>
 
     <figure class="inline-img"><img src="/blog/assets/queenstown-adventure.webp" alt="Adventure activity in Queenstown" loading="lazy" width="800" height="450"><figcaption>Queenstown earned its title as the adventure capital of the world</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Queenstown Adventures</div>
+      <p>Bungee jumping, skydiving, jet boating, paragliding, and more -- skip-the-line tickets and instant confirmation.</p>
+      <a href="https://www.getyourguide.com/s/?q=Queenstown&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Activities &#8594;</a>
+    </div>
 
     <h2 id="the-best-hikes">The Best Hikes</h2>
 
@@ -406,9 +430,15 @@ footer a:hover{color:var(--accent)}
 
     <h3>Fly-Cruise-Fly</h3>
 
-    <p>If the 9-hour round-trip drive is too much, the fly-cruise-fly option takes a scenic flight from Queenstown over Fiordland, lands at Milford, puts you on a cruise, and flies you back. The flight itself is extraordinary -- you cross the Richardson Mountains, the Hollyford Valley, and arrive over the fiord from above. It costs significantly more (NZD $600-800+), but it saves 7 hours of driving and adds a scenic flight that many travellers say was the highlight of their entire New Zealand trip.</p>
+    <p>If the 9-hour round-trip drive is too much, the <a href="https://www.getyourguide.com/s/?q=Milford+Sound+scenic+flight&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">fly-cruise-fly option</a> takes a scenic flight from Queenstown over Fiordland, lands at Milford, puts you on a cruise, and flies you back. The flight itself is extraordinary -- you cross the Richardson Mountains, the Hollyford Valley, and arrive over the fiord from above. It costs significantly more (NZD $600-800+), but it saves 7 hours of driving and adds a scenic flight that many travellers say was the highlight of their entire New Zealand trip.</p>
 
     <figure class="inline-img"><img src="/blog/assets/queenstown-milford.webp" alt="Milford Sound fjord with waterfalls in New Zealand" loading="lazy" width="800" height="450"><figcaption>Milford Sound — the crown jewel of New Zealand's Fiordland</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Rent a Car for Queenstown</div>
+      <p>A rental car is essential for Milford Sound, Glenorchy, and the wineries. Compare prices from all major providers.</p>
+      <a href="https://www.discovercars.com/all?a_aid=529721&location=Queenstown" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Car Rentals &#8594;</a>
+    </div>
 
     <h2 id="when-to-visit">When to Visit</h2>
 
@@ -441,7 +471,7 @@ footer a:hover{color:var(--accent)}
       </div>
     </div>
 
-    <p><strong>Summer (December to February)</strong> is peak season. Days are long -- sunset is not until after 9:30pm in late December -- and temperatures hover between 20 and 25 degrees Celsius. This is prime time for hiking, water sports, mountain biking, and the Routeburn Track. Lake Wakatipu is swimmable (barely -- glacial meltwater keeps it around 10-14 degrees) and the town buzzes with energy. Book accommodation well in advance and expect to pay peak rates. The tradeoff is reliable weather and access to everything.</p>
+    <p><strong>Summer (December to February)</strong> is peak season. Days are long -- sunset is not until after 9:30pm in late December -- and temperatures hover between 20 and 25 degrees Celsius. This is prime time for hiking, water sports, mountain biking, and the Routeburn Track. Lake Wakatipu is swimmable (barely -- glacial meltwater keeps it around 10-14 degrees) and the town buzzes with energy. <a href="https://www.hotellook.com/hotels?destination=Queenstown&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Book accommodation</a> well in advance and expect to pay peak rates. The tradeoff is reliable weather and access to everything.</p>
 
     <p><strong>Autumn (March to May)</strong> is arguably the most beautiful season. The deciduous trees around Arrowtown and along the Arrow River turn deep gold, orange, and red. The crowds thin out by late March, prices drop 20-30%, and the weather stays mild through April. Hiking conditions are excellent. The Arrowtown Autumn Festival in late April is worth timing your trip around. Mornings are crisp and the light is golden.</p>
 
@@ -449,13 +479,19 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>Spring (September to November)</strong> is the quiet shoulder season. Wildflowers appear in the alpine meadows, the ski season winds down (lifts usually close late September to early October), and hiking tracks reopen as snow melts. The Routeburn Track opens for bookings in late October. Prices are at their lowest and you will have popular viewpoints and trails to yourself. The weather is variable -- pack layers -- but the scenery is green and fresh and the waterfalls run at full force from snowmelt.</p>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels in Queenstown</div>
+      <p>Compare prices from hundreds of Queenstown hotels -- from backpacker hostels to luxury lodges on the lakefront.</p>
+      <a href="https://www.hotellook.com/hotels?destination=Queenstown&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotel Prices &#8594;</a>
+    </div>
+
     <h2 id="beyond-adventure">Beyond Adventure: Wine, Food &amp; Scenery</h2>
 
     <p>Queenstown's identity is built on adrenaline, but some of the best experiences here do not involve jumping off anything.</p>
 
     <h3>Gibbston Valley Wine Region</h3>
 
-    <p>The Gibbston Valley, a 25-minute drive east of Queenstown through the Kawarau Gorge, is home to the <strong>world's southernmost commercial vineyards</strong>. The region specialises in Pinot Noir -- the cool climate and schist soils produce wines with distinctive minerality and bright acidity that consistently medal at international competitions. Gibbston Valley Winery has a cave cellar carved into the rock face where you can taste their range. Peregrine Wines, Amisfield, and Kinross are all within minutes of each other. A self-drive wine trail is easy to organise, or several operators run guided tours that include lunch. The landscape of vineyards against canyon walls is striking regardless of whether you drink.</p>
+    <p>The Gibbston Valley, a 25-minute drive east of Queenstown through the Kawarau Gorge, is home to the <strong>world's southernmost commercial vineyards</strong>. The region specialises in Pinot Noir -- the cool climate and schist soils produce wines with distinctive minerality and bright acidity that consistently medal at international competitions. Gibbston Valley Winery has a cave cellar carved into the rock face where you can taste their range. Peregrine Wines, Amisfield, and Kinross are all within minutes of each other. A self-drive wine trail is easy to organise, or <a href="https://www.getyourguide.com/s/?q=Queenstown+wine+tour&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">several operators run guided tours</a> that include lunch. The landscape of vineyards against canyon walls is striking regardless of whether you drink.</p>
 
     <h3>The Food Scene</h3>
 
@@ -515,13 +551,24 @@ footer a:hover{color:var(--accent)}
         <li><strong>Budget meal (Fergburger, cafe):</strong> NZD $15-$25</li>
         <li><strong>Restaurant dinner:</strong> NZD $40-$80 per person</li>
         <li><strong>Fine dining (R&#257;t&#257;, Botswana Butchery):</strong> NZD $100-$160 per person</li>
-        <li><strong>Rental car:</strong> NZD $60-$120/day (book early in peak season)</li>
+        <li><strong>Rental car:</strong> <a href="https://www.discovercars.com/all?a_aid=529721&location=Queenstown" target="_blank" rel="noopener sponsored" style="color:var(--red)">NZD $60-$120/day</a> (book early in peak season)</li>
         <li><strong>Petrol:</strong> NZD $2.80-$3.20/litre</li>
         <li><strong>Ski lift pass (daily):</strong> NZD $140-$180</li>
       </ul>
     </div>
 
-    <p>Queenstown is not a budget destination by New Zealand standards, and New Zealand is not a budget destination by world standards. Activity costs add up fast -- a day of bungy plus jet boat plus gondola can easily reach NZD $500-$600 per person. The key savings lever is accommodation: staying in Frankton or Arrowtown rather than central Queenstown drops rates significantly, and a rental car (which you will want anyway for Milford, Glenorchy, and the wineries) makes the distance irrelevant. Combo deals through the major operators (AJ Hackett, Skyline) typically save 15-20% if you are doing multiple activities. The free activities -- hiking Queenstown Hill, walking around Arrowtown, driving to Glenorchy, swimming in the lake -- are some of the best things to do in town.</p>
+    <p>Queenstown is not a budget destination by New Zealand standards, and New Zealand is not a budget destination by world standards. Activity costs add up fast -- a day of bungy plus jet boat plus gondola can easily reach NZD $500-$600 per person. The key savings lever is accommodation: staying in Frankton or Arrowtown rather than central Queenstown drops rates significantly, and a <a href="https://www.discovercars.com/all?a_aid=529721&location=Queenstown" target="_blank" rel="noopener sponsored" style="color:var(--red)">rental car</a> (which you will want anyway for Milford, Glenorchy, and the wineries) makes the distance irrelevant. Combo deals through the major operators (AJ Hackett, Skyline) typically save 15-20% if you are doing multiple activities. The free activities -- hiking Queenstown Hill, walking around Arrowtown, driving to Glenorchy, swimming in the lake -- are some of the best things to do in town.</p>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your Queenstown Trip</div>
+      <p>Everything you need -- flights, hotels, adventure activities, and car rental for exploring the Southern Alps.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Queenstown&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels &#8594;</a>
+        <a href="https://www.getyourguide.com/s/?q=Queenstown&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Activities &#8594;</a>
+        <a href="https://www.discovercars.com/all?a_aid=529721&location=Queenstown" class="affiliate-btn" target="_blank" rel="noopener sponsored">Car Rental &#8594;</a>
+        <a href="https://www.kiwi.com/en/search/results?to=ZQN&adults=2" class="affiliate-btn" target="_blank" rel="noopener sponsored">Flights &#8594;</a>
+      </div>
+    </div>
 
     <div class="cta-block">
       <h3>Ready to plan your Queenstown trip?</h3>

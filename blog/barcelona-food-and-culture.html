@@ -56,7 +56,7 @@
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
   --text:#f0f0f8;--muted:rgba(240,240,248,.55);--muted2:rgba(240,240,248,.80);
   --purple:#7c6af7;--purple-light:#a78bfa;--purple-glow:rgba(124,106,247,.25);
-  --accent:#95b8ff;--green:#6ee7b7;
+  --accent:#95b8ff;--green:#6ee7b7;--red:#e8594e;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-full:999px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -93,7 +93,7 @@ body > nav{
   transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 
 /* BREADCRUMB */
 .breadcrumb{
@@ -256,6 +256,15 @@ body > nav{
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
+
+/* AFFILIATE CTA */
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
 </style>
 </head>
 <body>
@@ -334,23 +343,29 @@ footer a:hover{color:var(--accent)}
 
     <p>Start here, because everyone does, and because it genuinely earns the hype. Gaudi's unfinished basilica has been under construction since 1882 and is projected to reach completion in the coming years. The interior is where it transcends expectation: tree-shaped columns branch toward the ceiling in a geometry that feels organic and mathematical simultaneously, and the stained glass windows cast shifting pools of colour across the stone floors depending on the time of day.</p>
 
-    <p><strong>Practical tips:</strong> Book tickets at least two months ahead during peak season (April through October). Choose a morning slot between 9am and 10am — the east-facing Nativity facade windows throw warm reds and oranges across the interior in the first hours. The tower access ticket (Nativity tower is the better of the two) adds a spiral staircase ascent with close-up views of the stone fruit and lizard sculptures. Budget 90 minutes minimum inside.</p>
+    <p><strong>Practical tips:</strong> <a href="https://www.getyourguide.com/s/?q=Barcelona+Sagrada+Familia&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Book tickets</a> at least two months ahead during peak season (April through October). Choose a morning slot between 9am and 10am — the east-facing Nativity facade windows throw warm reds and oranges across the interior in the first hours. The tower access ticket (Nativity tower is the better of the two) adds a spiral staircase ascent with close-up views of the stone fruit and lizard sculptures. Budget 90 minutes minimum inside.</p>
 
     <figure class="inline-img"><img src="/blog/assets/barcelona-sagrada.webp" alt="Sagrada Familia basilica in Barcelona" loading="lazy" width="800" height="450"><figcaption>Gaudí's masterpiece — still under construction after more than 140 years</figcaption></figure>
 
     <h3>Park Guell</h3>
 
-    <p>Gaudi's hillside park was originally designed as a luxury housing development that flopped commercially — only two of the planned sixty houses were ever built. What remains is a public park with mosaic benches, a dragon fountain (the famous salamander), undulating stone viaducts, and sweeping views over the city to the sea. The monumental zone (the paid area with the main terrace and the mosaic bench) requires timed tickets. The free sections of the park — the stone pathways and elevated walkways — are equally worth exploring and far less crowded.</p>
+    <p>Gaudi's hillside park was originally designed as a luxury housing development that flopped commercially — only two of the planned sixty houses were ever built. What remains is a public park with mosaic benches, a dragon fountain (the famous salamander), undulating stone viaducts, and sweeping views over the city to the sea. The monumental zone (the paid area with the main terrace and the mosaic bench) requires <a href="https://www.getyourguide.com/s/?q=Barcelona+Park+Guell&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">timed tickets</a>. The free sections of the park — the stone pathways and elevated walkways — are equally worth exploring and far less crowded.</p>
 
     <h3>Casa Batllo and Casa Mila (La Pedrera)</h3>
 
-    <p>These two Gaudi buildings sit within three blocks of each other on Passeig de Gracia and represent his most mature residential work. <strong>Casa Batllo</strong> is the more theatrical — a facade of bone-shaped columns and iridescent ceramic tiles that shifts colour in changing light, topped by a roof that resembles a dragon's spine. The interior redesign (completed in recent years with immersive light-and-sound experiences) makes it one of Barcelona's most compelling museum experiences, though it is also one of the most expensive at around 35 euros.</p>
+    <p>These two Gaudi buildings sit within three blocks of each other on Passeig de Gracia and represent his most mature residential work. <strong>Casa Batllo</strong> is the more theatrical — a facade of bone-shaped columns and iridescent ceramic tiles that shifts colour in changing light, topped by a roof that resembles a dragon's spine. The interior redesign (completed in recent years with immersive light-and-sound experiences) makes it one of Barcelona's most <a href="https://www.getyourguide.com/s/?q=Barcelona+Casa+Batllo&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">compelling museum experiences</a>, though it is also one of the most expensive at around 35 euros.</p>
 
-    <p><strong>Casa Mila (La Pedrera)</strong> is the more structurally radical: a building with no load-bearing walls, an undulating stone facade that earned it the nickname "the quarry," and a rooftop populated by chimney stacks that look like helmeted warriors. The rooftop at sunset is spectacular. Both buildings offer evening or night visits with smaller crowds — worth considering if your daytime schedule is packed.</p>
+    <p><strong>Casa Mila (La Pedrera)</strong> is the more structurally radical: a building with no load-bearing walls, an undulating stone facade that earned it the nickname "the quarry," and a rooftop populated by chimney stacks that look like helmeted warriors. The rooftop at sunset is spectacular. Both buildings offer <a href="https://www.getyourguide.com/s/?q=Barcelona+Casa+Mila+night&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">evening or night visits</a> with smaller crowds — worth considering if your daytime schedule is packed.</p>
 
     <h3>Beyond Gaudi</h3>
 
-    <p>Do not leave Barcelona thinking Modernisme begins and ends with one architect. The <strong>Palau de la Musica Catalana</strong>, designed by Lluis Domenech i Montaner, is an explosion of stained glass, mosaic, and sculptural ornament that makes the average concert hall look like a parking garage. Attend a performance if you can — the acoustics match the visuals. The <strong>Hospital de Sant Pau</strong>, also by Domenech i Montaner, is a complex of 27 Modernista pavilions connected by underground tunnels, set in gardens. It functioned as a working hospital until 2009 and now operates as a museum and cultural centre. It receives a fraction of Sagrada Familia's visitors and deserves far more.</p>
+    <p>Do not leave Barcelona thinking Modernisme begins and ends with one architect. The <strong>Palau de la Musica Catalana</strong>, designed by Lluis Domenech i Montaner, is an explosion of stained glass, mosaic, and sculptural ornament that makes the average concert hall look like a parking garage. <a href="https://www.getyourguide.com/s/?q=Barcelona+Palau+Musica&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Attend a performance</a> if you can — the acoustics match the visuals. The <strong>Hospital de Sant Pau</strong>, also by Domenech i Montaner, is a complex of 27 Modernista pavilions connected by underground tunnels, set in gardens. It functioned as a working hospital until 2009 and now operates as a museum and cultural centre. It receives a fraction of Sagrada Familia's visitors and deserves far more.</p>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Barcelona Tours & Skip-the-Line Tickets</div>
+      <p>Skip-the-line entry for Sagrada Familia, Casa Batllo, Park Guell, and more — plus guided walking tours and unique experiences across Barcelona.</p>
+      <a href="https://www.getyourguide.com/s/?q=Barcelona&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Barcelona Activities &rarr;</a>
+    </div>
 
     <h2 id="food-markets-and-where-to-eat">Food Markets and Where to Eat</h2>
 
@@ -370,7 +385,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>Mercat de Santa Caterina</h3>
 
-    <p>Smaller and quieter than the other two, Santa Caterina sits in the El Born neighbourhood beneath a spectacular undulating mosaic roof designed by Enric Miralles. The food stalls are excellent and the attached restaurant, Cuines Santa Caterina, serves market-fresh dishes in a setting that feels nothing like a tourist trap. It is also the market closest to the Gothic Quarter, making it an easy midday stop during a walking tour of the old city.</p>
+    <p>Smaller and quieter than the other two, Santa Caterina sits in the El Born neighbourhood beneath a spectacular undulating mosaic roof designed by Enric Miralles. The food stalls are excellent and the attached restaurant, Cuines Santa Caterina, serves market-fresh dishes in a setting that feels nothing like a tourist trap. It is also the market closest to the Gothic Quarter, making it an easy midday stop during a <a href="https://www.getyourguide.com/s/?q=Barcelona+food+tour&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">walking tour of the old city</a>.</p>
 
     <h3>Where to Eat: Specific Recommendations</h3>
 
@@ -384,6 +399,12 @@ footer a:hover{color:var(--accent)}
     <h3>Dishes You Must Try</h3>
 
     <p><strong>Patatas bravas</strong> — Fried potato cubes with spicy tomato sauce (salsa brava) and sometimes aioli. Every bar has its own version and arguing about who makes the best is a local sport. <strong>Pa amb tomaquet</strong> — Bread rubbed with ripe tomato, drizzled with olive oil, and sprinkled with salt. Sounds absurdly simple. Tastes transcendent when the tomatoes and oil are right. Served with nearly everything. <strong>Bombas</strong> — Potato croquettes stuffed with spiced meat, fried, and served with aioli and brava sauce. A Barcelona original from Barceloneta. <strong>Escalivada</strong> — Roasted red pepper, aubergine, and onion, peeled and dressed with olive oil. Served cold or at room temperature. The Catalan vegetable dish that converts people who think they do not like aubergine.</p>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Explore Barcelona Food Tours</div>
+      <p>Taste your way through La Boqueria, the Gothic Quarter tapas bars, and hidden local favourites with a knowledgeable guide. One of the best ways to experience Barcelona's food scene.</p>
+      <a href="https://www.getyourguide.com/s/?q=Barcelona+food+tour&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Food Tours &rarr;</a>
+    </div>
 
     <h2 id="the-gothic-quarter-and-el-born">The Gothic Quarter and El Born</h2>
 
@@ -399,7 +420,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>El Born</h3>
 
-    <p>Cross Via Laietana (the boulevard that divides the Gothic Quarter from El Born) and the character shifts. El Born was Barcelona's medieval merchant district and has reinvented itself as the city's most stylish neighbourhood for boutique shopping, cocktail bars, and cultural spaces. The <strong>Picasso Museum</strong> occupies five connected medieval palaces on Carrer de Montcada and houses the most comprehensive collection of Picasso's early work, including the entire Las Meninas series. Book online to skip the queue.</p>
+    <p>Cross Via Laietana (the boulevard that divides the Gothic Quarter from El Born) and the character shifts. El Born was Barcelona's medieval merchant district and has reinvented itself as the city's most stylish neighbourhood for boutique shopping, cocktail bars, and cultural spaces. The <strong>Picasso Museum</strong> occupies five connected medieval palaces on Carrer de Montcada and houses the most comprehensive collection of Picasso's early work, including the entire Las Meninas series. <a href="https://www.getyourguide.com/s/?q=Barcelona+Picasso+Museum&partner_id=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Book online to skip the queue</a>.</p>
 
     <p>The <strong>Basilica de Santa Maria del Mar</strong> is El Born's architectural centrepiece — a 14th-century Catalan Gothic church built in a record 54 years (most Gothic cathedrals took centuries). The interior is remarkable for its proportions: slender octagonal columns rise to a vaulted ceiling that creates a sense of vast, airy space unlike any other church in Spain. If you are interested in the history, Ildefonso Falcones' novel <em>Cathedral of the Sea</em> is set during its construction and sold 10 million copies. Entrance is free.</p>
 
@@ -418,7 +439,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>The Hidden Option: Ocata Beach</h3>
 
-    <p>Take the Rodalies commuter train (R1 line) north from Passeig de Gracia or Placa de Catalunya to El Masnou station — about 25 minutes. Walk five minutes east to Ocata beach, a long, wide stretch of golden sand that feels like a different world from Barceloneta. The water is clearer, the sand is cleaner, and on a weekday you can find twenty-metre stretches of empty beach. There is a beach bar, a few restaurants along the promenade, and nothing else. Bring a book and a towel. This is one of the best day-trip beaches accessible from any major European city.</p>
+    <p>Take the <a href="https://rail.ninja/?from=Barcelona&to=Masnou&marker=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Rodalies commuter train</a> (R1 line) north from Passeig de Gracia or Placa de Catalunya to El Masnou station — about 25 minutes. Walk five minutes east to Ocata beach, a long, wide stretch of golden sand that feels like a different world from Barceloneta. The water is clearer, the sand is cleaner, and on a weekday you can find twenty-metre stretches of empty beach. There is a beach bar, a few restaurants along the promenade, and nothing else. Bring a book and a towel. This is one of the best day-trip beaches accessible from any major European city.</p>
 
     <h2 id="when-to-visit">When to Visit</h2>
 
@@ -449,13 +470,13 @@ footer a:hover{color:var(--accent)}
       </div>
     </div>
 
-    <p><strong>Spring (April to May)</strong> is the consensus best time. Temperatures sit between 17 and 23 degrees Celsius, the city is green after winter rains, outdoor terraces reopen, and the tourist volume has not yet peaked. Prices for accommodation are 20-30% lower than July and August. The beach is usable from late April for the hardy but most visitors wait until May. Cultural programming ramps up: Sant Jordi's Day on April 23 fills the streets with book stalls and rose vendors in one of Barcelona's most charming traditions.</p>
+    <p><strong>Spring (April to May)</strong> is the consensus best time. Temperatures sit between 17 and 23 degrees Celsius, the city is green after winter rains, outdoor terraces reopen, and the tourist volume has not yet peaked. <a href="https://www.hotellook.com/hotels?destination=Barcelona&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Prices for accommodation</a> are 20-30% lower than July and August. The beach is usable from late April for the hardy but most visitors wait until May. Cultural programming ramps up: Sant Jordi's Day on April 23 fills the streets with book stalls and rose vendors in one of Barcelona's most charming traditions.</p>
 
     <p><strong>Summer (June to August)</strong> is hot — mid-30s Celsius regularly, occasionally pushing past 38. The city is at maximum tourist capacity. La Rambla becomes an obstacle course. Accommodation prices peak. That said, the beach is at its best, the outdoor festivals are constant, and the long evening light means you can sit at a terrace at 9pm in full sunshine. If you go in summer, front-load your indoor cultural visits (museums, Sagrada Familia, markets) in the morning and save beaches and outdoor dining for late afternoon onward.</p>
 
     <p><strong>Autumn (September to October)</strong> is the smart traveller's window. September weather is essentially summer without the August crush. The sea is at its warmest after months of summer sun. October brings slightly lower temperatures (18-24 degrees), thinner crowds, and reduced prices. <strong>La Merce</strong>, Barcelona's biggest street festival, takes place in the last week of September — four days of free concerts, human tower competitions (<em>castellers</em>), fire runs (<em>correfoc</em>), and parades. It is genuinely spectacular and largely attended by locals rather than tourists.</p>
 
-    <p><strong>Winter (November to March)</strong> is mild by northern European standards — daytime temperatures rarely drop below 10 degrees and sunny days are common. Some outdoor attractions reduce hours, the beach is off the agenda for most visitors, and a handful of restaurants close for January holidays. But hotel prices drop 40-50%, the major museums and architectural sites are crowd-free, and the city's restaurant and bar culture operates year-round. Christmas markets appear in December (the one at the Cathedral is the most traditional), and the city celebrates the Feast of the Three Kings on January 5-6 with a major parade.</p>
+    <p><strong>Winter (November to March)</strong> is mild by northern European standards — daytime temperatures rarely drop below 10 degrees and sunny days are common. Some outdoor attractions reduce hours, the beach is off the agenda for most visitors, and a handful of restaurants close for January holidays. But <a href="https://www.hotellook.com/hotels?destination=Barcelona&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">hotel prices drop 40-50%</a>, the major museums and architectural sites are crowd-free, and the city's restaurant and bar culture operates year-round. Christmas markets appear in December (the one at the Cathedral is the most traditional), and the city celebrates the Feast of the Three Kings on January 5-6 with a major parade.</p>
 
     <h2 id="neighbourhoods-beyond-the-tourist-core">Neighbourhoods Beyond the Tourist Core</h2>
 
@@ -511,12 +532,22 @@ footer a:hover{color:var(--accent)}
     <div class="info-box">
       <div class="info-box-title">Barcelona 2026 — What Things Cost</div>
       <ul>
-        <li><strong>Accommodation:</strong> Hostels from 25-40 euros/night. Mid-range hotels 100-170 euros/night. Boutique/luxury 200-400+ euros/night. Airbnb apartments 80-150 euros/night (tourist licence required — check the listing).</li>
+        <li><strong><a href="https://www.hotellook.com/hotels?destination=Barcelona&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Accommodation</a>:</strong> Hostels from 25-40 euros/night. Mid-range hotels 100-170 euros/night. Boutique/luxury 200-400+ euros/night. Airbnb apartments 80-150 euros/night (tourist licence required — check the listing).</li>
         <li><strong>Meals:</strong> Coffee and pastry 3-5 euros. Market lunch or bocadillo 6-10 euros. Tapas dinner (per person, with drinks) 25-40 euros. Restaurant dinner 35-60 euros. Fine dining 80-150+ euros.</li>
-        <li><strong>Transit:</strong> T-casual 10-trip card: 11.35 euros (valid on metro, bus, tram, and Rodalies commuter trains within Zone 1). Single metro ticket: 2.55 euros. Airport metro: 5.50 euros. Taxis from airport to city centre: 39 euros (flat rate).</li>
+        <li><strong><a href="https://rail.ninja/?from=Barcelona&to=Madrid&marker=529721" target="_blank" rel="noopener sponsored" style="color:var(--red)">Transit</a>:</strong> T-casual 10-trip card: 11.35 euros (valid on metro, bus, tram, and Rodalies commuter trains within Zone 1). Single metro ticket: 2.55 euros. Airport metro: 5.50 euros. Taxis from airport to city centre: 39 euros (flat rate).</li>
         <li><strong>Museum passes:</strong> Sagrada Familia 26-36 euros (with tower access). Casa Batllo 35 euros. Park Guell 10 euros. Picasso Museum 12 euros (free first Sunday of the month). Articket BCN (6 museums) 38 euros — excellent value.</li>
         <li><strong>Tipping:</strong> Not expected but appreciated. Rounding up the bill or leaving 5-10% at restaurants is generous by local standards. No tipping at bars or cafes.</li>
       </ul>
+    </div>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your Barcelona Trip</div>
+      <p>Everything you need to lock in your Barcelona trip — compare hotel prices, book skip-the-line tickets, and find train routes across Spain and Europe.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Barcelona&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels &rarr;</a>
+        <a href="https://www.getyourguide.com/s/?q=Barcelona&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours &rarr;</a>
+        <a href="https://rail.ninja/?from=Barcelona&to=Madrid&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Train Tickets &rarr;</a>
+      </div>
     </div>
 
     <div class="cta-block">
