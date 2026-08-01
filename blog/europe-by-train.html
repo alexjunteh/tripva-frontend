@@ -239,6 +239,16 @@ footer a:hover{color:var(--accent)}
 .inline-img{margin:32px 0;border-radius:var(--r-lg);overflow:hidden}
 .inline-img img{width:100%;height:auto;display:block}
 .inline-img figcaption{font-size:13px;color:var(--muted);text-align:center;padding:10px 16px;background:var(--surface)}
+
+/* AFFILIATE CTA */
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
+@media(max-width:600px){.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 </style>
 </head>
 <body>
@@ -297,7 +307,7 @@ footer a:hover{color:var(--accent)}
 
   <article class="article-body">
 
-    <p>Flying between European cities is faster in theory. In practice, you spend 90 minutes getting to the airport, 90 minutes in security and boarding, 90 minutes flying, then 60 minutes reaching the city centre from wherever the budget airline lands you. That's 6 hours door-to-door between Paris and Amsterdam — the same as the Thalys (now Eurostar) train, which drops you in the centre of both cities and lets you watch the Dutch polders unfold outside the window.</p>
+    <p>Flying between European cities is faster in theory. In practice, you spend 90 minutes getting to the airport, 90 minutes in security and boarding, 90 minutes flying, then 60 minutes reaching the city centre from wherever the budget airline lands you. That's 6 hours door-to-door between Paris and Amsterdam — the same as the <a href="https://rail.ninja/?from=Paris&to=Amsterdam&marker=529721" target="_blank" rel="noopener sponsored">Thalys (now Eurostar) train</a>, which drops you in the centre of both cities and lets you watch the Dutch polders unfold outside the window.</p>
 
     <p>This itinerary covers the classic grand tour of Europe's most compelling cities by rail, in three weeks. It's designed to be genuinely do-able without burning out, with 2–4 nights per city and logical geography — no backtracking, no wasted travel days.</p>
 
@@ -310,7 +320,7 @@ footer a:hover{color:var(--accent)}
           <span class="stop-badge">2 nights</span>
           <span class="stop-badge euro">London St Pancras → Paris Gare du Nord</span>
         </div>
-        <div class="stop-desc">Start point. Eurostar to Paris departs London St Pancras. Book 90–120 days ahead for best fares (standard from £35 each way when booked early).</div>
+        <div class="stop-desc">Start point. Eurostar to Paris departs London St Pancras. <a href="https://rail.ninja/?from=London&to=Paris&marker=529721" target="_blank" rel="noopener sponsored">Book 90–120 days ahead for best fares</a> (standard from £35 each way when booked early).</div>
       </div>
       <div class="route-stop">
         <div class="stop-city">Paris, France</div>
@@ -326,7 +336,7 @@ footer a:hover{color:var(--accent)}
           <span class="stop-badge">2 nights</span>
           <span class="stop-badge euro">Amsterdam → Berlin (IC/Intercity)</span>
         </div>
-        <div class="stop-desc">6h direct or change at Duisburg/Cologne. Scenic Rhine valley section after Cologne.</div>
+        <div class="stop-desc"><a href="https://rail.ninja/?from=Amsterdam&to=Berlin&marker=529721" target="_blank" rel="noopener sponsored">6h direct or change at Duisburg/Cologne</a>. Scenic Rhine valley section after Cologne.</div>
       </div>
       <div class="route-stop">
         <div class="stop-city">Berlin, Germany</div>
@@ -350,7 +360,7 @@ footer a:hover{color:var(--accent)}
           <span class="stop-badge">2 nights</span>
           <span class="stop-badge night-train">Nightjet: Vienna → Venice (overnight, 9h)</span>
         </div>
-        <div class="stop-desc">One of Europe's best night train routes. Book a couchette (6-berth) or private sleeper cabin. Arrives Venice Santa Lucia at 9am — a superb way to enter the city.</div>
+        <div class="stop-desc">One of Europe's best night train routes. <a href="https://rail.ninja/?from=Vienna&to=Venice&marker=529721" target="_blank" rel="noopener sponsored">Book a couchette (6-berth) or private sleeper cabin</a>. Arrives Venice Santa Lucia at 9am — a superb way to enter the city.</div>
       </div>
       <div class="route-stop">
         <div class="stop-city">Venice, Italy</div>
@@ -358,7 +368,7 @@ footer a:hover{color:var(--accent)}
           <span class="stop-badge">2 nights</span>
           <span class="stop-badge euro">Venice → Barcelona (Frecciarossa to Milan, then TGV via Lyon)</span>
         </div>
-        <div class="stop-desc">Requires 1–2 changes. Venice → Milan 2h20, Milan → Barcelona via Lyon ~10h total including connection. Consider an extra night in Milan or Marseille if this leg feels long.</div>
+        <div class="stop-desc">Requires 1–2 changes. <a href="https://rail.ninja/?from=Venice&to=Barcelona&marker=529721" target="_blank" rel="noopener sponsored">Venice → Milan 2h20, Milan → Barcelona via Lyon ~10h total</a> including connection. Consider an extra night in Milan or Marseille if this leg feels long.</div>
       </div>
       <div class="route-stop">
         <div class="stop-city">Barcelona, Spain</div>
@@ -366,6 +376,16 @@ footer a:hover{color:var(--accent)}
           <span class="stop-badge">3 nights</span>
         </div>
         <div class="stop-desc">End point. Fly home from Barcelona El Prat (BCN) — well connected to most international destinations.</div>
+      </div>
+    </div>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your European Train Tickets</div>
+      <p>Compare fares and book point-to-point train tickets for every route on this itinerary. Advance booking gets the best prices.</p>
+      <div class="affiliate-row">
+        <a href="https://rail.ninja/?from=London&to=Paris&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">London → Paris →</a>
+        <a href="https://rail.ninja/?from=Paris&to=Amsterdam&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Paris → Amsterdam →</a>
+        <a href="https://rail.ninja/?from=Amsterdam&to=Berlin&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Amsterdam → Berlin →</a>
       </div>
     </div>
 
@@ -416,6 +436,16 @@ footer a:hover{color:var(--accent)}
 
     <p>Book night trains as early as possible — 180 days in advance for ÖBB Nightjet. The cheapest couchette berths sell out first. Always book the specific berth (couchette or sleeper), not just the seat — overnight in a seat is miserable on a 9-hour train.</p>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Night Train Routes</div>
+      <p>Search and compare night train fares across Europe. The Vienna to Venice Nightjet is one of the continent's best overnight journeys.</p>
+      <div class="affiliate-row">
+        <a href="https://rail.ninja/?from=Vienna&to=Venice&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Vienna → Venice Nightjet →</a>
+        <a href="https://rail.ninja/?from=Paris&to=Berlin&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Paris → Berlin Overnight →</a>
+        <a href="https://rail.ninja/?from=Amsterdam&to=Berlin&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Amsterdam → Berlin Night →</a>
+      </div>
+    </div>
+
     <h2 id="city-by-city-highlights">City-by-City Highlights</h2>
 
     <h3>London (2 nights)</h3>
@@ -444,12 +474,18 @@ footer a:hover{color:var(--accent)}
 
     <figure class="inline-img"><img src="/blog/assets/europe-prague.webp" alt="Prague cityscape with historic architecture" loading="lazy" width="800" height="450"><figcaption>Prague — one of the most rewarding stops on any European rail journey</figcaption></figure>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Tours & Activities</div>
+      <p>Skip-the-line museum tickets, walking tours, food tours, and day trips across every city on this route. Book ahead for summer to guarantee availability.</p>
+      <a href="https://www.getyourguide.com/s/?q=Europe+tours&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse European Tours & Activities →</a>
+    </div>
+
     <h2 id="costs-summary-21-day-trip">Costs Summary: 21-Day Trip</h2>
 
     <ul>
       <li><strong>Interrail Global Pass (21 days, adult):</strong> ~€490</li>
       <li><strong>Reservation fees (all legs on this route):</strong> €110–160</li>
-      <li><strong>Accommodation (mix of hostels and budget hotels, avg €40/night):</strong> €840</li>
+      <li><strong>Accommodation (<a href="https://www.hotellook.com/hotels?destination=Europe&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">compare hotels</a>, avg €40/night):</strong> €840</li>
       <li><strong>Food (€25–35/day self-catering + one restaurant meal):</strong> €525–735</li>
       <li><strong>Museum entries and activities (€15–25/day):</strong> €315–525</li>
       <li><strong>Local transport in cities (€5–10/day):</strong> €105–210</li>
@@ -467,6 +503,16 @@ footer a:hover{color:var(--accent)}
         <li><strong>6–8 weeks out:</strong> Book Rijksmuseum (Amsterdam), Pergamon Museum (Berlin), Sagrada Família (Barcelona)</li>
         <li><strong>On arrival:</strong> Vaporetto day passes in Venice, bike rental in Amsterdam</li>
       </ul>
+    </div>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Everything for Your Rail Trip</div>
+      <p>Get the best deals on hotels, train tickets, and activities across all eight cities on this itinerary.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Europe&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotels →</a>
+        <a href="https://rail.ninja/?from=London&to=Barcelona&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Train Routes →</a>
+        <a href="https://www.getyourguide.com/s/?q=Europe+tours&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Activities →</a>
+      </div>
     </div>
 
     <div class="cta-block">

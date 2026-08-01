@@ -93,7 +93,7 @@ body > nav{
   transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 
 /* BREADCRUMB */
 .breadcrumb{
@@ -231,6 +231,13 @@ body > nav{
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
 </style>
 </head>
 <body>
@@ -296,8 +303,14 @@ footer a:hover{color:var(--accent)}
         <li>Golden hour in Paris: roughly 7am and 8–9pm in summer; 8am and 5pm in winter</li>
         <li>Most hidden spots are busiest on weekends — go Tuesday through Thursday</li>
         <li>A tripod is officially prohibited in some public spaces, but a mini GorillaPod is fine</li>
-        <li>Paris Museum Pass (€55, 2 days) covers several of the sites below</li>
+        <li><a href="https://www.getyourguide.com/s/?q=Paris+Museum+Pass&partner_id=529721" target="_blank" rel="noopener sponsored">Paris Museum Pass</a> (€55, 2 days) covers several of the sites below</li>
       </ul>
+    </div>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels in Paris</div>
+      <p>Compare prices across hundreds of Paris hotels — from charming boutiques to grand boulevards. Stay central to reach these photo spots on foot.</p>
+      <a href="https://www.hotellook.com/hotels?destination=Paris&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotel Prices →</a>
     </div>
 
     <h2 id="the-15-spots">The 15 Spots</h2>
@@ -478,7 +491,7 @@ footer a:hover{color:var(--accent)}
           <div class="spot-desc">Notre-Dame's nave reopened in late 2024 after the fire restoration. The north rose window — 13th century, 12.9 metres across — illuminates the transept with blue and violet light on winter mornings when the sun is low. The angle from the crossing, looking straight up at the vaulted ceiling through the restored scaffolding-free space, is unforgettable and finally accessible again.</div>
           <div class="spot-meta">
             <span class="spot-badge time">Best: winter mornings 9–11am, weekdays</span>
-            <span class="spot-badge tip">Tip: book a timed entry slot online — walk-up queues are 2+ hours</span>
+            <span class="spot-badge tip">Tip: <a href="https://www.getyourguide.com/s/?q=Notre+Dame+Paris+tickets&partner_id=529721" target="_blank" rel="noopener sponsored">book a timed entry slot online</a> — walk-up queues are 2+ hours</span>
           </div>
         </div>
         </div>
@@ -512,7 +525,7 @@ footer a:hover{color:var(--accent)}
           <div class="spot-desc">Most visitors skip Sainte-Chapelle in favour of Notre-Dame. This is a mistake. The 13th-century upper chapel has 1,113 biblical scenes in 15 stained glass windows — 15 metres tall, spanning almost the entire wall surface. On a sunny morning, the entire interior turns kaleidoscopic blue, red, and gold. There are almost no competing angles — every photo in here looks extraordinary.</div>
           <div class="spot-meta">
             <span class="spot-badge time">Best: sunny mornings 9–11am</span>
-            <span class="spot-badge tip">Tip: book combined ticket with the Conciergerie to skip the queue</span>
+            <span class="spot-badge tip">Tip: <a href="https://www.getyourguide.com/s/?q=Sainte+Chapelle+Paris+skip+the+line&partner_id=529721" target="_blank" rel="noopener sponsored">book combined ticket with the Conciergerie</a> to skip the queue</span>
           </div>
         </div>
         </div>
@@ -528,7 +541,7 @@ footer a:hover{color:var(--accent)}
           <div class="spot-desc">The rooftop terrace of Jean Nouvel's 1987 masterpiece gives a panoramic view south over the Seine with Notre-Dame's scaffolding-free silhouette to the west. The building's south facade — 240 motorised metallic light-filtering panels based on Arabic geometric patterns — is also photogenic in its own right, especially in raking light that makes the patterns cast shadows.</div>
           <div class="spot-meta">
             <span class="spot-badge time">Best: golden hour, clear days</span>
-            <span class="spot-badge tip">Tip: museum admission required for terrace access; Thursday–Sunday open until 9:30pm</span>
+            <span class="spot-badge tip">Tip: <a href="https://www.getyourguide.com/s/?q=Institut+du+Monde+Arabe+Paris&partner_id=529721" target="_blank" rel="noopener sponsored">museum admission required</a> for terrace access; Thursday–Sunday open until 9:30pm</span>
           </div>
         </div>
         </div>
@@ -551,6 +564,12 @@ footer a:hover{color:var(--accent)}
       </li>
 
     </ul>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Skip-the-Line Tours & Activities</div>
+      <p>Many of these spots — Sainte-Chapelle, Notre-Dame, the Musée des Arts et Métiers — have timed entry or guided tours that save hours of queuing. Book skip-the-line tickets in advance.</p>
+      <a href="https://www.getyourguide.com/s/?q=Paris+tours+skip+the+line&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Paris Tours →</a>
+    </div>
 
     <h2 id="how-to-use-these-spots">How to Use These Spots</h2>
 

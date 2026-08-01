@@ -56,7 +56,7 @@
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
   --text:#f0f0f8;--muted:rgba(240,240,248,.55);--muted2:rgba(240,240,248,.80);
   --purple:#7c6af7;--purple-light:#a78bfa;--purple-glow:rgba(124,106,247,.25);
-  --accent:#95b8ff;--green:#6ee7b7;
+  --accent:#95b8ff;--green:#6ee7b7;--red:#e8594e;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-full:999px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -93,7 +93,7 @@ body > nav{
   transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 
 /* BREADCRUMB */
 .breadcrumb{
@@ -259,6 +259,15 @@ body > nav{
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
+
+/* AFFILIATE CTA */
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
 </style>
 </head>
 <body>
@@ -331,17 +340,23 @@ footer a:hover{color:var(--accent)}
 
     <p>The road itself is almost entirely paved two-lane highway. You do not need a 4WD for the Ring Road in summer (though you will need one if you detour onto any F-roads). A standard rental car is fine from June through August. The driving is straightforward — the challenge is not the road, it is resisting the urge to stop every ten minutes because the landscape keeps changing so dramatically.</p>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Rent a Car in Iceland</div>
+      <p>Compare rental prices from all major providers in Reykjavik — 4x4s essential for highlands, standard cars fine for Route 1 in summer.</p>
+      <a href="https://www.discovercars.com/all?a_aid=529721&location=Reykjavik" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Car Rentals →</a>
+    </div>
+
     <h2 id="day-1-reykjavik-golden-circle">Day 1: Reykjavik + Golden Circle</h2>
 
-    <p>Pick up your rental car at Keflavik Airport or in Reykjavik early in the morning. If your flight arrives the night before, spend the evening walking Reykjavik's compact downtown — Laugavegur shopping street, Hallgrimskirkja church for the tower view, and dinner at one of the harbour restaurants. But the Golden Circle is where the trip truly begins.</p>
+    <p>Pick up your rental car at <a href="https://www.kiwi.com/en/search/results?to=KEF&adults=2" style="color:var(--red)" target="_blank" rel="noopener sponsored">Keflavik Airport</a> or in Reykjavik early in the morning. If your flight arrives the night before, spend the evening walking Reykjavik's compact downtown — Laugavegur shopping street, Hallgrimskirkja church for the tower view, and dinner at one of the harbour restaurants. But the Golden Circle is where the trip truly begins.</p>
 
-    <p><strong>Thingvellir National Park</strong> is a 45-minute drive from Reykjavik and your first stop. This is where the Eurasian and North American tectonic plates pull apart — you can literally walk in the rift valley between two continents. Beyond the geology, Thingvellir is where Iceland's parliament, the Althing, was founded in 930 AD, making it one of the oldest parliamentary sites in the world. Park at the main visitor centre (P1) and walk down into the Almannagja gorge. The path to Oxararfoss waterfall takes about 20 minutes and is well worth it. If you have a dry suit certification, Silfra fissure offers snorkelling in glacial water with 100-metre visibility — book in advance through a licensed operator.</p>
+    <p><strong>Thingvellir National Park</strong> is a 45-minute drive from Reykjavik and your first stop. This is where the Eurasian and North American tectonic plates pull apart — you can literally walk in the rift valley between two continents. Beyond the geology, Thingvellir is where Iceland's parliament, the Althing, was founded in 930 AD, making it one of the oldest parliamentary sites in the world. Park at the main visitor centre (P1) and walk down into the Almannagja gorge. The path to Oxararfoss waterfall takes about 20 minutes and is well worth it. If you have a dry suit certification, Silfra fissure offers snorkelling in glacial water with 100-metre visibility — <a href="https://www.getyourguide.com/s/?q=Silfra+snorkelling+Iceland&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">book in advance through a licensed operator</a>.</p>
 
     <p><strong>Geysir geothermal area</strong> is 50 minutes further east. The original Great Geysir is mostly dormant now, but its neighbour Strokkur erupts faithfully every 5-10 minutes, shooting a column of boiling water 15-25 metres into the air. Stand upwind and watch for two or three eruptions — the anticipation of the water dome bulging before it blows is genuinely thrilling every time. The surrounding mud pots and fumaroles are worth exploring for another 20 minutes.</p>
 
     <p><strong>Gullfoss waterfall</strong> is ten minutes up the road and arguably Iceland's most powerful waterfall. The Hvita river drops in two stages into a 32-metre canyon, and on a sunny day the spray creates permanent rainbows. Walk down both viewing platforms — the upper one gives you the panoramic context, the lower one puts you close enough to feel the ground shake. In summer, the volume is immense.</p>
 
-    <p><strong>Where to stay:</strong> Drive to Selfoss or Hella (about 1 hour from Gullfoss) to position yourself for the South Coast the next morning. Both towns have good guesthouses and petrol stations.</p>
+    <p><strong>Where to stay:</strong> Drive to Selfoss or Hella (about 1 hour from Gullfoss) to position yourself for the South Coast the next morning. Both towns have good <a href="https://www.hotellook.com/hotels?destination=Selfoss&adults=2&rooms=1&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">guesthouses and hotels</a> and petrol stations.</p>
 
     <h2 id="day-2-south-coast">Day 2: South Coast</h2>
 
@@ -355,23 +370,38 @@ footer a:hover{color:var(--accent)}
 
     <p>Stop briefly at <strong>Dyrholaey</strong>, a dramatic rock arch and promontory just west of Reynisfjara. In summer, Atlantic puffins nest in the cliffs here — hundreds of them. The lighthouse at the top gives you a panoramic view of the entire South Coast, from Myrdalsjokull glacier to the black sand stretching east.</p>
 
-    <p><strong>Where to stay:</strong> Vik, the southernmost village in Iceland. Small but well-equipped with restaurants, a supermarket, and several guesthouses. Book ahead in summer — Vik has limited rooms for the volume of Ring Road traffic.</p>
+    <p><strong>Where to stay:</strong> Vik, the southernmost village in Iceland. Small but well-equipped with restaurants, a supermarket, and several guesthouses. <a href="https://www.hotellook.com/hotels?destination=Vik+Iceland&adults=2&rooms=1&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Book accommodation ahead</a> in summer — Vik has limited rooms for the volume of Ring Road traffic.</p>
 
     <figure class="inline-img"><img src="/blog/assets/iceland-waterfall.webp" alt="Dramatic waterfall cascading down Icelandic cliffs" loading="lazy" width="800" height="450"><figcaption>Iceland's countless waterfalls are the Ring Road's greatest reward</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels on Iceland's South Coast</div>
+      <p>Vik, Selfoss, and Hella fill up fast in summer. Compare prices from dozens of guesthouses and hotels along the South Coast.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Vik+Iceland&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels in Vik →</a>
+        <a href="https://www.hotellook.com/hotels?destination=Reykjavik&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels in Reykjavik →</a>
+      </div>
+    </div>
 
     <h2 id="day-3-glacier-lagoon">Day 3: Glacier Lagoon</h2>
 
     <p>Today's drive from Vik to Jokulsarlon is about 2.5 hours, but the landscape between them — vast black sand deserts called <em>sandur</em>, framed by glaciers tumbling down from Vatnajokull ice cap — makes even the driving feel like sightseeing.</p>
 
-    <p><strong>Jokulsarlon glacier lagoon</strong> is Iceland's most otherworldly sight. Icebergs calved from Breidamerkurjokull glacier float slowly across a deep lagoon, ranging from house-sized blocks to car-sized chunks, some streaked blue, others white, a few stained with volcanic ash in black stripes. Seals swim between the bergs. The lagoon is silent except for the occasional crack and splash of ice breaking. You can spend an hour here just watching from the shore, or book an amphibian boat tour or zodiac tour to get among the icebergs. The zodiac tours run in summer and get you much closer — they are worth the premium.</p>
+    <p><strong>Jokulsarlon glacier lagoon</strong> is Iceland's most otherworldly sight. Icebergs calved from Breidamerkurjokull glacier float slowly across a deep lagoon, ranging from house-sized blocks to car-sized chunks, some streaked blue, others white, a few stained with volcanic ash in black stripes. Seals swim between the bergs. The lagoon is silent except for the occasional crack and splash of ice breaking. You can spend an hour here just watching from the shore, or <a href="https://www.getyourguide.com/s/?q=Jokulsarlon+glacier+lagoon+boat+tour&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">book an amphibian boat tour or zodiac tour</a> to get among the icebergs. The zodiac tours run in summer and get you much closer — they are worth the premium.</p>
 
     <p><strong>Diamond Beach</strong> is directly across the road from the lagoon, where the river carries smaller icebergs to the ocean. They wash up on the black sand and sit there glinting in the sunlight like enormous jewels — translucent, blue-white, slowly melting. This is one of the most photographed locations in Iceland and it is even more striking in person. Walk the beach in both directions; the ice distribution changes constantly.</p>
 
-    <p>In the afternoon, drive back 30 minutes to <strong>Skaftafell</strong>, a green oasis within Vatnajokull National Park. The Svartifoss waterfall hike (3.2 km return, about 1.5 hours) takes you to a waterfall framed by hanging basalt columns — the same geological formation as Reynisfjara but suspended overhead. If you want a glacier experience, several operators run guided glacier walks on Svinafellsjokull or Falljokull from the Skaftafell visitor centre. No prior experience needed — they provide crampons and ice axes and teach you as you go. A 3-hour glacier walk is one of the most memorable things you can do in Iceland.</p>
+    <p>In the afternoon, drive back 30 minutes to <strong>Skaftafell</strong>, a green oasis within Vatnajokull National Park. The Svartifoss waterfall hike (3.2 km return, about 1.5 hours) takes you to a waterfall framed by hanging basalt columns — the same geological formation as Reynisfjara but suspended overhead. If you want a glacier experience, <a href="https://www.getyourguide.com/s/?q=Iceland+glacier+hike+Skaftafell&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">several operators run guided glacier walks</a> on Svinafellsjokull or Falljokull from the Skaftafell visitor centre. No prior experience needed — they provide crampons and ice axes and teach you as you go. A 3-hour glacier walk is one of the most memorable things you can do in Iceland.</p>
 
     <p><strong>Where to stay:</strong> Continue east to Hofn (about 1.5 hours from Jokulsarlon). Hofn is the lobster capital of Iceland — the langoustine here is superb. Several hotels and guesthouses, and it is a good-sized town with fuel and supplies.</p>
 
     <figure class="inline-img"><img src="/blog/assets/iceland-glacier.webp" alt="Glacier lagoon with floating icebergs in Iceland" loading="lazy" width="800" height="450"><figcaption>Jökulsárlón glacier lagoon — icebergs calving into still water</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Iceland Tours & Activities</div>
+      <p>Glacier hikes, ice cave tours, boat rides on Jokulsarlon, and Golden Circle day trips — book with free cancellation.</p>
+      <a href="https://www.getyourguide.com/s/?q=Iceland&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Iceland Activities →</a>
+    </div>
 
     <h2 id="day-4-east-fjords">Day 4: East Fjords</h2>
 
@@ -391,15 +421,15 @@ footer a:hover{color:var(--accent)}
 
     <p>From Egilsstadir, drive north and then west toward the Myvatn area (about 2.5 hours). If you detour 30 minutes off the Ring Road, you can reach <strong>Dettifoss</strong>, the most powerful waterfall in Europe by volume. The Jokulsa a Fjollum river drops 44 metres over a 100-metre-wide ledge with a thunderous roar you can hear before you see it. Approach from the east side (Route 864, which is now paved) for the best viewing platforms. The spray from Dettifoss is visible from kilometres away. Stand at the canyon rim and watch the grey glacial water — loaded with sediment from Vatnajokull — pour over the edge with terrifying force. Nearby Selfoss (upstream, 1.5 km walk) is a wider, lower cascade that is beautiful in a completely different way.</p>
 
-    <p><strong>Myvatn Nature Baths</strong> should be your next stop. Skip the Blue Lagoon near Reykjavik — it is overcrowded, overpriced, and over-instagrammed. The Myvatn Nature Baths are the same concept (a geothermally heated milky-blue lagoon) but with a fraction of the visitors, lower prices, and views over the Myvatn volcanic landscape. The water is rich in minerals and stays at 36-40 degrees Celsius year-round. Soak for an hour and let the previous four days of driving dissolve.</p>
+    <p><strong>Myvatn Nature Baths</strong> should be your next stop. Skip the Blue Lagoon near Reykjavik — it is overcrowded, overpriced, and over-instagrammed. The <a href="https://www.getyourguide.com/s/?q=Myvatn+Nature+Baths+Iceland&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Myvatn Nature Baths</a> are the same concept (a geothermally heated milky-blue lagoon) but with a fraction of the visitors, lower prices, and views over the Myvatn volcanic landscape. The water is rich in minerals and stays at 36-40 degrees Celsius year-round. Soak for an hour and let the previous four days of driving dissolve.</p>
 
     <p>The <strong>Myvatn area</strong> itself is a volcanic wonderland worth exploring: the Hverir geothermal field (bubbling mud pots and steam vents), the Grjotagja cave (a lava cave with a hot spring inside — swimming is no longer allowed but you can look), and the Dimmuborgir lava formations (a labyrinth of lava pillars and arches).</p>
 
     <p><strong>Godafoss</strong> — the Waterfall of the Gods — is 35 minutes west of Myvatn on the Ring Road. It is 12 metres tall and 30 metres wide, splitting around a central island of rock. The name comes from 1000 AD, when the lawspeaker Thorgeir threw his Norse god idols over the falls after Iceland officially converted to Christianity. It is one of Iceland's most photogenic waterfalls — the wide horseshoe shape photographs beautifully from both sides.</p>
 
-    <p>For whale watching, detour 45 minutes north from Myvatn to <strong>Husavik</strong>, widely considered the whale-watching capital of Europe. Humpback whales, minke whales, and occasionally blue whales feed in Skjalfandi Bay from May through September. Success rates on summer tours exceed 95%. Several operators run 3-hour tours from the harbour. Book a morning departure to keep your afternoon schedule flexible.</p>
+    <p>For whale watching, detour 45 minutes north from Myvatn to <strong>Husavik</strong>, widely considered the whale-watching capital of Europe. Humpback whales, minke whales, and occasionally blue whales feed in Skjalfandi Bay from May through September. Success rates on summer tours exceed 95%. <a href="https://www.getyourguide.com/s/?q=Husavik+whale+watching+Iceland&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Several operators run 3-hour tours</a> from the harbour. Book a morning departure to keep your afternoon schedule flexible.</p>
 
-    <p><strong>Where to stay:</strong> Akureyri, the capital of North Iceland (population 19,000). It sits at the head of Eyjafjordur and has genuinely good restaurants, Iceland's only botanical garden, and an excellent swimming pool. Akureyri feels like a small city after days of remote guesthouses.</p>
+    <p><strong>Where to stay:</strong> <a href="https://www.hotellook.com/hotels?destination=Akureyri&adults=2&rooms=1&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Akureyri</a>, the capital of North Iceland (population 19,000). It sits at the head of Eyjafjordur and has genuinely good restaurants, Iceland's only botanical garden, and an excellent swimming pool. Akureyri feels like a small city after days of remote guesthouses.</p>
 
     <h2 id="day-6-northwest-to-snaefellsnes">Day 6: Northwest to Snaefellsnes</h2>
 
@@ -423,7 +453,7 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>Budakirkja</strong> — the black church of Budir — is one of Iceland's most solitary and photogenic buildings. A small jet-black wooden church sitting alone in a lava field, with the glacier behind it and the ocean in front. It dates to the 19th century (a church has stood on this site since the 17th) and is still used for weddings. The surrounding Budahraun lava field is carpeted in moss and wildflowers in summer. Spend 20 minutes here in silence; it is one of those places that earns the word "atmospheric."</p>
 
-    <p>The drive from Snaefellsnes back to Reykjavik takes about 2.5 hours via Route 54 and Route 1. If you are flying out today, <strong>the Blue Lagoon</strong> is located between Reykjavik and Keflavik Airport — a logical final stop. Pre-booking is mandatory and slots fill up weeks in advance, so reserve during your trip planning. Despite the crowds, the experience is genuine: the milky-blue geothermal water in the black lava field, the silica mud mask, and a cold drink at the in-water bar make a fitting farewell. Alternatively, the newer <strong>Sky Lagoon</strong> near Reykjavik offers a similar experience with ocean views and shorter queues.</p>
+    <p>The drive from Snaefellsnes back to Reykjavik takes about 2.5 hours via Route 54 and Route 1. If you are flying out today, <strong>the Blue Lagoon</strong> is located between Reykjavik and Keflavik Airport — a logical final stop. <a href="https://www.getyourguide.com/s/?q=Blue+Lagoon+Iceland&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Pre-booking is mandatory</a> and slots fill up weeks in advance, so reserve during your trip planning. Despite the crowds, the experience is genuine: the milky-blue geothermal water in the black lava field, the silica mud mask, and a cold drink at the in-water bar make a fitting farewell. Alternatively, the newer <strong>Sky Lagoon</strong> near Reykjavik offers a similar experience with ocean views and shorter queues.</p>
 
     <p>If you are staying another night in Reykjavik, use the evening for anything you missed on Day 1 — the Harpa concert hall's glass facade at sunset, the Sun Voyager sculpture on the waterfront, or a final lamb soup at Svarta Kaffid (served in a bread bowl).</p>
 
@@ -504,6 +534,17 @@ footer a:hover{color:var(--accent)}
         </div>
       </li>
     </ul>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your Iceland Trip</div>
+      <p>Everything you need for 7 days on the Ring Road — flights, car rental, hotels, and activities.</p>
+      <div class="affiliate-row">
+        <a href="https://www.kiwi.com/en/search/results?to=KEF&adults=2" class="affiliate-btn" target="_blank" rel="noopener sponsored">Flights →</a>
+        <a href="https://www.discovercars.com/all?a_aid=529721&location=Reykjavik" class="affiliate-btn" target="_blank" rel="noopener sponsored">Car Rental →</a>
+        <a href="https://www.hotellook.com/hotels?destination=Reykjavik&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels →</a>
+        <a href="https://www.getyourguide.com/s/?q=Iceland&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Activities →</a>
+      </div>
+    </div>
 
     <div class="cta-block">
       <h3>Ready to plan your Iceland trip?</h3>

@@ -56,7 +56,7 @@
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
   --text:#f0f0f8;--muted:rgba(240,240,248,.55);--muted2:rgba(240,240,248,.80);
   --purple:#7c6af7;--purple-light:#a78bfa;--purple-glow:rgba(124,106,247,.25);
-  --accent:#95b8ff;--green:#6ee7b7;
+  --accent:#95b8ff;--green:#6ee7b7;--red:#e8594e;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-full:999px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -93,7 +93,7 @@ body > nav{
   transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px};.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 
 /* BREADCRUMB */
 .breadcrumb{
@@ -254,6 +254,13 @@ footer a:hover{color:var(--accent)}
 .inline-img{margin:32px 0;border-radius:var(--r-lg);overflow:hidden}
 .inline-img img{width:100%;height:auto;display:block}
 .inline-img figcaption{font-size:13px;color:var(--muted);text-align:center;padding:10px 16px;background:var(--surface)}
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
 </style>
 </head>
 <body>
@@ -333,7 +340,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>Kinkaku-ji (Golden Pavilion)</h3>
 
-    <p>The three-storey pavilion covered in gold leaf, reflected in its mirror pond (<em>Kyoko-chi</em>), is probably the single most photographed building in Japan. It was originally built in 1397 as a retirement villa for Shogun Ashikaga Yoshimitsu, converted to a Zen temple after his death, burned down by a mentally ill monk in 1950 (Yukio Mishima wrote a novel about it), and rebuilt in 1955 with even more gold leaf than the original.</p>
+    <p>The three-storey pavilion covered in gold leaf, reflected in its mirror pond (<em>Kyoko-chi</em>), is probably the single most photographed building in Japan. It was originally built in 1397 as a retirement villa for Shogun Ashikaga Yoshimitsu, converted to a Zen temple after his death, burned down by a mentally ill monk in 1950 (Yukio Mishima wrote a novel about it), and rebuilt in 1955 with even more gold leaf than the original. A <a href="https://www.getyourguide.com/s/?q=Kyoto+Kinkaku-ji+Golden+Pavilion+tour&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">guided tour of the Golden Pavilion</a> adds historical context that the on-site English signage barely scratches.</p>
 
     <p><strong>When to go:</strong> First thing in the morning — gates open at 9am, arrive by 8:45am. The pond is calmest before 10am, and the reflection shot requires still water. In winter, Kinkaku-ji after fresh snowfall is one of the most extraordinary sights in all of Japan — the gold against white is genuinely otherworldly. Check the Kyoto weather forecast and be ready to go at dawn if snow is predicted overnight.</p>
 
@@ -343,7 +350,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>Fushimi Inari-taisha</h3>
 
-    <p>Ten thousand vermilion torii gates march up the forested slopes of Mount Inari in an unbroken corridor of orange. It is the head shrine of Inari, the Shinto deity of rice, sake, and commerce — which is why Japanese businesses have donated gates here for centuries. Each gate bears the name of its donor in black kanji characters.</p>
+    <p>Ten thousand vermilion torii gates march up the forested slopes of Mount Inari in an unbroken corridor of orange. It is the head shrine of Inari, the Shinto deity of rice, sake, and commerce — which is why Japanese businesses have donated gates here for centuries. Each gate bears the name of its donor in black kanji characters. If you want the stories behind the gates, a <a href="https://www.getyourguide.com/s/?q=Kyoto+Fushimi+Inari+guided+tour&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">guided Fushimi Inari tour</a> explains the symbolism most visitors walk right past.</p>
 
     <p><strong>When to go:</strong> At 6am or after 6pm. The shrine is open 24 hours and free to enter — one of Kyoto's only major sites with no admission charge. At midday, the lower torii tunnel is a slow-moving queue of selfie sticks. At dawn, you will have entire corridors to yourself. The full hike to the summit of Mount Inari takes about 2 hours round trip and most tourists quit at the first rest stop (Yotsutsuji intersection, about 45 minutes up). Everything above that point is yours alone.</p>
 
@@ -353,7 +360,7 @@ footer a:hover{color:var(--accent)}
 
     <p>Built into the hillside of eastern Kyoto, Kiyomizu-dera's famous wooden stage (<em>butai</em>) juts out 13 metres over the valley on 139 massive zelkova pillars — assembled without a single nail. The Japanese expression "jumping off the stage at Kiyomizu" means taking the plunge on a big decision. (In the Edo period, people actually did jump, believing they would survive if their wish was sincere. The survival rate was about 85%.)</p>
 
-    <p><strong>When to go:</strong> The approach up Higashiyama through the narrow lanes of Ninenzaka and Sannenzaka is part of the experience — traditional wooden machiya houses, ceramic shops, matcha ice cream stands. Arrive by 6am when the temple opens (yes, 6am) to see the stage with the city laid out below in morning mist. Autumn illumination evenings (mid-November to early December) are magical — the temple stays open until 9pm and the maple trees are lit from below.</p>
+    <p><strong>When to go:</strong> The approach up Higashiyama through the narrow lanes of Ninenzaka and Sannenzaka is part of the experience — traditional wooden machiya houses, ceramic shops, matcha ice cream stands. Consider joining a <a href="https://www.getyourguide.com/s/?q=Kyoto+Higashiyama+walking+tour&partner_id=529721" target="_blank" rel="noopener sponsored">guided Higashiyama walking tour</a> to learn the history behind each lane. Arrive by 6am when the temple opens (yes, 6am) to see the stage with the city laid out below in morning mist. Autumn illumination evenings (mid-November to early December) are magical — the temple stays open until 9pm and the maple trees are lit from below.</p>
 
     <p><strong>Skip if:</strong> You are claustrophobic about crowds. Kiyomizu sees 5 million visitors per year and the platform can feel genuinely uncomfortable at peak hours. Weekday mornings or illumination evenings are the pressure valves.</p>
 
@@ -387,7 +394,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>Daitoku-ji</h3>
 
-    <p>A walled compound in northern Kyoto containing 24 sub-temples, of which only a handful are open to the public at any given time. This is the intellectual heart of Zen in Japan — Sen no Rikyu developed the tea ceremony here, and many of the gardens are attributed to the great masters. Daisen-in has a dry landscape garden that reads like a three-dimensional ink painting. Koto-in has an approach path through towering maples that in autumn becomes a tunnel of fire. Zuiho-in has a hidden Christian garden (a cross of stones, from the era when Christianity was banned). Almost no tourists come here.</p>
+    <p>A walled compound in northern Kyoto containing 24 sub-temples, of which only a handful are open to the public at any given time. This is the intellectual heart of Zen in Japan — Sen no Rikyu developed the <a href="https://www.getyourguide.com/s/?q=Kyoto+tea+ceremony+experience&partner_id=529721" target="_blank" rel="noopener sponsored">tea ceremony</a> here, and many of the gardens are attributed to the great masters. Daisen-in has a dry landscape garden that reads like a three-dimensional ink painting. Koto-in has an approach path through towering maples that in autumn becomes a tunnel of fire. Zuiho-in has a hidden Christian garden (a cross of stones, from the era when Christianity was banned). Almost no tourists come here.</p>
 
     <p><strong>Best time:</strong> Any time. That is the point. Daitoku-ji rarely gets crowded because it is off every standard itinerary and the compound is large enough to absorb visitors. Allow 2 hours to explore 3-4 sub-temples.</p>
 
@@ -407,7 +414,7 @@ footer a:hover{color:var(--accent)}
 
     <p>The UNESCO-listed garden at Tenryu-ji is a <em>shakkei</em> (borrowed scenery) masterpiece — designer Muso Soseki incorporated the Arashiyama mountains as the garden's backdrop in the 14th century, which means the garden stretches seamlessly into wild nature without boundary. The pond garden with its rock islands and distant mountain horizon is considered one of Japan's five greatest gardens.</p>
 
-    <p><strong>Best time:</strong> Early morning, before the Arashiyama bamboo grove crowds spill over. Enter through the north gate (closest to the bamboo grove) so you can visit both in one efficient sweep. The garden is beautiful year-round but peaks in mid-November when the borrowed mountain backdrop turns crimson.</p>
+    <p><strong>Best time:</strong> Early morning, before the Arashiyama bamboo grove crowds spill over. Enter through the north gate (closest to the bamboo grove) so you can visit both in one efficient sweep — or book an <a href="https://www.getyourguide.com/s/?q=Kyoto+Arashiyama+bamboo+grove+tour&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Arashiyama bamboo grove tour</a> that covers Tenryu-ji, the grove, and the monkey park in a single morning. The garden is beautiful year-round but peaks in mid-November when the borrowed mountain backdrop turns crimson.</p>
 
     <figure class="inline-img"><img src="/blog/assets/kyoto-bamboo.webp" alt="Arashiyama Bamboo Grove path in Kyoto" loading="lazy" width="800" height="450"><figcaption>The Arashiyama Bamboo Grove — arrive at dawn to have the path to yourself</figcaption></figure>
 
@@ -423,7 +430,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>Eastern Kyoto Path (Half-day, 4-5 hours)</h3>
 
-    <p>Start at <strong>Kiyomizu-dera</strong> at 6am when it opens. Walk down through the preserved lanes of <strong>Ninenzaka</strong> and <strong>Sannenzaka</strong> — stone-paved slopes lined with wooden machiya shops. Continue north to <strong>Kodai-ji</strong> (beautiful night illuminations in autumn), then into <strong>Maruyama Park</strong> (Kyoto's most famous weeping cherry tree, spectacular in late March). Exit through <strong>Yasaka Shrine</strong> into the Gion district for lunch. Total distance: approximately 2.5 km, mostly downhill. This route is the single best half-day in Kyoto.</p>
+    <p>Start at <strong>Kiyomizu-dera</strong> at 6am when it opens. Walk down through the preserved lanes of <strong>Ninenzaka</strong> and <strong>Sannenzaka</strong> — stone-paved slopes lined with wooden machiya shops. Continue north to <strong>Kodai-ji</strong> (beautiful night illuminations in autumn), then into <strong>Maruyama Park</strong> (Kyoto's most famous weeping cherry tree, spectacular in late March). Exit through <strong>Yasaka Shrine</strong> into the Gion district for lunch — consider adding a <a href="https://www.getyourguide.com/s/?q=Kyoto+Gion+geisha+district+walking+tour&partner_id=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Gion geisha district walking tour</a> in the evening when maiko sometimes appear. Total distance: approximately 2.5 km, mostly downhill. This route is the single best half-day in Kyoto.</p>
 
     <figure class="inline-img"><img src="/blog/assets/kyoto-gion.webp" alt="Gion district traditional architecture in Kyoto" loading="lazy" width="800" height="450"><figcaption>Gion's traditional wooden machiya houses preserve old Kyoto's atmosphere</figcaption></figure>
 
@@ -468,9 +475,9 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>Green Season (May to June):</strong> This is Kyoto's most underrated window. The moss gardens at Ginkaku-ji, Saiho-ji, and Giou-ji reach their peak lushness during the early rainy season (<em>tsuyu</em>, usually mid-June to mid-July). Crowds drop 40% from cherry blossom season. Hotel prices fall accordingly. Yes, it rains — but Kyoto temples in the rain, with wet stone paths and dripping moss, are some of the most atmospheric places on Earth. Bring an umbrella and a waterproof camera bag.</p>
 
-    <p><strong>Autumn Foliage (mid-November):</strong> If cherry blossom season is Kyoto's most famous moment, autumn foliage is its most beautiful. The peak window is narrow — typically November 15-30, with the absolute peak around November 20-25. Tofuku-ji, Eikando, and Kiyomizu-dera are the standout foliage temples. Many temples offer special evening illuminations (<em>lightup</em>) during this period, where the maple trees are lit from below against the dark sky. Book accommodation 3-4 months in advance for the third and fourth weeks of November.</p>
+    <p><strong>Autumn Foliage (mid-November):</strong> If cherry blossom season is Kyoto's most famous moment, autumn foliage is its most beautiful. The peak window is narrow — typically November 15-30, with the absolute peak around November 20-25. Tofuku-ji, Eikando, and Kiyomizu-dera are the standout foliage temples. Many temples offer special evening illuminations (<em>lightup</em>) during this period, where the maple trees are lit from below against the dark sky. <a href="https://www.hotellook.com/hotels?destination=Kyoto&adults=2&rooms=1&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Book accommodation</a> 3-4 months in advance for the third and fourth weeks of November.</p>
 
-    <p><strong>Winter (December to February):</strong> Kyoto in winter is cold (averaging 4-7 degrees Celsius in January), grey, and magnificent. Snow falls on Kyoto perhaps 10-15 days per winter, and when it does, Kinkaku-ji's gold against white snow, the rock garden at Ryoan-ji dusted with powder, and the bamboo grove weighted with ice are among the most extraordinary sights in Japan. Crowds drop to a fraction of peak season. Hotel prices are at their annual low. If you can tolerate cold and are flexible enough to chase a snow day, winter Kyoto is the connoisseur's choice.</p>
+    <p><strong>Winter (December to February):</strong> Kyoto in winter is cold (averaging 4-7 degrees Celsius in January), grey, and magnificent. Snow falls on Kyoto perhaps 10-15 days per winter, and when it does, Kinkaku-ji's gold against white snow, the rock garden at Ryoan-ji dusted with powder, and the bamboo grove weighted with ice are among the most extraordinary sights in Japan. Crowds drop to a fraction of peak season. <a href="https://www.hotellook.com/hotels?destination=Kyoto&adults=2&rooms=1&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Hotel prices</a> are at their annual low. If you can tolerate cold and are flexible enough to chase a snow day, winter Kyoto is the connoisseur's choice.</p>
 
     <div class="info-box">
       <div class="info-box-title">Crowd calendar</div>
@@ -480,6 +487,12 @@ footer a:hover{color:var(--accent)}
         <li><strong>Lightest crowds:</strong> January-February (excluding New Year), June, September, weekdays year-round</li>
         <li><strong>Universal rule:</strong> Be at any temple when it opens. By 10:30am the bus tours arrive and the experience changes fundamentally.</li>
       </ul>
+    </div>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels in Kyoto</div>
+      <p>Compare prices across hundreds of Kyoto hotels — from traditional ryokan guesthouses near Gion to modern stays by Kyoto Station. Best rates for cherry blossom and autumn foliage seasons fill up fast.</p>
+      <a href="https://www.hotellook.com/hotels?destination=Kyoto&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Kyoto Hotel Prices &rarr;</a>
     </div>
 
     <h2 id="temple-etiquette">Temple Etiquette</h2>
@@ -525,17 +538,47 @@ footer a:hover{color:var(--accent)}
       </li>
     </ul>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Kyoto Tours &amp; Experiences</div>
+      <p>Skip-the-line temple tickets, guided walking tours, traditional tea ceremonies, geisha district evening walks, and bamboo grove excursions — all bookable with free cancellation.</p>
+      <div class="affiliate-row">
+        <a href="https://www.getyourguide.com/s/?q=Kyoto+temple+tour&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Temple Tours &rarr;</a>
+        <a href="https://www.getyourguide.com/s/?q=Kyoto+tea+ceremony&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tea Ceremonies &rarr;</a>
+        <a href="https://www.getyourguide.com/s/?q=Kyoto+activities&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">All Activities &rarr;</a>
+      </div>
+    </div>
+
     <h2 id="getting-around-kyoto">Getting Around Kyoto</h2>
 
-    <p>Kyoto's public transport is solid but quirky. The city has only two subway lines (forming an imperfect cross), a bus network that is extensive but slow, several private rail lines that each serve different corridors, and a geography that makes cycling the single best option for most visitors.</p>
+    <p>Kyoto has no major airport of its own — most international visitors <a href="https://www.kiwi.com/en/search/results?to=KIX&adults=2" style="color:var(--red)" target="_blank" rel="noopener sponsored">fly into Kansai International (KIX)</a> near Osaka and take the 75-minute Haruka Express train into Kyoto Station. Once you are in the city, public transport is solid but quirky. Kyoto has only two subway lines (forming an imperfect cross), a bus network that is extensive but slow, several private rail lines that each serve different corridors, and a geography that makes cycling the single best option for most visitors.</p>
 
     <p><strong>Bus day pass (700 yen):</strong> The Kyoto City Bus one-day pass covers most routes you will need and pays for itself after three rides (each ride is 230 yen flat fare). The catch: Kyoto buses are notoriously slow during peak tourist season, stuck in the same traffic as everything else. The 100, 101, and 205 routes hit most major temples but can take 45 minutes for a journey that would be 15 minutes by bicycle. Buy the pass at Kyoto Station bus terminal or any convenience store.</p>
 
-    <p><strong>When to take the train:</strong> Use the JR Sagano Line to Arashiyama (15 minutes from Kyoto Station), the Keihan Line for eastern Kyoto (Fushimi Inari, Tofuku-ji, Kiyomizu-area), and the Eizan Railway for northern mountain temples (Kurama, Kibune). Trains are always faster than buses for these corridors and run on exact schedules.</p>
+    <p><strong>When to take the train:</strong> Use the JR Sagano Line to Arashiyama (15 minutes from Kyoto Station), the Keihan Line for eastern Kyoto (Fushimi Inari, Tofuku-ji, Kiyomizu-area), and the Eizan Railway for northern mountain temples (Kurama, Kibune). Trains are always faster than buses for these corridors and run on exact schedules. If you are arriving from outside Kyoto, <a href="https://rail.ninja/?from=Tokyo&to=Kyoto&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">book your Tokyo-to-Kyoto shinkansen</a> or <a href="https://rail.ninja/?from=Osaka&to=Kyoto&marker=529721" style="color:var(--red)" target="_blank" rel="noopener sponsored">Osaka-to-Kyoto train</a> in advance — reserved seats on the Tokaido Shinkansen sell out during peak season.</p>
 
     <p><strong>Cycling (the best option):</strong> Kyoto is flat. The entire temple-dense area from Kinkaku-ji in the northwest to Fushimi Inari in the southeast is about 10 km — a 40-minute ride at a relaxed pace. Rental bicycles cost 1,000-1,500 yen per day from shops near Kyoto Station and in the Gion area. Electric-assist bicycles (1,500-2,000 yen/day) make the few hills effortless. Kyoto has good cycling infrastructure by Japanese standards, and locals cycle everywhere. This is genuinely the optimal way to move between temple clusters.</p>
 
     <p><strong>Walking distances between clusters:</strong> Eastern Kyoto (Kiyomizu to Ginkaku-ji via Philosopher's Path) is about 5 km and takes 90 minutes at a comfortable pace with stops. Kinkaku-ji to Ryoan-ji to Ninna-ji is 3 km and takes an hour. Arashiyama's main sights are within a 1.5 km radius and walkable in an afternoon. Budget more time than you think — Kyoto rewards slow movement and unplanned detours into side streets.</p>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Train Tickets to Kyoto</div>
+      <p>The shinkansen (bullet train) is the fastest way to reach Kyoto — 2 hours 15 minutes from Tokyo, 15 minutes from Osaka. Compare schedules and reserve seats in advance.</p>
+      <div class="affiliate-row">
+        <a href="https://rail.ninja/?from=Tokyo&to=Kyoto&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tokyo &rarr; Kyoto</a>
+        <a href="https://rail.ninja/?from=Osaka&to=Kyoto&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Osaka &rarr; Kyoto</a>
+      </div>
+    </div>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your Kyoto Trip</div>
+      <p>Everything you need for Kyoto — hotels, guided temple tours, tea ceremonies, and train tickets from Tokyo or Osaka.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Kyoto&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels &rarr;</a>
+        <a href="https://www.getyourguide.com/s/?q=Kyoto&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours &rarr;</a>
+        <a href="https://rail.ninja/?from=Tokyo&to=Kyoto&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Trains &rarr;</a>
+        <a href="https://www.kiwi.com/en/search/results?to=KIX&adults=2" class="affiliate-btn" target="_blank" rel="noopener sponsored">Flights &rarr;</a>
+      </div>
+    </div>
 
     <div class="cta-block">
       <h3>Ready to plan your Kyoto trip?</h3>

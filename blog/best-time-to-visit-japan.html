@@ -93,7 +93,7 @@ body > nav{
   transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px};.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 
 /* BREADCRUMB */
 .breadcrumb{
@@ -258,6 +258,13 @@ body > nav{
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
 </style>
 </head>
 <body>
@@ -361,12 +368,18 @@ footer a:hover{color:var(--accent)}
 
     <div class="info-box">
       <div class="info-box-title">Timing tip</div>
-      <p>Full bloom (<em>mankai</em>) lasts only 7–10 days; peak petal-fall (<em>hanafubuki</em>) is the 2–3 days after. Book accommodation 3–4 months ahead for Tokyo and Kyoto in late March. If you can only confirm one week, aim for the first week of April — statistically the safest bet.</p>
+      <p>Full bloom (<em>mankai</em>) lasts only 7–10 days; peak petal-fall (<em>hanafubuki</em>) is the 2–3 days after. <a href="https://www.hotellook.com/hotels?destination=Tokyo&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">Book accommodation</a> 3–4 months ahead for Tokyo and Kyoto in late March. If you can only confirm one week, aim for the first week of April — statistically the safest bet.</p>
     </div>
 
     <p>Golden Week (late April to early May) is a national holiday cluster. Domestic tourism surges and prices spike 30–50%. If your dates overlap with Golden Week, lean into rural areas — the Kumano Kodo pilgrimage trail in Wakayama, or the Shirakawa-go thatched-roof villages in Gifu — where the crowds are thinner and the scenery equally spectacular.</p>
 
     <figure class="inline-img"><img src="/blog/assets/japan-cherry-blossom.webp" alt="Cherry blossoms in full bloom along a Japanese river" loading="lazy" width="800" height="450"><figcaption>Cherry blossom season transforms Japan into a pink wonderland</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels in Japan</div>
+      <p>Cherry blossom season hotels sell out fast — compare prices across Tokyo, Kyoto, and Osaka hotels and book early.</p>
+      <a href="https://www.hotellook.com/hotels?destination=Tokyo&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotel Prices →</a>
+    </div>
 
     <h2 id="summer-festivals-and-fireworks">Summer: Festivals and Fireworks (June – August)</h2>
 
@@ -384,6 +397,12 @@ footer a:hover{color:var(--accent)}
 
     <p>The heat is serious — mid-30s Celsius with high humidity in Tokyo and Kyoto. Stay hydrated, wear lightweight clothing, and schedule outdoor sightseeing before 10am or after 5pm. Hokkaido in summer is a revelation: cool, green, and almost tourist-free compared to Honshu.</p>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Japan Tours & Activities</div>
+      <p>From Kyoto temple walks to Tokyo street food tours — browse and book top-rated experiences with free cancellation.</p>
+      <a href="https://www.getyourguide.com/s/?q=Japan+tours&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Japan Activities →</a>
+    </div>
+
     <h2 id="autumn-foliage-season">Autumn: Foliage Season (Late September – November)</h2>
 
     <p>Many experienced Japan travellers put <strong>mid-October to mid-November</strong> above cherry blossom season. The crowds are 20–30% lighter, prices are lower than spring, the weather is crisp and clear, and the <em>koyo</em> (autumn foliage) colours — deep crimson, amber, burnt orange — are as visually dramatic as any sakura.</p>
@@ -397,7 +416,7 @@ footer a:hover{color:var(--accent)}
       <li><strong>Tokyo (Rikugien, Shinjuku Gyoen):</strong> Late November to early December</li>
     </ul>
 
-    <p>The Kyoto autumn window is genuinely one of the most beautiful experiences on the planet. Temple gardens that are merely lovely in summer become extraordinary. Book Kyoto accommodation for the third and fourth week of November as early as you possibly can — it sells out months in advance.</p>
+    <p>The Kyoto autumn window is genuinely one of the most beautiful experiences on the planet. Temple gardens that are merely lovely in summer become extraordinary. <a href="https://www.hotellook.com/hotels?destination=Kyoto&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">Book Kyoto accommodation</a> for the third and fourth week of November as early as you possibly can — it sells out months in advance.</p>
 
     <figure class="inline-img"><img src="/blog/assets/japan-shrine.webp" alt="Traditional Japanese shrine surrounded by nature" loading="lazy" width="800" height="450"><figcaption>Japan's temples and shrines are stunning in every season</figcaption></figure>
 
@@ -407,8 +426,8 @@ footer a:hover{color:var(--accent)}
 
     <p><strong>January and February</strong> are the coldest months and when Japan's world-class ski resorts peak:</p>
     <ul>
-      <li><strong>Niseko, Hokkaido:</strong> The powder capital of Japan. Gets 15+ metres of snow annually. Well-connected international resort with excellent English signage.</li>
-      <li><strong>Hakuba, Nagano:</strong> Olympic legacy resort. 7 interconnected ski areas. Convenient day trip from Tokyo (2 hours by express train).</li>
+      <li><strong>Niseko, Hokkaido:</strong> The powder capital of Japan. Gets 15+ metres of snow annually. Well-connected international resort with excellent English signage. <a href="https://www.hotellook.com/hotels?destination=Niseko&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">Compare Niseko hotel prices</a>.</li>
+      <li><strong>Hakuba, Nagano:</strong> Olympic legacy resort. 7 interconnected ski areas. Convenient day trip from Tokyo (2 hours by <a href="https://rail.ninja/?from=Tokyo&to=Kyoto&marker=529721" target="_blank" rel="noopener sponsored">express train</a>).</li>
       <li><strong>Nozawa Onsen:</strong> Traditional village resort. Steep terrain, deep local character, and a legendary communal <em>onsen</em> bath.</li>
     </ul>
 
@@ -426,6 +445,12 @@ footer a:hover{color:var(--accent)}
     </div>
 
     <figure class="inline-img"><img src="/blog/assets/japan-winter.webp" alt="Snow-covered Japanese village in winter" loading="lazy" width="800" height="450"><figcaption>Winter brings a magical transformation to rural Japan</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Japan Rail Tickets</div>
+      <p>The bullet train is the best way to travel Japan — compare routes, times, and prices for Shinkansen and express trains.</p>
+      <a href="https://rail.ninja/?from=Tokyo&to=Kyoto&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Train Tickets →</a>
+    </div>
 
     <h2 id="photo-spots">Photo Spots — Three Unmissable Frames</h2>
 
@@ -470,6 +495,16 @@ footer a:hover{color:var(--accent)}
     <strong>October:</strong> Perfect weather. Autumn colour begins in north. Excellent shoulder season.<br>
     <strong>November:</strong> Peak autumn foliage. Kyoto's most beautiful month. Book far ahead.<br>
     <strong>December:</strong> Illumination season. Christmas in Japan feels festive and KFC is everywhere (genuinely).</p>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your Japan Trip</div>
+      <p>Hotels, guided tours, and train tickets — compare and book everything you need for Japan.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Tokyo&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels →</a>
+        <a href="https://www.getyourguide.com/s/?q=Japan+tours&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours & Activities →</a>
+        <a href="https://rail.ninja/?from=Tokyo&to=Kyoto&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Train Tickets →</a>
+      </div>
+    </div>
 
     <div class="cta-block">
       <h3>Ready to plan your Japan trip?</h3>

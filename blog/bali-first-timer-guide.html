@@ -93,7 +93,7 @@ body > nav{
   transition:background .2s,transform .15s;white-space:nowrap;
 }
 .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px)}
-@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px}}
+@media(max-width:600px){.nav-links{display:none};body > nav{padding:0 16px};.affiliate-row{flex-direction:column}.affiliate-row .affiliate-btn{text-align:center}}
 
 /* BREADCRUMB */
 .breadcrumb{
@@ -256,6 +256,13 @@ body > nav{
 footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--purple-light);font-weight:500}
 footer a:hover{color:var(--accent)}
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:#e8594e}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:#e8594e;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
 </style>
 </head>
 <body>
@@ -334,7 +341,7 @@ footer a:hover{color:var(--accent)}
     <p>Ubud is Bali's spiritual and artistic heart, set among rice terraces and river gorges in the island's central highlands. The air is cooler here than the coast, the streets are lined with galleries and yoga studios, and the surrounding villages host some of Bali's most important temples. This is where you come to see traditional dance performances, walk through monkey forests, and eat at farm-to-table restaurants overlooking jungle canopies.</p>
 
     <p><strong>Vibe:</strong> Peaceful, cultural, health-conscious. Early mornings, early nights. Strong yoga and wellness scene.<br>
-    <strong>Hotels:</strong> Budget guesthouses from $15–30/night. Mid-range villas with pools from $60–120/night. Luxury resorts (Four Seasons Sayan, Viceroy) from $400–800/night.<br>
+    <strong>Hotels:</strong> Budget guesthouses from $15–30/night. Mid-range villas with pools from $60–120/night. Luxury resorts (Four Seasons Sayan, Viceroy) from $400–800/night — <a href="https://www.hotellook.com/hotels?destination=Ubud&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">compare Ubud hotel prices</a>.<br>
     <strong>Best for:</strong> Couples, solo travellers, culture seekers, anyone who wants more than beaches.</p>
 
     <h3>Seminyak — Boutiques, Dining, and Sunset Bars</h3>
@@ -342,7 +349,7 @@ footer a:hover{color:var(--accent)}
     <p>Seminyak is Bali's most polished coastal neighbourhood. The beach is wide, the restaurants are genuinely excellent (some of the best dining in Southeast Asia), and the shopping runs from local designers to international boutiques along Jalan Kayu Aya and Jalan Petitenget. Sunset is the main event — Ku De Ta, Potato Head Beach Club, and La Plancha are iconic spots, but newer venues keep appearing.</p>
 
     <p><strong>Vibe:</strong> Upscale, social, food-focused. More dressed-up than Canggu, less rowdy than Kuta.<br>
-    <strong>Hotels:</strong> Mid-range villas from $80–150/night. Boutique hotels from $100–200/night. Luxury (W Bali, The Legian) from $250–500/night.<br>
+    <strong>Hotels:</strong> Mid-range villas from $80–150/night. Boutique hotels from $100–200/night. Luxury (W Bali, The Legian) from $250–500/night — <a href="https://www.hotellook.com/hotels?destination=Seminyak&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">compare Seminyak hotels</a>.<br>
     <strong>Best for:</strong> Couples, foodies, anyone who wants a beautiful beach with good infrastructure.</p>
 
     <h3>Canggu — Surfers, Co-working Spaces, and Brunch Culture</h3>
@@ -369,6 +376,12 @@ footer a:hover{color:var(--accent)}
     <strong>Hotels:</strong> Mid-range resorts from $100–200/night. Luxury resorts from $250–600/night.<br>
     <strong>Best for:</strong> Families with young children, resort holiday seekers, conference attendees.</p>
 
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels in Bali</div>
+      <p>Compare prices across hundreds of Bali hotels — budget guesthouses from $15/night to luxury cliff villas.</p>
+      <a href="https://www.hotellook.com/hotels?destination=Bali&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotel Prices →</a>
+    </div>
+
     <h2 id="temples-that-actually-deserve-the-visit">Temples That Actually Deserve the Visit</h2>
 
     <p>Bali has over 20,000 temples — every village has at least three. Most are active places of worship, not tourist attractions, and the line between sacred site and photo op can get blurry. These five are genuinely worth your time, both for their spiritual significance and their physical beauty.</p>
@@ -394,6 +407,12 @@ footer a:hover{color:var(--accent)}
     <p>Lempuyang became one of the most Instagrammed spots in Bali thanks to photos showing the split gate (<em>candi bentar</em>) perfectly framing Mount Agung with a mirror-like reflection below. The reflection was created by a photographer holding a phone screen or mirror beneath the camera — <strong>the famous mirror trick was removed by temple management in 2023</strong>, so don't go expecting that shot. What you will find is a legitimate and ancient temple complex that requires climbing 1,700 steps through misty forest to reach the highest shrine. The split gate at the lower temple is still photogenic on a clear day, but the real reward is the climb. Arrive before 8am to beat the queue and have the best chance of seeing Agung without cloud cover. Entrance fee: 50,000 IDR (about $3.15).</p>
 
     <figure class="inline-img"><img src="/blog/assets/bali-temple.webp" alt="Uluwatu temple perched on a Balinese cliff" loading="lazy" width="800" height="450"><figcaption>Uluwatu Temple — perched on dramatic cliffs above the Indian Ocean</figcaption></figure>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Bali Temple Tours & Activities</div>
+      <p>Skip the guesswork — book guided temple tours, Kecak dance tickets, and cultural experiences with free cancellation.</p>
+      <a href="https://www.getyourguide.com/s/?q=Bali+tours&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Bali Activities →</a>
+    </div>
 
     <h2 id="rice-terraces-and-waterfalls">Rice Terraces and Waterfalls</h2>
 
@@ -471,7 +490,7 @@ footer a:hover{color:var(--accent)}
 
     <h3>Private Driver (Recommended for Day Trips)</h3>
 
-    <p>Hiring a private driver for a full day is the single best transport decision you'll make in Bali. A driver with an air-conditioned car for 8–10 hours costs <strong>$35–50 USD</strong> depending on distance, and they'll handle all the navigation, parking, and local knowledge. For a day trip covering waterfalls and temples in the north, or a circuit of the Bukit Peninsula's beaches, a driver is dramatically more efficient and comfortable than any alternative. Ask your hotel to recommend one, or book through Klook or GetYourGuide. Tip 10–15% for good service.</p>
+    <p>Hiring a private driver for a full day is the single best transport decision you'll make in Bali. A driver with an air-conditioned car for 8–10 hours costs <strong>$35–50 USD</strong> depending on distance, and they'll handle all the navigation, parking, and local knowledge. For a day trip covering waterfalls and temples in the north, or a circuit of the Bukit Peninsula's beaches, a driver is dramatically more efficient and comfortable than any alternative. Ask your hotel to recommend one, or book through Klook or <a href="https://www.getyourguide.com/s/?q=Bali+tours&partner_id=529721" target="_blank" rel="noopener sponsored">GetYourGuide</a>. Tip 10–15% for good service.</p>
 
     <h3>Scooter Rental</h3>
 
@@ -504,7 +523,7 @@ footer a:hover{color:var(--accent)}
         <div class="spot-num">3</div>
         <div>
           <div class="spot-name">Kelingking Beach Viewpoint, Nusa Penida</div>
-          <div class="spot-desc">The T-Rex-shaped cliff formation at Kelingking Beach on Nusa Penida is one of the most photographed landscapes in Indonesia. The viewpoint at the top looks down at a pristine white-sand beach framed by towering limestone cliffs and turquoise water. The colours are almost absurdly vivid. You can climb down to the beach, but the path is steep, eroded, and genuinely dangerous — most visitors (and the best photos) stay at the top. Nusa Penida is a 30-minute fast boat from Sanur.</div>
+          <div class="spot-desc">The T-Rex-shaped cliff formation at Kelingking Beach on Nusa Penida is one of the most photographed landscapes in Indonesia. The viewpoint at the top looks down at a pristine white-sand beach framed by towering limestone cliffs and turquoise water. The colours are almost absurdly vivid. You can climb down to the beach, but the path is steep, eroded, and genuinely dangerous — most visitors (and the best photos) stay at the top. Nusa Penida is a 30-minute fast boat from Sanur — <a href="https://www.getyourguide.com/s/?q=Nusa+Penida+day+trip&partner_id=529721" target="_blank" rel="noopener sponsored">book a Nusa Penida day trip</a>.</div>
           <div class="spot-tip">Best time: 7–9am before the day-trip crowds arrive. Morning light hits the cliff face directly. Nusa Penida day trips typically leave Sanur at 8am — go the day before and stay overnight for the empty sunrise.</div>
         </div>
       </li>
@@ -538,6 +557,16 @@ footer a:hover{color:var(--accent)}
     <p><strong>Mid-range traveller ($100–200/day):</strong> Private villa with pool, mix of <em>warung</em> and restaurant meals, private driver for day trips, occasional beach club visit. This is the sweet spot — you'll live extremely well.</p>
 
     <p><strong>Luxury traveller ($300+/day):</strong> Five-star resorts, fine dining, private guided tours, spa treatments, helicopter transfers. Bali's luxury tier competes with anywhere in the world at a fraction of European or Maldives prices.</p>
+
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your Bali Trip</div>
+      <p>Hotels, tours, activities, and car rental — compare and book everything you need.</p>
+      <div class="affiliate-row">
+        <a href="https://www.hotellook.com/hotels?destination=Bali&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels →</a>
+        <a href="https://www.getyourguide.com/s/?q=Bali+tours&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours & Activities →</a>
+        <a href="https://www.discovercars.com/all?a_aid=529721&location=Bali" class="affiliate-btn" target="_blank" rel="noopener sponsored">Car Rental →</a>
+      </div>
+    </div>
 
     <div class="cta-block">
       <h3>Ready to plan your Bali trip?</h3>
