@@ -122,7 +122,8 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 
   /* These banners are direct #app children. Keep shared-trip notices visible
      without allowing mobile-style inline banners to consume a desktop flex column. */
-  .viewer-banner{position:fixed;right:20px;bottom:20px;z-index:120;max-width:420px;margin:0!important;box-shadow:0 16px 40px rgba(0,0,0,.32)}
+  .viewer-banner{position:fixed;right:20px;bottom:90px;z-index:120;max-width:420px;margin:0!important;box-shadow:0 16px 40px rgba(0,0,0,.32);border-radius:16px}
+  body.viewer-mode .desk-day-panel .desk-body{padding-bottom:80px}
   #demoBanner{display:none!important}
 
   /* ── Days tab: two-panel ── */
@@ -134,7 +135,7 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
   .day-big-card.desk-active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
   .desk-day-panel{display:none;grid-column:2;grid-row:2;min-width:0;min-height:0;overflow:hidden;background:var(--bg)}
   .desk-day-panel.has-day{display:flex;flex-direction:column}
-  .desk-day-panel .desk-hero{height:220px;background-size:cover;background-position:center;position:relative;flex-shrink:0}
+  .desk-day-panel .desk-hero{height:220px;background-size:cover;background-position:center;position:relative;flex-shrink:0;background-color:rgba(124,106,247,.06)}
   .desk-day-panel .desk-hero-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--surface) 0%,transparent 60%)}
   .desk-day-panel .desk-hero-info{position:absolute;bottom:12px;left:20px}
   .desk-day-panel .desk-badge{font-size:11px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.6px}
@@ -386,7 +387,9 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 }
 .day-big-card:active{transform:scale(.985)}
 .day-big-card.today-card{border-color:rgba(52,211,153,.4)}
-.day-big-hero{flex:1;background-size:cover;background-position:center;position:relative;overflow:hidden;min-height:0}
+.day-big-hero{flex:1;background-size:cover;background-position:center;position:relative;overflow:hidden;min-height:0;background-color:rgba(124,106,247,.08)}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.day-big-hero:not([style*="background-image"])::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(124,106,247,.06) 40%,rgba(149,184,255,.1) 60%,transparent 100%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
 .day-big-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,10,.96) 0%,rgba(4,4,10,.45) 40%,rgba(0,0,0,.15) 70%,transparent 100%)}
 .day-big-overlay{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px}
 .day-big-badge{font-size:10px;font-weight:800;color:var(--accent2);letter-spacing:.9px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
@@ -2193,6 +2196,8 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
       <button class="more-action" onclick="closeMore();exportTripIcs()">📅 Calendar (.ics)</button>
       <button class="more-action" onclick="closeMore();exportHtml()">📄 Export HTML</button>
       <button class="more-action" onclick="closeMore();openEditModal()">✏️ Edit Trip</button>
+      <button class="more-action" onclick="closeMore();saveForOffline()">📥 Save Offline</button>
+      <button class="more-action" onclick="closeMore();inviteCollaborator()">👥 Invite to Trip</button>
       <button class="more-action" id="moreUpgradeBtn" onclick="closeMore();showUpgradeModal()" style="background:linear-gradient(135deg,#95b8ff,var(--purple));color:var(--bg);border-color:transparent">⚡ Upgrade to Pro</button>
     </div>
   </div>
@@ -3307,20 +3312,20 @@ window.CITY_IMGS = {
     'porto':'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=900&h=500&fit=crop',
     // Japan
     'tokyo':'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&h=500&fit=crop',
-    'kawagoe':'/og-image.png',
-    'kawaguchiko':'/og-image.png',
-    'mt fuji':'/og-image.png',
-    'fuji':'/og-image.png',
-    'shibuya':'/og-image.png',
-    'shinjuku':'/og-image.png',
-    'akihabara':'/og-image.png',
-    'asakusa':'/og-image.png',
+    'kawagoe':'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&h=500&fit=crop',
+    'kawaguchiko':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
+    'mt fuji':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
+    'fuji':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
+    'shibuya':'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&h=500&fit=crop',
+    'shinjuku':'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&h=500&fit=crop',
+    'akihabara':'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&h=500&fit=crop',
+    'asakusa':'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&h=500&fit=crop',
     'nara':'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=900&h=500&fit=crop',
     'hiroshima':'https://images.unsplash.com/photo-1576675784201-0e142b423952?w=900&h=500&fit=crop',
-    'hakone':'/og-image.png',
-    'japan':'/og-image.png',
-    'uluwatu':'/og-image.png',
-    'denpasar':'/og-image.png',
+    'hakone':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
+    'japan':'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&h=500&fit=crop',
+    'uluwatu':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
+    'denpasar':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
     'kyoto':'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=900&h=500&fit=crop',
     'osaka':'https://images.unsplash.com/photo-1589452271712-64b8a66c7b71?w=900&h=500&fit=crop',
     // Southeast Asia
@@ -3361,6 +3366,18 @@ window.CITY_IMGS = {
     'sydney':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
     'melbourne':'https://images.unsplash.com/photo-1545044846-351ba102b6d5?w=900&h=500&fit=crop',
     'auckland':'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=900&h=500&fit=crop',
+    'wellington':'https://images.unsplash.com/photo-1589871973318-9ca1258faa1d?w=900&h=500&fit=crop',
+    'rotorua':'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=900&h=500&fit=crop',
+    'queenstown':'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&h=500&fit=crop',
+    'christchurch':'https://images.unsplash.com/photo-1546039907-7b2e14db1606?w=900&h=500&fit=crop',
+    'new zealand':'https://images.unsplash.com/photo-1469521669194-babb45599def?w=900&h=500&fit=crop',
+    'milford sound':'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=900&h=500&fit=crop',
+    'taupo':'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=900&h=500&fit=crop',
+    'hobbiton':'https://images.unsplash.com/photo-1469521669194-babb45599def?w=900&h=500&fit=crop',
+    'perth':'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&h=500&fit=crop',
+    'brisbane':'https://images.unsplash.com/photo-1524293568345-75d62c3664f7?w=900&h=500&fit=crop',
+    'gold coast':'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=900&h=500&fit=crop',
+    'fiji':'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
     // India
     'mumbai':'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=900&h=500&fit=crop',
     'delhi':'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=900&h=500&fit=crop',
@@ -3377,9 +3394,12 @@ window.CITY_IMGS = {
     'jordaan':'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop',
     'anne-frank':'https://images.unsplash.com/photo-1609010697446-11f2155278f0?w=900&h=500&fit=crop',
     'vondelpark':'/demo-assets/amsterdam-canals.jpg',
-    // Eastern Europe (added)
-    'prague':'/og-image.png',
-    'vienna':'/og-image.png',
+    // Eastern Europe
+    'prague':'https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=900&h=500&fit=crop',
+    'vienna':'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=900&h=500&fit=crop',
+    'budapest':'https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=900&h=500&fit=crop',
+    'dubrovnik':'https://images.unsplash.com/photo-1555990538-1e6c0c0d711d?w=900&h=500&fit=crop',
+    'istanbul':'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=900&h=500&fit=crop',
     // Africa (added)
     'cairo':'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=900&h=500&fit=crop',
     // Maldives
@@ -7284,6 +7304,114 @@ function exportTripIcs() {
 window.exportDayIcs  = exportDayIcs;
 window.exportTripIcs = exportTripIcs;
 
+// ── Save for Offline (Pro) — pre-cache all trip assets via SW ──────────────
+async function saveForOffline() {
+  if (!plan) { showToast('⚠️ No trip to save'); return; }
+  var p = getCachedPlan && getCachedPlan();
+  if (p && p.limits && p.limits.canOffline === false && p.plan !== 'pro') {
+    showUpgradeModal('Upgrade to Pro to save trips for offline access during your journey.');
+    return;
+  }
+  showToast('📥 Saving trip for offline...');
+  var urls = [];
+  urls.push(location.href);
+  if (plan.days) plan.days.forEach(function(d) {
+    if (d.heroImage) urls.push(d.heroImage);
+    if (d.hotels) d.hotels.forEach(function(h) { if (h.image) urls.push(h.image); });
+    if (d.activities) d.activities.forEach(function(a) { if (a.image) urls.push(a.image); });
+  });
+  if (plan.trip && plan.trip.tickets) plan.trip.tickets.forEach(function(t) {
+    if (t.url) urls.push(t.url);
+    if (t.image) urls.push(t.image);
+  });
+  try {
+    var cache = await caches.open('tripva-offline-v1');
+    var planBlob = new Response(JSON.stringify(plan), { headers: { 'Content-Type': 'application/json' } });
+    await cache.put('offline-plan-' + (plan.trip?.name || 'trip'), planBlob);
+    var fetched = 0;
+    await Promise.allSettled(urls.map(function(u) {
+      return fetch(u, { mode: 'no-cors' }).then(function(r) {
+        if (r.ok || r.type === 'opaque') { fetched++; return cache.put(u, r); }
+      }).catch(function(){});
+    }));
+    showToast('✅ Trip saved for offline (' + fetched + ' assets cached)');
+  } catch(e) {
+    showToast('⚠️ Could not save for offline');
+  }
+}
+window.saveForOffline = saveForOffline;
+
+// ── Invite Collaborator (Pro) ──────────────────────────────────────────────
+async function inviteCollaborator() {
+  var p = getCachedPlan && getCachedPlan();
+  if (p && p.limits && p.limits.canCollab === false && p.plan !== 'pro') {
+    showUpgradeModal('Upgrade to Pro to invite travel partners to collaborate on your trip.');
+    return;
+  }
+  var sess = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+  if (!sess || !sess.access_token) {
+    showToast('🔑 Sign in first to invite collaborators');
+    setTimeout(saveToAccount, 300);
+    return;
+  }
+  var savedTrips = JSON.parse(localStorage.getItem('tripva_saved_trips') || '[]');
+  var currentTrip = savedTrips.find(function(t) { return t.share_url && location.href.includes(t.share_url); });
+  if (!currentTrip) {
+    showToast('💾 Save this trip first, then invite collaborators');
+    saveToAccount();
+    return;
+  }
+  var email = prompt('Enter email of travel partner to invite:');
+  if (!email) return;
+  var role = confirm('Give them edit access? (OK = Editor, Cancel = View only)') ? 'editor' : 'viewer';
+  try {
+    showToast('📨 Sending invite...');
+    var res = await fetch(API + '/api/user/collab/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sess.access_token },
+      body: JSON.stringify({ tripId: currentTrip.id, email: email, role: role })
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      if (data.error === 'pro_required') { showUpgradeModal(data.message); return; }
+      showToast('⚠️ ' + (data.message || data.error || 'Failed to invite'));
+      return;
+    }
+    if (navigator.clipboard) await navigator.clipboard.writeText(data.inviteUrl);
+    showToast('✅ Invite link copied! Share it with ' + email + ' (' + role + ')');
+  } catch(e) {
+    showToast('⚠️ Could not create invite');
+  }
+}
+window.inviteCollaborator = inviteCollaborator;
+
+// ── Accept collab invite from URL ──────────────────────────────────────────
+(function checkInviteToken() {
+  var params = new URLSearchParams(location.search);
+  var invite = params.get('invite');
+  if (!invite) return;
+  var sess = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+  if (!sess || !sess.access_token) {
+    showToast('🔑 Sign in to accept the trip invite');
+    localStorage.setItem('tripva_pending_invite', invite);
+    return;
+  }
+  fetch(API + '/api/user/collab/accept', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sess.access_token },
+    body: JSON.stringify({ inviteToken: invite })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      showToast('✅ You\'ve joined the trip' + (d.role === 'editor' ? ' as an editor' : '') + '!');
+      var clean = new URL(location.href);
+      clean.searchParams.delete('invite');
+      history.replaceState(null, '', clean.toString());
+    } else {
+      showToast('⚠️ ' + (d.message || d.error || 'Could not accept invite'));
+    }
+  }).catch(function() { showToast('⚠️ Could not accept invite'); });
+})();
+
 // ── Pro plan upgrade (Stripe Checkout) ─────────────────────────────────────
 // Sends auth token + redirect URLs to /api/stripe/checkout. Backend responds
 // with {url} → browser navigates to Stripe; or 503 if billing not configured
@@ -7823,14 +7951,32 @@ try { window.__endOfScript = true; window.__ciKeysAtEnd = (typeof CITY_IMGS === 
 
   function fetchUserPlan() {
     var sess; try { sess = JSON.parse(localStorage.getItem('tripva_session') || 'null'); } catch(e){}
-    if (!sess || !sess.access_token) { _cachedPlan = { plan: 'free', limits: { canShare: false, canExport: false } }; return; }
+    if (!sess || !sess.access_token) { _cachedPlan = { plan: 'free', limits: { canShare: false, canExport: false, canCollab: false, canOffline: false } }; return; }
     fetch(TRIPVA_BACKEND + '/api/user/me', { headers: { 'Authorization': 'Bearer ' + sess.access_token } })
       .then(function(r){ return r.json(); })
       .then(function(d){ if (d && d.plan) _cachedPlan = d; })
       .catch(function(){});
   }
   fetchUserPlan();
-  window.addEventListener('storage', function(e){ if (e.key === 'tripva_session') fetchUserPlan(); });
+  window.addEventListener('storage', function(e){
+    if (e.key === 'tripva_session') {
+      fetchUserPlan();
+      var pendingInvite = localStorage.getItem('tripva_pending_invite');
+      if (pendingInvite) {
+        localStorage.removeItem('tripva_pending_invite');
+        var sess; try { sess = JSON.parse(localStorage.getItem('tripva_session')); } catch(e){}
+        if (sess && sess.access_token) {
+          fetch(TRIPVA_BACKEND + '/api/user/collab/accept', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sess.access_token },
+            body: JSON.stringify({ inviteToken: pendingInvite })
+          }).then(function(r){ return r.json(); }).then(function(d){
+            if (d.ok) showToast('✅ You\'ve joined the trip!');
+          }).catch(function(){});
+        }
+      }
+    }
+  });
 
   function showUpgradeModal(reason) {
     var el = document.getElementById('proUpgradeReason');
