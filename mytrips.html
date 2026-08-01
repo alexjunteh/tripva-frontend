@@ -388,12 +388,14 @@ function loadTrips(token){
   .then(function(d){
     if(!d) return;
     document.getElementById('tripsLoading').style.display = 'none';
-    var trips = d.trips || [];
+    var trips = d.trips || d || [];
+    if(!Array.isArray(trips)) trips = [];
     if(trips.length === 0){
       document.getElementById('tripsEmpty').style.display = 'block';
-      return;
+    } else {
+      renderTrips(trips);
     }
-    renderTrips(trips);
+    loadSharedTrips(token);
   })
   .catch(function(){
     document.getElementById('tripsLoading').style.display = 'none';
@@ -401,12 +403,30 @@ function loadTrips(token){
   });
 }
 
-function renderTrips(trips){
+function loadSharedTrips(token){
+  fetch(BACKEND+'/api/user/shared-trips',{
+    headers:{'Authorization':'Bearer '+token}
+  })
+  .then(function(r){ return r.ok ? r.json() : []; })
+  .then(function(trips){
+    if(!trips || !trips.length) return;
+    var grid = document.getElementById('tripsGrid');
+    var divider = document.createElement('div');
+    divider.style.cssText = 'grid-column:1/-1;padding:16px 0 8px;color:rgba(255,255,255,.5);font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;border-top:1px solid rgba(255,255,255,.08);margin-top:8px';
+    divider.textContent = '👥 Shared with me';
+    grid.appendChild(divider);
+    renderTrips(trips, true);
+    document.getElementById('tripsEmpty').style.display = 'none';
+  })
+  .catch(function(){});
+}
+
+function renderTrips(trips, isShared){
   var grid = document.getElementById('tripsGrid');
   var emojis = ['🗺️','✈️','🏔️','🏖️','🏙️','🌍','🗼','🌊','🏛️','🎌'];
-  
+
   trips.forEach(function(trip, i){
-    var emoji = emojis[i % emojis.length];
+    var emoji = isShared ? '👥' : emojis[i % emojis.length];
     var dest = trip.destination || 'Unknown destination';
     var dates = '';
     if(trip.start_date && trip.end_date){
@@ -414,8 +434,10 @@ function renderTrips(trips){
     } else if(trip.start_date){
       dates = 'From ' + formatDate(trip.start_date);
     }
-    var meta = 'Saved ' + timeAgo(trip.created_at);
-    
+    var meta = isShared
+      ? (trip.role === 'editor' ? '✏️ Editor' : '👁️ Viewer') + ' · Joined ' + timeAgo(trip.sharedAt || trip.created_at)
+      : 'Saved ' + timeAgo(trip.created_at);
+
     var tripUrl = trip.share_url || '#';
     var similarParams = new URLSearchParams();
     if (trip.destination) similarParams.set('dest', trip.destination);
@@ -435,10 +457,10 @@ function renderTrips(trips){
         '</div>',
         '<div class="trip-card-arrow">›</div>',
       '</a>',
-      '<a class="trip-card-similar" href="plan.html?'+similarParams.toString()+'" title="Plan similar trip" style="position:absolute;top:10px;right:46px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#a89e96;text-decoration:none;font-size:14px;transition:background .15s,color .15s" onmouseover="this.style.background=\'rgba(201,169,110,.15)\';this.style.color=\'#c9a96e\'" onmouseout="this.style.background=\'rgba(255,255,255,.06)\';this.style.color=\'#a89e96\'">🪄</a>',
-      '<button class="trip-card-delete" onclick="deleteTrip(\''+trip.id+'\',this)" title="Delete trip">✕</button>'
+      isShared ? '' : '<a class="trip-card-similar" href="plan.html?'+similarParams.toString()+'" title="Plan similar trip" style="position:absolute;top:10px;right:46px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#a89e96;text-decoration:none;font-size:14px;transition:background .15s,color .15s" onmouseover="this.style.background=\'rgba(201,169,110,.15)\';this.style.color=\'#c9a96e\'" onmouseout="this.style.background=\'rgba(255,255,255,.06)\';this.style.color=\'#a89e96\'">🪄</a>',
+      isShared ? '' : '<button class="trip-card-delete" onclick="deleteTrip(\''+trip.id+'\',this)" title="Delete trip">✕</button>'
     ].join('');
-    
+
     grid.appendChild(card);
   });
 }
