@@ -7366,7 +7366,7 @@ async function inviteCollaborator() {
   var role = confirm('Give them edit access? (OK = Editor, Cancel = View only)') ? 'editor' : 'viewer';
   try {
     showToast('📨 Sending invite...');
-    var res = await fetch(API + '/api/user/collab/invite', {
+    var res = await fetch(TRIPVA_BACKEND + '/api/user/collab/invite', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sess.access_token },
       body: JSON.stringify({ tripId: currentTrip.id, email: email, role: role })
@@ -7396,7 +7396,7 @@ window.inviteCollaborator = inviteCollaborator;
     localStorage.setItem('tripva_pending_invite', invite);
     return;
   }
-  fetch(API + '/api/user/collab/accept', {
+  fetch(TRIPVA_BACKEND + '/api/user/collab/accept', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sess.access_token },
     body: JSON.stringify({ inviteToken: invite })
@@ -7887,7 +7887,7 @@ try { window.__endOfScript = true; window.__ciKeysAtEnd = (typeof CITY_IMGS === 
 </div>
 
 <div style="text-align:center;padding:20px 0 32px;font-size:12px;color:rgba(255,255,255,.25)">
-  ✨ Planned by <a href="https://futuriztaos.github.io/trip-planner/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
+  ✨ Planned by <a href="https://tripva.app/" style="color:rgba(149,184,255,.4);text-decoration:none;font-weight:700">Tripva</a> · AI Trip Planner
 </div>
 
 <!-- AUTH SAVE MODAL -->
