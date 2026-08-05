@@ -301,6 +301,12 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 .spot-desc{font-size:10.5px;color:rgba(255,255,255,.65);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .spot-tick{position:absolute;top:9px;right:9px;width:26px;height:26px;border-radius:50%;background:#7c6af7;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;opacity:0;transform:scale(.5) rotate(-30deg);transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 2px 8px rgba(124,106,247,.5)}
 .spot-card.sel .spot-tick{opacity:1;transform:scale(1) rotate(0deg)}
+.spot-region-hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:18px 4px 6px;margin-top:4px}
+.spot-region-hdr:first-child{margin-top:0;padding-top:8px}
+.spot-region-label{font-size:15px;font-weight:900;color:rgba(255,255,255,.85);letter-spacing:-.2px}
+.spot-region-count{font-size:12px;font-weight:600;color:rgba(255,255,255,.35)}
+.spot-region-toggle{background:rgba(124,106,247,.1);border:1.5px solid rgba(124,106,247,.3);border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:700;color:#b4a4ff;cursor:pointer;font-family:inherit;transition:all .18s}
+.spot-region-toggle:hover{background:rgba(124,106,247,.2);border-color:rgba(124,106,247,.5)}
 .spot-footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(10,10,18,.99) 65%,transparent);padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));z-index:200}.spot-footer-inner{max-width:640px;margin:0 auto}
 .spot-count-row{text-align:center;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:700;letter-spacing:.2px}
 .spot-count-row .spot-count-n{color:var(--accent2)}
@@ -733,7 +739,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     <div class="spot-hdr">
       <div class="spot-dest-pill">📍 <span id="spotDestLabel"></span></div>
       <div class="spot-hdr-title">Pick your highlights</div>
-      <div class="spot-hdr-sub">Choose the places you want to experience — we'll build your trip around them</div>
+      <div class="spot-hdr-sub" id="spotHdrSub">Choose the places you want to experience — we'll build your trip around them</div>
     </div>
     <div class="spot-dest-tabs" id="spotDestTabs"></div>
     <div class="spot-grid" id="spotGrid"></div>
@@ -1743,6 +1749,9 @@ async function _parsePDF(file) {
 let _spotSel = new Set();
 let _spotList = [];
 let _spotDest = '';
+let _spotGrouped = false;
+let _spotRegions = [];
+let _allDestGrouped = new Map();
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -1809,17 +1818,19 @@ async function _fetchSpotsForDest(dest) {
       headers: tripvaAuthHeaders(),
       signal: AbortSignal.timeout(22000)
     });
-    if (!r.ok) return [];
-    const { spots } = await r.json();
-    return (spots || []).map(s => ({
+    if (!r.ok) return { spots: [], grouped: false, regions: [] };
+    const data = await r.json();
+    const spots = (data.spots || []).map(s => ({
       name: s.name,
       wiki: s.wikiSlug,
       cat: s.category,
       desc: s.description,
+      region: s.region || null,
       photoUrl: s.photoUrl ? (s.photoUrl.startsWith('/') ? BACKEND + s.photoUrl : s.photoUrl) : null,
       fl: s.name.toLowerCase(),
     }));
-  } catch { return []; }
+    return { spots, grouped: !!data.grouped, regions: data.regions || [] };
+  } catch { return { spots: [], grouped: false, regions: [] }; }
 }
 
 async function showSpotSelector(dest, primaryDest) {
@@ -1828,6 +1839,7 @@ async function showSpotSelector(dest, primaryDest) {
   _renderCustomSpots();
   _allDestSpots = new Map();
   _allDestSel = new Map();
+  _allDestGrouped = new Map();
 
   _destTabList = _destinations.length > 1 ? [..._destinations] : [primaryDest || dest];
   _activeDestTab = _destTabList[0];
@@ -1863,7 +1875,10 @@ function _renderDestTabs() {
 
 async function _loadDestSpots(dest) {
   _allDestSel.set(_activeDestTab, new Set(_spotSel));
-  if (_spotList.length) _allDestSpots.set(_activeDestTab, _spotList);
+  if (_spotList.length) {
+    _allDestSpots.set(_activeDestTab, _spotList);
+    _allDestGrouped.set(_activeDestTab, { grouped: _spotGrouped, regions: _spotRegions });
+  }
 
   _activeDestTab = dest;
   _spotDest = dest;
@@ -1872,16 +1887,22 @@ async function _loadDestSpots(dest) {
   if (_allDestSpots.has(dest)) {
     _spotList = _allDestSpots.get(dest);
     _spotSel = new Set(_allDestSel.get(dest) || []);
+    const gm = _allDestGrouped.get(dest) || { grouped: false, regions: [] };
+    _spotGrouped = gm.grouped;
+    _spotRegions = gm.regions;
     _renderSpotGrid();
     _updateSpotFooter();
     return;
   }
 
   _showSpotSkeleton();
-  const spots = await _fetchSpotsForDest(dest);
-  if (spots.length) {
-    _spotList = spots;
-    _allDestSpots.set(dest, spots);
+  const result = await _fetchSpotsForDest(dest);
+  if (result.spots.length) {
+    _spotList = result.spots;
+    _spotGrouped = result.grouped;
+    _spotRegions = result.regions;
+    _allDestSpots.set(dest, result.spots);
+    _allDestGrouped.set(dest, { grouped: result.grouped, regions: result.regions });
     _allDestSel.set(dest, new Set());
     _spotSel = new Set();
     _renderSpotGrid();
@@ -1889,12 +1910,17 @@ async function _loadDestSpots(dest) {
     const key = _matchDest(dest);
     if (key) {
       _spotList = SPOT_DATA[key];
+      _spotGrouped = false;
+      _spotRegions = [];
       _allDestSpots.set(dest, _spotList);
+      _allDestGrouped.set(dest, { grouped: false, regions: [] });
       _allDestSel.set(dest, new Set());
       _spotSel = new Set();
       _renderSpotGrid();
     } else {
       _spotList = [];
+      _spotGrouped = false;
+      _spotRegions = [];
       const g = document.getElementById('spotGrid');
       g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:rgba(255,255,255,.5)">' +
         '<div style="font-size:32px;margin-bottom:12px">⚠️</div>' +
@@ -1914,40 +1940,70 @@ function _showSpotSkeleton() {
   document.getElementById('spotCountRow').innerHTML = 'Finding highlights…';
 }
 
+function _renderSpotCard(spot, i, g) {
+  const c = document.createElement('div');
+  c.className = 'spot-card' + (_spotSel.has(i) ? ' sel' : '');
+  c.dataset.i = i;
+  c.innerHTML =
+    '<div class="spot-skel" id="_sk'+i+'"></div>' +
+    '<img class="spot-img" id="_si'+i+'" alt="' + esc(spot.name) + '">' +
+    '<div class="spot-grad"></div>' +
+    '<div class="spot-body">' +
+      '<div class="spot-cat">' + (CAT_ICONS[spot.cat] || '📍') + ' ' + esc(spot.cat || '') + '</div>' +
+      '<div class="spot-name">' + esc(spot.name || '') + '</div>' +
+      '<div class="spot-desc">' + esc(spot.desc || '') + '</div>' +
+    '</div>' +
+    '<div class="spot-tick">✓</div>';
+  c.onclick = () => _toggleSpot(i, c);
+  g.appendChild(c);
+  const img = document.getElementById('_si'+i);
+  const sk = document.getElementById('_sk'+i);
+  let imgLoaded = false;
+  const showImg = (src) => {
+    if (!img || imgLoaded) return;
+    img.onload = () => { imgLoaded = true; img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
+    img.onerror = () => {
+      if (sk) { sk.style.background = 'linear-gradient(135deg,#1e1e3a 0%,#2a2848 50%,#1e1e3a 100%)'; sk.style.animation = 'none'; }
+    };
+    img.src = src;
+  };
+  if (spot.photoUrl) showImg(spot.photoUrl);
+}
+
 function _renderSpotGrid() {
   const g = document.getElementById('spotGrid');
   g.innerHTML = '';
-  _spotList.forEach((spot, i) => {
-    const c = document.createElement('div');
-    c.className = 'spot-card';
-    c.dataset.i = i;
-    c.innerHTML =
-      '<div class="spot-skel" id="_sk'+i+'"></div>' +
-      '<img class="spot-img" id="_si'+i+'" alt="' + esc(spot.name) + '">' +
-      '<div class="spot-grad"></div>' +
-      '<div class="spot-body">' +
-        '<div class="spot-cat">' + (CAT_ICONS[spot.cat] || '📍') + ' ' + esc(spot.cat || '') + '</div>' +
-        '<div class="spot-name">' + esc(spot.name || '') + '</div>' +
-        '<div class="spot-desc">' + esc(spot.desc || '') + '</div>' +
-      '</div>' +
-      '<div class="spot-tick">✓</div>';
-    c.onclick = () => _toggleSpot(i, c);
-    g.appendChild(c);
-    const img = document.getElementById('_si'+i);
-    const sk = document.getElementById('_sk'+i);
-    let imgLoaded = false;
-    const showImg = (src) => {
-      if (!img || imgLoaded) return;
-      img.onload = () => { imgLoaded = true; img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
-      img.onerror = () => {
-        if (sk) { sk.style.background = 'linear-gradient(135deg,#1e1e3a 0%,#2a2848 50%,#1e1e3a 100%)'; sk.style.animation = 'none'; }
-      };
-      img.src = src;
-    };
-    if (spot.photoUrl) {
-      showImg(spot.photoUrl);
-    }
-  });
+  const sub = document.getElementById('spotHdrSub');
+  if (sub) sub.textContent = _spotGrouped && _spotRegions.length
+    ? 'Grouped by region — select areas you want to explore'
+    : 'Choose the places you want to experience — we\'ll build your trip around them';
+  if (_spotGrouped && _spotRegions.length) {
+    _spotRegions.forEach(region => {
+      const regionSpots = [];
+      _spotList.forEach((s, i) => { if (s.region === region) regionSpots.push(i); });
+      if (!regionSpots.length) return;
+      const allSel = regionSpots.every(i => _spotSel.has(i));
+      const hdr = document.createElement('div');
+      hdr.className = 'spot-region-hdr';
+      hdr.innerHTML =
+        '<span class="spot-region-label">' + esc(region) + ' <span class="spot-region-count">(' + regionSpots.length + ')</span></span>' +
+        '<button class="spot-region-toggle" data-region="' + esc(region) + '">' + (allSel ? 'Deselect all' : 'Select all') + '</button>';
+      hdr.querySelector('.spot-region-toggle').onclick = () => _toggleRegion(region);
+      g.appendChild(hdr);
+      regionSpots.forEach(i => _renderSpotCard(_spotList[i], i, g));
+    });
+  } else {
+    _spotList.forEach((spot, i) => _renderSpotCard(spot, i, g));
+  }
+}
+
+function _toggleRegion(region) {
+  const indices = [];
+  _spotList.forEach((s, i) => { if (s.region === region) indices.push(i); });
+  const allSel = indices.every(i => _spotSel.has(i));
+  indices.forEach(i => { if (allSel) _spotSel.delete(i); else _spotSel.add(i); });
+  _renderSpotGrid();
+  _updateSpotFooter();
 }
 
 function _toggleSpot(i, card) {
@@ -1970,7 +2026,12 @@ function _updateSpotFooter() {
 }
 
 function continueWithSpots() {
-  const curated = [..._spotSel].map(i => ({ name: _spotList[i].name, category: _spotList[i].cat, description: _spotList[i].desc }));
+  const curated = [..._spotSel].map(i => {
+    const s = _spotList[i];
+    const o = { name: s.name, category: s.cat, description: s.desc };
+    if (s.region) o.region = s.region;
+    return o;
+  });
   const custom = _customSpots.map(s => ({ name: s.name, category: 'custom', description: '' }));
   window._selectedSpots = [...curated, ...custom];
   document.getElementById('spotScreen').style.display = 'none';
