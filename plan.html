@@ -1816,7 +1816,7 @@ async function _fetchSpotsForDest(dest) {
       wiki: s.wikiSlug,
       cat: s.category,
       desc: s.description,
-      photoUrl: s.photoUrl || null,
+      photoUrl: s.photoUrl ? (s.photoUrl.startsWith('/') ? BACKEND + s.photoUrl : s.photoUrl) : null,
       fl: s.name.toLowerCase(),
     }));
   } catch { return []; }
@@ -1935,21 +1935,17 @@ function _renderSpotGrid() {
     g.appendChild(c);
     const img = document.getElementById('_si'+i);
     const sk = document.getElementById('_sk'+i);
-    const picsumUrl = 'https://picsum.photos/seed/' + encodeURIComponent(spot.name || spot.fl || 'travel') + '/800/600';
     let imgLoaded = false;
     const showImg = (src) => {
       if (!img || imgLoaded) return;
       img.onload = () => { imgLoaded = true; img.classList.add('loaded'); if (sk) sk.style.display = 'none'; };
       img.onerror = () => {
-        if (!imgLoaded && img.src !== picsumUrl && img.isConnected) { img.src = picsumUrl; return; }
         if (sk) { sk.style.background = 'linear-gradient(135deg,#1e1e3a 0%,#2a2848 50%,#1e1e3a 100%)'; sk.style.animation = 'none'; }
       };
       img.src = src;
     };
     if (spot.photoUrl) {
       showImg(spot.photoUrl);
-    } else {
-      showImg(picsumUrl);
     }
   });
 }
