@@ -799,6 +799,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
       <p>Enter your email to access your full itinerary and save it to your account.</p>
       <input class="auth-email-input" type="email" id="authEmailInput" placeholder="you@example.com" autocomplete="email">
       <button class="auth-submit-btn" id="authSubmitBtn">View my trip &#8594;</button>
+      <button type="button" id="authSkipBtn" style="display:block;width:100%;margin-top:10px;background:none;border:none;color:rgba(255,255,255,.45);font-size:13px;cursor:pointer;padding:8px;font-family:inherit">Skip for now &#8594;</button>
     </div>
     <div id="authSentContent" style="display:none">
       <div style="text-align:center;padding:8px 0">
@@ -1091,6 +1092,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('authSubmitBtn').onclick = sendMagicLink;
   document.getElementById('authEmailInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMagicLink(); });
+  document.getElementById('authSkipBtn').onclick = () => {
+    try { localStorage.setItem('tripva_email_gate_skipped', '1'); } catch(e) {}
+    window.location.href = _shareUrl || '/trip.html';
+  };
   document.getElementById('genDoneBtn').onclick = openGeneratedTrip;
   var submitBtn = document.getElementById('submitBtn');
   if (submitBtn) submitBtn.onclick = submitTrip;
@@ -2026,12 +2031,30 @@ function _updateSpotFooter() {
 }
 
 function continueWithSpots() {
-  const curated = [..._spotSel].map(i => {
-    const s = _spotList[i];
-    const o = { name: s.name, category: s.cat, description: s.desc };
-    if (s.region) o.region = s.region;
-    return o;
-  });
+  // Persist the active tab's picks, then merge selections across ALL destination tabs
+  _allDestSel.set(_activeDestTab, new Set(_spotSel));
+  const curated = [];
+  if (_destTabList.length > 1) {
+    _destTabList.forEach(dest => {
+      const sel = _allDestSel.get(dest) || new Set();
+      const list = _allDestSpots.get(dest) || (dest === _activeDestTab ? _spotList : []);
+      sel.forEach(i => {
+        const s = list[i];
+        if (!s) return;
+        const o = { name: s.name, category: s.cat, description: s.desc, destination: dest.split(',')[0].trim() };
+        if (s.region) o.region = s.region;
+        curated.push(o);
+      });
+    });
+  } else {
+    _spotSel.forEach(i => {
+      const s = _spotList[i];
+      if (!s) return;
+      const o = { name: s.name, category: s.cat, description: s.desc };
+      if (s.region) o.region = s.region;
+      curated.push(o);
+    });
+  }
   const custom = _customSpots.map(s => ({ name: s.name, category: 'custom', description: '' }));
   window._selectedSpots = [...curated, ...custom];
   document.getElementById('spotScreen').style.display = 'none';
