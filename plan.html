@@ -335,7 +335,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 <body>
 <nav>
   <a class="nav-back" href="/">&#8592; Tripva</a>
-  <a href="mytrips.html" style="font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:600;display:none" id="myTripsNavLink">My Trips</a>
+  <a href="mytrips.html" style="font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:600" id="myTripsNavLink">Sign in</a>
 </nav>
 
 <div class="wrap">
@@ -821,6 +821,7 @@ function tripvaAuthHeaders(extra) {
   } catch(e) {}
   return headers;
 }
+(function(){ try { var s = JSON.parse(localStorage.getItem('tripva_session')||'null'); if(s&&s.access_token){ var el=document.getElementById('myTripsNavLink'); if(el) el.textContent='My Trips'; } } catch(e){} })();
 let travellers = 2;
 let _destinations = [];
 
