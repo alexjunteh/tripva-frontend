@@ -131,6 +131,11 @@ nav{
   transition:color .2s;
 }
 .nav-links a:hover{color:#fff}
+.nav-auth{
+  font-size:13px;color:var(--muted2);font-weight:600;
+  transition:color .2s;white-space:nowrap;
+}
+.nav-auth:hover{color:#fff}
 .nav-cta{
   display:inline-flex;align-items:center;gap:6px;
   background:var(--purple);color:#fff;
@@ -1059,8 +1064,10 @@ footer{
     <a href="blog/">Blog</a>
     <a href="#pricing">Pricing</a>
   </div>
-  
-      <a class="nav-cta" href="plan.html">Try free →</a>
+  <div style="display:flex;align-items:center;gap:16px">
+    <a href="mytrips.html" id="navAuthLink" class="nav-auth">Sign in</a>
+    <a class="nav-cta" href="plan.html">Try free →</a>
+  </div>
 </nav>
 
 <!-- ─── HERO — travel-inspiring photo cycle ─────────────────────────────── -->
@@ -1715,6 +1722,16 @@ document.getElementById('pwaDismissBtn').addEventListener('click', function(){
 });
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
+
+(function(){
+  try {
+    var s = JSON.parse(localStorage.getItem('tripva_session') || 'null');
+    if (s && s.access_token) {
+      var el = document.getElementById('navAuthLink');
+      if (el) { el.textContent = 'My Trips'; }
+    }
+  } catch(e){}
+})();
 
 // Transport mode chip selector
 function selectTransport(chip) {
