@@ -2331,7 +2331,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
       }
 
       logRoute.className = 'gen-log-item done';
-      logRoute.querySelector('.gen-log-icon').textContent = '&#10003;';
+      logRoute.querySelector('.gen-log-icon').textContent = '✓';
       setProgress(30);
       break;
     }
@@ -2361,7 +2361,7 @@ function handleSSEEvent(evt, logRoute, logDays) {
         const titleEl = card.querySelector('.gen-day-title');
         if (titleEl) titleEl.classList.add('ready');
         const statEl = document.getElementById('gday-stat-' + dayNum);
-        if (statEl) statEl.textContent = '&#10003;';
+        if (statEl) statEl.textContent = '✓';
       }
 
       // Render timeline
@@ -2408,9 +2408,9 @@ function handleSSEEvent(evt, logRoute, logDays) {
     case 'done': {
       try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
       setProgress(100);
-      document.getElementById('genEstimate').textContent = '&#10024; Trip ready!';
+      document.getElementById('genEstimate').textContent = '✨ Trip ready!';
       logDays.className = 'gen-log-item done';
-      logDays.querySelector('.gen-log-icon').textContent = '&#10003;';
+      logDays.querySelector('.gen-log-icon').textContent = '✓';
       logDays.querySelector('span:last-child').textContent = 'All days planned!';
 
       document.getElementById('genCta').style.display = 'block';
