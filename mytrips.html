@@ -51,9 +51,11 @@ nav{
   border-bottom:1px solid rgba(255,255,255,.06);
 }
 .nav-logo{
-  font-family:'Cormorant Garamond',Georgia,serif;
-  font-style:italic;font-size:22px;font-weight:600;
-  letter-spacing:1px;color:#f5f0e8;
+  display:flex;align-items:center;
+  width:108px;height:40px;
+}
+.nav-logo img{
+  display:block;width:100%;height:auto;
 }
 .nav-back{
   display:flex;align-items:center;gap:6px;
@@ -317,7 +319,7 @@ nav{
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">Tripva</a>
+  <a class="nav-logo" href="index.html" aria-label="Tripva home"><img src="assets/brand/tripva-nav-logo-dark.png" width="180" height="67" alt="Tripva"></a>
   <button class="nav-back" onclick="history.back()">← Back</button>
 </nav>
 
@@ -384,7 +386,7 @@ nav{
       <div class="empty-icon">🌍</div>
       <div class="empty-title">No saved trips yet</div>
       <div class="empty-sub">Plan a trip and save it to your account — it'll appear here.</div>
-      <a href="index.html" class="empty-cta">✈ Plan a trip</a>
+      <a href="plan.html" class="empty-cta">✈ Plan a trip</a>
     </div>
 
     <div class="trips-grid" id="tripsGrid"></div>
