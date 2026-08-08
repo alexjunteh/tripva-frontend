@@ -2447,12 +2447,11 @@ function populateDashboard(p) {
     if(t.people) document.getElementById('statPeople').textContent=t.people;
     if(t.budget){const _bi=p.budget||[];const _bt=_bi.filter(b=>/✅|Paid|BOOKED/i.test(b.note||'')).reduce((a,b)=>a+parseBudgetToRM(b.amount),0);document.getElementById('statBudget').textContent=_bt>0?('~RM '+Math.round(_bt).toLocaleString()):'—';}
     const _tripSeed=(t.heroSeed||t.destination||'').toLowerCase();
-    const heroImg=t.imageUrl||CITY_IMGS[_tripSeed]||(()=>{
+    const heroImg=(t.imageUrl && !t.imageUrl.includes('loremflickr') ? t.imageUrl : null)||CITY_IMGS[_tripSeed]||(()=>{
       for(const [c,u] of Object.entries(CITY_IMGS)){if(_tripSeed.includes(c))return u;}
-      if(_tripSeed) return `https://loremflickr.com/900/500/${encodeURIComponent(_tripSeed.replace(/-/g,' '))}`;
       return null;
     })();
-    if(heroImg) document.getElementById('tripHeroImg').style.backgroundImage=`url('${heroImg}')`;
+    if(heroImg) { const _hEl=document.getElementById('tripHeroImg'); _hEl.style.backgroundImage=`url('${heroImg}')`; probeHeroBg(_hEl,0); }
   }
 
   // ── DAYS + STRIP ──
@@ -2477,12 +2476,13 @@ function populateDashboard(p) {
     list.innerHTML='';
     (p.days||[]).forEach((d,i) => {
       const seed=(d.heroSeed||'').toLowerCase();
-      const imgUrl=d.imageUrl||(CITY_IMGS[seed])||(()=>{
-        // Try to match seed against city names
+      const titleLc=(d.title||'').toLowerCase();
+      const imgUrl=(d.imageUrl && !d.imageUrl.includes('loremflickr') ? d.imageUrl : null)||(CITY_IMGS[seed])||(()=>{
         for(const [city,url] of Object.entries(CITY_IMGS)){if(seed.includes(city)||city.includes(seed.split('-')[0]))return url;}
-        // Fallback: loremflickr with the heroSeed as keyword (destination-relevant)
-        const kw=encodeURIComponent((d.heroSeed||'travel,city').replace(/-/g,' '));
-        return `https://loremflickr.com/900/500/${kw}`;
+        // Try title words (e.g. "Arrival in Auckland" → "auckland")
+        const words=titleLc.split(/[-\s,&]+/).filter(w=>w.length>2);
+        for(const w of words){if(CITY_IMGS[w])return CITY_IMGS[w];for(const [c,u] of Object.entries(CITY_IMGS)){if(c.includes(w)||w.includes(c))return u;}}
+        return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
       })();
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
@@ -2502,6 +2502,8 @@ function populateDashboard(p) {
         </div>`;
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
+      const heroEl=card.querySelector('.day-big-hero');
+      if(heroEl) probeHeroBg(heroEl,i);
     });
 
     // Itin list in overview
@@ -2813,6 +2815,28 @@ function parseBudgetToRM(str){
   if(eur) return eur*4.7;
   return 0;
 }
+function probeHeroBg(el, idx) {
+  const bg = el.style.backgroundImage;
+  const m = bg.match(/url\(['"]?([^'"?)]+)/);
+  if (!m) return;
+  const src = m[1];
+  if (src.startsWith('data:') || src.startsWith('/')) return;
+  const fallbacks = [
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&h=500&fit=crop',
+  ];
+  const fb = fallbacks[idx % fallbacks.length];
+  const probe = new Image();
+  let settled = false;
+  const fail = () => { if (settled) return; settled = true; el.style.backgroundImage = `url('${fb}')`; };
+  probe.onerror = fail;
+  probe.onload = () => { settled = true; };
+  setTimeout(fail, 5000);
+  probe.src = src;
+}
 function renderLiveOps(){
   const parseTimeMins=(t)=>{const m=String(t||'').match(/(\d{1,2}):(\d{2})/);return m?parseInt(m[1])*60+parseInt(m[2]):-1;};
   const fmtTime=(mins)=>{const h=Math.floor(mins/60),m=mins%60;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;};
@@ -2855,8 +2879,8 @@ function renderLiveOps(){
   const timeline=day.timeline||[];
 
   // ── HERO ──
-  const heroImg=day.imageUrl||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
-  if(el('liveHero'))el('liveHero').style.backgroundImage=`url('${heroImg}')`;
+  const heroImg=(day.imageUrl && !day.imageUrl.includes('loremflickr') ? day.imageUrl : null)||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
+  if(el('liveHero')){el('liveHero').style.backgroundImage=`url('${heroImg}')`;probeHeroBg(el('liveHero'),day.day||0);}
   if(el('liveHeroDayCount'))el('liveHeroDayCount').textContent=`Day ${day.day} of ${totalDays}`;
   if(el('liveHeroLocation'))el('liveHeroLocation').textContent=day.title||'';
   // Emotional hook
@@ -3156,10 +3180,21 @@ function getSpotPhoto(title, city) {
   }
   return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop';
 }
+function getDaySheetImg(d,idx){
+  const seed=(d.heroSeed||'').toLowerCase();
+  if(CITY_IMGS[seed])return CITY_IMGS[seed];
+  for(const [city,url] of Object.entries(CITY_IMGS)){if(seed.includes(city)||city.includes(seed.split('-')[0]))return url;}
+  const titleLc=(d.title||'').toLowerCase();
+  const words=titleLc.split(/[-\s,&]+/).filter(w=>w.length>2);
+  for(const w of words){if(CITY_IMGS[w])return CITY_IMGS[w];for(const [c,u] of Object.entries(CITY_IMGS)){if(c.includes(w)||w.includes(c))return u;}}
+  return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=400&fit=crop';
+}
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
-  const imgUrl=d.imageUrl||`https://picsum.photos/seed/${d.heroSeed||idx}/900/400`;
-  document.getElementById('sheetHero').style.backgroundImage=`url('${imgUrl}')`;
+  const imgUrl=(d.imageUrl && !d.imageUrl.includes('loremflickr') ? d.imageUrl : null)||getDaySheetImg(d,idx);
+  const _sheetHeroEl=document.getElementById('sheetHero');
+  _sheetHeroEl.style.backgroundImage=`url('${imgUrl}')`;
+  probeHeroBg(_sheetHeroEl,idx);
   document.getElementById('sheetBadge').textContent=`Day ${d.day} · ${formatDayDate(d.day)}`;
   document.getElementById('sheetTitle').textContent=(d.emoji||'📅')+' '+(d.title||'');
   document.getElementById('sheetSub').textContent=[formatDayDate(d.day), d.subtitle||''].filter(Boolean).join(' · ');
