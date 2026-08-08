@@ -3474,12 +3474,24 @@ function getDayImage(day, idx) {
 function probeHeroBg(el, idx) {
   const bg = el.style.backgroundImage;
   const m = bg.match(/url\(['"]?([^'"?)]+)/);
-  if (!m || !m[1].includes('images.unsplash.com')) return;
+  if (!m) return;
+  const src = m[1];
+  if (src.startsWith('data:') || src.startsWith('/')) return;
+  const fallbacks = [
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=900&h=500&fit=crop',
+    'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&h=500&fit=crop',
+  ];
+  const fb = fallbacks[idx % fallbacks.length];
   const probe = new Image();
-  probe.onerror = () => {
-    el.style.backgroundImage = `url('https://picsum.photos/seed/trip${idx||0}/900/500')`;
-  };
-  probe.src = m[1];
+  let settled = false;
+  const fail = () => { if (settled) return; settled = true; el.style.backgroundImage = `url('${fb}')`; };
+  probe.onerror = fail;
+  probe.onload = () => { settled = true; };
+  setTimeout(fail, 5000);
+  probe.src = src;
 }
 
 // ── Wikipedia-backed city imagery ─────────────────────────────────────
