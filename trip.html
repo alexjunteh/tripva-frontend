@@ -3371,9 +3371,15 @@ window.CITY_IMGS = {
     'queenstown':'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&h=500&fit=crop',
     'christchurch':'https://images.unsplash.com/photo-1689803749146-94587275970c?w=900&h=500&fit=crop',
     'new zealand':'https://images.unsplash.com/photo-1469521669194-babb45599def?w=900&h=500&fit=crop',
-    'milford sound':'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=900&h=500&fit=crop',
-    'taupo':'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=900&h=500&fit=crop',
-    'hobbiton':'https://images.unsplash.com/photo-1469521669194-babb45599def?w=900&h=500&fit=crop',
+    'milford sound':'https://images.unsplash.com/photo-1589871973318-9ca1258faa3d?w=900&h=500&fit=crop',
+    'milford':'https://images.unsplash.com/photo-1589871973318-9ca1258faa3d?w=900&h=500&fit=crop',
+    'wanaka':'https://images.unsplash.com/photo-1502786129293-79981df4e689?w=900&h=500&fit=crop',
+    'te anau':'https://images.unsplash.com/photo-1502786129293-79981df4e689?w=900&h=500&fit=crop',
+    'tongariro':'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&h=500&fit=crop',
+    'bay of islands':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
+    'coromandel':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
+    'taupo':'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=900&h=500&fit=crop',
+    'hobbiton':'https://images.unsplash.com/photo-1507272931001-fc06c17cedc4?w=900&h=500&fit=crop',
     'perth':'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&h=500&fit=crop',
     'brisbane':'https://images.unsplash.com/photo-1524293568345-75d62c3664f7?w=900&h=500&fit=crop',
     'gold coast':'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=900&h=500&fit=crop',
@@ -3429,7 +3435,18 @@ window.CITY_IMG_ALTS = {
   'london':[CITY_IMGS.london],
   'barcelona':[CITY_IMGS.barcelona],
   'lucerne':[CITY_IMGS.lucerne],
-  'luzern':[CITY_IMGS.lucerne]
+  'luzern':[CITY_IMGS.lucerne],
+  'auckland':[CITY_IMGS.auckland, CITY_IMGS['new zealand'], CITY_IMGS.queenstown],
+  'wellington':[CITY_IMGS.wellington, CITY_IMGS.christchurch, CITY_IMGS['new zealand']],
+  'rotorua':[CITY_IMGS.rotorua, CITY_IMGS.taupo, CITY_IMGS.tongariro],
+  'queenstown':[CITY_IMGS.queenstown, CITY_IMGS.wanaka, CITY_IMGS['milford sound']],
+  'new zealand':[CITY_IMGS['new zealand'], CITY_IMGS.auckland, CITY_IMGS.queenstown, CITY_IMGS['milford sound']],
+  'dubai':[CITY_IMGS.dubai, CITY_IMGS['abu dhabi']],
+  'singapore':[CITY_IMGS.singapore],
+  'seoul':[CITY_IMGS.seoul, CITY_IMGS.busan],
+  'maldives':[CITY_IMGS.maldives, CITY_IMGS['maldives-beach'], CITY_IMGS['maldives-snorkeling'], CITY_IMGS['maldives-water'], CITY_IMGS['maldives-local']],
+  'santorini':[CITY_IMGS.santorini, CITY_IMGS.athens],
+  'lisbon':[CITY_IMGS.lisbon, CITY_IMGS.porto]
 };
 // Helper: get best image for a day card.
 // Returns a DIFFERENT image per day — first preference: explicit day.imageUrl
@@ -3438,29 +3455,45 @@ window.CITY_IMG_ALTS = {
 // picsum seeded by destination + day-index as the immediate placeholder.
 function getDayImage(day, idx) {
   if (day.imageUrl && !day.imageUrl.includes('loremflickr')) return day.imageUrl;
-  // Build search terms: heroSeed, title words, trip destination
   const tripDest = (plan?.trip?.name || plan?.rawPlan?.trip?.name || '').toLowerCase();
   const seeds = [day.heroSeed, day.title, tripDest].filter(Boolean).map(s => s.toLowerCase());
-  for (const seed of seeds) {
-    // Exact match
-    if (CITY_IMGS[seed]) return CITY_IMGS[seed];
-    // Partial: check if any CITY_IMGS key appears in the seed, or vice versa
+
+  function pickUnused(urls) {
+    const fresh = urls.filter(u => !_usedDayImgs.has(u));
+    const pick = fresh.length ? fresh[0] : urls[idx % urls.length];
+    _usedDayImgs.add(pick);
+    return pick;
+  }
+
+  function findMatch(seed) {
+    if (CITY_IMG_ALTS[seed]) return pickUnused(CITY_IMG_ALTS[seed]);
+    if (CITY_IMGS[seed]) return pickUnused([CITY_IMGS[seed]]);
     for (const [key, url] of Object.entries(CITY_IMGS)) {
-      if (seed.includes(key) || key.includes(seed.split(/[-\s]/)[0])) return url;
-    }
-    // Also split by spaces/hyphens and check each word
-    const words = seed.split(/[-\s,&]+/).filter(w => w.length > 2);
-    for (const word of words) {
-      if (CITY_IMGS[word]) return CITY_IMGS[word];
-      for (const [key, url] of Object.entries(CITY_IMGS)) {
-        if (key.includes(word) || word.includes(key)) return url;
+      if (seed.includes(key) || key.includes(seed.split(/[-\s]/)[0])) {
+        if (CITY_IMG_ALTS[key]) return pickUnused(CITY_IMG_ALTS[key]);
+        return pickUnused([url]);
       }
     }
+    const words = seed.split(/[-\s,&]+/).filter(w => w.length > 2);
+    for (const word of words) {
+      if (CITY_IMG_ALTS[word]) return pickUnused(CITY_IMG_ALTS[word]);
+      if (CITY_IMGS[word]) return pickUnused([CITY_IMGS[word]]);
+      for (const [key, url] of Object.entries(CITY_IMGS)) {
+        if (key.includes(word) || word.includes(key)) {
+          if (CITY_IMG_ALTS[key]) return pickUnused(CITY_IMG_ALTS[key]);
+          return pickUnused([url]);
+        }
+      }
+    }
+    return null;
   }
-  // Final fallback: use trip destination or generic travel photo
+
+  for (const seed of seeds) {
+    const img = findMatch(seed);
+    if (img) return img;
+  }
   const destKey = tripDest.split(/[-\s,&]+/).find(w => CITY_IMGS[w.toLowerCase()]);
-  if (destKey) return CITY_IMGS[destKey.toLowerCase()];
-  // Generic high-quality travel fallback (NOT the map/binoculars!)
+  if (destKey) return pickUnused([CITY_IMGS[destKey.toLowerCase()]]);
   const fallbacks = [
     'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
     'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
@@ -3468,7 +3501,7 @@ function getDayImage(day, idx) {
     'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=900&h=500&fit=crop',
     'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&h=500&fit=crop',
   ];
-  return fallbacks[idx % fallbacks.length];
+  return pickUnused(fallbacks);
 }
 
 function probeHeroBg(el, idx) {
