@@ -3477,20 +3477,27 @@ function probeHeroBg(el, idx) {
   if (!m) return;
   const src = m[1];
   if (src.startsWith('data:') || src.startsWith('/')) return;
-  const fallbacks = [
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=900&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=900&h=500&fit=crop',
-    'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&h=500&fit=crop',
+  const gradients = [
+    'linear-gradient(135deg, #1a1040 0%, #2d1b69 50%, #0d0d1a 100%)',
+    'linear-gradient(135deg, #0d2137 0%, #1a3a5c 50%, #0d0d1a 100%)',
+    'linear-gradient(135deg, #1a3030 0%, #2d5050 50%, #0d0d1a 100%)',
+    'linear-gradient(135deg, #2d1b20 0%, #4a2940 50%, #0d0d1a 100%)',
+    'linear-gradient(135deg, #1a2040 0%, #2d3569 50%, #0d0d1a 100%)',
   ];
-  const fb = fallbacks[idx % fallbacks.length];
-  const probe = new Image();
   let settled = false;
-  const fail = () => { if (settled) return; settled = true; el.style.backgroundImage = `url('${fb}')`; };
-  probe.onerror = fail;
+  const probe = new Image();
   probe.onload = () => { settled = true; };
-  setTimeout(fail, 5000);
+  probe.onerror = () => {
+    if (settled) return;
+    setTimeout(() => {
+      if (settled) return;
+      const retry = new Image();
+      retry.onload = () => { settled = true; el.style.backgroundImage = `url('${src}')`; };
+      retry.onerror = () => { if (!settled) { settled = true; el.style.backgroundImage = gradients[idx % gradients.length]; } };
+      retry.src = src + (src.includes('?') ? '&' : '?') + '_r=1';
+    }, 1500);
+  };
+  setTimeout(() => { if (!settled) { settled = true; el.style.backgroundImage = gradients[idx % gradients.length]; } }, 10000);
   probe.src = src;
 }
 
@@ -4302,9 +4309,8 @@ function populateDashboard(p) {
       const card=document.createElement('div');
       card.className='day-big-card'; card.id='dc-'+i;
       const eventCount=(d.timeline||[]).length;
-      const eagerBg = true;
       card.innerHTML=`
-        <div class="day-big-hero" ${eagerBg ? `style="background-image:url('${imgUrl}')"` : `data-bg="${esc(imgUrl)}"`}>
+        <div class="day-big-hero" data-bg="${esc(imgUrl)}">
           <div class="day-big-grad"></div>
           <div class="day-big-overlay">
             <div class="day-big-badge"><span class="day-big-badge-dot"></span>DAY ${d.day} · ${formatDayDate(d.day)}</div>
@@ -4319,7 +4325,7 @@ function populateDashboard(p) {
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
       const heroEl = card.querySelector('.day-big-hero');
-      if (heroEl) probeHeroBg(heroEl, i);
+      if (heroEl) setTimeout(() => { heroEl.style.backgroundImage = `url('${imgUrl}')`; probeHeroBg(heroEl, i); }, i * 150);
     });
 
     // Scroll day strip so the last pill is fully visible
