@@ -9,9 +9,9 @@
 // Previously stale-while-revalidate on HTML caused users to see 1-visit-old
 // HTML after every deploy. Network-first fixes that while preserving offline.
 
-const CACHE_VERSION = 'tripva-v13';
-const STATIC_CACHE  = 'tripva-static-v13';
-const TRIP_CACHE    = 'tripva-trips-v13';
+const CACHE_VERSION = 'tripva-v14';
+const STATIC_CACHE  = 'tripva-static-v14';
+const TRIP_CACHE    = 'tripva-trips-v14';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
@@ -64,6 +64,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   const url = new URL(req.url);
+
+  // ── External image CDNs — skip SW, let browser handle natively ──────────
+  // Unsplash/Pexels URLs have no file extension so the image regex below
+  // never matched them. The catch-all's fetch() fails intermittently on
+  // mobile, causing net::ERR_FAILED. Native browser fetches are more reliable.
+  if (url.hostname === 'images.unsplash.com' || url.hostname === 'images.pexels.com') return;
 
   // ── Trip JSON from Vercel backend — stale-while-revalidate ─────────────
   // Every time tripva.app/trip loads it fetches /api/trip?id=... to hydrate.
@@ -128,7 +134,7 @@ self.addEventListener('fetch', e => {
   }
 
   // ── Everything else — network, cache as fallback ───────────────────────
-  e.respondWith(fetch(req).catch(() => caches.match(req)));
+  e.respondWith(fetch(req).catch(() => caches.match(req).then(r => r || Response.error())));
 });
 
 // ── Helper: stale-while-revalidate for trip JSON ─────────────────────────
