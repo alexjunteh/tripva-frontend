@@ -2,7 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /index-a-backup.html
-Disallow: /italy-test.html.bak
 Disallow: /AgodaPartnerVerification.html
 Disallow: /pitch.html
 Disallow: /cloudflare/

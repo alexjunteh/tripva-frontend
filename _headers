@@ -20,7 +20,3 @@
 /admin.html
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
-
-# Ticket files — cache aggressively (they never change)
-/tickets/*
-  Cache-Control: public, max-age=31536000, immutable

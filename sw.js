@@ -2,16 +2,15 @@
 // Cache strategy:
 //   • HTML pages → network-first, cache as fallback (spotty WiFi abroad)
 //   • Trip JSON (/api/trip) → stale-while-revalidate, always shows on load
-//   • Tickets (PDFs/images) → cache-first, essential for boarding passes
 //   • Icons / fonts → cache-first
 //   • Everything else → network with cache fallback
 //
 // Previously stale-while-revalidate on HTML caused users to see 1-visit-old
 // HTML after every deploy. Network-first fixes that while preserving offline.
 
-const CACHE_VERSION = 'tripva-v14';
-const STATIC_CACHE  = 'tripva-static-v14';
-const TRIP_CACHE    = 'tripva-trips-v14';
+const CACHE_VERSION = 'tripva-v15';
+const STATIC_CACHE  = 'tripva-static-v15';
+const TRIP_CACHE    = 'tripva-trips-v15';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
@@ -19,26 +18,6 @@ const STATIC_ASSETS = [
   '/icons/icon-512.png',
   '/icons/icon-maskable-512.png',
   '/og-image.png',
-  '/tickets/alex-accademia.jpg',
-  '/tickets/alex-grindelwald.jpg',
-  '/tickets/alex-uffizi.jpg',
-  '/tickets/alex-venice-ec31.jpg',
-  '/tickets/alex-venice-ir2017.jpg',
-  '/tickets/concert-venice-imusici.pdf',
-  '/tickets/doges-palace-fastrack.pdf',
-  '/tickets/ky-accademia.jpg',
-  '/tickets/ky-grindelwald.jpg',
-  '/tickets/ky-uffizi.jpg',
-  '/tickets/ky-venice-ec31.jpg',
-  '/tickets/ky-venice-ir2017.jpg',
-  '/tickets/vatican-1.jpg',
-  '/tickets/vatican-2.jpg',
-  '/tickets/vatican-3.jpg',
-  '/tickets/venice-florence-alex.jpg',
-  '/tickets/venice-florence-alex.pdf',
-  '/tickets/venice-florence-ky.jpg',
-  '/tickets/venice-florence-ky.pdf',
-  '/tickets/venice-overview.jpg',
 ];
 
 self.addEventListener('install', e => {
@@ -93,20 +72,6 @@ self.addEventListener('fetch', e => {
           return res;
         })
         .catch(() => caches.open(CACHE_VERSION).then(c => c.match(req)))
-    );
-    return;
-  }
-
-  // ── Tickets — cache-first (boarding passes MUST work offline) ──────────
-  if (url.pathname.includes('/tickets/')) {
-    e.respondWith(
-      caches.match(req).then(cached => {
-        if (cached) return cached;
-        return fetch(req).then(res => {
-          if (res.ok) caches.open(STATIC_CACHE).then(c => c.put(req, res.clone()));
-          return res;
-        });
-      })
     );
     return;
   }
