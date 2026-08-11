@@ -846,7 +846,7 @@ function _removeDest(idx) {
 // ── Transport mode ──────────────────────────────────────────────────────────
 let _planTransport = 'flight';
 const _transportHints = {
-  flight:   { text: '✈️ We\'ll find you the cheapest flights on Jetradar with real commission-tracked links.', link: null },
+  flight:   { text: '✈️ Optionally compare available flights and booking links, or skip straight to your itinerary.', link: null },
   train:    { text: '🚂 We\'ll include Trainline + Rail.ninja booking links for your route.', link: null },
   bus:      { text: '🚌 We\'ll include FlixBus and regional bus booking links.', link: null },
   drive:    { text: '🚗 We\'ll include Discovercars rental links with affiliate commission.', link: 'https://www.discovercars.com/all?a_aid=529721' },
@@ -894,6 +894,38 @@ function _getDestinationString() {
 
 let _tripState = null;
 let _shareUrl = null;
+let _progressiveDraft = null;
+
+function _persistProgressiveDraft() {
+  if (!_progressiveDraft) return;
+  try {
+    localStorage.setItem('tripva_plan_draft', JSON.stringify({
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      input: _spotInput || null,
+      plan: _progressiveDraft,
+    }));
+  } catch(e) { console.warn('[plan] Could not persist progressive draft:', e); }
+}
+
+function _showGenerationInterrupted(message) {
+  try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
+  window._generationCompleted = false;
+  const hasDraft = !!(_progressiveDraft && _progressiveDraft.rawPlan);
+  const statusMessage = hasDraft
+    ? (message || 'Generation paused. Your partial draft is saved on this device.')
+    : 'Generation paused before a draft was ready. Please retry.';
+  const estimate = document.getElementById('genEstimate');
+  if (estimate) estimate.textContent = statusMessage;
+  const cta = document.getElementById('genCta');
+  const btn = document.getElementById('genDoneBtn');
+  if (cta) cta.style.display = 'block';
+  if (btn) {
+    btn.textContent = 'Retry generation';
+    btn.onclick = () => proceedToGeneration();
+  }
+  showToast(hasDraft ? '⚠️ Generation paused — partial draft saved' : '⚠️ Generation paused — please retry', 5000);
+}
 function _warnUnsavedTrip(e) {
   if (!window._tripGenerated) return;
   e.preventDefault();
@@ -1602,6 +1634,7 @@ async function searchFlights() {
         method: 'POST',
         headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ from, to, date, travelers }),
+        signal: AbortSignal.timeout(20000),
       });
       const data = await resp.json();
 
@@ -1632,8 +1665,7 @@ async function searchFlights() {
         return `<div style="background:#1a1a28;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
             <div>
-              <span style="font-size:1.4rem;font-weight:800;color:#fff">$${safePrice}</span>
-              <span style="font-size:12px;color:rgba(255,255,255,.4);margin-left:4px">${safeCurr}</span>
+              <span style="font-size:1.4rem;font-weight:800;color:#fff">${safeCurr} ${safePrice}</span>
             </div>
             <span style="font-size:12px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.07);padding:3px 8px;border-radius:6px">${stopLabel}</span>
           </div>
@@ -1679,7 +1711,7 @@ function selectFlight(index) {
     date:          f.departure?.time ? f.departure.time.slice(0,10) : '',
     departureTime: f.departure?.time ? f.departure.time.slice(11,16) : null,
     arrivalTime:   f.arrival?.time   ? f.arrival.time.slice(11,16)   : null,
-    summary:       `${(f.airlines||[]).join('/')} ${f.departure?.iata||''}→${f.arrival?.iata||''} $${f.price}`,
+    summary:       `${(f.airlines||[]).join('/')} ${f.departure?.iata||''}→${f.arrival?.iata||''} ${f.currency || 'USD'} ${f.price ?? ''}`.trim(),
     bookingUrl:    f.jetradarLink || f.bookingLink || '',
   };
   _bookingAnchors.push(anchor);
@@ -2167,6 +2199,7 @@ async function proceedToGeneration() {
   document.getElementById('genDaysSection').style.display = 'none';
   document.getElementById('genLog').innerHTML = '';
   document.getElementById('genCta').style.display = 'none';
+  window._generationCompleted = false;
 
   const logRoute = addLog('&#9201;', 'Designing your route\u2026', 'active');
   const logDays = addLog('&#9201;', 'Building daily itineraries\u2026', '');
@@ -2175,12 +2208,8 @@ async function proceedToGeneration() {
   window._sseT120 = setTimeout(() => {
     document.getElementById('genEstimate').textContent = 'Still building \u2014 please wait\u2026';
   }, 120000);
-  window._sseTFail = setTimeout(() => {
-    try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); } catch(e){}
-    document.getElementById('genScreen').style.display = 'none';
-    document.getElementById('planForm').style.display = 'block';
-    showToast('\u26a0\ufe0f Generation timed out \u2014 please try again', 5000);
-  }, 180000);
+  const generationController = new AbortController();
+  window._sseTFail = setTimeout(() => generationController.abort(), 250000);
 
   // ── SSE via fetch + ReadableStream ──────────────────────────────────────
   try {
@@ -2188,6 +2217,7 @@ async function proceedToGeneration() {
       method: 'POST',
       headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(Object.assign({ destination: dest, ...(destinations && { destinations }), ...(bookingAnchors && bookingAnchors.length && { bookingAnchors }), startDate: start, endDate: end, travelers: travellers, budget, style, homeCity: home, interests, selectedSpots, transport: transport || 'flight' }, archData)),
+      signal: generationController.signal,
     });
 
     if (!response.ok) {
@@ -2197,7 +2227,7 @@ async function proceedToGeneration() {
 
     // Store events for buffered-SSE fallback (Cloudflare may buffer entire response)
     window._planEvents = [];
-    let gotDone = false;
+    let terminalType = null;
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -2217,61 +2247,25 @@ async function proceedToGeneration() {
           const evt = JSON.parse(raw);
           window._planEvents.push(evt);
           handleSSEEvent(evt, logRoute, logDays);
-          if (evt.type === 'done' || evt.type === 'error') { gotDone = true; break; }
+          if (evt.type === 'done' || evt.type === 'error') { terminalType = evt.type; break; }
         } catch(e) { /* skip parse errors */ }
       }
-      if (gotDone) break;
+      if (terminalType) break;
     }
 
-    // If stream ended but no done event (Cloudflare buffered) — process stored events
-    if (!gotDone && window._planEvents.length > 0) {
-      for (const evt of window._planEvents) {
-        handleSSEEvent(evt, logRoute, logDays);
-        if (evt.type === 'done') { gotDone = true; break; }
-      }
-    }
-    // If stream completed but done event never fired at all, force redirect
-    if (!gotDone && window._planEvents.length > 0) {
-      console.warn('[plan] Stream ended without done event — forcing redirect');
-      const lastEvt = window._planEvents[window._planEvents.length - 1];
-      if (lastEvt && lastEvt.data) {
-        const planData = lastEvt.data.plan || lastEvt.data || {};
-        localStorage.setItem('tripva_plan', JSON.stringify(planData.rawPlan || planData));
-      }
-      setTimeout(openGeneratedTrip, 500);
+    if (!terminalType) {
+      console.warn('[plan] Stream ended before a terminal event');
+      _showGenerationInterrupted('Connection ended early. Your partial draft is saved on this device.');
     }
   } catch(err) {
     try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
-    _destinations = []; _renderDestChips();
-    _bookingAnchors = []; _renderBookingAnchorCards();
-    document.getElementById('planForm').style.display = 'block';
-    document.getElementById('genScreen').style.display = 'none';
-    document.getElementById('genLog').innerHTML = '';
-    showToast('&#9888; ' + err.message, 4000);
+    const message = err && err.name === 'AbortError'
+      ? 'Planning took too long. Your partial draft is saved on this device.'
+      : 'Connection interrupted. Your partial draft is saved on this device.';
+    console.warn('[plan] Generation interrupted:', err && err.message ? err.message : err);
+    _showGenerationInterrupted(message);
     return;
   }
-
-  // Safety: if genScreen still showing after stream + 2s, open trip
-  setTimeout(() => {
-    if (document.getElementById('genScreen') && document.getElementById('genScreen').style.display !== 'none') {
-      openGeneratedTrip();
-    }
-  }, 2000);
-
-  // Force completion at 45s — ensures trip dashboard opens even if done event is buffered
-  setTimeout(() => {
-    if (document.getElementById('genScreen').style.display !== 'none') {
-      // Process any remaining buffered events
-      if (window._planEvents && window._planEvents.length > 0) {
-        for (const evt of window._planEvents) {
-          handleSSEEvent(evt, logRoute, logDays);
-          if (evt.type === 'done') break;
-        }
-      }
-      // Force open dashboard after brief delay
-      setTimeout(openGeneratedTrip, 500);
-    }
-  }, 45000);
 }
 
 // ── SSE event handler ──────────────────────────────────────────────────────
@@ -2291,6 +2285,10 @@ function handleSSEEvent(evt, logRoute, logDays) {
       const trip = rp.trip || {};
       const hotels = rp.hotels || [];
       const days = rp.days || [];
+
+      try { _progressiveDraft = JSON.parse(JSON.stringify(evt.data && evt.data.rawPlan ? evt.data : { rawPlan: rp })); }
+      catch(e) { _progressiveDraft = { rawPlan: rp }; }
+      _persistProgressiveDraft();
 
       // Header
       if (trip.name) document.getElementById('genDest').textContent = trip.name;
@@ -2354,6 +2352,14 @@ function handleSSEEvent(evt, logRoute, logDays) {
       const timeline = dayData.timeline || [];
       const activities = timeline.filter(t => t.type !== 'transport');
 
+      const draftDays = _progressiveDraft && _progressiveDraft.rawPlan && _progressiveDraft.rawPlan.days;
+      if (Array.isArray(draftDays)) {
+        const draftIndex = draftDays.findIndex(d => d.day === dayNum);
+        if (draftIndex >= 0) draftDays[draftIndex] = { ...draftDays[draftIndex], ...dayData };
+        else draftDays.push(dayData);
+        _persistProgressiveDraft();
+      }
+
       // Mark day card ready
       const card = document.getElementById('gday-' + dayNum);
       if (card) {
@@ -2416,24 +2422,31 @@ function handleSSEEvent(evt, logRoute, logDays) {
       document.getElementById('genCta').style.display = 'block';
 
       const planData = evt.data && evt.data.plan ? evt.data.plan : (evt.data || {});
+      const completedPlan = planData && (planData.rawPlan || planData);
+      if (!completedPlan || !Array.isArray(completedPlan.days) || completedPlan.days.length === 0) {
+        _showGenerationInterrupted('The planner did not return a complete trip. Your partial draft is saved on this device.');
+        break;
+      }
       _tripState = planData;
       _shareUrl = evt.data && evt.data.saved ? evt.data.saved.url : null;
       localStorage.setItem('tripva_plan', JSON.stringify(planData.rawPlan || planData));
+      localStorage.removeItem('tripva_plan_draft');
+      _progressiveDraft = null;
+      window._generationCompleted = true;
       window._tripGenerated = true;
       window.addEventListener('beforeunload', _warnUnsavedTrip, { once: true });
 
       // Show email gate before navigating to dashboard
+      const doneBtn = document.getElementById('genDoneBtn');
+      if (doneBtn) { doneBtn.textContent = 'Open Dashboard →'; doneBtn.onclick = openGeneratedTrip; }
       setTimeout(openGeneratedTrip, 300);
       break;
     }
 
     case 'error': {
       try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); } catch(e){}
-      showToast('&#9888; ' + (evt.message || 'Generation failed'), 5000);
-      _destinations = []; _renderDestChips();
-      _bookingAnchors = []; _renderBookingAnchorCards();
-      document.getElementById('planForm').style.display = 'block';
-      document.getElementById('genScreen').style.display = 'none';
+      console.warn('[plan] Generation error:', evt.message || 'Generation failed');
+      _showGenerationInterrupted('Generation paused. Your partial draft is saved on this device.');
       break;
     }
   }
@@ -2448,6 +2461,10 @@ function handleSSEEvent(evt, logRoute, logDays) {
 // user on the loading screen until budget is ready — one load screen, not two.
 let _openingTripInFlight = false;
 async function openGeneratedTrip() {
+  if (!window._generationCompleted) {
+    showToast('⚠️ Finish generating the trip before opening the dashboard', 4000);
+    return;
+  }
   if (_openingTripInFlight) return;
   _openingTripInFlight = true;
   try {

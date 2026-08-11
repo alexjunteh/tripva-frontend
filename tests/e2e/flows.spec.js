@@ -20,7 +20,10 @@ const MOCK_SPOTS = {
     { name: 'Mtatsminda Park', description: 'Funicular to the hilltop park with the best panoramic view of the city.', category: 'view', wikiSlug: 'Mtatsminda' },
     { name: 'Dezerter Bazaar', description: 'The chaotic, colourful soul of Tbilisi — spices, churchkhela, and cheese.', category: 'market', wikiSlug: 'Dezerter_Bazaar' },
     { name: 'Gori-Jvari Monastery', description: 'Sixth-century monastery perched on a cliff where two rivers meet.', category: 'temple', wikiSlug: 'Jvari_Monastery' },
-  ],
+  ].map(spot => ({
+    ...spot,
+    photoUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL3WQAAAABJRU5ErkJggg==',
+  })),
 };
 
 // Minimal valid plan — has budget so the budget-heal patch call is skipped
@@ -159,9 +162,12 @@ test.describe('Tripva E2E flows', () => {
     await expect(page.locator('#deskCloneDemoBtn')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('.day-big-card')).toHaveCount(3);
     await expect(page.locator('.day-big-events')).toHaveText(['📍 7 events', '📍 7 events', '📍 7 events']);
+    await expect.poll(
+      () => page.locator('.day-big-hero').evaluateAll(nodes => new Set(nodes.map(node => node.style.backgroundImage)).size),
+      { timeout: 5_000 },
+    ).toBe(3);
     const dayImages = await page.locator('.day-big-hero').evaluateAll(nodes => nodes.map(node => node.style.backgroundImage));
     expect(dayImages).toHaveLength(3);
-    expect(new Set(dayImages).size).toBe(3);
     expect(dayImages.join(' ')).toContain('assets/demos/tokyo-');
     await page.locator('#dc-0').click();
     await expect(page.locator('#deskBody .day-gallery-item')).toHaveCount(3);
@@ -338,6 +344,59 @@ test.describe('Tripva E2E flows', () => {
 
     await expect(page.locator('.bottom-nav')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('#tab-days')).toBeVisible();
+  });
+
+  test('interrupted generation keeps a draft and never opens stale trip data', async ({ page }) => {
+    const skeletonPlan = {
+      rawPlan: {
+        ...MOCK_PLAN,
+        days: MOCK_PLAN.days.map(day => ({ ...day, timeline: [] })),
+      },
+    };
+    const partialBody = [
+      { type: 'start', message: 'Planning…' },
+      { type: 'skeleton', data: skeletonPlan },
+      { type: 'day', data: MOCK_PLAN.days[0] },
+    ].map(event => `data: ${JSON.stringify(event)}\n\n`).join('');
+
+    await page.addInitScript(() => {
+      localStorage.setItem('tripva_plan', JSON.stringify({
+        trip: { id: 'stale-trip', name: 'Old trip' },
+        days: [{ day: 1, title: 'Old day', timeline: [] }],
+      }));
+    });
+    await page.route(`${BACKEND}/api/spots**`, route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(MOCK_SPOTS),
+    }));
+    await page.route(`${BACKEND}/api/photospot**`, route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(MOCK_SPOTS),
+    }));
+    await page.route(`${BACKEND}/api/plan**`, route => route.fulfill({
+      status: 200,
+      headers: { 'Content-Type': 'text/event-stream' },
+      body: partialBody,
+    }));
+
+    await page.goto('/plan.html');
+    await fillPlanForm(page, { dest: SPOT_DEST, budget: '$3000' });
+    await page.click('#submitBtn');
+    await expect(page.locator('#spotScreen')).toBeVisible({ timeout: 10_000 });
+    await page.evaluate(() => skipSpots());
+
+    await expect(page.locator('#genDoneBtn')).toHaveText('Retry generation', { timeout: 10_000 });
+    await expect(page.locator('#authModalBg')).not.toHaveClass(/open/);
+    const stored = await page.evaluate(() => ({
+      finalPlan: JSON.parse(localStorage.getItem('tripva_plan') || 'null'),
+      draft: JSON.parse(localStorage.getItem('tripva_plan_draft') || 'null'),
+      completed: window._generationCompleted,
+    }));
+    expect(stored.finalPlan.trip.id).toBe('stale-trip');
+    expect(stored.draft.plan.rawPlan.days[0].timeline).toHaveLength(2);
+    expect(stored.completed).toBe(false);
   });
 
   // ── 4. Shared trip URL — viewer banner shown to unauthenticated user ──────────
