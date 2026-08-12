@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "include": [
+    "/tickets/*",
+    "/state/trip-state.json",
+    "/docs/MEMORY.md",
+    "/italy-test.html.bak"
+  ],
+  "exclude": []
+}
