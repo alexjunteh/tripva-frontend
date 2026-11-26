@@ -83,8 +83,8 @@
     const start = 21;
     const days = cfg.days.map(([title, subtitle, stops], index) => {
       const imageUrl = `assets/demos/${slug}-${index}.webp`;
-      const nextImageUrl = `assets/demos/${slug}-${(index + 1) % cfg.days.length}.webp`;
-      const lastImageUrl = `assets/demos/${slug}-${(index + 2) % cfg.days.length}.webp`;
+      // One photo per named stop, so each caption shows the place it names.
+      const stopImageUrl = (k) => `assets/demos/${slug}-d${index}-${k}.webp`;
       const photoSpot = `${stops[2]} photo stop`;
       const dayCity = (cfg.cities && cfg.cities[index]) || cfg.city;
       return {
@@ -99,9 +99,9 @@
         // These galleries are intentionally self-hosted. A demo must remain
         // visually complete even when third-party image hosts are unavailable.
         photos: [
-          { url: imageUrl, time: 'Morning', caption: stops[0] },
-          { url: nextImageUrl, time: 'Afternoon', caption: stops[1] },
-          { url: lastImageUrl, time: 'Golden hour', caption: stops[2] }
+          { url: stopImageUrl(0), time: 'Morning', caption: stops[0] },
+          { url: stopImageUrl(1), time: 'Afternoon', caption: stops[1] },
+          { url: stopImageUrl(2), time: 'Golden hour', caption: stops[2] }
         ],
         localTips: [
           guidance.morning,
@@ -110,11 +110,11 @@
         ],
         timeline: [
           { time: '08:30', title: 'Breakfast and route check', detail: guidance.breakfast, type: 'food', mapQuery: `${stops[0]}, ${dayCity}` },
-          { time: '09:30', title: stops[0], detail: `${guidance.morning} Allow around 90 minutes here before moving on.`, type: 'activity', mapQuery: `${stops[0]}, ${dayCity}`, imageUrl },
-          { time: '12:30', title: stops[1], detail: `${guidance.transit} Stop for lunch close to ${stops[1]} rather than crossing the city twice.`, type: 'activity', mapQuery: `${stops[1]}, ${dayCity}`, imageUrl: nextImageUrl },
+          { time: '09:30', title: stops[0], detail: `${guidance.morning} Allow around 90 minutes here before moving on.`, type: 'activity', mapQuery: `${stops[0]}, ${dayCity}`, imageUrl: stopImageUrl(0) },
+          { time: '12:30', title: stops[1], detail: `${guidance.transit} Stop for lunch close to ${stops[1]} rather than crossing the city twice.`, type: 'activity', mapQuery: `${stops[1]}, ${dayCity}`, imageUrl: stopImageUrl(1) },
           { time: '14:15', title: `Transfer to ${stops[2]}`, detail: `${guidance.transit} Leave with a 20-minute buffer for the final approach.`, type: 'transport', mapQuery: `${stops[2]}, ${dayCity}` },
-          { time: '15:30', title: stops[2], detail: `${guidance.reserve} This is the anchor experience for the afternoon.`, type: 'activity', mapQuery: `${stops[2]}, ${dayCity}`, imageUrl: lastImageUrl },
-          { time: '17:45', title: photoSpot, detail: `Frame ${stops[2]} in softer late-day light. Keep this as a photo-first stop rather than rushing straight to dinner.`, tip: `Best light is roughly 45 minutes before sunset; bring a wide lens or use your phone's 0.5x camera.`, type: 'photospot', mapQuery: `${stops[2]}, ${dayCity}`, imageUrl: lastImageUrl },
+          { time: '15:30', title: stops[2], detail: `${guidance.reserve} This is the anchor experience for the afternoon.`, type: 'activity', mapQuery: `${stops[2]}, ${dayCity}`, imageUrl: stopImageUrl(2) },
+          { time: '17:45', title: photoSpot, detail: `Frame ${stops[2]} in softer late-day light. Keep this as a photo-first stop rather than rushing straight to dinner.`, tip: `Best light is roughly 45 minutes before sunset; bring a wide lens or use your phone's 0.5x camera.`, type: 'photospot', mapQuery: `${stops[2]}, ${dayCity}`, imageUrl: stopImageUrl(2) },
           { time: '19:30', title: localMeals[slug][index], detail: guidance.dinner, type: 'food', mapQuery: `${localMeals[slug][index]}, ${dayCity}` }
         ]
       };

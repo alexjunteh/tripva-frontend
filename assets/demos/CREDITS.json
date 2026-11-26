@@ -1,0 +1,425 @@
+{
+ "note": "Demo gallery photos from Wikimedia Commons; each file's licence and author are on its source page.",
+ "photos": [
+  {
+   "file": "tokyo-d0-0.webp",
+   "place": "Meiji Jingu Shrine",
+   "source": "https://commons.wikimedia.org/wiki/File:Meiji_Jingu_2023-3.jpg"
+  },
+  {
+   "file": "tokyo-d0-1.webp",
+   "place": "Takeshita Street",
+   "source": "https://commons.wikimedia.org/wiki/File:Marion_Crêpes_in_Harajuku_Takeshita_2.jpg"
+  },
+  {
+   "file": "tokyo-d0-2.webp",
+   "place": "Shibuya Sky at sunset",
+   "source": "https://commons.wikimedia.org/wiki/File:SHIBUYA_SCRAMBLE_SQUARE_East_Tower.jpg"
+  },
+  {
+   "file": "tokyo-d1-0.webp",
+   "place": "Tsukiji Outer Market",
+   "source": "https://commons.wikimedia.org/wiki/File:Tsukiji_Outer_Market_2.jpg"
+  },
+  {
+   "file": "tokyo-d1-1.webp",
+   "place": "teamLab Borderless",
+   "source": "https://commons.wikimedia.org/wiki/File:TeamLab_Borderless_Azabudai_Hills.jpg"
+  },
+  {
+   "file": "tokyo-d1-2.webp",
+   "place": "Ginza architecture walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Ginza-WAKO_at_night.jpg"
+  },
+  {
+   "file": "tokyo-d2-0.webp",
+   "place": "Senso-ji Temple",
+   "source": "https://commons.wikimedia.org/wiki/File:Sensoji_2023.jpg"
+  },
+  {
+   "file": "tokyo-d2-1.webp",
+   "place": "Nakamise shopping street",
+   "source": "https://commons.wikimedia.org/wiki/File:Nakamise,_Asakusa,_Tokyo_as_seen_from_the_Asakusa_Culture_Tourist_Information_Center_20190420_2.jpg"
+  },
+  {
+   "file": "tokyo-d2-2.webp",
+   "place": "Tokyo Skytree",
+   "source": "https://commons.wikimedia.org/wiki/File:Tokyo_Skytree_2014_Ⅲ.jpg"
+  },
+  {
+   "file": "santorini-d0-0.webp",
+   "place": "Fira caldera walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Santorini_Fira3_tango7174.jpg"
+  },
+  {
+   "file": "santorini-d0-1.webp",
+   "place": "Three Bells of Fira",
+   "source": "https://commons.wikimedia.org/wiki/File:Santorin_(GR),_Fira,_Drei_Glocken_von_Fira_--_2017_--_2586.jpg"
+  },
+  {
+   "file": "santorini-d0-2.webp",
+   "place": "Imerovigli sunset walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Imerovigli_01.jpg"
+  },
+  {
+   "file": "santorini-d1-0.webp",
+   "place": "Oia village morning walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Oia_sunset_-_panoramio_(2).jpg"
+  },
+  {
+   "file": "santorini-d1-1.webp",
+   "place": "Ammoudi Bay swim",
+   "source": "https://commons.wikimedia.org/wiki/File:Ammoudi_Bay.jpg"
+  },
+  {
+   "file": "santorini-d1-2.webp",
+   "place": "Oia sunset viewpoint",
+   "source": "https://commons.wikimedia.org/wiki/File:Sunset_with_windmill_Oia.jpg"
+  },
+  {
+   "file": "santorini-d2-0.webp",
+   "place": "Red Beach",
+   "source": "https://commons.wikimedia.org/wiki/File:Red_Beach,_Greece_Oct_29,_2018_07-12-47.jpeg"
+  },
+  {
+   "file": "santorini-d2-1.webp",
+   "place": "Akrotiri archaeological site",
+   "source": "https://commons.wikimedia.org/wiki/File:Ancient_Akrotiri.jpeg"
+  },
+  {
+   "file": "santorini-d2-2.webp",
+   "place": "Santorini wine tasting",
+   "source": "https://commons.wikimedia.org/wiki/File:Asirtiko_Athiri_from_Santorini.JPG"
+  },
+  {
+   "file": "kyoto-d0-0.webp",
+   "place": "Kiyomizu-dera",
+   "source": "https://commons.wikimedia.org/wiki/File:Kiyomizu.jpg"
+  },
+  {
+   "file": "kyoto-d0-1.webp",
+   "place": "Ninenzaka and Sannenzaka",
+   "source": "https://commons.wikimedia.org/wiki/File:Sannenzaka_street,_Kyoto_(3811257874).jpg"
+  },
+  {
+   "file": "kyoto-d0-2.webp",
+   "place": "Gion evening walk",
+   "source": "https://commons.wikimedia.org/wiki/File:150124_Gion_Kyoto_Japan01s3.jpg"
+  },
+  {
+   "file": "kyoto-d1-0.webp",
+   "place": "Arashiyama Bamboo Grove",
+   "source": "https://commons.wikimedia.org/wiki/File:Bamboo_Forest,_Arashiyama,_Kyoto,_Japan.jpg"
+  },
+  {
+   "file": "kyoto-d1-1.webp",
+   "place": "Tenryu-ji Temple",
+   "source": "https://commons.wikimedia.org/wiki/File:Tenryuji_Kyoto.jpg"
+  },
+  {
+   "file": "kyoto-d1-2.webp",
+   "place": "Togetsukyo Bridge",
+   "source": "https://commons.wikimedia.org/wiki/File:View_of_the_Katsura_River_and_the_Arashiyama_mountains_from_Togetsukyo_Bridge,_Kyoto,_2016.jpg"
+  },
+  {
+   "file": "kyoto-d2-0.webp",
+   "place": "Fushimi Inari Taisha",
+   "source": "https://commons.wikimedia.org/wiki/File:Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine,_Kyoto,_Japan.jpg"
+  },
+  {
+   "file": "kyoto-d2-1.webp",
+   "place": "Nishiki Market",
+   "source": "https://commons.wikimedia.org/wiki/File:Nishiki_Ichiba_by_matsuyuki.jpg"
+  },
+  {
+   "file": "kyoto-d2-2.webp",
+   "place": "Pontocho lane walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Pontocho_by_Wolfiewolf_in_Nabeyacho,_Kyoto.jpg"
+  },
+  {
+   "file": "bali-d0-0.webp",
+   "place": "Tegalalang Rice Terrace",
+   "source": "https://commons.wikimedia.org/wiki/File:Rice_terraces,_Bali.jpg"
+  },
+  {
+   "file": "bali-d0-1.webp",
+   "place": "Tirta Empul Temple",
+   "source": "https://commons.wikimedia.org/wiki/File:Bali_-_bathing_(Melukat)_at_Pura_Tirta_Empul_(2025)_-_img_07.jpg"
+  },
+  {
+   "file": "bali-d0-2.webp",
+   "place": "Ubud Art Market",
+   "source": "https://commons.wikimedia.org/wiki/File:Ubud_market_(16435596274).jpg"
+  },
+  {
+   "file": "bali-d1-0.webp",
+   "place": "Padang Padang Beach",
+   "source": "https://commons.wikimedia.org/wiki/File:Padang_Padang_Beach_Bali.jpg"
+  },
+  {
+   "file": "bali-d1-1.webp",
+   "place": "Uluwatu Temple",
+   "source": "https://commons.wikimedia.org/wiki/File:Pura_Luhur_Uluwatu_2017-08-17_(34).jpg"
+  },
+  {
+   "file": "bali-d1-2.webp",
+   "place": "Jimbaran Beach sunset",
+   "source": "https://commons.wikimedia.org/wiki/File:Jimbaran200507-1.jpg"
+  },
+  {
+   "file": "bali-d2-0.webp",
+   "place": "Tegenungan Waterfall",
+   "source": "https://commons.wikimedia.org/wiki/File:Tegenungan_Waterfall_sideview.jpg"
+  },
+  {
+   "file": "bali-d2-1.webp",
+   "place": "Campuhan Ridge Walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Campuhan_ridge_walk_Ubud_Bali_20120827b.jpg"
+  },
+  {
+   "file": "bali-d2-2.webp",
+   "place": "Balinese cooking class",
+   "source": "https://commons.wikimedia.org/wiki/File:Bali_cuisine.jpg"
+  },
+  {
+   "file": "paris-d0-0.webp",
+   "place": "Evening Seine stroll",
+   "source": "https://commons.wikimedia.org/wiki/File:Bercy,_Paris_01.jpg"
+  },
+  {
+   "file": "paris-d0-1.webp",
+   "place": "Île de la Cité walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Île_de_la_Cité_shortly_before_sunrise,_West_View_140320_1.jpg"
+  },
+  {
+   "file": "paris-d0-2.webp",
+   "place": "Crêperie Montparnasse",
+   "source": "https://commons.wikimedia.org/wiki/File:Crêpe_with_ham,_bacon,_cheese_&_spinach_@_Crêperie_Josselin_@_Montparnasse_@_Paris_(33789534444).jpg"
+  },
+  {
+   "file": "paris-d1-0.webp",
+   "place": "Eiffel Tower",
+   "source": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons_(cropped).jpg"
+  },
+  {
+   "file": "paris-d1-1.webp",
+   "place": "Le Marais cafés",
+   "source": "https://commons.wikimedia.org/wiki/File:Paris_Hotel_de_Sens_dsc04028.jpg"
+  },
+  {
+   "file": "paris-d1-2.webp",
+   "place": "Rue des Rosiers",
+   "source": "https://commons.wikimedia.org/wiki/File:Rue_Rosiers_-_Paris_IV_(FR75)_-_2021-05-25_-_1.jpg"
+  },
+  {
+   "file": "paris-d2-0.webp",
+   "place": "Louvre Museum",
+   "source": "https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg"
+  },
+  {
+   "file": "paris-d2-1.webp",
+   "place": "Sacré-Cœur Basilica",
+   "source": "https://commons.wikimedia.org/wiki/File:Le_sacre_coeur.jpg"
+  },
+  {
+   "file": "paris-d2-2.webp",
+   "place": "Montmartre sunset walk",
+   "source": "https://commons.wikimedia.org/wiki/File:View_from_Notre-Dame_de_Paris,_24_June_2014_004.jpg"
+  },
+  {
+   "file": "paris-d3-0.webp",
+   "place": "Palace of Versailles",
+   "source": "https://commons.wikimedia.org/wiki/File:Versailles_Palace_(FRA)_–_Equestrian_Olympic_Venue.jpg"
+  },
+  {
+   "file": "paris-d3-1.webp",
+   "place": "Versailles Gardens",
+   "source": "https://commons.wikimedia.org/wiki/File:Vue_aérienne_du_domaine_de_Versailles_le_20_août_2014_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_22.jpg"
+  },
+  {
+   "file": "paris-d3-2.webp",
+   "place": "Marie-Antoinette's Estate",
+   "source": "https://commons.wikimedia.org/wiki/File:Hameau_de_la_Reine,_Versailles,_France.jpg"
+  },
+  {
+   "file": "paris-d4-0.webp",
+   "place": "Thalys to Amsterdam",
+   "source": "https://commons.wikimedia.org/wiki/File:Hoofddorp_Thalys_TGV-PBA_4534_trein_9340_Paris-Nord_-_Flickr_-_Rob_Dammers.jpg"
+  },
+  {
+   "file": "paris-d4-1.webp",
+   "place": "Canal boat cruise",
+   "source": "https://commons.wikimedia.org/wiki/File:Prinsengracht_canal_and_Westerkerk_tower_seen_from_a_Reestraat_bridge,_Amsterdam,_Netherlands_julesvernex2.jpg"
+  },
+  {
+   "file": "paris-d4-2.webp",
+   "place": "Jordaan quarter walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Eerste_Leliedwarsstraat.jpg"
+  },
+  {
+   "file": "paris-d5-0.webp",
+   "place": "Rijksmuseum",
+   "source": "https://commons.wikimedia.org/wiki/File:South_facade_of_the_Rijksmuseum_Amsterdam_(DSCF0528).jpg"
+  },
+  {
+   "file": "paris-d5-1.webp",
+   "place": "Albert Cuyp Market",
+   "source": "https://commons.wikimedia.org/wiki/File:Albert_Cuypmarkt.jpg"
+  },
+  {
+   "file": "paris-d5-2.webp",
+   "place": "De Pijp neighbourhood",
+   "source": "https://commons.wikimedia.org/wiki/File:Revolutiebouw.jpg"
+  },
+  {
+   "file": "paris-d6-0.webp",
+   "place": "Anne Frank House",
+   "source": "https://commons.wikimedia.org/wiki/File:Amsterdam_(NL),_Anne-Frank-Huis_--_2015_--_7185.jpg"
+  },
+  {
+   "file": "paris-d6-1.webp",
+   "place": "Vondelpark stroll",
+   "source": "https://commons.wikimedia.org/wiki/File:Amsterdam,_Vondelpark,_at_the_pond-2.jpg"
+  },
+  {
+   "file": "paris-d6-2.webp",
+   "place": "Leidseplein farewell",
+   "source": "https://commons.wikimedia.org/wiki/File:Stadsschouwburg,_Amsterdam_2335.jpg"
+  },
+  {
+   "file": "iceland-d0-0.webp",
+   "place": "Hallgrímskirkja",
+   "source": "https://commons.wikimedia.org/wiki/File:Hallgrimskirkja_mai_2026.jpg"
+  },
+  {
+   "file": "iceland-d0-1.webp",
+   "place": "Reykjavik harbour walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Reykjavik_old_harbour_(6046082168).jpg"
+  },
+  {
+   "file": "iceland-d0-2.webp",
+   "place": "Sky Lagoon soak",
+   "source": "https://commons.wikimedia.org/wiki/File:Sky_Lagoon_Cold_Plunge.jpg"
+  },
+  {
+   "file": "iceland-d1-0.webp",
+   "place": "Seljalandsfoss waterfall",
+   "source": "https://commons.wikimedia.org/wiki/File:Idyllic_landscape_with_a_waterfall_(Unsplash).jpg"
+  },
+  {
+   "file": "iceland-d1-1.webp",
+   "place": "Skógafoss waterfall",
+   "source": "https://commons.wikimedia.org/wiki/File:2008-05-24_35_Skógafoss.jpg"
+  },
+  {
+   "file": "iceland-d1-2.webp",
+   "place": "Reynisfjara Black Sand Beach",
+   "source": "https://commons.wikimedia.org/wiki/File:Reynisfjara_Beach_Looking_West_Towards_Dyrhólaey.jpg"
+  },
+  {
+   "file": "iceland-d2-0.webp",
+   "place": "Thingvellir National Park",
+   "source": "https://commons.wikimedia.org/wiki/File:Þingvellir_from_the_information_centre.JPG"
+  },
+  {
+   "file": "iceland-d2-1.webp",
+   "place": "Geysir geothermal area",
+   "source": "https://commons.wikimedia.org/wiki/File:Strokkur_geyser_eruption,_close-up_view.jpg"
+  },
+  {
+   "file": "iceland-d2-2.webp",
+   "place": "Gullfoss waterfall",
+   "source": "https://commons.wikimedia.org/wiki/File:Gullfoss_from_the_Air_(cropped).jpg"
+  },
+  {
+   "file": "queenstown-d0-0.webp",
+   "place": "Queenstown Gardens",
+   "source": "https://commons.wikimedia.org/wiki/File:Queenstown.Gardens.jpg"
+  },
+  {
+   "file": "queenstown-d0-1.webp",
+   "place": "Lake Wakatipu walk",
+   "source": "https://commons.wikimedia.org/wiki/File:LakeWakatipuNov172024_02.jpg"
+  },
+  {
+   "file": "queenstown-d0-2.webp",
+   "place": "Skyline Gondola",
+   "source": "https://commons.wikimedia.org/wiki/File:View_from_Shotover-Rees_St,_Queenstown_-_panoramio_(2).jpg"
+  },
+  {
+   "file": "queenstown-d1-0.webp",
+   "place": "Arrowtown historic walk",
+   "source": "https://commons.wikimedia.org/wiki/File:NZL-arrowt-buckinghamstr.jpg"
+  },
+  {
+   "file": "queenstown-d1-1.webp",
+   "place": "Gibbston Valley tasting",
+   "source": "https://commons.wikimedia.org/wiki/File:Vineyard_in_Gibbston_Valley_in_South_Island,_New_Zealand_-_Central_Otago_wine_region.jpg"
+  },
+  {
+   "file": "queenstown-d1-2.webp",
+   "place": "Onsen Hot Pools",
+   "source": "https://commons.wikimedia.org/wiki/File:The_Shotover_River_Otago._NZ_(23416513585).jpg"
+  },
+  {
+   "file": "queenstown-d2-0.webp",
+   "place": "Glenorchy scenic drive",
+   "source": "https://commons.wikimedia.org/wiki/File:Glenorchy_wharf_and_red_shed_at_Lake_Wakatipu.jpg"
+  },
+  {
+   "file": "queenstown-d2-1.webp",
+   "place": "Bob’s Cove track",
+   "source": "https://commons.wikimedia.org/wiki/File:Queenstown_to_Glenorchy_Road_(25859542508).jpg"
+  },
+  {
+   "file": "queenstown-d2-2.webp",
+   "place": "Queenstown waterfront dinner",
+   "source": "https://commons.wikimedia.org/wiki/File:Queenstown_1_(8168013172).jpg"
+  },
+  {
+   "file": "barcelona-d0-0.webp",
+   "place": "Sagrada Família",
+   "source": "https://commons.wikimedia.org/wiki/File:SF_maig_2_cropped.jpg"
+  },
+  {
+   "file": "barcelona-d0-1.webp",
+   "place": "Passeig de Gràcia",
+   "source": "https://commons.wikimedia.org/wiki/File:Via_Barcelona_Casa_Milà.JPG"
+  },
+  {
+   "file": "barcelona-d0-2.webp",
+   "place": "Casa Batlló exterior",
+   "source": "https://commons.wikimedia.org/wiki/File:Casa_Batllo_Overview_Barcelona_Spain_cut.jpg"
+  },
+  {
+   "file": "barcelona-d1-0.webp",
+   "place": "La Boqueria Market",
+   "source": "https://commons.wikimedia.org/wiki/File:Barcelona_-_Mercat_de_Sant_Josep_(la_Boqueria)_-_Entrance.jpg"
+  },
+  {
+   "file": "barcelona-d1-1.webp",
+   "place": "Gothic Quarter walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Barcelona_-_Carrer_del_Bisbe.jpg"
+  },
+  {
+   "file": "barcelona-d1-2.webp",
+   "place": "Barceloneta sunset",
+   "source": "https://commons.wikimedia.org/wiki/File:Platja_de_la_Barceloneta_02.jpg"
+  },
+  {
+   "file": "barcelona-d2-0.webp",
+   "place": "Park Güell",
+   "source": "https://commons.wikimedia.org/wiki/File:Parc_guell_-_panoramio.jpg"
+  },
+  {
+   "file": "barcelona-d2-1.webp",
+   "place": "El Born galleries",
+   "source": "https://commons.wikimedia.org/wiki/File:Barcelona_Carrer_dels_Agullers.jpg"
+  },
+  {
+   "file": "barcelona-d2-2.webp",
+   "place": "Poble-sec tapas district",
+   "source": "https://commons.wikimedia.org/wiki/File:Poble_Sec_capvespre.jpg"
+  }
+ ]
+}
