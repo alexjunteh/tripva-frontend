@@ -2,15 +2,16 @@
 // Cache strategy:
 //   • HTML pages → network-first, cache as fallback (spotty WiFi abroad)
 //   • Trip JSON (/api/trip) → stale-while-revalidate, always shows on load
-//   • Icons / fonts → cache-first
-//   • Everything else → network with cache fallback
+//   • Icons → cache-first
+//   • Other cross-origin requests (fonts, photo CDNs) → not intercepted
+//   • Everything else same-origin → network with cache fallback
 //
 // Previously stale-while-revalidate on HTML caused users to see 1-visit-old
 // HTML after every deploy. Network-first fixes that while preserving offline.
 
-const CACHE_VERSION = 'tripva-v15';
-const STATIC_CACHE  = 'tripva-static-v15';
-const TRIP_CACHE    = 'tripva-trips-v15';
+const CACHE_VERSION = 'tripva-v16';
+const STATIC_CACHE  = 'tripva-static-v16';
+const TRIP_CACHE    = 'tripva-trips-v16';
 
 // Static assets that rarely change — cache aggressively
 const STATIC_ASSETS = [
@@ -44,12 +45,6 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   const url = new URL(req.url);
 
-  // ── External image CDNs — skip SW, let browser handle natively ──────────
-  // Unsplash/Pexels URLs have no file extension so the image regex below
-  // never matched them. The catch-all's fetch() fails intermittently on
-  // mobile, causing net::ERR_FAILED. Native browser fetches are more reliable.
-  if (url.hostname === 'images.unsplash.com' || url.hostname === 'images.pexels.com') return;
-
   // ── Trip JSON from Vercel backend — stale-while-revalidate ─────────────
   // Every time tripva.app/trip loads it fetches /api/trip?id=... to hydrate.
   // SWR means: return cached copy INSTANTLY (zero-latency paint when offline
@@ -59,6 +54,14 @@ self.addEventListener('fetch', e => {
     e.respondWith(tripSWR(req));
     return;
   }
+
+  // ── Every other cross-origin request — let the browser fetch it natively ──
+  // A fetch() made inside the worker is checked against the worker's own
+  // connect-src CSP, which does not list Google Fonts or the photo hosts
+  // (upload/thumb.wikimedia.org, Unsplash, Pexels). Routing them through the
+  // worker failed with net::ERR_FAILED: returning visitors lost the brand
+  // fonts and every Wikimedia trip photo. Native loads use img-src/style-src.
+  if (url.origin !== self.location.origin) return;
 
   // ── HTML pages — network-first, cache fallback (see above) ─────────────
   if (req.destination === 'document' || url.pathname.endsWith('.html')) {
@@ -79,22 +82,6 @@ self.addEventListener('fetch', e => {
   // ── Icons + static assets — cache-first ────────────────────────────────
   if (STATIC_ASSETS.some(a => url.pathname.includes(a))) {
     e.respondWith(caches.match(req).then(r => r || fetch(req)));
-    return;
-  }
-
-  // ── Day hero photos (Unsplash, picsum, loremflickr, Wikimedia) ─────────
-  // Cache-first with network refresh — trip photos are highly reused per
-  // trip and don't change, keep them offline for the journey.
-  if (/\.(jpg|jpeg|png|webp|avif)(\?|$)/i.test(url.pathname) && url.hostname !== location.hostname) {
-    e.respondWith(
-      caches.match(req).then(cached => {
-        const fetchAndCache = fetch(req).then(res => {
-          if (res.ok) caches.open(STATIC_CACHE).then(c => c.put(req, res.clone()));
-          return res;
-        }).catch(() => cached || Response.error());
-        return cached || fetchAndCache;
-      })
-    );
     return;
   }
 
