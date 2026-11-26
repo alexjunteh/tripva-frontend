@@ -94,6 +94,8 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 .desktop-nav-brand,.desktop-nav-section{display:none}
 
 /* ─── DESKTOP LAYOUT ─── */
+/* Desktop-only day panel: hidden on phones/tablets (the rules below only apply >=1024px). */
+.desk-day-panel{display:none}
 @media(min-width:1024px){
   body{background:var(--bg)}
 
@@ -1593,6 +1595,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 </style>
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
 <script src="demo-trips.js?v=20260716-demo-quality-2"></script>
+<script src="day-photos.js?v=20261127-2"></script>
 </head>
 <body>
 
@@ -3265,44 +3268,44 @@ window.CITY_IMGS = {
     // Italy
     'riomaggiore':'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&h=500&fit=crop',
     'cinque terre':'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600&h=400&fit=crop',
-    'varenna':'https://images.unsplash.com/photo-1553451166-232112bda6f6?w=900&h=500&fit=crop',
-    'como':'https://images.unsplash.com/photo-1553451166-232112bda6f6?w=900&h=500&fit=crop',
+    'varenna':'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Varenna_20260811.jpg/1280px-Varenna_20260811.jpg',
+    'como':'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Sentiero_del_Viandante_DSC_6340_%2814020554463%29.jpg/1280px-Sentiero_del_Viandante_DSC_6340_%2814020554463%29.jpg',
     'venice':'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&h=400&fit=crop',
     'venezia':'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=900&h=500&fit=crop',
-    'florence':'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&h=400&fit=crop',
+    'florence':'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg/1280px-Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg',
     'firenze':'https://images.unsplash.com/photo-1578262634053-eead874052be?w=900&h=500&fit=crop',
     'rome':'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&h=400&fit=crop',
     'roma':'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=900&h=500&fit=crop',
     'amalfi':'https://images.unsplash.com/photo-1568282167464-cb0d811b05c2?w=900&h=500&fit=crop',
     'positano':'https://images.unsplash.com/photo-1568282167464-cb0d811b05c2?w=900&h=500&fit=crop',
-    'milan':'https://images.unsplash.com/photo-1520175480921-4edfa2983e0f?w=900&h=500&fit=crop',
-    'naples':'https://images.unsplash.com/photo-1554995207-c18c203602cb?w=900&h=500&fit=crop',
+    'milan':'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg/1280px-Milan_Cathedral_from_Piazza_del_Duomo.jpg',
+    'naples':'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Castel_dell%27_Ovo.jpg/1280px-Castel_dell%27_Ovo.jpg',
     // Switzerland
     'lucerne':'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=600&h=400&fit=crop',
     'luzern':'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=900&h=500&fit=crop',
     'grindelwald':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
     'interlaken':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
     'zurich':'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=900&h=500&fit=crop',
-    'geneva':'https://images.unsplash.com/photo-1531986362435-16b427eb9c26?w=900&h=500&fit=crop',
-    'zermatt':'https://images.unsplash.com/photo-1531986362435-16b427eb9c26?w=900&h=500&fit=crop',
+    'geneva':'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Jet_d%27eau_de_Gen%C3%A8ve_%28swiss%29.jpg/1280px-Jet_d%27eau_de_Gen%C3%A8ve_%28swiss%29.jpg',
+    'zermatt':'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Matterhorn_from_Domh%C3%BCtte_-_2.jpg/1280px-Matterhorn_from_Domh%C3%BCtte_-_2.jpg',
     // France
     'paris':'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900&h=500&fit=crop',
-    'nice':'https://images.unsplash.com/photo-1567789884554-0b844b597180?w=900&h=500&fit=crop',
-    'lyon':'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=900&h=500&fit=crop',
+    'nice':'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/CollineDuChateau_NiceFrance2022.png/1280px-CollineDuChateau_NiceFrance2022.png',
+    'lyon':'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Fourviere_Lyon.jpg/1280px-Fourviere_Lyon.jpg',
     // Netherlands
     'amsterdam':'/demo-assets/amsterdam-center.jpg',
     // Spain
-    'barcelona':'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=900&h=500&fit=crop',
+    'barcelona':'https://upload.wikimedia.org/wikipedia/commons/e/ef/SF_maig_2_cropped.jpg',
     'madrid':'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=900&h=500&fit=crop',
-    'seville':'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=900&h=500&fit=crop',
-    'granada':'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=900&h=500&fit=crop',
+    'seville':'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Plaza_de_Espa%C3%B1a_%28Sevilla%29_-_01.jpg/1280px-Plaza_de_Espa%C3%B1a_%28Sevilla%29_-_01.jpg',
+    'granada':'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Dawn_Charles_V_Palace_Alhambra_Granada_Andalusia_Spain.jpg/1280px-Dawn_Charles_V_Palace_Alhambra_Granada_Andalusia_Spain.jpg',
     // UK
     'london':'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=900&h=500&fit=crop',
-    'edinburgh':'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?w=900&h=500&fit=crop',
+    'edinburgh':'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Edinburgh_Castle_from_Esplanade_20211019.jpg/1280px-Edinburgh_Castle_from_Esplanade_20211019.jpg',
     // Germany
     'berlin':'https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?w=900&h=500&fit=crop',
-    'munich':'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop',
-    'bavaria':'https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?w=900&h=500&fit=crop',
+    'munich':'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Rathaus_and_Marienplatz_from_Peterskirche_-_August_2006.jpg/1280px-Rathaus_and_Marienplatz_from_Peterskirche_-_August_2006.jpg',
+    'bavaria':'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Schloss_Neuschwanstein_%2845_mm%29.jpg/1280px-Schloss_Neuschwanstein_%2845_mm%29.jpg',
     // Greece
     'santorini':'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&h=500&fit=crop',
     'mykonos':'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&h=500&fit=crop',
@@ -3312,16 +3315,16 @@ window.CITY_IMGS = {
     'porto':'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=900&h=500&fit=crop',
     // Japan
     'tokyo':'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&h=500&fit=crop',
-    'kawagoe':'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&h=500&fit=crop',
+    'kawagoe':'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Alley_in_Kawagoe.jpg/1280px-Alley_in_Kawagoe.jpg',
     'kawaguchiko':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
     'mt fuji':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
     'fuji':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
     'shibuya':'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&h=500&fit=crop',
     'shinjuku':'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&h=500&fit=crop',
     'akihabara':'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&h=500&fit=crop',
-    'asakusa':'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&h=500&fit=crop',
+    'asakusa':'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Sensoji_2023.jpg/1280px-Sensoji_2023.jpg',
     'nara':'https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=900&h=500&fit=crop',
-    'hiroshima':'https://images.unsplash.com/photo-1576675784201-0e142b423952?w=900&h=500&fit=crop',
+    'hiroshima':'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Genbaku_Dome04-r.JPG/1280px-Genbaku_Dome04-r.JPG',
     'hakone':'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&h=500&fit=crop',
     'japan':'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&h=500&fit=crop',
     'uluwatu':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
@@ -3334,18 +3337,18 @@ window.CITY_IMGS = {
     'phuket':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
     'bali':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
     'ubud':'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&h=500&fit=crop',
-    'seminyak':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
+    'seminyak':'https://upload.wikimedia.org/wikipedia/commons/d/d5/Seminyak%2C_Bali.jpg',
     'singapore':'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=900&h=500&fit=crop',
     'kuala lumpur':'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=900&h=500&fit=crop',
     'penang':'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=900&h=500&fit=crop',
-    'hanoi':'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=900&h=500&fit=crop',
+    'hanoi':'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Thap_Rua.jpg/1280px-Thap_Rua.jpg',
     'ho chi minh':'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=900&h=500&fit=crop',
     'saigon':'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=900&h=500&fit=crop',
-    'siem reap':'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&h=500&fit=crop',
-    'angkor':'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&h=500&fit=crop',
+    'siem reap':'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Angkor_Wat.jpg/1280px-Angkor_Wat.jpg',
+    'angkor':'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Angkor_Wat.jpg/1280px-Angkor_Wat.jpg',
     // Korea
-    'seoul':'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=900&h=500&fit=crop',
-    'busan':'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=900&h=500&fit=crop',
+    'seoul':'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg/1280px-%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg',
+    'busan':'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Gamcheon_Houses%2C_2024.jpg/1280px-Gamcheon_Houses%2C_2024.jpg',
     // Middle East
     'dubai':'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&h=500&fit=crop',
     'abu dhabi':'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&h=500&fit=crop',
@@ -3355,40 +3358,40 @@ window.CITY_IMGS = {
     'nyc':'https://images.unsplash.com/photo-1490644658840-3f2e3f8c5625?w=900&h=500&fit=crop',
     'los angeles':'https://images.unsplash.com/photo-1580655653885-65763b2597d0?w=900&h=500&fit=crop',
     'san francisco':'https://images.unsplash.com/photo-1717652480757-555af691acbb?w=900&h=500&fit=crop',
-    'miami':'https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?w=900&h=500&fit=crop',
+    'miami':'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Ocean_drive_day_2009j.JPG/1280px-Ocean_drive_day_2009j.JPG',
     'cancun':'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=900&h=500&fit=crop',
-    'mexico city':'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=900&h=500&fit=crop',
+    'mexico city':'https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Bellas_Artes_01.jpg/1280px-Bellas_Artes_01.jpg',
     'rio de janeiro':'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=900&h=500&fit=crop',
     'rio':'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=900&h=500&fit=crop',
     // Africa / Pacific
     'cape town':'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=900&h=500&fit=crop',
     'marrakech':'https://images.unsplash.com/photo-1740381971575-92907071bc5f?w=900&h=500&fit=crop',
-    'sydney':'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=500&fit=crop',
+    'sydney':'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Sydney_Opera_House_2026.jpg/1280px-Sydney_Opera_House_2026.jpg',
     'melbourne':'https://images.unsplash.com/photo-1545044846-351ba102b6d5?w=900&h=500&fit=crop',
     'auckland':'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=900&h=500&fit=crop',
     'wellington':'https://images.unsplash.com/photo-1604714407200-d8f9f9d24380?w=900&h=500&fit=crop',
-    'rotorua':'https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=900&h=500&fit=crop',
-    'queenstown':'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&h=500&fit=crop',
-    'christchurch':'https://images.unsplash.com/photo-1689803749146-94587275970c?w=900&h=500&fit=crop',
+    'rotorua':'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Rotorua_museum.jpg/1280px-Rotorua_museum.jpg',
+    'queenstown':'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Queenstown_1_%288168013172%29.jpg/1280px-Queenstown_1_%288168013172%29.jpg',
+    'christchurch':'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Christchurch_Botanic_Gardens_16.jpg/1280px-Christchurch_Botanic_Gardens_16.jpg',
     'new zealand':'https://images.unsplash.com/photo-1469521669194-babb45599def?w=900&h=500&fit=crop',
-    'milford sound':'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=900&h=500&fit=crop',
-    'milford':'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=900&h=500&fit=crop',
-    'wanaka':'https://images.unsplash.com/photo-1502786129293-79981df4e689?w=900&h=500&fit=crop',
-    'te anau':'https://images.unsplash.com/photo-1502786129293-79981df4e689?w=900&h=500&fit=crop',
-    'tongariro':'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&h=500&fit=crop',
-    'bay of islands':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
-    'coromandel':'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=900&h=500&fit=crop',
-    'taupo':'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=900&h=500&fit=crop',
-    'hobbiton':'https://images.unsplash.com/photo-1486911278844-a81c5267e227?w=900&h=500&fit=crop',
-    'perth':'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&h=500&fit=crop',
-    'brisbane':'https://images.unsplash.com/photo-1524293568345-75d62c3664f7?w=900&h=500&fit=crop',
-    'gold coast':'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=900&h=500&fit=crop',
+    'milford sound':'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Milford_Sound_%28New_Zealand%29.JPG/1280px-Milford_Sound_%28New_Zealand%29.JPG',
+    'milford':'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Milford_Sound_%28New_Zealand%29.JPG/1280px-Milford_Sound_%28New_Zealand%29.JPG',
+    'wanaka':'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/LakeWanakaNov272024.jpg/1280px-LakeWanakaNov272024.jpg',
+    'te anau':'https://upload.wikimedia.org/wikipedia/commons/8/8d/On_Lake_Te_Anau.jpg',
+    'tongariro':'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Le_Ngauruhoe_et_le_Ruapehu_vus_du_sommet_du_Tongariro.jpg/1280px-Le_Ngauruhoe_et_le_Ruapehu_vus_du_sommet_du_Tongariro.jpg',
+    'bay of islands':'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/00_4801_Dolphins_-_Bay_of_Islands.jpg/1280px-00_4801_Dolphins_-_Bay_of_Islands.jpg',
+    'coromandel':'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Cathedral_Cove_06.jpg/1280px-Cathedral_Cove_06.jpg',
+    'taupo':'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Huka_Falls.jpg/1280px-Huka_Falls.jpg',
+    'hobbiton':'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Waterhouse_Lake_Front.jpg/1280px-Waterhouse_Lake_Front.jpg',
+    'perth':'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Kings_Park_War_Memorial_Sunrise.jpg/1280px-Kings_Park_War_Memorial_Sunrise.jpg',
+    'brisbane':'https://upload.wikimedia.org/wikipedia/commons/1/11/BNE-StoryBridge-fromCityCat.jpg',
+    'gold coast':'https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Surfers_Paradise%2C_QLD_skyline.jpg/1280px-Surfers_Paradise%2C_QLD_skyline.jpg',
     'fiji':'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=500&fit=crop',
     // India
     'mumbai':'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=900&h=500&fit=crop',
     'delhi':'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=900&h=500&fit=crop',
     'goa':'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=900&h=500&fit=crop',
-    'jaipur':'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=900&h=500&fit=crop',
+    'jaipur':'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg/1280px-East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg',
     // Paris variants
     'eiffel':'/demo-assets/paris-eiffel.jpg',
     'paris-night':'https://images.unsplash.com/photo-1549144511-f099e773c147?w=900&h=500&fit=crop',
@@ -3397,13 +3400,13 @@ window.CITY_IMGS = {
     'montmartre':'https://images.unsplash.com/photo-1650011613089-02135f5217d0?w=900&h=500&fit=crop',
     // Amsterdam variants
     'amsterdam-canals':'/demo-assets/amsterdam-canals.jpg',
-    'jordaan':'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop',
-    'anne-frank':'https://images.unsplash.com/photo-1609010697446-11f2155278f0?w=900&h=500&fit=crop',
+    'jordaan':'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Eerste_Leliedwarsstraat.jpg/1280px-Eerste_Leliedwarsstraat.jpg',
+    'anne-frank':'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Amsterdam_%28NL%29%2C_Anne-Frank-Huis_--_2015_--_7185.jpg/1280px-Amsterdam_%28NL%29%2C_Anne-Frank-Huis_--_2015_--_7185.jpg',
     'vondelpark':'/demo-assets/amsterdam-canals.jpg',
     // Eastern Europe
     'prague':'https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=900&h=500&fit=crop',
     'vienna':'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=900&h=500&fit=crop',
-    'budapest':'https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=900&h=500&fit=crop',
+    'budapest':'https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/Hungarian_Parliament_Building_from_across_the_Danube%2C_2025-01-11.jpg/1280px-Hungarian_Parliament_Building_from_across_the_Danube%2C_2025-01-11.jpg',
     'dubrovnik':'https://images.unsplash.com/photo-1565784623522-7fdf499a94a4?w=900&h=500&fit=crop',
     'istanbul':'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=900&h=500&fit=crop',
     // Africa (added)
@@ -3453,6 +3456,17 @@ window.CITY_IMG_ALTS = {
 // from the backend (if not a generic placeholder); second: Wikipedia-backed
 // city photo (resolved async and swapped in via upgradeTripImages); third:
 // picsum seeded by destination + day-index as the immediate placeholder.
+// CITY_IMG_ALTS lists neighbouring cities too (tokyo -> kyoto, osaka). A day
+// placeholder must never show another city, so keep only variants of the same
+// place (e.g. maldives -> maldives-beach), matched through the CITY_IMGS key.
+function sameCityAlts(key) {
+  const alts = CITY_IMG_ALTS[key];
+  if (!alts) return null;
+  const urlToKey = {};
+  for (const [k, u] of Object.entries(CITY_IMGS)) if (!(u in urlToKey)) urlToKey[u] = k;
+  const same = alts.filter(u => { const k = urlToKey[u] || ''; return k === key || k.startsWith(key + '-'); });
+  return same.length ? same : (CITY_IMGS[key] ? [CITY_IMGS[key]] : null);
+}
 function getDayImage(day, idx) {
   if (day.imageUrl && !day.imageUrl.includes('loremflickr')) return day.imageUrl;
   const tripDest = (plan?.trip?.name || plan?.rawPlan?.trip?.name || '').toLowerCase();
@@ -3466,21 +3480,21 @@ function getDayImage(day, idx) {
   }
 
   function findMatch(seed) {
-    if (CITY_IMG_ALTS[seed]) return pickUnused(CITY_IMG_ALTS[seed]);
+    if (sameCityAlts(seed)) return pickUnused(sameCityAlts(seed));
     if (CITY_IMGS[seed]) return pickUnused([CITY_IMGS[seed]]);
     for (const [key, url] of Object.entries(CITY_IMGS)) {
       if (seed.includes(key) || key.includes(seed.split(/[-\s]/)[0])) {
-        if (CITY_IMG_ALTS[key]) return pickUnused(CITY_IMG_ALTS[key]);
+        if (sameCityAlts(key)) return pickUnused(sameCityAlts(key));
         return pickUnused([url]);
       }
     }
     const words = seed.split(/[-\s,&]+/).filter(w => w.length > 2);
     for (const word of words) {
-      if (CITY_IMG_ALTS[word]) return pickUnused(CITY_IMG_ALTS[word]);
+      if (sameCityAlts(word)) return pickUnused(sameCityAlts(word));
       if (CITY_IMGS[word]) return pickUnused([CITY_IMGS[word]]);
       for (const [key, url] of Object.entries(CITY_IMGS)) {
         if (key.includes(word) || word.includes(key)) {
-          if (CITY_IMG_ALTS[key]) return pickUnused(CITY_IMG_ALTS[key]);
+          if (sameCityAlts(key)) return pickUnused(sameCityAlts(key));
           return pickUnused([url]);
         }
       }
@@ -3638,38 +3652,48 @@ function _wikiSeedsForDay(day, idx){
 // Walk day cards + FocusCard and swap in Wikipedia imagery when resolved.
 // Non-blocking — runs after initial paint. Respects existing real images.
 let _wikiUpgradeRunning = false;
+// Swap each day card's placeholder for a Wikipedia photo of that day's place.
+// TripvaDayPhotos (day-photos.js) only accepts a page whose coordinates sit
+// within 60 km of the stop the traveller is based at that day, so a Tokyo day
+// can never show Kyoto. Picks are cached for 30 days; a photo is only swapped
+// in after it has loaded, so a failed image never leaves a broken card.
+const _DAY_PHOTO_CACHE_KEY = 'tripva_day_photos_v2';
+const _DAY_PHOTO_MISS_TTL_MS = 3 * 24 * 60 * 60 * 1000; // re-search a miss after 3 days
 async function upgradeTripImages(){
-  // Launch stability: avoid direct Wikimedia image upgrades. Some Wikimedia
-  // image responses are blocked by browser ORB/CORP in production-like contexts,
-  // which creates noisy console failures. Deterministic fallback imagery is
-  // already provided by getDayImage().
-  return;
   if (_wikiUpgradeRunning) return;
-  if (!plan || !plan.days || !plan.days.length) return;
+  if (!plan || !plan.days || !plan.days.length || !window.TripvaDayPhotos) return;
+  if (plan.trip && plan.trip.isDemo) return; // demos ship their own photos
   _wikiUpgradeRunning = true;
-  // Track images we've already used on THIS trip so two days never share a photo
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem(_DAY_PHOTO_CACHE_KEY) || '{}') || {}; } catch(e) { store = {}; }
+  const save = () => { try { localStorage.setItem(_DAY_PHOTO_CACHE_KEY, JSON.stringify(store)); } catch(e){} };
+  const loads = url => new Promise(res => { const im = new Image(); im.onload = () => res(im.naturalWidth > 0); im.onerror = () => res(false); im.src = url; });
+  const fetchJson = async url => { const r = await fetch(url); if (!r.ok) throw new Error('wiki ' + r.status); return r.json(); };
   const usedImgs = new Set();
   try {
     for (let i = 0; i < plan.days.length; i++) {
       const d = plan.days[i];
-      // Skip only if day already has a real (non-loremflickr) image
       if (d.imageUrl && !d.imageUrl.includes('loremflickr')) { usedImgs.add(d.imageUrl); continue; }
-      if (d.heroImg && !d.heroImg.includes('loremflickr')) { usedImgs.add(d.heroImg); continue; }
-      const seeds = _wikiSeedsForDay(d, i);
+      const stop = TripvaDayPhotos.stopForDay(plan, d.day || (i + 1), d.heroSeed);
+      const key = [d.heroSeed || '', d.title || '', stop ? stop.name : ''].join('|').toLowerCase();
       let img = null;
-      for (const s of seeds) {
-        const candidate = await fetchWikiImage(s);
-        if (candidate && !usedImgs.has(candidate)) { img = candidate; break; }
+      const hit = store[key];
+      if (hit && !hit.url && (Date.now() - hit.ts) < _DAY_PHOTO_MISS_TTL_MS) {
+        continue; // searched recently, nothing suitable: keep the placeholder without re-searching
+      } else if (hit && (Date.now() - hit.ts) < _WIKI_TTL_MS && hit.url && !usedImgs.has(hit.url)) {
+        img = hit.url; usedImgs.add(img);
+      } else {
+        let pick = null;
+        try { pick = await TripvaDayPhotos.pickDayPhoto(plan, d, usedImgs, fetchJson); }
+        catch (e) { break; } // rate-limited or offline: stop now, unsearched days retry next visit
+        img = pick ? pick.url : null;
+        store[key] = { url: img, ts: Date.now() }; save();
+        await new Promise(r => setTimeout(r, 250)); // stay polite to the Wikipedia API
       }
-      if (!img) continue;
-      usedImgs.add(img);
-      // Stash on the day object so subsequent renders (FocusCard state swap,
-      // Days-sheet reopen) pick it up without another fetch.
+      if (!img || !(await loads(img))) continue;
       try { d.heroImg = img; } catch(e){}
-      // Day card hero
       const dc = document.querySelector(`#dc-${i} .day-big-hero`);
       if (dc) dc.style.backgroundImage = `url('${img}')`;
-      // FocusCard hero (only when this day is today)
       try {
         const info = (typeof getTripDateInfo === 'function') ? getTripDateInfo() : null;
         const today = info && info.ymd;
@@ -5208,7 +5232,7 @@ function renderLiveOps(){
   const timeline=day.timeline||[];
 
   // ── HERO ──
-  const heroImg=(day.imageUrl&&!day.imageUrl.includes('loremflickr')?day.imageUrl:null)||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
+  const heroImg=(day.imageUrl&&!day.imageUrl.includes('loremflickr')?day.imageUrl:null)||day.heroImg||((()=>{const seed=(day.heroSeed||'').toLowerCase();if(CITY_IMGS[seed])return CITY_IMGS[seed];for(const k of seed.split(/[,\s-]+/)){if(k.length>3&&CITY_IMGS[k])return CITY_IMGS[k];}return null;})())||'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=900&h=500&fit=crop';
   if(el('liveHero')){el('liveHero').style.backgroundImage=`url('${heroImg}')`;probeHeroBg(el('liveHero'),day.day||0);}
   const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -5878,7 +5902,8 @@ async function _populateWikiPhotos(container) {
 }
 function renderDaySheet(idx) {
   const d=plan.days[idx]; if(!d) return;
-  const imgUrl=getDayImage(d, idx);
+  // Prefer the location-checked day photo the card already shows (upgradeTripImages).
+  const imgUrl=d.heroImg||getDayImage(d, idx);
   const heroEl=document.getElementById('sheetHero');
   heroEl.style.backgroundImage=`url('${imgUrl}')`;
   probeHeroBg(heroEl, idx);
