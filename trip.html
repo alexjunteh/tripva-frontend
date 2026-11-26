@@ -3520,9 +3520,11 @@ function getDayImage(day, idx) {
 
 function probeHeroBg(el, idx) {
   const bg = el.style.backgroundImage;
-  const m = bg.match(/url\(['"]?([^'"?)]+)/);
+  // Quoted url("...") first: Wikimedia filenames contain ( ) and a query
+  // string, and cutting at ")" made good photos fall back to a gradient.
+  const m = bg.match(/url\((["'])(.*?)\1\)/) || bg.match(/url\(([^)'"]+)\)/);
   if (!m) return;
-  const src = m[1];
+  const src = m[2] !== undefined ? m[2] : m[1];
   if (src.startsWith('data:') || src.startsWith('/')) return;
   const gradients = [
     'linear-gradient(135deg, #1a1040 0%, #2d1b69 50%, #0d0d1a 100%)',
