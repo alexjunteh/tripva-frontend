@@ -421,5 +421,108 @@
    "place": "Poble-sec tapas district",
    "source": "https://commons.wikimedia.org/wiki/File:Poble_Sec_capvespre.jpg"
   }
- ]
+ ],
+ "day_banners": [
+  {
+   "file": "bali-1.webp",
+   "place": "Uluwatu Temple",
+   "source": "https://commons.wikimedia.org/wiki/File:Pura_Luhur_Uluwatu_2017-08-17_(34).jpg"
+  },
+  {
+   "file": "bali-2.webp",
+   "place": "Tegenungan Waterfall",
+   "source": "https://commons.wikimedia.org/wiki/File:Tegenungan_Waterfall_sideview.jpg"
+  },
+  {
+   "file": "barcelona-1.webp",
+   "place": "La Boqueria Market",
+   "source": "https://commons.wikimedia.org/wiki/File:Barcelona_-_Mercat_de_Sant_Josep_(la_Boqueria)_-_Entrance.jpg"
+  },
+  {
+   "file": "barcelona-2.webp",
+   "place": "Park Güell",
+   "source": "https://commons.wikimedia.org/wiki/File:Parc_guell_-_panoramio.jpg"
+  },
+  {
+   "file": "iceland-0.webp",
+   "place": "Reykjavik harbour walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Reykjavik_old_harbour_(6046082168).jpg"
+  },
+  {
+   "file": "iceland-1.webp",
+   "place": "Seljalandsfoss waterfall",
+   "source": "https://commons.wikimedia.org/wiki/File:Idyllic_landscape_with_a_waterfall_(Unsplash).jpg"
+  },
+  {
+   "file": "iceland-2.webp",
+   "place": "Thingvellir National Park",
+   "source": "https://commons.wikimedia.org/wiki/File:Þingvellir_from_the_information_centre.JPG"
+  },
+  {
+   "file": "kyoto-0.webp",
+   "place": "Ninenzaka and Sannenzaka",
+   "source": "https://commons.wikimedia.org/wiki/File:Sannenzaka_street,_Kyoto_(3811257874).jpg"
+  },
+  {
+   "file": "kyoto-2.webp",
+   "place": "Fushimi Inari Taisha",
+   "source": "https://commons.wikimedia.org/wiki/File:Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine,_Kyoto,_Japan.jpg"
+  },
+  {
+   "file": "paris-0.webp",
+   "place": "Île de la Cité walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Île_de_la_Cité_shortly_before_sunrise,_West_View_140320_1.jpg"
+  },
+  {
+   "file": "paris-3.webp",
+   "place": "Palace of Versailles",
+   "source": "https://commons.wikimedia.org/wiki/File:Versailles_Palace_(FRA)_–_Equestrian_Olympic_Venue.jpg"
+  },
+  {
+   "file": "paris-4.webp",
+   "place": "Canal boat cruise",
+   "source": "https://commons.wikimedia.org/wiki/File:Prinsengracht_canal_and_Westerkerk_tower_seen_from_a_Reestraat_bridge,_Amsterdam,_Netherlands_julesvernex2.jpg"
+  },
+  {
+   "file": "paris-5.webp",
+   "place": "Rijksmuseum",
+   "source": "https://commons.wikimedia.org/wiki/File:South_facade_of_the_Rijksmuseum_Amsterdam_(DSCF0528).jpg"
+  },
+  {
+   "file": "paris-6.webp",
+   "place": "Vondelpark stroll",
+   "source": "https://commons.wikimedia.org/wiki/File:Amsterdam,_Vondelpark,_at_the_pond-2.jpg"
+  },
+  {
+   "file": "queenstown-1.webp",
+   "place": "Gibbston Valley tasting",
+   "source": "https://commons.wikimedia.org/wiki/File:Vineyard_in_Gibbston_Valley_in_South_Island,_New_Zealand_-_Central_Otago_wine_region.jpg"
+  },
+  {
+   "file": "santorini-0.webp",
+   "place": "Imerovigli sunset walk",
+   "source": "https://commons.wikimedia.org/wiki/File:Imerovigli_01.jpg"
+  },
+  {
+   "file": "santorini-2.webp",
+   "place": "Red Beach",
+   "source": "https://commons.wikimedia.org/wiki/File:Red_Beach,_Greece_Oct_29,_2018_07-12-47.jpeg"
+  },
+  {
+   "file": "tokyo-0.webp",
+   "place": "Meiji Jingu Shrine",
+   "source": "https://commons.wikimedia.org/wiki/File:Meiji_Jingu_2023-3.jpg"
+  },
+  {
+   "file": "tokyo-1.webp",
+   "place": "teamLab Borderless",
+   "source": "https://commons.wikimedia.org/wiki/File:TeamLab_Borderless_Azabudai_Hills.jpg"
+  },
+  {
+   "file": "tokyo-2.webp",
+   "place": "Senso-ji Temple",
+   "source": "https://commons.wikimedia.org/wiki/File:Sensoji_2023.jpg"
+  }
+ ],
+ "day_banners_note": "Day banners at 1920x960, each cropped from the Wikimedia Commons file of a stop named that day. paris-1/paris-2 were moved from the previous paris-0/paris-1 (Eiffel Tower, Louvre); tokyo-city/santorini-city keep the previous city photos for the plan page inspiration cards."
 }
