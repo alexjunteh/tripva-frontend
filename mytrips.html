@@ -623,6 +623,32 @@ function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// Pro upgrade: the home page "Get Pro" button lands here with ?upgrade=pro.
+// Signed in -> straight to Stripe checkout. Signed out -> remember the intent
+// (30 min) and start checkout once sign-in brings the visitor back here.
+var UPGRADE_KEY = 'tripva_pending_upgrade';
+function wantsUpgrade(){
+  if (new URLSearchParams(location.search).get('upgrade') === 'pro') return true;
+  var t = parseInt(localStorage.getItem(UPGRADE_KEY) || '0', 10);
+  return !!t && Date.now() - t < 30 * 60 * 1000;
+}
+function startCheckout(token){
+  localStorage.removeItem(UPGRADE_KEY);
+  showToast('⏳ Opening checkout…');
+  return fetch(BACKEND + '/api/stripe/checkout', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: token })
+  }).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { status: r.status, d: d }; }); })
+  .then(function(res){
+    var d = res.d;
+    if (res.status === 200 && d.url) { location.href = d.url; return; }
+    if (res.status === 409) { showToast('✅ You already have Tripva Pro'); return; }
+    if (res.status === 503) { showToast('💳 Pro checkout is not available right now. Please try again later.'); return; }
+    if (res.status === 401) { setSession(null); localStorage.setItem(UPGRADE_KEY, String(Date.now())); showToast('🔑 Please sign in again to upgrade'); return; }
+    showToast('⚠️ ' + (d.message || d.error || 'Could not start checkout'));
+  }).catch(function(){ showToast('⚠️ Network error, please try again'); });
+}
+
 // Handle auth callback (magic link redirect)
 (function(){
   var hash = window.location.hash;
@@ -639,6 +665,12 @@ function escHtml(s){
 
   // Check if logged in
   var session = getSession();
+  if (!(session && session.access_token) || (session.expires_at && Date.now() > session.expires_at)) {
+    if (new URLSearchParams(location.search).get('upgrade') === 'pro') {
+      localStorage.setItem(UPGRADE_KEY, String(Date.now()));
+      setTimeout(function(){ showToast('🔑 Sign in first, then we\u2019ll open Pro checkout'); }, 300);
+    }
+  }
   if(session && session.access_token){
     // Check if token expired
     if(session.expires_at && Date.now() > session.expires_at){
@@ -646,6 +678,10 @@ function escHtml(s){
       return; // Show auth form
     }
     loadTrips(session.access_token);
+    if (wantsUpgrade()) {
+      try { history.replaceState(null, '', location.pathname); } catch(e){}
+      startCheckout(session.access_token);
+    }
     if (new URLSearchParams(location.search).get('upgraded') === '1') {
       showToast('🎉 Welcome to Tripva Pro!');
       try { history.replaceState(null, '', location.pathname); } catch(e){}
