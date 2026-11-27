@@ -1884,7 +1884,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
       <div class="alt-transport-title">🚂 Book Train Tickets</div>
       <div class="alt-transport-sub">Search and book rail routes across Europe and Asia</div>
       <a class="alt-transport-link" href="https://www.thetrainline.com" target="_blank" rel="noopener" onclick="trackAffiliateClick('trainline')">Search Trainline →</a>
-      <a class="alt-transport-link2" href="https://rail.ninja/?marker=529721" target="_blank" rel="noopener" onclick="trackAffiliateClick('railninja')">Rail.ninja</a>
+      <a class="alt-transport-link2" href="https://rail.ninja/?marker=729092" target="_blank" rel="noopener" onclick="trackAffiliateClick('railninja')">Rail.ninja</a>
     </div>
   </div>
   <div class="alt-transport-panel" id="ticketsBusPanel">
@@ -1898,14 +1898,14 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
     <div class="alt-transport-card">
       <div class="alt-transport-title">🚗 Rent a Car</div>
       <div class="alt-transport-sub">Compare car rental deals at your destination</div>
-      <a class="alt-transport-link" href="https://www.discovercars.com/?a_aid=529721" target="_blank" rel="noopener" onclick="trackAffiliateClick('discovercars')">Search Discovercars →</a>
+      <a class="alt-transport-link" href="https://www.discovercars.com/?a_aid=729092" target="_blank" rel="noopener" onclick="trackAffiliateClick('discovercars')">Search Discovercars →</a>
     </div>
   </div>
   <div class="alt-transport-panel" id="ticketsFerryPanel">
     <div class="alt-transport-card">
       <div class="alt-transport-title">🚢 Book Ferry / Boat</div>
       <div class="alt-transport-sub">Ferry and boat routes across Asia and beyond</div>
-      <a class="alt-transport-link" href="https://www.12go.asia/en?aff_id=529721" target="_blank" rel="noopener" onclick="trackAffiliateClick('12go')">Search 12Go Asia →</a>
+      <a class="alt-transport-link" href="https://www.12go.asia/en?aff_id=729092" target="_blank" rel="noopener" onclick="trackAffiliateClick('12go')">Search 12Go Asia →</a>
     </div>
   </div>
 
@@ -2390,7 +2390,7 @@ function buildHotellookLink(city, checkIn, checkOut, adults, tripDestination) {
     const destCountry = String(tripDestination).split(',').slice(1).join(',').trim();
     if (destCountry) dest = dest + ', ' + destCountry;
   }
-  const p = new URLSearchParams({ destination: dest, adults: String(adults || 2), marker: '529721' });
+  const p = new URLSearchParams({ destination: dest, adults: String(adults || 2), marker: '729092' });
   if (checkIn)  p.set('checkin', checkIn);
   if (checkOut) p.set('checkout', checkOut);
   return 'https://search.hotellook.com/?' + p.toString();
@@ -2408,15 +2408,15 @@ function buildActivityLink(destination, activityName) {
 
 function buildKiwitaxiLink(destination) {
   const base = 'https://kiwitaxi.com/';
-  return base + (destination ? '?marker=529721&location=' + encodeURIComponent(destination) : '?marker=529721');
+  return base + (destination ? '?marker=729092&location=' + encodeURIComponent(destination) : '?marker=729092');
 }
 
 function buildEktaLink(destination) {
-  return 'https://ekta.world/en/?marker=529721' + (destination ? '&destination=' + encodeURIComponent(destination) : '');
+  return 'https://ekta.world/en/?marker=729092' + (destination ? '&destination=' + encodeURIComponent(destination) : '');
 }
 
 function buildAiraloLink(destination) {
-  return 'https://www.airalo.com/' + (destination ? '?marker=529721&q=' + encodeURIComponent(destination) : '?marker=529721');
+  return 'https://www.airalo.com/' + (destination ? '?marker=729092&q=' + encodeURIComponent(destination) : '?marker=729092');
 }
 
 function detectAffiliatePartner(url) {
