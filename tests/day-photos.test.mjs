@@ -101,3 +101,38 @@ test('a nearby page with an unrelated title is not used (Beau Vallon day got La 
   assert.equal(P.pickFromResponse(resp(page(1, 'La Digue', -4.359, 55.84)), beau, new Set(), 'Beau Vallon Seychelles'), null);
   assert.equal(P.pickFromResponse(resp(page(1, 'Mahé, Seychelles', -4.68, 55.48)), beau, new Set(), 'mahe Victoria').title, 'Mahé, Seychelles', 'accents do not block a match');
 });
+
+test('seedsForDay searches the landmark named in the highlights before a bare heroSeed', () => {
+  // Real plan, 28 Nov 2026: heroSeed "fushimi" alone found Fushimi Castle for a Fushimi Inari day.
+  const KYOTO = { name: 'Kyoto', lat: 35.0116, lng: 135.7681 };
+  const day = { heroSeed: 'fushimi', title: 'Temples and Traditional Flavours of Kyoto',
+    highlights: ['Fushimi Inari torii gates at sunrise', 'Gion evening stroll', 'Kaiseki dinner'] };
+  const seeds = P.seedsForDay(day, KYOTO, 'Japan');
+  assert.equal(seeds[0], 'Fushimi Inari', seeds.join(' | '));
+  assert.ok(seeds.indexOf('Fushimi Inari') < seeds.indexOf('fushimi Kyoto'), seeds.join(' | '));
+  assert.ok(seeds.slice(0, 5).includes('fushimi Kyoto'), 'heroSeed still searched: ' + seeds.join(' | '));
+  assert.ok(!seeds.some(q => /dinner|sunrise|stroll/i.test(q)), 'filler words never become searches');
+});
+
+test('seedsForDay ignores lowercase-only and missing highlights', () => {
+  const s = P.seedsForDay({ heroSeed: 'asakusa', title: 'Asakusa', highlights: ['street food crawl'] }, TOKYO);
+  assert.equal(s[0], 'asakusa Tokyo');
+});
+
+test('seedsForDay never turns a sentence-initial capital in a highlight into a search', () => {
+  // Real saved trip: "Cultural immersion" became "Cultural Prophet's Mosque" -> Quba Mosque.
+  const stop = { name: "Prophet's Mosque", lat: 24.4672, lng: 39.6111 };
+  const s = P.seedsForDay({ heroSeed: 'medina', title: 'Arrival in Medina', highlights: ["Prophet's Mosque", 'Cultural immersion'] }, stop, 'Saudi Arabia');
+  assert.ok(!s.some(q => /^Cultural/.test(q)), s.join(' | '));
+  assert.equal(s[0], "medina Prophet's Mosque", s.join(' | '));
+});
+
+test('title match is whole-word: "port" does not match "Important Bird Area"', () => {
+  const r = { query: { pages: {
+    1: { index: 1, title: 'Mahé highlands and surrounding areas Important Bird Area', thumbnail: { source: 'https://x/a.jpg', width: 1280 }, coordinates: [{ lat: -4.65, lon: 55.45 }] },
+    2: { index: 2, title: 'Port Launay Marine National Park', thumbnail: { source: 'https://x/b.jpg', width: 1280 }, coordinates: [{ lat: -4.65, lon: 55.39 }] },
+  } } };
+  assert.equal(P.pickFromResponse(r, { lat: -4.62, lng: 55.45 }, new Set(), 'Port Launay Marine National Park').title, 'Port Launay Marine National Park');
+  // A joined seed still matches the spaced title.
+  assert.equal(P.pickFromResponse(r, { lat: -4.62, lng: 55.45 }, new Set(), 'portlaunay').title, 'Port Launay Marine National Park');
+});

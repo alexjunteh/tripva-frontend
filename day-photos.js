@@ -71,6 +71,19 @@
     // Proper place names in the title: "Views from Victoria Peak" -> "Victoria Peak".
     const names = (String((day && day.title) || '').match(/[A-Z][\w'\u2019\u00C0-\u024F-]+(?:\s+(?:de|la|du|di|del|of)?\s*[A-Z][\w'\u2019\u00C0-\u024F-]+)*/g) || [])
       .map(n => clean(n.replace(FILLER, ' '))).filter(n => n.length > 3);
+    // The landmark named in the day's first highlights beats a bare heroSeed:
+    // "fushimi" alone found Fushimi Castle for a "Fushimi Inari torii gates" day.
+    // One proper name per highlight, always paired with the place. Only names of
+    // two or more capitalised words: every highlight starts with a capital, so a
+    // single word ("Cultural immersion") is usually not a place.
+    const hl = (day && Array.isArray(day.highlights) ? day.highlights : []).slice(0, 2);
+    for (const h of hl) {
+      const n = (String(h || '').match(/[A-Z][\w'’À-ɏ-]+(?:\s+(?:de|la|du|di|del|of)?\s*[A-Z][\w'’À-ɏ-]+)+/g) || [])
+        .map(x => clean(x.replace(FILLER, ' '))).find(x => x.length > 3 && x.includes(' ') && (!place || x.toLowerCase() !== place.toLowerCase()));
+      // Bare name: the 60 km check keeps it in the right place, and adding the
+      // place let any page titled with it ("Mahé highlands") pass the title match.
+      if (n) push(n);
+    }
     if (day && day.heroSeed) { push(`${day.heroSeed} ${place}`); push(day.heroSeed); }
     // The country disambiguates common names ("Victoria" -> Victoria, Seychelles).
     if (inCountry) push(inCountry);
@@ -94,7 +107,12 @@
     // Only pages whose title shares a word with the query: a nearby but
     // unrelated page ("La Digue" for a Beau Vallon day, 45 km away) is wrong.
     const qw = words(query || '');
-    const matches = p => qw.some(w => clean(p.title).toLowerCase().replace(/\s/g, '').includes(w));
+    // Whole title words, so "port" does not match "Important". A long joined
+    // seed ("sainteanne") may still match the title with its spaces removed.
+    const matches = p => {
+      const t = clean(p.title).toLowerCase(), tw = t.split(' ');
+      return qw.some(w => tw.includes(w) || (w.length >= 7 && t.replace(/\s/g, '').includes(w)));
+    };
     const ordered = qw.length ? pages.filter(matches) : pages;
     for (const p of ordered) {
       const th = p.thumbnail;

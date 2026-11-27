@@ -1601,7 +1601,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
 <script defer src="/assets/click-track.js?v=20261127"></script>
 <script src="demo-trips.js?v=20261127-stops"></script>
-<script src="day-photos.js?v=20261127-2"></script>
+<script src="day-photos.js?v=20261128-1"></script>
 </head>
 <body>
 
@@ -3670,7 +3670,7 @@ let _wikiUpgradeRunning = false;
 // within 60 km of the stop the traveller is based at that day, so a Tokyo day
 // can never show Kyoto. Picks are cached for 30 days; a photo is only swapped
 // in after it has loaded, so a failed image never leaves a broken card.
-const _DAY_PHOTO_CACHE_KEY = 'tripva_day_photos_v2';
+const _DAY_PHOTO_CACHE_KEY = 'tripva_day_photos_v3';
 const _DAY_PHOTO_MISS_TTL_MS = 3 * 24 * 60 * 60 * 1000; // re-search a miss after 3 days
 async function upgradeTripImages(){
   if (_wikiUpgradeRunning) return;
