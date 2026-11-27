@@ -1,0 +1,119 @@
+{
+ "note": "Itinerary hero photos from Wikimedia Commons; licence and author are on each source page.",
+ "photos": {
+  "7-day-italy-itinerary": {
+   "place": "Florence Cathedral",
+   "author": "Gary Campbell-Hall",
+   "licence": "CC BY 2.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Cattedrale_di_Santa_Maria_del_Fiore_%E2%80%93_Il_Duomo_di_Firenze.jpg"
+  },
+  "bali-7-day-itinerary": {
+   "place": "Pura Ulun Danu Bratan",
+   "author": "LukeTriton",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Pura_Ulun_Danu_Bratan%2C_2022.jpg"
+  },
+  "bali-on-1500": {
+   "place": "Tanah Lot",
+   "author": "Grayswoodsurrey",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:TanahLot_2014.JPG"
+  },
+  "barcelona-4-day-itinerary": {
+   "place": "Park Güell",
+   "author": "essetefano",
+   "licence": "CC BY 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Parc_guell_-_panoramio.jpg"
+  },
+  "croatia-7-day-itinerary": {
+   "place": "Dubrovnik",
+   "author": "Zysko serhii",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg"
+  },
+  "europe-by-train-2-weeks": {
+   "place": "Charles Bridge",
+   "author": "A.Savin",
+   "licence": "FAL",
+   "source": "https://commons.wikimedia.org/wiki/File:Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg"
+  },
+  "iceland-7-day-ring-road": {
+   "place": "Skógafoss",
+   "author": "Hansueli Krapf",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:2008-05-24_35_Sk%C3%B3gafoss.jpg"
+  },
+  "japan-10-day-itinerary": {
+   "place": "Fushimi Inari-taisha",
+   "author": "Basile Morin",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine%2C_Kyoto%2C_Japan.jpg"
+  },
+  "kyoto-5-day-itinerary": {
+   "place": "Kiyomizu-dera",
+   "author": "Jordy Meow",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Kiyomizu.jpg"
+  },
+  "morocco-10-day-itinerary": {
+   "place": "Aït Benhaddou",
+   "author": "Petar Milošević",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Ksar_A%C3%AFt_Benhaddou%2C_Marocco_%28%D8%A3%D9%8A%D8%AA_%D8%A8%D9%86_%D8%AD%D8%AF%D9%88%D8%8C_%D8%A7%D9%84%D9%85%D8%BA%D8%B1%D8%A8%2C_%E2%B4%B0%E2%B5%A2%E2%B5%9C_%E2%B5%83%E2%B4%B0%E2%B4%B7%E2%B4%B7%E2%B5%93%29.jpg"
+  },
+  "paris-first-timer": {
+   "place": "Pont Alexandre III",
+   "author": "Jebulon",
+   "licence": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Pont_Alexandre_III_depuis_pont_de_la_Concorde_Paris.jpg"
+  },
+  "portugal-7-day-itinerary": {
+   "place": "Porto",
+   "author": "Diego Delso",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG"
+  },
+  "queenstown-5-day-itinerary": {
+   "place": "Queenstown, New Zealand",
+   "author": "Bernard Spragg. NZ from Christchurch, New Zealand",
+   "licence": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Queenstown_1_%288168013172%29.jpg"
+  },
+  "santorini-5-day-itinerary": {
+   "place": "Oia, Greece",
+   "author": "TomasEE",
+   "licence": "CC BY 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Oia_sunset_-_panoramio_%282%29.jpg"
+  },
+  "seoul-5-day-itinerary": {
+   "place": "Gyeongbokgung",
+   "author": "서울관광 아카이브",
+   "licence": "KOGL Type 1",
+   "source": "https://commons.wikimedia.org/wiki/File:%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg"
+  },
+  "singapore-3-day-itinerary": {
+   "place": "Gardens by the Bay",
+   "author": "Shiny Things.",
+   "licence": "CC BY 2.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Supertree_Grove%2C_Gardens_by_the_Bay%2C_Singapore_-_20120712-02.jpg"
+  },
+  "switzerland-by-train-7-days": {
+   "place": "Lauterbrunnen",
+   "author": "Chensiyuan",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:1_lauterbrunnen_valley_wengen_2022.jpg"
+  },
+  "thailand-10-day-budget": {
+   "place": "Railay Beach",
+   "author": "kallerna",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Railay_Beach_5.jpg"
+  },
+  "tokyo-with-kids": {
+   "place": "Odaiba",
+   "author": "Nesnad",
+   "licence": "CC BY 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Odaiba_close_up_-_2025_Jan_14_01-27PM.jpeg"
+  }
+ }
+}

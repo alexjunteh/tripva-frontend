@@ -1,4 +1,9 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
+
+// Real day-by-day route lines and credited hero photos (Wikimedia Commons) per page.
+const dayPlans = JSON.parse(await readFile(new URL('./seo-itinerary-days.json', import.meta.url), 'utf8'));
+const heroCredits = JSON.parse(await readFile(new URL('../assets/itineraries/CREDITS.json', import.meta.url), 'utf8')).photos;
+const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const pages = [
   { slug: '7-day-italy-itinerary', title: '7-Day Italy Itinerary', destination: 'Italy', days: 7, budget: '$2,000-3,500', angle: 'Rome, Florence, Venice, and train-friendly pacing for first-time visitors.' },
@@ -22,19 +27,17 @@ const pages = [
   { slug: 'portugal-7-day-itinerary', title: 'Portugal 7-Day Itinerary', destination: 'Lisbon, Porto, Algarve', days: 7, budget: '$1,200-2,500', angle: 'Tram rides, port wine cellars, coastal cliffs, and pastéis de nata in every city.' },
 ];
 
-const css = `*{box-sizing:border-box}body{margin:0;background:#0a0a12;color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.62}a{color:inherit}nav{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(10,10,18,.92);position:sticky;top:0;z-index:10}.logo{font-size:20px;font-weight:900;text-decoration:none;background:linear-gradient(135deg,#fff,#9b87f5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.navlinks{display:flex;gap:18px;align-items:center;color:rgba(248,250,252,.72);font-size:14px}.cta{background:#7c6af7;color:#fff;text-decoration:none;border-radius:8px;padding:10px 14px;font-weight:800}main{max-width:1040px;margin:0 auto;padding:84px 24px}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#9b87f5}h1{font-size:clamp(42px,7vw,76px);line-height:1.03;letter-spacing:-2px;margin:14px 0 18px}p.lead{font-size:20px;color:rgba(248,250,252,.76);max-width:760px}.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 42px}.pill{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);border-radius:999px;padding:8px 12px;color:rgba(248,250,252,.8);font-size:14px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:start}.card{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.05);border-radius:8px;padding:24px}.card h2{font-size:20px;margin:0 0 14px}.days{display:grid;gap:10px}.day{padding:12px 0;border-top:1px solid rgba(255,255,255,.08);color:rgba(248,250,252,.76)}.day b{color:#fff}.planbox{position:sticky;top:84px}.btn{display:flex;justify-content:center;background:#7c6af7;color:#fff;text-decoration:none;border-radius:8px;padding:14px 16px;font-weight:900;margin-top:16px}.small{font-size:13px;color:rgba(248,250,252,.58)}footer{padding:40px 24px;color:rgba(248,250,252,.55);text-align:center}@media(max-width:780px){.grid{grid-template-columns:1fr}.navlinks a:not(.cta){display:none}.planbox{position:static}}`;
+const css = `*{box-sizing:border-box}body{margin:0;background:#0a0a12;color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.62}a{color:inherit}nav{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(10,10,18,.92);position:sticky;top:0;z-index:10}.logo{display:flex;align-items:center}.logo img{height:32px;width:auto;display:block}.hero{margin:0 0 28px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#141420}.hero img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}.hero figcaption{font-size:12px;color:rgba(248,250,252,.55);padding:8px 12px}.hero figcaption a{color:rgba(248,250,252,.7)}.navlinks{display:flex;gap:18px;align-items:center;color:rgba(248,250,252,.72);font-size:14px}.cta{background:#7c6af7;color:#fff;text-decoration:none;border-radius:8px;padding:10px 14px;font-weight:800}main{max-width:1040px;margin:0 auto;padding:84px 24px}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#9b87f5}h1{font-size:clamp(42px,7vw,76px);line-height:1.03;letter-spacing:-2px;margin:14px 0 18px}p.lead{font-size:20px;color:rgba(248,250,252,.76);max-width:760px}.meta{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 42px}.pill{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);border-radius:999px;padding:8px 12px;color:rgba(248,250,252,.8);font-size:14px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:start}.card{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.05);border-radius:8px;padding:24px}.card h2{font-size:20px;margin:0 0 14px}.days{display:grid;gap:10px}.day{padding:12px 0;border-top:1px solid rgba(255,255,255,.08);color:rgba(248,250,252,.76)}.day b{color:#fff}.planbox{position:sticky;top:84px}.btn{display:flex;justify-content:center;background:#7c6af7;color:#fff;text-decoration:none;border-radius:8px;padding:14px 16px;font-weight:900;margin-top:16px}.small{font-size:13px;color:rgba(248,250,252,.58)}footer{padding:40px 24px;color:rgba(248,250,252,.55);text-align:center}@media(max-width:780px){.grid{grid-template-columns:1fr}.navlinks a:not(.cta){display:none}.planbox{position:static}}`;
 
 function pageHtml(page) {
   const encodedDest = encodeURIComponent(page.destination);
   const planUrl = `../plan.html?destination=${encodedDest}&days=${page.days}&source=seo_${page.slug}`;
   const canonical = `https://tripva.app/itineraries/${page.slug}.html`;
-  const dayIdeas = [
-    'Arrival, check-in, and an easy first neighborhood walk.',
-    'Main landmarks grouped by geography to avoid backtracking.',
-    'Food, markets, and local streets with realistic travel time.',
-    'One flexible day trip or slower recovery block.',
-    'Final highlights, shopping, and departure logistics.',
-  ];
+  const dayIdeas = dayPlans[page.slug];
+  if (!dayIdeas || dayIdeas.length !== page.days) throw new Error(`${page.slug}: need ${page.days} day lines, have ${dayIdeas ? dayIdeas.length : 0}`);
+  const hero = heroCredits[page.slug];
+  if (!hero) throw new Error(`${page.slug}: no hero photo credit`);
+  const heroAbs = `https://tripva.app/assets/itineraries/${page.slug}.webp`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,9 +47,9 @@ function pageHtml(page) {
   <meta name="description" content="${page.title}: ${page.angle} Generate a custom Tripva plan in 30 seconds.">
   <meta property="og:title" content="${page.title} - Tripva">
   <meta property="og:description" content="${page.angle}">
-  <meta property="og:image" content="https://tripva.app/og-image.png">
+  <meta property="og:image" content="${heroAbs}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://tripva.app/og-image.png">
+  <meta name="twitter:image" content="${heroAbs}">
   <title>${page.title} - Tripva</title>
   <link rel="icon" type="image/svg+xml" href="../icon.svg">
   <link rel="apple-touch-icon" href="/icons/tripva-logo.png">
@@ -54,17 +57,18 @@ function pageHtml(page) {
   <style>${css}</style>
 </head>
 <body>
-  <nav><a class="logo" href="../">Tripva</a><div class="navlinks"><a href="../blog/">Blog</a><a href="../about.html">About</a><a class="cta" href="${planUrl}">Plan this trip</a></div></nav>
+  <nav><a class="logo" href="../" aria-label="Tripva home"><img src="../assets/brand/tripva-nav-logo-dark.png" width="86" height="32" alt="Tripva"></a><div class="navlinks"><a href="../blog/">Blog</a><a href="../about.html">About</a><a class="cta" href="${planUrl}">Plan this trip</a></div></nav>
   <main>
     <div class="eyebrow">AI itinerary template</div>
     <h1>${page.title}</h1>
     <p class="lead">${page.angle} Use this as a starting point, then let Tripva build the exact day-by-day itinerary around your dates, pace, hotel area, and budget.</p>
+    <figure class="hero"><img src="../assets/itineraries/${page.slug}-800.webp" srcset="../assets/itineraries/${page.slug}-800.webp 800w, ../assets/itineraries/${page.slug}.webp 1600w" sizes="(max-width: 1040px) 100vw, 992px" width="1600" height="800" alt="${esc(hero.place)}" fetchpriority="high"><figcaption>${esc(hero.place)} · Photo: ${esc(hero.author || 'Wikimedia Commons')}, <a href="${hero.source}" rel="noopener" target="_blank">${esc(hero.licence)}</a></figcaption></figure>
     <div class="meta"><span class="pill">${page.days} days</span><span class="pill">${page.destination}</span><span class="pill">Typical budget: ${page.budget}</span></div>
     <div class="grid">
       <section class="card">
-        <h2>What the route should cover</h2>
+        <h2>Day by day</h2>
         <div class="days">
-          ${dayIdeas.map((idea, i) => `<div class="day"><b>Block ${i + 1}:</b> ${idea}</div>`).join('')}
+          ${dayIdeas.map((idea, i) => `<div class="day"><b>Day ${i + 1}:</b> ${esc(idea)}</div>`).join('')}
         </div>
       </section>
       <aside class="card planbox">
