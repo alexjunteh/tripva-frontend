@@ -1,0 +1,325 @@
+<!--
+  BLOG POST TEMPLATE REFERENCE — Tripva
+  Used by content agents to generate new blog posts (save the post as blog/{{SLUG}}.html).
+  Copy this structure exactly. Replace {{placeholders}} with real content.
+  All styles are INLINE in each post (no external CSS).
+  All affiliate links use rel="noopener sponsored" and target="_blank".
+  URLS: canonical, og:url, JSON-LD @id and every internal link use the address WITHOUT ".html"
+  (https://tripva.app/blog/{{SLUG}}, /blog/other-post, /plan, /privacy). Cloudflare Pages
+  308-redirects any /x.html to /x, so a ".html" canonical points Google at a redirect.
+  Add the post to sitemap.xml the same way, then run: node scripts/check-url-signals.mjs
+  AFFILIATE LINKS below predate the 27 Nov 2026 switch to Travelpayouts partner 729092 and Klook:
+  copy affiliate links from a current live post, not from this file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a12">
+<title>{{TITLE}} — Tripva</title>
+<meta name="description" content="{{META_DESCRIPTION_155_CHARS}}">
+<link rel="canonical" href="https://tripva.app/blog/{{SLUG}}">
+<meta property="og:site_name" content="Tripva">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{META_DESCRIPTION_155_CHARS}}">
+<meta property="og:image" content="https://tripva.app/blog/assets/{{SLUG}}-cover.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta property="og:url" content="https://tripva.app/blog/{{SLUG}}">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:image" content="https://tripva.app/blog/assets/{{SLUG}}-cover.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{TITLE}}",
+  "description": "{{META_DESCRIPTION_155_CHARS}}",
+  "image": "https://tripva.app/blog/assets/{{SLUG}}-cover.webp",
+  "datePublished": "{{YYYY-MM-DD}}",
+  "dateModified": "{{YYYY-MM-DD}}",
+  "author": {"@type": "Organization", "name": "Tripva", "url": "https://tripva.app"},
+  "publisher": {
+    "@type": "Organization",
+    "name": "Tripva",
+    "logo": {"@type": "ImageObject", "url": "https://tripva.app/icons/icon-512.png"}
+  },
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://tripva.app/blog/{{SLUG}}"},
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://tripva.app"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://tripva.app/blog/"},
+      {"@type": "ListItem", "position": 3, "name": "{{SHORT_TITLE}}"}
+    ]
+  }
+}
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a12;--surface:#14141f;--border:rgba(255,255,255,0.08);--purple:#7c6af7;--accent:#95b8ff;--green:#6ee7b7;--text:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.55);--red:#e8594e}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(10,10,18,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-weight:800;font-size:1.25rem;letter-spacing:-0.5px;color:#fff}
+.nav-links{display:flex;gap:28px;align-items:center;font-size:0.92rem}
+.nav-links a{color:var(--muted);transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:#fff;text-decoration:none}
+.nav-cta{background:var(--purple);color:#fff !important;padding:8px 18px;border-radius:8px;font-weight:600;font-size:0.88rem}
+.nav-cta:hover{opacity:0.85;text-decoration:none}
+
+/* BREADCRUMB */
+.breadcrumb{margin:88px auto 0;max-width:800px;padding:0 24px;font-size:0.85rem;color:var(--muted)}
+.breadcrumb a{color:var(--muted)}
+.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb span{margin:0 8px;opacity:0.4}
+
+/* ARTICLE */
+.article-wrap{max-width:800px;margin:16px auto 64px;padding:0 24px}
+.cover-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;margin:28px 0;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.article-header{margin-bottom:8px}
+.category-tag{display:inline-block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:4px 12px;border-radius:6px;margin-bottom:16px}
+.category-tag.destinations{background:rgba(149,184,255,0.12);color:var(--accent)}
+.category-tag.photo-spots{background:rgba(110,231,183,0.12);color:var(--green)}
+.category-tag.budget{background:rgba(251,191,36,0.12);color:#fbbf24}
+.category-tag.itineraries{background:rgba(192,132,252,0.12);color:#c084fc}
+.category-tag.hotels{background:rgba(232,89,78,0.12);color:var(--red)}
+.category-tag.food{background:rgba(251,146,60,0.12);color:#fb923c}
+.category-tag.transport{background:rgba(56,189,248,0.12);color:#38bdf8}
+.article-header h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.15;letter-spacing:-0.5px;margin-bottom:16px}
+.meta-row{display:flex;gap:20px;color:var(--muted);font-size:0.88rem;margin-bottom:4px}
+.meta-row svg{width:15px;height:15px;vertical-align:-2px;margin-right:5px;opacity:0.5}
+
+/* TOC */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin:28px 0}
+.toc-title{font-weight:700;font-size:0.95rem;margin-bottom:12px;color:rgba(255,255,255,0.75)}
+.toc ol{padding-left:20px;margin:0}
+.toc li{margin:6px 0;font-size:0.92rem}
+.toc a{color:var(--accent)}
+
+/* ARTICLE BODY */
+.article-body h2{font-size:1.55rem;font-weight:700;margin:40px 0 16px;padding-left:16px;border-left:3px solid var(--purple)}
+.article-body h3{font-size:1.15rem;font-weight:600;margin:28px 0 10px;color:rgba(255,255,255,0.9)}
+.article-body p{margin:0 0 16px;color:rgba(255,255,255,0.82);line-height:1.75}
+.article-body ul,.article-body ol{margin:0 0 16px;padding-left:24px;color:rgba(255,255,255,0.82)}
+.article-body li{margin:6px 0;line-height:1.65}
+.article-body strong{color:rgba(255,255,255,0.95)}
+.article-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.inline-img{margin:28px 0}
+.inline-img img{width:100%;border-radius:12px}
+.inline-img figcaption{text-align:center;font-size:0.85rem;color:var(--muted);margin-top:10px}
+
+/* INFO BOX */
+.info-box{background:rgba(149,184,255,0.06);border:1px solid rgba(149,184,255,0.15);border-radius:14px;padding:24px 28px;margin:24px 0}
+.info-box-title{font-weight:700;font-size:0.95rem;margin-bottom:10px;color:var(--accent)}
+.info-box ul{padding-left:20px}
+.info-box li{margin:4px 0;font-size:0.92rem}
+
+/* SEASON GRID */
+.season-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:20px 0 24px}
+.season-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 16px;text-align:center}
+.season-icon{font-size:1.8rem;margin-bottom:6px}
+.season-name{font-weight:700;font-size:0.92rem;margin-bottom:2px}
+.season-months{font-size:0.82rem;color:var(--muted);margin-bottom:8px}
+.season-tag{display:inline-block;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:3px 10px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--muted)}
+.season-tag.peak{background:rgba(232,89,78,0.15);color:var(--red)}
+.season-tag.value{background:rgba(110,231,183,0.15);color:var(--green)}
+.season-tag.avoid{background:rgba(232,89,78,0.1);color:var(--red)}
+
+/* PHOTO SPOTS */
+.spots-list{list-style:none;padding:0;margin:20px 0}
+.spot-item{display:flex;gap:16px;margin:20px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.spot-num{min-width:36px;height:36px;background:var(--purple);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;flex-shrink:0}
+.spot-name{font-weight:700;font-size:1.05rem;margin-bottom:6px}
+.spot-desc{font-size:0.92rem;color:rgba(255,255,255,0.75);line-height:1.6;margin-bottom:6px}
+.spot-tip{font-size:0.85rem;color:var(--green);font-style:italic}
+
+/* CTA BLOCK (Tripva app CTA) */
+.cta-block{background:linear-gradient(135deg,rgba(124,106,247,0.12),rgba(149,184,255,0.08));border:1px solid rgba(124,106,247,0.2);border-radius:16px;padding:36px 32px;text-align:center;margin:40px 0}
+.cta-block h3{font-size:1.3rem;font-weight:700;margin-bottom:10px}
+.cta-block p{color:rgba(255,255,255,0.7);max-width:520px;margin:0 auto 20px;font-size:0.95rem}
+.cta-btn{display:inline-block;background:var(--purple);color:#fff;padding:14px 28px;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;transition:opacity 0.2s}
+.cta-btn:hover{opacity:0.85;text-decoration:none}
+
+/* AFFILIATE CTA BLOCK */
+.affiliate-cta{background:linear-gradient(135deg,rgba(232,89,78,0.06),rgba(124,106,247,0.06));border:1px solid rgba(232,89,78,0.2);border-radius:16px;padding:28px 32px;margin:32px 0}
+.affiliate-cta-title{font-size:1.15rem;font-weight:700;margin-bottom:8px;color:var(--red)}
+.affiliate-cta p{color:rgba(255,255,255,0.7);margin:0 0 16px;line-height:1.6;font-size:0.95rem}
+.affiliate-row{display:flex;gap:12px;flex-wrap:wrap}
+.affiliate-btn{display:inline-block;background:var(--red);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.95rem;transition:opacity 0.2s}
+.affiliate-btn:hover{opacity:0.85;text-decoration:none}
+.affiliate-row .affiliate-btn{font-size:0.88rem;padding:10px 20px}
+
+/* RELATED */
+.related{margin:48px 0 32px}
+.related h2{font-size:1.25rem;font-weight:700;margin-bottom:20px}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.related-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;transition:border-color 0.2s}
+.related-card:hover{border-color:rgba(255,255,255,0.2);text-decoration:none}
+.related-card img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.related-card-body{padding:14px 16px}
+.related-card-title{font-weight:600;font-size:0.92rem;color:var(--text)}
+
+/* BACK LINK */
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.9rem;margin-bottom:40px;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+.back-link svg{width:16px;height:16px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 32px;text-align:center;color:var(--muted);font-size:0.82rem}
+footer a{color:var(--muted)}
+footer a:hover{color:var(--accent)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .nav-links a:not(.nav-cta){display:none}
+  .meta-row{flex-wrap:wrap;gap:12px}
+  .affiliate-row{flex-direction:column}
+  .affiliate-row .affiliate-btn{text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">tripva</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/plan">Plan a Trip</a>
+    <a href="/blog/" class="active">Blog</a>
+    <a href="/plan" class="nav-cta">Plan a Trip</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="/">Home</a><span>&gt;</span><a href="/blog/">Blog</a><span>&gt;</span>{{SHORT_TITLE}}
+</div>
+
+<div class="article-wrap">
+
+  <header class="article-header">
+    <span class="category-tag {{CATEGORY_CLASS}}">{{CATEGORY_LABEL}}</span>
+    <h1>{{TITLE}}</h1>
+    <div class="meta-row">
+      <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M2 6h12M5 1v2M11 1v2"/></svg>{{DATE_DISPLAY}}</span>
+      <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>{{READ_TIME}} min read</span>
+      <span>Tripva Travel</span>
+    </div>
+  </header>
+
+  <img class="cover-img" src="/blog/assets/{{SLUG}}-cover.webp" alt="{{COVER_ALT}}" width="1200" height="675">
+
+  <nav class="toc">
+    <div class="toc-title">In this guide</div>
+    <ol>
+      <li><a href="#{{section-1-id}}">{{Section 1}}</a></li>
+      <li><a href="#{{section-2-id}}">{{Section 2}}</a></li>
+      <!-- ... more sections ... -->
+    </ol>
+  </nav>
+
+  <article class="article-body">
+
+    <!-- CONTENT SECTIONS with h2 (id= for TOC), h3, p, ul, ol, figures -->
+    <!-- Write 2500+ words of expert travel content -->
+
+    <!-- INLINE AFFILIATE LINKS: use class="affiliate-inline" style="color:var(--red)" -->
+    <!-- Example: <a href="https://www.hotellook.com/hotels?destination=Bali&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">compare hotel prices on Hotellook</a> -->
+
+    <!-- AFFILIATE CTA BOXES: insert after relevant sections -->
+    <!--
+    HOTEL CTA:
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Hotels in {{City}}</div>
+      <p>Compare prices from hundreds of {{City}} hotels — from budget stays to luxury resorts.</p>
+      <a href="https://www.hotellook.com/hotels?destination={{City}}&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotel Prices →</a>
+    </div>
+
+    ACTIVITY CTA (non-SEA destinations use GetYourGuide):
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Tours & Activities</div>
+      <p>Skip-the-line tickets, guided tours, and unique experiences in {{City}}.</p>
+      <a href="https://www.getyourguide.com/s/?q={{City}}&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Activities →</a>
+    </div>
+
+    TRANSPORT CTA (Europe/non-SEA):
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Train Tickets</div>
+      <p>Compare rail passes and point-to-point tickets across Europe.</p>
+      <a href="https://rail.ninja/?from={{From}}&to={{To}}&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Train Routes →</a>
+    </div>
+
+    TRANSPORT CTA (Southeast Asia):
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Transport</div>
+      <p>Trains, buses, and ferries across Southeast Asia — compare and book.</p>
+      <a href="https://12go.asia/en?from={{From}}&to={{To}}&aff_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Routes →</a>
+    </div>
+
+    CAR RENTAL CTA:
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Rent a Car</div>
+      <p>Compare car rental prices from all major providers in {{City}}.</p>
+      <a href="https://www.discovercars.com/all?a_aid=529721&location={{City}}" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Car Rentals →</a>
+    </div>
+
+    COMBINED CTA (use at end of article, before Tripva CTA):
+    <div class="affiliate-cta">
+      <div class="affiliate-cta-title">Book Your {{Destination}} Trip</div>
+      <p>Everything you need — hotels, tours, transport, and car rental.</p>
+      <div class="affiliate-row">
+        <a href="HOTELLOOK_URL" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels →</a>
+        <a href="GYG_URL" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours →</a>
+        <a href="TRANSPORT_URL" class="affiliate-btn" target="_blank" rel="noopener sponsored">Transport →</a>
+      </div>
+    </div>
+    -->
+
+    <!-- TRIPVA APP CTA (always at the end of article body) -->
+    <div class="cta-block">
+      <h3>Ready to plan your {{destination}} trip?</h3>
+      <p>Tell Tripva your dates, interests, and budget — we'll build a complete day-by-day itinerary with hotel picks, activity timing, and transport routes.</p>
+      <a href="https://tripva.app/plan?destination={{destination_encoded}}&days={{days}}" class="cta-btn">
+        Plan Your {{Destination}} Trip ✦
+      </a>
+    </div>
+
+  </article>
+
+  <!-- RELATED POSTS — pick 3 relevant posts from the blog -->
+  <nav class="related" aria-label="Related posts">
+    <h2>More Travel Guides</h2>
+    <div class="related-grid">
+      <a href="/blog/{{related-1-slug}}" class="related-card">
+        <img src="/blog/assets/{{related-1-slug}}-cover.webp" alt="{{Related 1}}" loading="lazy" width="480" height="270">
+        <div class="related-card-body">
+          <div class="related-card-title">{{Related 1 Title}}</div>
+        </div>
+      </a>
+      <!-- 2 more related cards -->
+    </div>
+  </nav>
+
+  <a href="/blog/" class="back-link">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4l-4 4 4 4"/></svg>
+    Back to Blog
+  </a>
+
+</div>
+
+<footer>
+  <p>&copy; 2026 Tripva &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/plan">Plan a Trip</a></p>
+</footer>
+
+</body>
+</html>

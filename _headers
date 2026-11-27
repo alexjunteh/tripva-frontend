@@ -25,3 +25,7 @@
 /admin.html
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
+
+# Blog post template (for content agents) — never index it
+/docs/blog-post-template*
+  X-Robots-Tag: noindex, nofollow

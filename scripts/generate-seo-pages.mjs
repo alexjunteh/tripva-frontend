@@ -31,8 +31,9 @@ const css = `*{box-sizing:border-box}body{margin:0;background:#0a0a12;color:#f8f
 
 function pageHtml(page) {
   const encodedDest = encodeURIComponent(page.destination);
-  const planUrl = `../plan.html?destination=${encodedDest}&days=${page.days}&source=seo_${page.slug}`;
-  const canonical = `https://tripva.app/itineraries/${page.slug}.html`;
+  const planUrl = `../plan?destination=${encodedDest}&days=${page.days}&source=seo_${page.slug}`;
+  const canonical = `https://tripva.app/itineraries/${page.slug}`;
+  // No ".html": Cloudflare Pages 308-redirects /x.html to /x, so the canonical must be the final URL.
   const dayIdeas = dayPlans[page.slug];
   if (!dayIdeas || dayIdeas.length !== page.days) throw new Error(`${page.slug}: need ${page.days} day lines, have ${dayIdeas ? dayIdeas.length : 0}`);
   const hero = heroCredits[page.slug];
@@ -57,7 +58,7 @@ function pageHtml(page) {
   <style>${css}</style>
 </head>
 <body>
-  <nav><a class="logo" href="../" aria-label="Tripva home"><img src="../assets/brand/tripva-nav-logo-dark.png" width="86" height="32" alt="Tripva"></a><div class="navlinks"><a href="../blog/">Blog</a><a href="../about.html">About</a><a class="cta" href="${planUrl}">Plan this trip</a></div></nav>
+  <nav><a class="logo" href="../" aria-label="Tripva home"><img src="../assets/brand/tripva-nav-logo-dark.png" width="86" height="32" alt="Tripva"></a><div class="navlinks"><a href="../blog/">Blog</a><a href="../about">About</a><a class="cta" href="${planUrl}">Plan this trip</a></div></nav>
   <main>
     <div class="eyebrow">AI itinerary template</div>
     <h1>${page.title}</h1>
