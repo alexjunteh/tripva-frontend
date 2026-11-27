@@ -43,3 +43,9 @@ test('insurance card that links to the dead EKTA site is switched off', () => {
   assert.match(html, /const INSURANCE_ENABLED = false;/);
   assert.match(html, /if \(insureSec && !INSURANCE_ENABLED\) insureSec\.style\.display = 'none';/);
 });
+
+// Desktop has no + button, so the More sheet must offer the share link too.
+test('More sheet has a Copy link action that goes through the Pro-gated fabShare', () => {
+  const html = readFileSync(new URL('../trip.html', import.meta.url), 'utf8');
+  assert.match(html, /id="moreShareBtn" onclick="closeMore\(\);fabShare\(\)"/);
+});
