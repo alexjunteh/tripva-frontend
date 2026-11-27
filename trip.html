@@ -124,7 +124,7 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
 
   /* These banners are direct #app children. Keep shared-trip notices visible
      without allowing mobile-style inline banners to consume a desktop flex column. */
-  .viewer-banner{position:fixed;right:20px;bottom:90px;z-index:120;max-width:420px;margin:0!important;box-shadow:0 16px 40px rgba(0,0,0,.32);border-radius:16px}
+  .viewer-banner{position:fixed;right:20px;bottom:90px;z-index:120;max-width:420px;margin:0!important;box-shadow:0 16px 40px rgba(0,0,0,.32);border-radius:16px;background:linear-gradient(135deg,rgba(124,106,247,.16),rgba(149,184,255,.08)),var(--surface)!important}
   body.viewer-mode .desk-day-panel .desk-body{padding-bottom:80px}
   #demoBanner{display:none!important}
 
@@ -1619,6 +1619,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 <div id="viewerBanner" class="viewer-banner" style="display:none;margin:10px 14px 0;flex-shrink:0">
   <span class="viewer-banner-icon">✨</span>
   <span class="viewer-banner-text"><b>Shared trip.</b> Like what you see? Plan your own in 30 seconds.</span>
+  <a class="viewer-banner-sec" href="#" id="viewerCopyBtn" onclick="copySharedTrip();return false;">📋 Copy trip</a>
   <a class="viewer-banner-sec" href="#" id="viewerSimilarBtn" onclick="planSimilarTrip();return false;">🪄 Similar</a>
   <a class="viewer-banner-cta" href="/plan.html">Plan mine →</a>
   <button id="viewerBannerClose" aria-label="Dismiss" onclick="dismissViewerBanner()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0">✕</button>
@@ -3817,13 +3818,16 @@ async function loadTripPlan() {
           // Cold-viewer detection — a user is a viewer (not owner) only when:
           //   (a) URL has ?id= AND
           //   (b) they have NO Tripva session AND
-          //   (c) they have a DIFFERENT plan already in localStorage (so this
-          //       really is "someone else's trip" they're visiting)
-          // Previously step (c) was `urlId !== localId` which false-positived
-          // when localStorage was empty (fresh browser / first visit) — the
-          // owner got classified as cold-viewer and Save was hidden from them.
+          //   (c) the trip on this device is not this trip (a fresh browser
+          //       counts: that is how most people open a shared link)
+          // Viewer-mode no longer hides Save (see .viewer-banner CSS note); it
+          // only adds the Copy / Similar / Plan mine banner, which is dismissible.
+          // The URL id is the share id, while trip.id is the planner's own id
+          // (e.g. "trip-tokyo-couple-2026"), so compare like with like: the trip
+          // already on this device against the trip just loaded.
+          const tripKey = (p) => p && p.trip && (p.trip.id || ((p.trip.name || '') + '|' + (p.trip.startDate || ''))) || null;
           const localId = (function(){
-            try { const p = JSON.parse(localStorage.getItem('tripva_plan')||'null'); return p && p.trip && p.trip.id; } catch(e){ return null; }
+            try { return tripKey(JSON.parse(localStorage.getItem('tripva_plan')||'null')); } catch(e){ return null; }
           })();
           const hasSession = (function(){
             try { const s = JSON.parse(localStorage.getItem('tripva_session')||'null'); return !!(s && s.access_token); } catch(e){ return false; }
@@ -3831,7 +3835,8 @@ async function loadTripPlan() {
           const urlId = new URLSearchParams(location.search).get('id');
           // Only flag cold-viewer when we have strong evidence user is NOT the
           // owner: no session + they have a different saved trip in localStorage.
-          const isColdViewer = urlId && !hasSession && localId && urlId !== localId;
+          const loadedId = tripKey(plan);
+          const isColdViewer = !!urlId && !hasSession && !(localId && loadedId && localId === loadedId);
           localStorage.setItem('tripva_plan', JSON.stringify(plan));
           // Isolated steps — partial render failure must NOT bubble up to the
           // showNoTripFound() fallback below.
@@ -6199,6 +6204,10 @@ function restoreMeta() {
 //  SHARE / EXPORT
 // ══════════════════════════════════════
 function showToast(msg, dur) { const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), dur||2800); }
+// This sits inside the page-load callback; code outside it (save to account,
+// booking marks, copy trip) calls window.showToast, which was undefined, so
+// those messages were silently dropped.
+window.showToast = showToast;
 
 
 function shareTripLink() {
@@ -7807,6 +7816,39 @@ function cloneDemoTrip() {
   window.location.href = '/trip.html?cloned=1';
 }
 window.cloneDemoTrip = cloneDemoTrip;
+
+// Copy a trip someone shared into the visitor's own editable trip. The backend
+// route returns a privacy-safe copy (no traveller names, booking codes, ticket
+// uploads or owner id), which is kept locally like a cloned demo.
+async function copySharedTrip() {
+  const id = new URLSearchParams(location.search).get('id');
+  if (!id) { try { showToast('⚠️ No shared trip to copy'); } catch(e) {} return; }
+  const btn = document.getElementById('viewerCopyBtn');
+  if (btn) { btn.style.pointerEvents = 'none'; btn.style.opacity = '.6'; btn.textContent = '⏳ Copying…'; }
+  const reset = () => { if (btn) { btn.style.pointerEvents = ''; btn.style.opacity = ''; btn.textContent = '📋 Copy trip'; } };
+  try {
+    const r = await fetch(TRIPVA_BACKEND + '/api/trip/' + encodeURIComponent(id) + '/duplicate');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const source = d && d.plan && (d.plan.rawPlan || d.plan);
+    if (!source || !source.trip || !Array.isArray(source.days)) throw new Error('bad copy');
+    source.trip = Object.assign({}, source.trip, {
+      id: `local-${Date.now().toString(36)}`,
+      name: `${source.trip.name || 'My trip'} · My copy`,
+      isDemo: false,
+    });
+    localStorage.setItem('tripva_plan', JSON.stringify(source));
+    localStorage.setItem('tripai_meta', JSON.stringify(source.trip));
+    sessionStorage.setItem('tripva_cloned_shared', id);
+  } catch (e) {
+    console.error('[copy] failed:', e);
+    reset();
+    try { showToast('⚠️ Could not copy this trip. Try again.'); } catch(_) {}
+    return;
+  }
+  window.location.href = '/trip.html?cloned=1';
+}
+window.copySharedTrip = copySharedTrip;
 
 function startTripOAuth(provider){
   var btn = document.getElementById('tripOauth' + provider[0].toUpperCase() + provider.slice(1));
