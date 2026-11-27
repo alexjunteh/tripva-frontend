@@ -55,6 +55,7 @@ function pageHtml(page) {
   <link rel="icon" type="image/svg+xml" href="../icon.svg">
   <link rel="apple-touch-icon" href="/icons/tripva-logo.png">
   <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/assets/utm.js"></script>
   <style>${css}</style>
 </head>
 <body>

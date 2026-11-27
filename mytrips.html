@@ -26,6 +26,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="manifest" href="manifest.json">
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
+<script defer src="/assets/utm.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -402,7 +403,7 @@ var SUPABASE_URL = 'https://alnzqqlwqwxknxaxtawh.supabase.co';
 function getSession(){
   try{ return JSON.parse(localStorage.getItem('tripva_session')||'null'); }catch(e){ return null; }
 }
-function setSession(s){ if(s) localStorage.setItem('tripva_session',JSON.stringify(s)); else localStorage.removeItem('tripva_session'); }
+function setSession(s){ if(s){ localStorage.setItem('tripva_session',JSON.stringify(s)); try { if (window.TripvaUtm) TripvaUtm.sync(s); } catch (e) {} } else localStorage.removeItem('tripva_session'); }
 
 function showToast(msg){
   var t = document.getElementById('toast');

@@ -1599,6 +1599,7 @@ body.fab-suppressed .fab-wrap{opacity:0;pointer-events:none}
 #routeMap .leaflet-control-attribution a{color:#ccd}
 </style>
 <script defer data-domain="futuriztaos.github.io,tripva.app" src="https://plausible.io/js/script.js"></script>
+<script defer src="/assets/utm.js"></script>
 <script defer src="/assets/click-track.js?v=20261127"></script>
 <script src="demo-trips.js?v=20261127-stops"></script>
 <script src="day-photos.js?v=20261128-1"></script>
@@ -6813,7 +6814,7 @@ async function submitPlan() {
       method: 'POST',
       headers: tripvaAuthHeaders({ 'Content-Type': 'application/json' }),
       signal: _planCtrl.signal,
-      body: JSON.stringify({ destination: dest, startDate: start, endDate: end, travelers: plannerTravellers, budget, style, interests, homeCity: home, transportModes })
+      body: JSON.stringify({ utm: (window.TripvaUtm && TripvaUtm.get()) || undefined, destination: dest, startDate: start, endDate: end, travelers: plannerTravellers, budget, style, interests, homeCity: home, transportModes })
     });
 
     if (!resp.ok) {
@@ -7764,7 +7765,7 @@ async function doSaveTrip(token){
   fetch(TRIPVA_BACKEND+'/api/user/trips/save',{
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-    body:JSON.stringify({ plan: rawPlan, shareUrl: shareUrl })
+    body:JSON.stringify({ plan: rawPlan, shareUrl: shareUrl, utm: (window.TripvaUtm && TripvaUtm.get()) || undefined })
   })
   .then(function(r){ return r.json().then(function(d){ return { status: r.status, body: d }; }); })
   .then(function(res){
@@ -7960,6 +7961,7 @@ function sendTripMagicLink(){
       expires_at: Date.now() + parseInt(params.get('expires_in')||'3600')*1000
     };
     localStorage.setItem('tripva_session', JSON.stringify(session));
+    try { if (window.TripvaUtm) TripvaUtm.sync(session); } catch (e) {}
     history.replaceState(null,'',location.pathname+location.search);
     // Auto-save if there's a pending trip
     doSaveTrip(session.access_token);
