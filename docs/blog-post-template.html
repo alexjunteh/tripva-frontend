@@ -8,8 +8,8 @@
   (https://tripva.app/blog/{{SLUG}}, /blog/other-post, /plan, /privacy). Cloudflare Pages
   308-redirects any /x.html to /x, so a ".html" canonical points Google at a redirect.
   Add the post to sitemap.xml the same way, then run: node scripts/check-url-signals.mjs
-  AFFILIATE LINKS below predate the 27 Nov 2026 switch to Travelpayouts partner 729092 and Klook:
-  copy affiliate links from a current live post, not from this file.
+  AFFILIATE LINKS (current pattern since 27 Nov 2026; matches the live posts and tests/blog-affiliate.test.mjs):
+  Every example link below is a complete, working Kyoto link. To reuse one, change only the part named in its SLOT note.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -233,54 +233,99 @@ footer a:hover{color:var(--accent)}
     <!-- CONTENT SECTIONS with h2 (id= for TOC), h3, p, ul, ol, figures -->
     <!-- Write 2500+ words of expert travel content -->
 
-    <!-- INLINE AFFILIATE LINKS: use class="affiliate-inline" style="color:var(--red)" -->
-    <!-- Example: <a href="https://www.hotellook.com/hotels?destination=Bali&adults=2&rooms=1&marker=529721" target="_blank" rel="noopener sponsored">compare hotel prices on Hotellook</a> -->
+    <!--
+    AFFILIATE LINKS: how they work
+    - Tours/activities and hotels earn through Klook, tracked by Travelpayouts. A tracked link is
+        https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=<Klook page, URL-encoded>
+      Keep campaign_id=137, marker=729092, p=4110 and trs=529721 exactly as written:
+      marker is Tripva's Travelpayouts partner number, trs is Tripva's Travelpayouts project number.
+    - Use only these forms for tours and hotels. The tour and hotel partners used before 27 Nov 2026 are
+      closed to Tripva or dead, and tests/blog-affiliate.test.mjs fails any post that names them.
+    - Booking.com, Rail Ninja, 12Go and Discover Cars links below are plain (untracked) links in the same
+      form the live posts use; they work for readers but earn nothing until those programs approve Tripva.
+
+    KLOOK HOTEL PATH per city (URL-encoded, paste after "...u=https%3A%2F%2Fwww.klook.com%2Fen-US%2F").
+    Same list as KLOOK_HOTEL_PATHS in the backend (lib/affiliate.js). Ubud/Seminyak/Canggu use bali; Ao Nang uses krabi.
+      tokyo             hotels%2Fcity%2F28-tokyo-hotels%2F
+      kyoto             hotels%2Fcity%2F30-kyoto-hotels%2F
+      osaka             destination%2Fc29-osaka%2F3-hotel%2F
+      bangkok           hotels%2Fcity%2F4-bangkok-hotels%2F
+      phuket            hotels%2Fcity%2F7-phuket-province-hotels%2F
+      krabi             hotels%2Fcity%2F63-krabi-province-hotels%2F
+      chiang mai        hotels%2Fcity%2F703137-chiang-mai-hotels%2F
+      singapore         hotels%2Fcity%2F6-singapore-hotels%2F
+      kuala lumpur      hotels%2Fcity%2F49-kuala-lumpur-hotels%2F
+      bali              destination%2Fc8-bali%2F3-hotel%2F
+      seoul             hotels%2Fcity%2F13-seoul-hotels%2F
+      hanoi             hotels%2Fcity%2F34-hanoi-hotels%2F
+      da nang           hotels%2Fcity%2F74-da-nang-hotels%2F
+      hoi an            destination%2Fc75-hoi-an%2F3-hotel%2F
+      ho chi minh city  destination%2Fc33-ho-chi-minh-city%2F3-hotel%2F
+      dubai             hotels%2Fcity%2F78-dubai-hotels%2F
+      paris             hotels%2Fcity%2F107-paris-hotels%2F
+      london            hotels%2Fcity%2F106-london-hotels%2F
+      rome              destination%2Fc92-rome%2F3-hotel%2F
+      barcelona         destination%2Fc108-barcelona%2F3-hotel%2F
+      lisbon            destination%2Fc308-lisbon%2F3-hotel%2F
+      interlaken        hotels%2Fcity%2F352-interlaken-hotels%2F
+      reykjavik         hotels%2Fcity%2F114-reykjavik-hotels%2F
+      queenstown        destination%2Fc83-queenstown%2F3-hotel%2F
+    City not in this list (e.g. Santorini, Maldives, Zermatt, Lucerne, Marrakech, Croatian islands): use the
+    Booking.com fallback instead of Klook:
+        https://www.booking.com/searchresults.html?ss={{City}}&amp;group_adults=2&amp;no_rooms=1
+
+    KLOOK TOUR SEARCH: query is double-encoded, so a space is %2520 ("Kyoto tours" -> Kyoto%2520tours).
+    -->
+
+    <!-- INLINE AFFILIATE LINKS: style="color:var(--red)" target="_blank" rel="noopener sponsored" -->
+    <!-- Example (SLOT: the city path from the table): <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" style="color:var(--red)" target="_blank" rel="noopener sponsored">compare Kyoto hotel prices</a> -->
 
     <!-- AFFILIATE CTA BOXES: insert after relevant sections -->
     <!--
-    HOTEL CTA:
+    HOTEL CTA (SLOT: the city path from the table, or the Booking.com fallback for other cities):
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Book Hotels in {{City}}</div>
       <p>Compare prices from hundreds of {{City}} hotels — from budget stays to luxury resorts.</p>
-      <a href="https://www.hotellook.com/hotels?destination={{City}}&adults=2&rooms=1&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Hotel Prices →</a>
+      <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare {{City}} Hotel Prices &rarr;</a>
     </div>
 
-    ACTIVITY CTA (non-SEA destinations use GetYourGuide):
+    ACTIVITY CTA, every destination (SLOT: the query after "query%3D", spaces as %2520):
     <div class="affiliate-cta">
-      <div class="affiliate-cta-title">Book Tours & Activities</div>
+      <div class="affiliate-cta-title">Book Tours &amp; Activities</div>
       <p>Skip-the-line tickets, guided tours, and unique experiences in {{City}}.</p>
-      <a href="https://www.getyourguide.com/s/?q={{City}}&partner_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse Activities →</a>
+      <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fsearch%2Fresult%2F%3Fquery%3DKyoto%2520tours" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse {{City}} Tours &rarr;</a>
     </div>
 
-    TRANSPORT CTA (Europe/non-SEA):
+    TRANSPORT CTA, Europe / Japan rail (SLOT: from= and to= city names, spaces as +):
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Book Train Tickets</div>
-      <p>Compare rail passes and point-to-point tickets across Europe.</p>
-      <a href="https://rail.ninja/?from={{From}}&to={{To}}&marker=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Train Routes →</a>
+      <p>Compare point-to-point train tickets and times.</p>
+      <a href="https://rail.ninja/?from=Tokyo&amp;to=Kyoto&amp;marker=729092" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Train Routes &rarr;</a>
     </div>
 
-    TRANSPORT CTA (Southeast Asia):
+    TRANSPORT CTA, Southeast Asia (SLOT: from= and to= city names, spaces as +):
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Book Transport</div>
       <p>Trains, buses, and ferries across Southeast Asia — compare and book.</p>
-      <a href="https://12go.asia/en?from={{From}}&to={{To}}&aff_id=529721" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Routes →</a>
+      <a href="https://12go.asia/en?from=Bangkok&amp;to=Chiang+Mai&amp;aff_id=729092" class="affiliate-btn" target="_blank" rel="noopener sponsored">Search Routes &rarr;</a>
     </div>
 
-    CAR RENTAL CTA:
+    CAR RENTAL CTA (SLOT: /country/city, lowercase, as on discovercars.com; the old /all?location= page is a 404):
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Rent a Car</div>
       <p>Compare car rental prices from all major providers in {{City}}.</p>
-      <a href="https://www.discovercars.com/all?a_aid=529721&location={{City}}" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Car Rentals →</a>
+      <a href="https://www.discovercars.com/portugal/lisbon?a_aid=729092" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare Car Rentals &rarr;</a>
     </div>
 
-    COMBINED CTA (use at end of article, before Tripva CTA):
+    COMBINED CTA (use at end of article, before Tripva CTA; same SLOTs as above, to= is the nearest airport code):
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Book Your {{Destination}} Trip</div>
-      <p>Everything you need — hotels, tours, transport, and car rental.</p>
+      <p>Everything you need — hotels, tours, transport, and flights.</p>
       <div class="affiliate-row">
-        <a href="HOTELLOOK_URL" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels →</a>
-        <a href="GYG_URL" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours →</a>
-        <a href="TRANSPORT_URL" class="affiliate-btn" target="_blank" rel="noopener sponsored">Transport →</a>
+        <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels &rarr;</a>
+        <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fsearch%2Fresult%2F%3Fquery%3DKyoto%2520tours" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours &rarr;</a>
+        <a href="https://rail.ninja/?from=Tokyo&amp;to=Kyoto&amp;marker=729092" class="affiliate-btn" target="_blank" rel="noopener sponsored">Trains &rarr;</a>
+        <a href="https://www.kiwi.com/en/search/results?to=KIX&amp;adults=2" class="affiliate-btn" target="_blank" rel="noopener sponsored">Flights &rarr;</a>
       </div>
     </div>
     -->
