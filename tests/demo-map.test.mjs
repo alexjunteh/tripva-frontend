@@ -36,3 +36,10 @@ test('trip map uses keyless OSM tiles with the required credit and labelled pins
     assert.ok(!html.includes(">'+s.emoji+'</div>'"), `${f} pins print s.emoji (undefined)`);
   }
 });
+
+// ekta.world is parked; the insurance card must stay off until a working insurer replaces it.
+test('insurance card that links to the dead EKTA site is switched off', () => {
+  const html = readFileSync(new URL('../trip.html', import.meta.url), 'utf8');
+  assert.match(html, /const INSURANCE_ENABLED = false;/);
+  assert.match(html, /if \(insureSec && !INSURANCE_ENABLED\) insureSec\.style\.display = 'none';/);
+});

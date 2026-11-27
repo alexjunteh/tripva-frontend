@@ -4573,11 +4573,15 @@ function populateDashboard(p) {
       }
     }
 
-    // ── TRAVEL INSURANCE (EKTA — 20% commission) always shown ──
+    // ── TRAVEL INSURANCE (EKTA) — off: ekta.world is a parked domain, ekta.insure does not
+    // resolve and ektatraveling.com has an expired certificate (checked 2026-11-27).
+    // Set INSURANCE_ENABLED back to true once a working insurer link replaces buildEktaLink.
+    const INSURANCE_ENABLED = false;
     {
       const insureSec = document.getElementById('insuranceSection');
       const insureCards = document.getElementById('insuranceCards');
-      if (insureSec && insureCards) {
+      if (insureSec && !INSURANCE_ENABLED) insureSec.style.display = 'none';
+      if (INSURANCE_ENABLED && insureSec && insureCards) {
         insureSec.style.display = 'block';
         insureCards.innerHTML = `
           <a class="book-card" href="${buildEktaLink(dest)}" target="_blank" rel="noopener" onclick="trackAffiliateClick('ekta')" style="text-decoration:none;display:block;margin-bottom:8px">
