@@ -542,7 +542,7 @@ function renderTrips(trips, isShared){
     }
     var meta = isShared
       ? (trip.role === 'editor' ? '✏️ Editor' : '👁️ Viewer') + ' · Joined ' + timeAgo(trip.sharedAt || trip.created_at)
-      : 'Saved ' + timeAgo(trip.created_at);
+      : 'Saved ' + timeAgo(lastSavedAt(trip));
 
     var tripUrl = trip.share_url || '#';
     var similarParams = new URLSearchParams();
@@ -608,6 +608,9 @@ function formatDate(s){
     return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   }catch(e){ return s; }
 }
+
+// Last save time: edits bump updated_at; created_at is only the first save.
+function lastSavedAt(trip){ return (trip && (trip.updated_at || trip.created_at)) || ''; }
 
 function timeAgo(ts){
   if(!ts) return '';
