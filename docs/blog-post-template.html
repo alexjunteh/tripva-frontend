@@ -34,6 +34,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script defer data-domain="tripva.app" src="https://plausible.io/js/script.js"></script>
+<script defer src="/assets/click-track.js?v=20261127"></script>
 
 <script type="application/ld+json">
 {
@@ -278,7 +279,7 @@ footer a:hover{color:var(--accent)}
     -->
 
     <!-- INLINE AFFILIATE LINKS: style="color:var(--red)" target="_blank" rel="noopener sponsored" -->
-    <!-- Example (SLOT: the city path from the table): <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" style="color:var(--red)" target="_blank" rel="noopener sponsored">compare Kyoto hotel prices</a> -->
+    <!-- Example (SLOT: the city path from the table): <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;sub_id=blog-{{SLUG}}&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" style="color:var(--red)" target="_blank" rel="noopener sponsored">compare Kyoto hotel prices</a> -->
 
     <!-- AFFILIATE CTA BOXES: insert after relevant sections -->
     <!--
@@ -286,14 +287,14 @@ footer a:hover{color:var(--accent)}
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Book Hotels in {{City}}</div>
       <p>Compare prices from hundreds of {{City}} hotels — from budget stays to luxury resorts.</p>
-      <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare {{City}} Hotel Prices &rarr;</a>
+      <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;sub_id=blog-{{SLUG}}&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" class="affiliate-btn" target="_blank" rel="noopener sponsored">Compare {{City}} Hotel Prices &rarr;</a>
     </div>
 
     ACTIVITY CTA, every destination (SLOT: the query after "query%3D", spaces as %2520):
     <div class="affiliate-cta">
       <div class="affiliate-cta-title">Book Tours &amp; Activities</div>
       <p>Skip-the-line tickets, guided tours, and unique experiences in {{City}}.</p>
-      <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fsearch%2Fresult%2F%3Fquery%3DKyoto%2520tours" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse {{City}} Tours &rarr;</a>
+      <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;sub_id=blog-{{SLUG}}&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fsearch%2Fresult%2F%3Fquery%3DKyoto%2520tours" class="affiliate-btn" target="_blank" rel="noopener sponsored">Browse {{City}} Tours &rarr;</a>
     </div>
 
     TRANSPORT CTA, Europe / Japan rail (SLOT: from= and to= city names, spaces as +):
@@ -322,8 +323,8 @@ footer a:hover{color:var(--accent)}
       <div class="affiliate-cta-title">Book Your {{Destination}} Trip</div>
       <p>Everything you need — hotels, tours, transport, and flights.</p>
       <div class="affiliate-row">
-        <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels &rarr;</a>
-        <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fsearch%2Fresult%2F%3Fquery%3DKyoto%2520tours" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours &rarr;</a>
+        <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;sub_id=blog-{{SLUG}}&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fhotels%2Fcity%2F30-kyoto-hotels%2F" class="affiliate-btn" target="_blank" rel="noopener sponsored">Hotels &rarr;</a>
+        <a href="https://tp.media/r?campaign_id=137&amp;marker=729092&amp;p=4110&amp;sub_id=blog-{{SLUG}}&amp;trs=529721&amp;u=https%3A%2F%2Fwww.klook.com%2Fen-US%2Fsearch%2Fresult%2F%3Fquery%3DKyoto%2520tours" class="affiliate-btn" target="_blank" rel="noopener sponsored">Tours &rarr;</a>
         <a href="https://rail.ninja/?from=Tokyo&amp;to=Kyoto&amp;marker=729092" class="affiliate-btn" target="_blank" rel="noopener sponsored">Trains &rarr;</a>
         <a href="https://www.kiwi.com/en/search/results?to=KIX&amp;adults=2" class="affiliate-btn" target="_blank" rel="noopener sponsored">Flights &rarr;</a>
       </div>

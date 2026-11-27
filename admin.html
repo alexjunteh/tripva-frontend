@@ -119,6 +119,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-label">Backend API</div><div class="stat-val" id="sBE">…</div><div class="stat-sub" id="sBEsub">checking</div></div>
         <div class="stat-card"><div class="stat-label">Trips Made</div><div class="stat-val green" id="sTrips">…</div><div class="stat-sub">all-time</div></div>
+        <div class="stat-card"><div class="stat-label">Partner Clicks</div><div class="stat-val green" id="sClicks">…</div><div class="stat-sub" id="sClicksSub">all-time</div></div>
         <div class="stat-card"><div class="stat-label">Supabase Auth</div><div class="stat-val" id="sAuth">…</div><div class="stat-sub" id="sAuthSub">checking</div></div>
         <div class="stat-card"><div class="stat-label">Monthly Burn</div><div class="stat-val green">$0</div><div class="stat-sub">free tier</div></div>
       </div>
@@ -329,7 +330,11 @@ async function checkBE(){
   catch(e){document.getElementById('sBE').textContent='❌ Down';document.getElementById('sBE').className='stat-val red';}
 }
 async function checkStats(){
-  try{const r=await fetch(BE+'/api/stats');const d=await r.json();document.getElementById('sTrips').textContent=d.trips??'?';}
+  try{const r=await fetch(BE+'/api/stats');const d=await r.json();document.getElementById('sTrips').textContent=d.trips??'?';
+    document.getElementById('sClicks').textContent=d.totalClicks??'?';
+    const top=Object.entries(d.clicks||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>k+' '+v).join(' · ');
+    const src=Object.entries(d.bySource||{}).map(([k,v])=>k+' '+v).join(' · ');
+    document.getElementById('sClicksSub').textContent=(top||'none yet')+(src?' | '+src:'');}
   catch(e){}
 }
 async function checkAuth(){
