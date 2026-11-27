@@ -126,6 +126,12 @@ test('--live fails on a 308, a 404 and an unreachable server; passes on direct 2
     let r = await runAsync(['--live', '--base', base]);
     assert.equal(r.code, 0, JSON.stringify(r.out));
     assert.equal(r.out.stats.live200, 2);
+    // a repo sitemap URL missing from the deployed sitemap is still requested
+    const dir2 = site({ ...good(), 'blog/new.html': post('new'), 'sitemap.xml': SITEMAP(['https://tripva.app/blog/a', 'https://tripva.app/blog/other', 'https://tripva.app/blog/new']) });
+    const r2 = await new Promise((ok) => import('node:child_process').then(({ execFile }) => execFile(process.execPath, [SCRIPT, '--root', dir2, '--json', '--live', '--base', base], { timeout: 30000 }, (err, stdout) => ok({ code: err ? err.code : 0, out: JSON.parse(stdout) }))));
+    rmSync(dir2, { recursive: true });
+    assert.equal(r2.code, 1);
+    assert.ok(r2.out.failures.some((f) => /live https:\/\/tripva\.app\/blog\/new: status 404/.test(f)));
     mode = 'bad';
     r = await runAsync(['--live', '--base', base]);
     assert.equal(r.code, 1);
@@ -145,6 +151,23 @@ test('the blog post template is checked too: a .html canonical in docs/*-templat
   const r = run(dir); rmSync(dir, { recursive: true });
   assert.equal(r.code, 1);
   assert.ok(r.out.failures.some((f) => /^docs\/blog-post-template\.html: canonical ends in \.html/.test(f)));
+});
+
+test('a second .html canonical or og:url after a clean one fails', () => {
+  const dir = site({ ...good(), 'blog/a.html': post('a', { extra: '' }).replace('</head>', '<link rel="canonical" href="https://tripva.app/blog/a.html"><meta property="og:url" content="https://tripva.app/blog/a.html"></head>') });
+  const r = run(dir); rmSync(dir, { recursive: true });
+  assert.equal(r.code, 1);
+  assert.ok(r.out.failures.some((f) => /2 canonical tags/.test(f)));
+  assert.ok(r.out.failures.some((f) => /og:url ends in \.html/.test(f)));
+});
+
+test('JSON-LD with escaped slashes or a protocol-relative URL is still caught', () => {
+  const html = post('a').replace('</head>', '<script type="application/ld+json">{"@type":"WebPage","@id":"https:\\/\\/tripva.app\\/blog\\/a.html","url":"//tripva.app/blog/a.html"}</script></head>');
+  const dir = site({ ...good(), 'blog/a.html': html });
+  const r = run(dir); rmSync(dir, { recursive: true });
+  assert.equal(r.code, 1);
+  assert.ok(r.out.failures.some((f) => /JSON-LD @id ends in \.html \(https:\/\/tripva\.app\/blog\/a\.html\)/.test(f)));
+  assert.ok(r.out.failures.some((f) => /JSON-LD url ends in \.html \(\/\/tripva\.app/.test(f)));
 });
 
 test('the real repo passes the static check', () => {
