@@ -542,7 +542,9 @@ body.nav-hidden .bottom-nav{transform:translateY(110%);opacity:0;pointer-events:
   overflow:hidden;
   background:var(--surface2);
   border:1px solid var(--border);
-  max-width:100%;
+  /* Stop photos are ~640px wide: on desktop a full-column (1000px+) photo was
+     blurry and a screen tall. 420px stays sharp at 2x and matches phone size. */
+  max-width:min(100%,420px);
 }
 .tl-activity-media img{
   display:block;
