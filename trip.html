@@ -3537,6 +3537,9 @@ function probeHeroBg(el, idx) {
     'linear-gradient(135deg, #1a2040 0%, #2d3569 50%, #0d0d1a 100%)',
   ];
   let settled = false;
+  // Only fall back if the element still shows the image being probed; a
+  // better photo swapped in meanwhile must not be painted over.
+  const stillOurs = () => el.style.backgroundImage === bg;
   const probe = new Image();
   probe.onload = () => { settled = true; };
   probe.onerror = () => {
@@ -3544,12 +3547,12 @@ function probeHeroBg(el, idx) {
     setTimeout(() => {
       if (settled) return;
       const retry = new Image();
-      retry.onload = () => { settled = true; el.style.backgroundImage = `url('${src}')`; };
-      retry.onerror = () => { if (!settled) { settled = true; el.style.backgroundImage = gradients[idx % gradients.length]; } };
+      retry.onload = () => { settled = true; if (stillOurs()) el.style.backgroundImage = `url('${src}')`; };
+      retry.onerror = () => { if (!settled) { settled = true; if (stillOurs()) el.style.backgroundImage = gradients[idx % gradients.length]; } };
       retry.src = src + (src.includes('?') ? '&' : '?') + '_r=1';
     }, 1500);
   };
-  setTimeout(() => { if (!settled) { settled = true; el.style.backgroundImage = gradients[idx % gradients.length]; } }, 10000);
+  setTimeout(() => { if (!settled) { settled = true; if (stillOurs()) el.style.backgroundImage = gradients[idx % gradients.length]; } }, 10000);
   probe.src = src;
 }
 
@@ -4391,7 +4394,10 @@ function populateDashboard(p) {
       card.onclick=()=>openDaySheet(i);
       list.appendChild(card);
       const heroEl = card.querySelector('.day-big-hero');
-      if (heroEl) setTimeout(() => { heroEl.style.backgroundImage = `url('${imgUrl}')`; probeHeroBg(heroEl, i); }, i * 150);
+      // Staggered paint of the placeholder. Skip it when a real photo is already
+      // there: on a repeat visit the cached Wikipedia pick lands within ~50 ms,
+      // and this delayed write used to paint stock photos over days 3+.
+      if (heroEl) setTimeout(() => { if (heroEl.style.backgroundImage) return; heroEl.style.backgroundImage = `url('${imgUrl}')`; probeHeroBg(heroEl, i); }, i * 150);
     });
 
     // Scroll day strip so the last pill is fully visible
