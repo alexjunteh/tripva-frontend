@@ -252,6 +252,9 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
 
 /* CTA */
 .gen-done-cta{text-align:center;padding-top:12px}
+.gen-screen.gen-limit .gen-progress-bar{display:none}
+.gen-screen.gen-limit .gen-estimate{font-size:18px;font-weight:800;color:#fff;line-height:1.4;margin-top:4px}
+.gen-limit-note{font-size:13px;color:rgba(255,255,255,.55);margin-top:14px;line-height:1.5}
 
 /* Toast */
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(20,20,30,.98);border:1px solid var(--border);border-radius:14px;padding:11px 18px;font-size:13px;font-weight:700;z-index:700;opacity:0;transition: opacity .28s, transform .28s, color .28s, background-color .28s cubic-bezier(.25,.1,.25,1);pointer-events:none;white-space:nowrap;backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
@@ -788,6 +791,7 @@ input[type="date"].form-input,input[type="date"]{padding-right:14px;color-scheme
     <div class="gen-log" id="genLog"></div>
     <div class="gen-done-cta" id="genCta" style="display:none">
       <button class="form-submit-btn" id="genDoneBtn">Open Dashboard &#8594;</button>
+      <div class="gen-limit-note" id="genLimitNote" hidden></div>
     </div>
   </div>
 </div>
@@ -928,6 +932,79 @@ function _showGenerationInterrupted(message) {
     btn.onclick = () => proceedToGeneration();
   }
   showToast(hasDraft ? '⚠️ Generation paused — partial draft saved' : '⚠️ Generation paused — please retry', 5000);
+}
+// ── Daily limit (429) ──────────────────────────────────────────────────────
+// /api/plan answers 429 for two different reasons:
+//  - the daily free quota (body.error 'Daily quota exceeded', with tier and
+//    upgrade info): retrying cannot work today, so ask the visitor to sign in
+//    (anonymous, 3 a day) or upgrade (signed-in free, 10 a day);
+//  - the per-minute limiter (3 a minute per IP, no upgrade info): signing in
+//    does not lift it, so say "wait a minute" and keep a retry.
+// The body's tier wins over the local session (an expired token is counted
+// as anonymous by the backend).
+function _planLimitPrompt(status, body, signedIn) {
+  if (status !== 429) return null;
+  const b = body && typeof body === 'object' ? body : {};
+  const isDaily = b.error === 'Daily quota exceeded' || !!b.upgrade || b.quotaLimit != null;
+  if (!isDaily) {
+    return { kind: 'wait', retry: true, resetAt: b.resetAt || null,
+      message: 'Too many trips started in a minute. Please wait a minute, then try again.' };
+  }
+  const tier = b.tier === 'anonymous' || b.tier === 'free' ? b.tier : (signedIn ? 'free' : 'anonymous');
+  const text = typeof b.message === 'string' && b.message.trim() ? b.message.trim() : '';
+  if (tier === 'anonymous') {
+    return { kind: 'signin', retry: false, href: '/mytrips.html', label: 'Sign in for more trips →',
+      message: text || 'Daily trip limit reached. Sign in for more trips.',
+      note: 'Signing in is free. Or come back tomorrow: free trips reset every day.' };
+  }
+  const price = b.upgrade && typeof b.upgrade.monthlyPrice === 'string' ? b.upgrade.monthlyPrice : '';
+  return { kind: 'upgrade', retry: false, href: '/mytrips.html?upgrade=pro',
+    label: 'Upgrade to Pro' + (price ? ' — ' + price : ''),
+    message: text || 'Daily trip limit reached. Upgrade to Pro for unlimited trips.',
+    note: 'Or come back tomorrow: free trips reset every day.' };
+}
+// ── end daily limit
+function _showGenerationLimit(prompt) {
+  try { clearTimeout(window._sseT60); clearTimeout(window._sseT120); clearTimeout(window._sseTFail); clearInterval(window._limitTick); } catch(e){}
+  window._generationCompleted = false;
+  const screen = document.getElementById('genScreen');
+  if (screen) screen.classList.add('gen-limit');
+  const estimate = document.getElementById('genEstimate');
+  if (estimate) estimate.textContent = prompt.message;
+  const note = document.getElementById('genLimitNote');
+  if (note) { note.textContent = prompt.note || ''; note.hidden = !prompt.note; }
+  const log = document.getElementById('genLog');
+  if (log) log.textContent = '';
+  const cta = document.getElementById('genCta');
+  const btn = document.getElementById('genDoneBtn');
+  if (cta) cta.style.display = 'block';
+  if (!btn) return;
+  btn.disabled = false;
+  btn.dataset.limit = prompt.kind;
+  if (!prompt.retry) {
+    btn.textContent = prompt.label;
+    btn.onclick = () => { window.location.href = prompt.href; };
+    return;
+  }
+  // Per-minute limit: count down to the backend's reset time, then allow a retry.
+  const resetMs = Date.parse(prompt.resetAt || '');
+  let left = Number.isFinite(resetMs) ? Math.ceil((resetMs - Date.now()) / 1000) : 60;
+  left = Math.min(60, Math.max(5, left));
+  const tick = () => {
+    if (left <= 0) {
+      clearInterval(window._limitTick);
+      btn.disabled = false;
+      btn.textContent = 'Retry generation';
+      btn.onclick = () => proceedToGeneration();
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Try again in ' + left + 's';
+    btn.onclick = null;
+    left -= 1;
+  };
+  tick();
+  window._limitTick = setInterval(tick, 1000);
 }
 function _warnUnsavedTrip(e) {
   if (!window._tripGenerated) return;
@@ -2246,6 +2323,12 @@ async function proceedToGeneration() {
   document.getElementById('genDaysSection').style.display = 'none';
   document.getElementById('genLog').innerHTML = '';
   document.getElementById('genCta').style.display = 'none';
+  try { clearInterval(window._limitTick); } catch(e){}
+  const _doneBtn = document.getElementById('genDoneBtn');
+  if (_doneBtn) { _doneBtn.disabled = false; delete _doneBtn.dataset.limit; }
+  gs.classList.remove('gen-limit');
+  const _limitNote = document.getElementById('genLimitNote');
+  if (_limitNote) { _limitNote.hidden = true; _limitNote.textContent = ''; }
   window._generationCompleted = false;
 
   const logRoute = addLog('&#9201;', 'Designing your route\u2026', 'active');
@@ -2269,6 +2352,9 @@ async function proceedToGeneration() {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
+      const signedIn = !!(tripvaAuthHeaders().Authorization);
+      const limit = _planLimitPrompt(response.status, err, signedIn);
+      if (limit) { _showGenerationLimit(limit); return; }
       throw new Error(err.message || 'Server error (' + response.status + ')');
     }
 
