@@ -101,3 +101,59 @@ test('a new generation clears the limit state left by a previous one', () => {
   assert.match(head, /clearInterval\(window\._limitTick\)/);
   assert.match(head, /disabled = false/);
 });
+
+// Runs _showGenerationLimit against a stub page: the real screen code, not a grep.
+function stubPage() {
+  const el = id => ({ id, textContent: '', hidden: true, disabled: false, onclick: null, style: {},
+    classList: { set: new Set(), add(c) { this.set.add(c); }, remove(c) { this.set.delete(c); } } });
+  const els = Object.fromEntries(['genScreen', 'genEstimate', 'genLog', 'genCta', 'genDoneBtn', 'genLimitNote'].map(i => [i, el(i)]));
+  els.genLog.textContent = 'Designing your route…';
+  const intervals = [];
+  const win = { location: { href: '/plan.html' } };
+  const s = plan.indexOf('function _showGenerationLimit');
+  const e = plan.indexOf('function _warnUnsavedTrip');
+  const show = new Function('document', 'window', 'setInterval', 'clearInterval', 'clearTimeout', 'proceedToGeneration',
+    plan.slice(s, e) + '; return _showGenerationLimit;')(
+    { getElementById: id => els[id] || null }, win,
+    fn => { intervals.push(fn); return intervals.length; }, () => {}, () => {}, () => { win.retried = true; });
+  return { els, win, intervals, show };
+}
+
+test('daily limit screen: message, sign-in button that navigates, note, no retry', () => {
+  const pg = stubPage();
+  pg.show(loadPrompt()(429, ANON, false));
+  assert.equal(pg.els.genEstimate.textContent, ANON.message);
+  assert.match(pg.els.genDoneBtn.textContent, /Sign in/);
+  assert.doesNotMatch(pg.els.genDoneBtn.textContent, /Retry/);
+  assert.equal(pg.els.genDoneBtn.disabled, false);
+  assert.equal(pg.els.genCta.style.display, 'block');
+  assert.equal(pg.els.genLimitNote.hidden, false);
+  assert.equal(pg.els.genLog.textContent, '', 'stale "Designing your route" spinner removed');
+  assert.ok(pg.els.genScreen.classList.set.has('gen-limit'));
+  assert.equal(pg.intervals.length, 0, 'no countdown for the daily limit');
+  pg.els.genDoneBtn.onclick();
+  assert.equal(pg.win.location.href, '/mytrips.html');
+  assert.equal(pg.win.retried, undefined);
+});
+
+test('upgrade screen sends a signed-in free user to the existing upgrade flow', () => {
+  const pg = stubPage();
+  pg.show(loadPrompt()(429, FREE, true));
+  assert.equal(pg.els.genDoneBtn.textContent, 'Upgrade to Pro — $2.99/month');
+  pg.els.genDoneBtn.onclick();
+  assert.equal(pg.win.location.href, '/mytrips.html?upgrade=pro');
+});
+
+test('wait screen counts down, then offers a working retry', () => {
+  const pg = stubPage();
+  pg.show(loadPrompt()(429, null, false)); // edge 429 with no JSON body
+  assert.match(pg.els.genEstimate.textContent, /wait a minute/);
+  assert.equal(pg.els.genLimitNote.hidden, true);
+  assert.equal(pg.els.genDoneBtn.disabled, true);
+  assert.match(pg.els.genDoneBtn.textContent, /^Try again in 60s$/);
+  for (let i = 0; i < 60; i++) pg.intervals[0]();
+  assert.equal(pg.els.genDoneBtn.disabled, false);
+  assert.equal(pg.els.genDoneBtn.textContent, 'Retry generation');
+  pg.els.genDoneBtn.onclick();
+  assert.equal(pg.win.retried, true);
+});

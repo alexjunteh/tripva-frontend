@@ -938,8 +938,9 @@ function _showGenerationInterrupted(message) {
 //  - the daily free quota (body.error 'Daily quota exceeded', with tier and
 //    upgrade info): retrying cannot work today, so ask the visitor to sign in
 //    (anonymous, 3 a day) or upgrade (signed-in free, 10 a day);
-//  - the per-minute limiter (3 a minute per IP, no upgrade info): signing in
-//    does not lift it, so say "wait a minute" and keep a retry.
+//  - the per-minute limiter (3 a minute per IP, no upgrade info) or any other
+//    429 (e.g. an edge limit with no JSON body): signing in does not lift it,
+//    so say "wait a minute" and keep a retry after a countdown.
 // The body's tier wins over the local session (an expired token is counted
 // as anonymous by the backend).
 function _planLimitPrompt(status, body, signedIn) {
@@ -948,7 +949,7 @@ function _planLimitPrompt(status, body, signedIn) {
   const isDaily = b.error === 'Daily quota exceeded' || !!b.upgrade || b.quotaLimit != null;
   if (!isDaily) {
     return { kind: 'wait', retry: true, resetAt: b.resetAt || null,
-      message: 'Too many trips started in a minute. Please wait a minute, then try again.' };
+      message: 'Too many requests right now. Please wait a minute, then try again.' };
   }
   const tier = b.tier === 'anonymous' || b.tier === 'free' ? b.tier : (signedIn ? 'free' : 'anonymous');
   const text = typeof b.message === 'string' && b.message.trim() ? b.message.trim() : '';
@@ -980,7 +981,6 @@ function _showGenerationLimit(prompt) {
   if (cta) cta.style.display = 'block';
   if (!btn) return;
   btn.disabled = false;
-  btn.dataset.limit = prompt.kind;
   if (!prompt.retry) {
     btn.textContent = prompt.label;
     btn.onclick = () => { window.location.href = prompt.href; };
@@ -2325,7 +2325,7 @@ async function proceedToGeneration() {
   document.getElementById('genCta').style.display = 'none';
   try { clearInterval(window._limitTick); } catch(e){}
   const _doneBtn = document.getElementById('genDoneBtn');
-  if (_doneBtn) { _doneBtn.disabled = false; delete _doneBtn.dataset.limit; }
+  if (_doneBtn) _doneBtn.disabled = false;
   gs.classList.remove('gen-limit');
   const _limitNote = document.getElementById('genLimitNote');
   if (_limitNote) { _limitNote.hidden = true; _limitNote.textContent = ''; }
